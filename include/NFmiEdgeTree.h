@@ -33,7 +33,7 @@ class _FMI_DLL NFmiEdgeTree : public NFmiDrawable
 public:
   
   typedef std::set<NFmiEdge> EdgeTreeType;
-  
+ 
   // Constructors
   
   NFmiEdgeTree(void) : itsEdges() { }
@@ -62,7 +62,7 @@ public:
   
   void Add(NFmiFillMap & theMap) const;
   
-private:
+protected:
   
   EdgeTreeType itsEdges;
 };
