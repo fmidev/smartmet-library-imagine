@@ -39,6 +39,8 @@ namespace Imagine
   class _FMI_DLL NFmiDrawable
   {
   public:
+
+	virtual ~NFmiDrawable() {}
 	
 	//! Constructor
 	/*!
@@ -50,7 +52,7 @@ namespace Imagine
 	
 	//! Add the drawable into a fill map.
 	
-	virtual void Add(NFmiFillMap & theMap) const {}
+	virtual void Add(NFmiFillMap & theMap) const { }
 	
 	//! Fill onto given image using various colour blending rules.
 	
