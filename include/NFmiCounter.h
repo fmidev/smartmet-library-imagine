@@ -65,6 +65,8 @@ namespace Imagine
 	NFmiCounterData itsData;
 	
   public:
+
+	typedef typename NFmiCounterData::const_iterator const_iterator;
 	
 	//! Constructor
 	NFmiCounter(void) {}
@@ -111,6 +113,10 @@ namespace Imagine
 	  else
 		return iter->second;
 	}
+
+	const_iterator begin() const { return itsData.begin(); }
+	const_iterator end() const { return itsData.end(); }
+
   };
 
 } // namespace Imagine
