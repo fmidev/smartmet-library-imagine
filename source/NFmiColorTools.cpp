@@ -400,7 +400,7 @@ namespace Imagine
   //	ColorOver      with alpha=0   (Fs=1,Fd=0)    ColorCopy
   //	ColorKeepIn    with alpha=0   (Fs=0,Fd=1)    ColorKeep
   //	ColorKeepOut   with alpha=0   (Fs=0,Fd=1)    ColorKeep
-  //      ColorKeepAtop  with alpha=0   (Fs=1-Ad,Fd=1) ColorUnder
+  //    ColorKeepAtop  with alpha=0   (Fs=1-Ad,Fd=1) ColorUnder
   //	ColorXor       with alpha=0   (Fs=1-Ad,Fd=1) ColorUnder
   //	ColorKeepIn    with alpha=max (Fs=0,Fd=0)    ColorClear
   //	ColorKeepOut   with alpha=max (Fs=0,Fd=0)    ColorClear
