@@ -178,10 +178,10 @@ namespace Imagine
 		  
 		  const double area = 0.1 * header.area;	// now in km^2
 		  
-		  const double ww = (w<-180 ? w+180 : w>180 ? w-180 : w);
-		  const double ee = (e<-180 ? e+180 : e>180 ? e-180 : e);
+		  const double ww = (w<-180 ? w+360 : w>180 ? w-360 : w);
+		  const double ee = (e<-180 ? e+360 : e>180 ? e-360 : e);
 		  
-		  const bool outside = (ww>theMaxLongitude ||
+		  bool outside = (ww>theMaxLongitude ||
 								ee<theMinLongitude ||
 								s>theMaxLatitude ||
 								n<theMinLatitude);
