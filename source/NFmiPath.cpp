@@ -20,6 +20,19 @@
 #include <iostream>
 #include <algorithm>
 #include <stdexcept>
+#ifdef OLDGCC
+  #include <strstream>
+#else
+  #include <sstream>
+#endif
+
+namespace
+{
+inline float Round2Precision(float value, float precision)
+{
+	return precision <= 0 ? value : FmiRound(value/precision)*precision;
+}
+}
 
 // ----------------------------------------------------------------------
 // Append a path using a line of desired type
@@ -600,7 +613,7 @@ std::ostream& operator<< (std::ostream& os,const NFmiPath & thePath)
 // absolute moves. This usually generates shorter SVG.
 // ----------------------------------------------------------------------
 
-string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
+string NFmiPath::SVG(bool relative_moves, bool removeghostlines, float precision) const
 {
   // Note: Do NOT use output string streams, atleast not with
   //       g++ v2.92. The implementation is broken, and will
@@ -624,6 +637,16 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 	  if(os.size() > 0.9 * os.capacity())
 		  os.reserve(os.size() * 2);
 #endif
+
+
+	  float x = iter->X();//Round2Precision(iter->X(), precision);
+	  float y = iter->Y();//Round2Precision(iter->Y(), precision);
+
+	  NFmiPathData::const_iterator nextIter(iter);
+	  ++nextIter;
+
+	  if(nextIter->Oper() != kFmiMoveTo && iter != Elements().begin() && ::fabs(x - last_out_x) < precision && ::fabs(y - last_out_y) < precision && iter->Oper() == last_op)
+		  continue;
       // Special code for first move
 	  
       if(iter->Oper()==kFmiConicTo || iter->Oper()==kFmiCubicTo)
@@ -666,7 +689,7 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 			if(iter==Elements().begin())
 			{
 			  os += (relative_moves ? "m" : "M")
-				+ ftoa(iter->X()) + "," + ftoa(iter->Y());
+				+ ftoa(x) + "," + ftoa(y);
 			}
 		  
 		  // Relative moves are "m dx dy" and "l dx dy"
@@ -684,7 +707,7 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 			  else
 				os += " ";
 
-			  os += ftoa((iter->X()-last_x)) + "," + ftoa((iter->Y()-last_y));
+			  os += ftoa((x-last_x)) + "," + ftoa((y-last_y));
 			}
 		  
 		  // Absolute moves are "M x y" and "L x y"
@@ -702,18 +725,18 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 			  else
 				os += " ";
 
-			  os += ftoa(iter->X()) + "," + ftoa(iter->Y());
+			  os += ftoa(x) + "," + ftoa(y);
 			}
 	  }
 	  
       last_op = iter->Oper();
 	  
-	  last_x = iter->X();
-	  last_y = iter->Y();
+	  last_x = x;
+	  last_y = y;
 	  if(out_ok)
 	  {
-		  last_out_x = iter->X();
-		  last_out_y = iter->Y();
+		  last_out_x = x;
+		  last_out_y = y;
 	  }
 	  
     }
@@ -726,11 +749,13 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 
 string NFmiPath::ftoa(float theValue) const
 {
-  char msg[30];
-  int nchars = sprintf(msg,"%g",theValue);
-  assert(nchars>0);
-  string str(msg,nchars);
-  return str;
+#ifdef OLDGCC
+  ostrstream str;
+#else
+  ostringstream str;
+#endif
+	str << theValue;
+	return str.str();
 }
 
 // ----------------------------------------------------------------------
