@@ -180,12 +180,21 @@ namespace Imagine
 		  
 		  const double ww = (w<-180 ? w+360 : w>180 ? w-360 : w);
 		  const double ee = (e<-180 ? e+360 : e>180 ? e-360 : e);
-		  
+
 		  bool outside = (ww>theMaxLongitude ||
-								ee<theMinLongitude ||
-								s>theMaxLatitude ||
-								n<theMinLatitude);
-		  
+						  ee<theMinLongitude ||
+						  s>theMaxLatitude ||
+						  n<theMinLatitude);
+
+		  // Correct test for Eurasia
+		  if(ee < ww)
+			{
+			  outside = (ww<theMinLongitude ||
+						 ee>theMaxLongitude ||
+						 s>theMaxLatitude ||
+						 n<theMinLatitude);
+			}
+
 		  if(outside || (area<theMinArea && theMinArea>=0))
 			{
 			  const size_t skipsize = header.n * sizeof(struct POINT);
