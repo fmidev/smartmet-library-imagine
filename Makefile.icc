@@ -1,7 +1,7 @@
 LIB = imagine
 
-INCLUDES = -I $(includedir)/newbase -I /usr/local/include/freetype2
-CFLAGS = -DUNIX $(INCLUDES) -ansi -w2 -Werror -wd981,383,869,444,488,810
+INCLUDES = -I $(includedir) -I $(includedir)/newbase -I /usr/include/freetype2
+CFLAGS = -DUNIX $(INCLUDES) -ansi -w2 -Werror -wd981,383,869,444,488,810,193,1418
 
 CC = /usr/local/intel/compiler70/ia32/bin/icc
 
