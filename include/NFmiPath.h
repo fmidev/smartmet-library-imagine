@@ -237,19 +237,6 @@ namespace Imagine
 	
 	void InvGrid(const NFmiGrid * const theGrid);
 	
-	// Return a new path which is the widened version of this one
-	
-	NFmiPath StrokePath(float theWidth) const;
-	
-	// Return a new path which is a patterned version of this one
-	
-	// NFmiPath StrokePath(const vector<float> & thePattern) const;
-	
-	// Return a new path which is the widened and stroke patterned version
-	// of this one
-	
-	// NFmiPath StrokePath(float theWidth, const vector & thePattern) const;
-	
 	// Stroke onto given image using various Porter-Duff rules
 	
 	void Stroke(NFmiImage & theImage,

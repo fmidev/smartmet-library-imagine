@@ -9,8 +9,9 @@
 //	Implemented
 //
 // ======================================================================
-#ifdef WIN32
-#pragma warning(disable : 4786) // removes VC++ compiler's 'identifier name length over 255 characters' warning
+
+#ifdef OLD_MSC
+#pragma warning(disable : 4786)
 #endif
 
 #include "NFmiPath.h"
@@ -895,7 +896,6 @@ namespace Imagine
 	NFmiPathOperation op1 = kFmiMoveTo;
 	NFmiPathOperation op2 = kFmiMoveTo;
 	NFmiPathOperation op3 = kFmiMoveTo;
-	NFmiPathOperation op4 = kFmiMoveTo;
 	float x1 = kFloatMissing;
 	float x2 = kFloatMissing;
 	float x3 = kFloatMissing;
@@ -946,7 +946,7 @@ namespace Imagine
 		
 		// Update movement history
 		
-		op4=op3; op3=op2; op2=op1;
+		op3=op2; op2=op1;
 		x4=x3; x3=x2; x2=x1;
 		y4=y3; y3=y2; y2=y1;
 		
@@ -1008,146 +1008,6 @@ namespace Imagine
 	  }
 	
   }
-  
-  // ----------------------------------------------------------------------
-  // Return a wide version of the input path. This is used when stroking
-  // a wide line, but may be useful for other purposes too.
-  //
-  // Algorithm:
-  //
-  //	If MoveTo x,y
-  //		Close previous possibly open segment
-  //	If LineTo x,y
-  //		If there is no active open segment
-  //			Begin one from lastX,lastY to x,y
-  //		Else
-  //			Append path from lastX,lastY to x,y
-  //	If GhostLineTo x,y
-  //		Close previous possibly open segment
-  //
-  // Note:
-  //
-  // Given a line from x1,y1 to x2,y2 the widened coordinates are
-  // obtained with
-  //
-  //	DX = (x2-x1)
-  //	DY = (y2-y1)
-  //	DF = w/2/sqrt(DX^2+DY^2)
-  //
-  //	dx = -DF*DY
-  //	dy = DF*DX
-  //
-  // and the coordinates are
-  //
-  //	x1 +- dx	x2 +- dx
-  //	y1 +- dy	y2 +- dy
-  //
-  // ----------------------------------------------------------------------
-  
-  // UNFINISHED UNFINISHED UNFINISHED UNFINISHED UNFINISHED
-  
-  NFmiPath NFmiPath::StrokePath(float theWidth) const
-  {
-	
-	// The path being generated
-	
-	NFmiPath outpath;
-	
-	// The current open subsegment
-	
-	NFmiPath segment;
-	
-	// Status variables
-	
-	float firstX,firstY;
-	float lastX,lastY;
-	
-	firstX = firstY = lastX = lastY = kFloatMissing;
-	
-	
-	// Iterate through the data
-	
-	NFmiPathData::const_iterator iter;
-	
-	for(iter=Elements().begin(); iter!=Elements().end(); ++iter)
-	  {
-		float x = (*iter).X();
-		float y = (*iter).Y();
-		NFmiPathOperation op = (*iter).Oper();
-		
-		switch(op)
-		  {
-		  case kFmiConicTo:
-		  case kFmiCubicTo:
-			// Unfinished
-			break;
-			
-		  case kFmiMoveTo:
-		  case kFmiGhostLineTo:
-			{
-			  // If there is an unfinished segment, we must close it now.
-			  
-			  if(!segment.Elements().empty())
-				segment.CloseLineTo();
-			  
-			  // Append it to the outpath
-			  
-			  outpath.Add(segment);
-			  
-			  // And begin a new segment
-			  
-			  segment.Clear();
-			  break;
-			}
-			
-		  case kFmiLineTo:
-			{
-			  // Calculate widened line offsets
-			  
-			  float DX = x-lastX;
-			  float DY = y-lastY;
-			  float DF = theWidth/2/sqrt(DX*DX+DY*DY);
-			  
-			  float dx = -DF*DY;
-			  float dy = DF*DX;
-			  
-			  // If haven't started yet, start
-			  
-			  if(segment.Elements().empty())
-				{
-				  firstX = x;
-				  firstY = y;
-				  outpath.MoveTo(lastX+dx,lastY+dy);
-				  outpath.LineTo(lastX-dx,lastY-dy);
-				  outpath.LineTo(x-dx,y-dy);
-				  outpath.InsertLineTo(x+dx,y+dy);
-				}
-			  
-			  // Otherwise recalculate the current open path
-			  
-			  else
-				{
-				}
-			  
-			}
-		  }
-		lastX = x;
-		lastY = y;
-		
-	  }
-	
-	// If we were left with a open segment, close it and append it too
-	
-	if(!segment.Elements().empty())
-	  {
-		segment.CloseLineTo();
-		outpath.Add(segment);
-	  }
-	
-	return outpath;
-  }
-  
-  // ======================================================================
   
   NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, double theMargin) const
   {
