@@ -29,6 +29,46 @@ namespace Imagine
 {
   namespace NFmiBezierTools
   {
+
+	namespace
+	{
+	  
+	  // ----------------------------------------------------------------------
+	  /*!
+	   * \brief Utility subroutine for splitting path based on counts
+	   */
+	  // ----------------------------------------------------------------------
+	  
+	  void AppendSplits(PathList & theList,
+						const NFmiPath & thePath,
+						const std::vector<long> & theCounts)
+	  {
+		NFmiPath outpath;
+		const NFmiPathData & path = thePath.Elements();
+		const unsigned long n = path.size();
+		for(unsigned long i=0; i<n; i++)
+		  {
+			outpath.Add(path[i]);
+			
+			if(i>0 && i<n-1 &&
+			   (theCounts[i-1]<theCounts[i] || theCounts[i+1]<theCounts[i]))
+			  {
+				theList.push_back(outpath);
+				outpath.Clear();
+			  }
+			// prepend a leading moveto to all new path segments
+			if(i>0 && outpath.Empty() && path[i].Oper()!=Imagine::kFmiMoveTo)
+			  outpath.MoveTo(path[i].X(),path[i].Y());
+			
+		  }
+		
+		if(!outpath.Empty())
+		  theList.push_back(outpath);
+	  }
+	  
+	} // namespace anonymous
+
+
 	// ----------------------------------------------------------------------
 	/*!
 	 * \brief Test if the given regular segment is closed
@@ -242,10 +282,12 @@ namespace Imagine
 
 	  // we process all individual connected segments separately
 	  // to detect closed subsegments more easily
+
 	  PathList input = SplitPath(thePath);
 
 	  for(PathList::const_iterator it=input.begin(); it!=input.end(); ++it)
 		{
+		  const bool isclosed = IsClosed(*it);
 		  const NFmiPathData & path = it->Elements();
 
 		  // establish the counts for each element
@@ -253,37 +295,58 @@ namespace Imagine
 		  std::vector<long> counts;
 		  counts.reserve(path.size());
 
-		  for(NFmiPathData::const_iterator it = path.begin();
-			  it != path.end();
-			  ++it)
+		  for(NFmiPathData::const_iterator jt = path.begin();
+			  jt != path.end();
+			  ++jt)
 			{
-			  const NFmiPoint point(it->X(),it->Y());
+			  const NFmiPoint point(jt->X(),jt->Y());
 			  const long count = theCounts.Count(point);
 			  counts.push_back(count);
 			}
 
 		  // Split the path at points where count is greater than
-		  // the count at an adjacent point
-		  
-		  NFmiPath outpath;
-		  const unsigned long n = path.size();
-		  for(unsigned long i=0; i<n; i++)
-			{
-			  outpath.Add(path[i]);
+		  // the count at an adjacent point. Note that if the path is closed,
+		  // we usually do NOT want the path to be split at the closure,
+		  // but only at the real split points. To accomplish this, we rotate
+		  // the path so that it starts at the first split point.
 
-			  if(i>0 && i<n-1 &&
-				 (counts[i-1]<counts[i] || counts[i+1]<counts[i]))
+		  if(!isclosed)
+			AppendSplits(out,*it,counts);
+		  else
+			{
+			  const unsigned long n = path.size();
+			  unsigned long i;
+			  for(i=0; i<n; i++)
 				{
-				  out.push_back(outpath);
-				  outpath.Clear();
+				  const int c0 = (i>0 ? counts[i-1] : counts[n-2]);
+				  const int c1 = counts[i];
+				  const int c2 = (i+1<n ? counts[i+1] : counts[1]);
+				  if(c0<c1 || c2<c1)
+					break;
 				}
-			  // prepend a leading moveto to all new path segments
-			  if(i>0 && outpath.Empty() && path[i].Oper()!=Imagine::kFmiMoveTo)
-				outpath.MoveTo(path[i].X(),path[i].Y());
-			  
+			  // Now if 0<i<n we found a split point to rotate to
+			  if(i>0 && i<n)
+				{
+				  NFmiPath tmppath;
+				  std::vector<long> tmpcounts;
+				  unsigned long j;
+				  tmppath.MoveTo(path[i].X(),path[i].Y());
+				  tmpcounts.push_back(counts[i]);
+				  for(j=i+1; j<n; j++)
+					{
+					  tmppath.Add(path[j]);
+					  tmpcounts.push_back(counts[j]);
+					}
+				  for(j=1; j<=i; j++)
+					{
+					  tmppath.Add(path[j]);
+					  tmpcounts.push_back(counts[j]);
+					}
+				  AppendSplits(out,tmppath,tmpcounts);
+				}
+			  else
+				AppendSplits(out,*it,counts);
 			}
-		  if(!outpath.Empty())
-			out.push_back(outpath);
 		}
 
 	  return out;
