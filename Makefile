@@ -10,7 +10,6 @@ EXTRAFLAGS = \
         -Wconversion \
         -Wctor-dtor-privacy \
         -Winline \
-        -Wmissing-prototypes \
         -Wno-multichar \
         -Wno-pmf-conversions \
         -Wold-style-cast \
@@ -19,7 +18,6 @@ EXTRAFLAGS = \
         -Wredundant-decls \
         -Wshadow \
         -Wsign-promo \
-        -Wstrict-prototypes \
         -Wwrite-strings
 
 RELEASEFLAGS = -Wuninitialized
