@@ -27,11 +27,10 @@
 // These are the element types, which can be in a shapefile
 
 #include "NFmiEsriElement.h"
-#include "NFmiEsriBoxZ.h"
+#include "NFmiEsriBox.h"
 #include "NFmiEsriAttributeName.h"
 
 #include <string>
-#include <list>
 #include <vector>
 
 namespace Imagine
@@ -95,7 +94,16 @@ namespace Imagine
   {
 	
   public:
+
+	// Typedefs to aid iterating
 	
+	typedef std::vector<NFmiEsriElement *> elements_type;
+	typedef std::vector<NFmiEsriAttributeName *> attributes_type;
+
+	typedef elements_type::const_iterator const_iterator;
+	typedef elements_type::iterator iterator;
+	
+	const attributes_type & Attributes(void) const { return itsAttributeNames; }
 	// Constructor, destructor
 	
 	NFmiEsriShape(NFmiEsriElementType theType) : itsShapeType(theType) { }
@@ -105,8 +113,8 @@ namespace Imagine
 	// Access to data members
 	
 	NFmiEsriElementType Type(void) const		{ return itsShapeType; }
-	const NFmiEsriBoxZ & Box(void) const		{ return itsBox; }
-	const std::vector<NFmiEsriElement *>& Elements(void) const	{ return itsElements; }
+	const NFmiEsriBox & Box(void) const		{ return itsBox; }
+	const elements_type & Elements(void) const	{ return itsElements; }
 	
 	// Add an element
 	
@@ -133,14 +141,6 @@ namespace Imagine
 	
 	NFmiEsriAttributeName * AttributeName(const std::string & theFieldName) const;
 	
-	// Typedefs to aid iterating
-	
-	typedef std::vector<NFmiEsriElement *>::const_iterator const_iterator;
-	typedef std::vector<NFmiEsriElement *>::iterator iterator;
-	
-	typedef std::list<NFmiEsriAttributeName *> attributes_type;
-	const attributes_type & Attributes(void) const { return itsAttributeNames; }
-	
   private:
 
 	NFmiEsriShape(const NFmiEsriShape & theShape);
@@ -163,9 +163,9 @@ namespace Imagine
 	// Data members
 	
 	NFmiEsriElementType		itsShapeType;	// The shape type
-	NFmiEsriBoxZ			itsBox;		// The bounding box
+	NFmiEsriBox			itsBox;		// The bounding box
 	
-	std::vector<NFmiEsriElement *>	itsElements;	// the actual data
+	elements_type itsElements;		// the actual data
 	
 	// This one is special, we store all the different EsriAttributeNames
 	// into this list, so that when the shape is destructed we can
@@ -173,7 +173,7 @@ namespace Imagine
 	// elements will user pointers to these elements, and do not ever
 	// attempt to destroy them.
 	
-	std::list<NFmiEsriAttributeName *>	itsAttributeNames;
+	attributes_type	itsAttributeNames;
 	
 	// Constants related to headers:
 	
