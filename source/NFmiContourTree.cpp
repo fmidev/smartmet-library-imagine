@@ -914,10 +914,11 @@ namespace Imagine
 		float x0 = (x1+x2+x3+x4)/4;
 		float y0 = (y1+y2+y3+y4)/4;
 		float z0 = (z1+z2+z3+z4)/4;
-		ContourLinear3(x1,y1,z1,x2,y2,z2,x0,y0,z0);
-		ContourLinear3(x2,y2,z2,x3,y3,z3,x0,y0,z0);
-		ContourLinear3(x3,y3,z3,x4,y4,z4,x0,y0,z0);
-		ContourLinear3(x4,y4,z4,x1,y1,z1,x0,y0,z0);
+		VertexInsidedness c0 = Insidedness(z0);
+		ContourLinear3(x1,y1,z1,c1,x2,y2,z2,c2,x0,y0,z0,c0);
+		ContourLinear3(x2,y2,z2,c2,x3,y3,z3,c3,x0,y0,z0,c0);
+		ContourLinear3(x3,y3,z3,c3,x4,y4,z4,c4,x0,y0,z0,c0);
+		ContourLinear3(x4,y4,z4,c4,x1,y1,z1,c1,x0,y0,z0,c0);
 		return;
 	  }
 	
@@ -1316,6 +1317,23 @@ namespace Imagine
 	VertexInsidedness c2 = Insidedness(z2);
 	VertexInsidedness c3 = Insidedness(z3);
 	
+	ContourLinear3(x1,y1,z1,c1,
+				   x2,y2,z2,c2,
+				   x3,y3,z3,c3);
+
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Common entry for ContourLinear3 and ContourLinear4
+   */
+  // ----------------------------------------------------------------------
+
+  void NFmiContourTree::ContourLinear3(float x1, float y1, float z1, VertexInsidedness c1,
+									   float x2, float y2, float z2, VertexInsidedness c2,
+									   float x3, float y3, float z3, VertexInsidedness c3)
+  {
+
 	// If all points are in the same region, no recursion is needed
 	
 	if(c1==c2 && c2==c3)
