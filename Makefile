@@ -6,7 +6,6 @@ LDFLAGS = -s
 ARFLAGS = -r
 INCLUDES = -I $(includedir)/newbase -I/usr/local/include/freetype2
 
-# IRIX:
 # INCLUDES = -I $(includedir)/newbase -I/usr/freeware/include -I/usr/local/include/freetype2
 
 # Common library compiling template
