@@ -42,7 +42,7 @@ namespace Imagine
 	  if(theBits==8) return theValue;
 	  int round = (theValue >> (8-theBits-1)) & 1;
 	  int value = (theValue >> (8-theBits)) + round;
-	  return min(255,value << theBits);
+	  return min(255,value << (8-theBits));
 	}
 
   } // namespace anonymous
