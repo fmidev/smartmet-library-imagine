@@ -318,7 +318,7 @@ namespace Imagine
 	
 	//! Return intensity of given RGBA components.
 	
-	static inline int Intensity(int r, int g, int b, int a=0);
+	static inline int Intensity(int r, int g, int b);
 	
 	//! Return intensity of given color.
 	
@@ -414,7 +414,7 @@ namespace Imagine
 	
 	//! Convert blending rule name to enum.
 	
-	static const NFmiBlendRule BlendValue(const std::string & theName); // 18.12.2001/Marko Added the std::-namespace mark
+	static NFmiBlendRule BlendValue(const std::string & theName); // 18.12.2001/Marko Added the std::-namespace mark
 	
 	//! Convert blending rule to string name.
 	
@@ -555,7 +555,7 @@ namespace Imagine
 									 NFmiColorTools::GetBlue(c));
   }
   
-  inline int NFmiColorTools::Intensity(int r, int g, int b, int a)
+  inline int NFmiColorTools::Intensity(int r, int g, int b)
   {
 	return ((9798*r+19235*g+3735*b)/32768L);
   }

@@ -616,7 +616,7 @@ namespace Imagine
   // Returns kFmiColorRuleMissing if the color name is undefined
   // ----------------------------------------------------------------------
   
-  const NFmiColorTools::NFmiBlendRule NFmiColorTools::BlendValue(const string & theName)
+  NFmiColorTools::NFmiBlendRule NFmiColorTools::BlendValue(const string & theName)
   {
 	BlendNamesInit();
 	
