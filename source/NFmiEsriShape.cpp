@@ -222,7 +222,7 @@ namespace Imagine
   bool NFmiEsriShape::Read(const string & theFilename, bool fDBF)
   {
 	// Default search path for shape files
-	const string shapes_path = NFmiSettings::instance().value("imagine::shapes_path");
+	const string shapes_path = NFmiSettings::Require<string>("imagine::shapes_path");
 	
 	// Derived file names
 	

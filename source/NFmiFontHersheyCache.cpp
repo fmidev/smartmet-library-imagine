@@ -30,7 +30,7 @@ namespace Imagine
   
   const NFmiHersheyData & NFmiFontHersheyCache::Data(const string & theName)
   {
-	const string hershey_path = NFmiSettings::instance().value("imagine::hershey_path",".");
+	const string hershey_path(NFmiSettings::Optional("imagine::hershey_path", string(".")));
 	
 	// First try to find the font from the cache
 	
