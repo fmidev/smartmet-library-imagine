@@ -27,7 +27,7 @@ bool NFmiEsriBuffer::IsCpuLittleEndian(void)
 // Read a big endian integer from a char buffer
 // ----------------------------------------------------------------------
 
-int NFmiEsriBuffer::BigEndianInt(const string & theBuffer, int thePos)
+int NFmiEsriBuffer::BigEndianInt(const std::string & theBuffer, int thePos)
 {
   if(IsCpuLittleEndian())
     {
@@ -46,7 +46,7 @@ int NFmiEsriBuffer::BigEndianInt(const string & theBuffer, int thePos)
 // Read a little endian integer from a char buffer
 // ----------------------------------------------------------------------
 
-int NFmiEsriBuffer::LittleEndianInt(const string & theBuffer, int thePos)
+int NFmiEsriBuffer::LittleEndianInt(const std::string & theBuffer, int thePos)
 {
   if(IsCpuLittleEndian())
     return *reinterpret_cast<const int *>(theBuffer.data()+thePos);
@@ -67,7 +67,7 @@ int NFmiEsriBuffer::LittleEndianInt(const string & theBuffer, int thePos)
 //          Must be some fancy undocumented feature...
 // ----------------------------------------------------------------------
 
-int NFmiEsriBuffer::LittleEndianShort(const string & theBuffer, int thePos)
+int NFmiEsriBuffer::LittleEndianShort(const std::string & theBuffer, int thePos)
 {
   // The casts are necessary to get unsigned
   return (static_cast<unsigned char>(theBuffer[thePos]) +
@@ -80,7 +80,7 @@ int NFmiEsriBuffer::LittleEndianShort(const string & theBuffer, int thePos)
 //          Must be some fancy undocumented feature...
 // ----------------------------------------------------------------------
 
-int NFmiEsriBuffer::BigEndianShort(const string & theBuffer, int thePos)
+int NFmiEsriBuffer::BigEndianShort(const std::string & theBuffer, int thePos)
 {
   // The casts are necessary to get unsigned
   return (static_cast<unsigned char>(theBuffer[thePos])*256 +
@@ -91,7 +91,7 @@ int NFmiEsriBuffer::BigEndianShort(const string & theBuffer, int thePos)
 // Read a little endian double from a char buffer.
 // ----------------------------------------------------------------------
 
-double NFmiEsriBuffer::LittleEndianDouble(const string & theBuffer, int thePos)
+double NFmiEsriBuffer::LittleEndianDouble(const std::string & theBuffer, int thePos)
 {
   if(IsCpuLittleEndian())
     return *reinterpret_cast<const double *>(theBuffer.data()+thePos);

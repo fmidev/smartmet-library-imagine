@@ -16,17 +16,17 @@
  * transformation matrices of the following form:
  * \f[
  * xyz
- * \f
+ * \f]
  * 
  * Since only six values are used in the above 3x3 matrix, a
  * transformation matrix is also expressed as a vector:
- * \f\left[a b c d e f\right]\f.
+ * \f$\left[a b c d e f\right]\f$.
  * 
  * Transformations map coordinates and lengths from a new coordinate
  * system into a previous coordinate system:
  * \f[
  *    xyz
- * \f
+ * \f]
  * For more documentation on affine transformations see for example
  * the SVG specifications at W3C.
  */

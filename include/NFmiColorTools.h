@@ -55,7 +55,7 @@
  *
  * \f$ A_s = (\alpha_{max} - \alpha)/\alpha_{max}\f$
  *
- * \f$ 1-A_s = \alpha/\alpha_{max}
+ * \f$ 1-A_s = \alpha/\alpha_{max}\f$
  *
  * Also, the rules apply in premultiplied RGBA space, where each component
  * value has already been premultiplied by the alpha. We do this explicitly
