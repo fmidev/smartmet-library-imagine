@@ -747,7 +747,7 @@ namespace Imagine
 	  {
 		int i;
 		const int field_length = 7;
-		dbffile << LittleEndianShort(header_size+1*field_size+2)
+		dbffile << LittleEndianShort(header_size+1*field_size+1)
 				<< LittleEndianShort(field_length);
 		for(i=0; i<header_zeros; i++)
 		  dbffile << '\0';
@@ -772,7 +772,7 @@ namespace Imagine
 	  {
 		const int field_count = itsAttributeNames.size();
 
-		int field_length = 0;
+		int field_length = 1;	// 1 for the delete marker
 		for(int f=0; f<field_count; f++)
 		  {
 			const NFmiEsriAttributeName * attribute = itsAttributeNames[f];
@@ -789,7 +789,7 @@ namespace Imagine
 		  }
 
 		int i;
-		dbffile << LittleEndianShort(header_size+field_count*field_size+2)
+		dbffile << LittleEndianShort(header_size+field_count*field_size+1)
 				<< LittleEndianShort(field_length);
 		for(i=0; i<header_zeros; i++)
 		  dbffile << '\0';
