@@ -130,8 +130,8 @@
 //
 // ======================================================================
 
-#ifdef GCC_MAJOR_VERSION
- #if GCC_MAJOR_VERSION < 3
+#ifdef __GNUC__
+ #if __GNUC__ < 3
   #define PERKELEEN_296					
  #endif
 #endif
