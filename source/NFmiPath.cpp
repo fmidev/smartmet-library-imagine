@@ -616,10 +616,14 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
   
   last_x = last_y = kFloatMissing;
   last_out_x = last_out_y = kFloatMissing;
-  
+
   NFmiPathData::const_iterator iter = Elements().begin();
   for( ; iter!=Elements().end(); ++iter)
     {
+#ifdef _MSC_VER // MSVC:n stringi on paska kun se täyttyy ei sitä kasvateta tarpeeksi
+	  if(os.size() > 0.9 * os.capacity())
+		  os.reserve(os.size() * 2);
+#endif
       // Special code for first move
 	  
       if(iter->Oper()==kFmiConicTo || iter->Oper()==kFmiCubicTo)
