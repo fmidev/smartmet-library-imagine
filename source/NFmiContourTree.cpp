@@ -1349,12 +1349,20 @@ namespace Imagine
 	VertexInsidedness c3 = Insidedness(z3);
 	VertexInsidedness c4 = Insidedness(z4);
 
-	// Now we perform regular linear interpolation instead
+	// Make new subcontourer
+	NFmiContourTree subpath(0.5,1.5,true,true,false);
+	subpath.ContourLinear4(x1,y1,c1==kInside ? 1 : 2,
+						   x2,y2,c2==kInside ? 1 : 2,
+						   x3,y3,c3==kInside ? 1 : 2,
+						   x4,y4,c4==kInside ? 1 : 2);
 
-	ContourLinear4(x1,y1,c1 == kInside ? 1 : 2,
-				   x2,y2,c2 == kInside ? 1 : 2,
-				   x3,y3,c3 == kInside ? 1 : 2,
-				   x4,y4,c4 == kInside ? 1 : 2);
+	for(EdgeTreeType::iterator it=subpath.itsEdges.begin();
+		it != subpath.itsEdges.end();
+		++it)
+	  {
+		Add(*it);
+	  }
+
   }
   
   // ----------------------------------------------------------------------
