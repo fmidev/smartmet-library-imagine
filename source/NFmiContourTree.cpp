@@ -77,15 +77,12 @@ namespace Imagine
    * \param thePts The coordinates of the points.
    * \param theValues The values at the points.
    * \param theInterpolation The interpolation method to be used.
-   * \param theMaxDepth The maximum recursion depth to be used for obtaining
-   *	(slightly) smoother contour lines.
    */
   // ----------------------------------------------------------------------
   
   void NFmiContourTree::Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
 								const NFmiDataMatrix<float> & theValues,
-								const NFmiContourInterpolation & theInterpolation,
-								int theMaxDepth)
+								const NFmiContourInterpolation & theInterpolation)
   {
 	assert(thePts.NX()==theValues.NX() && thePts.NY()==theValues.NY());
 	
@@ -95,7 +92,7 @@ namespace Imagine
 		NFmiContourTree::ContourNearest(thePts,theValues);
 		break;
 	  case kFmiContourLinear:
-		NFmiContourTree::ContourLinear(thePts,theValues,theMaxDepth);
+		NFmiContourTree::ContourLinear(thePts,theValues);
 		break;
 	  case kFmiContourDiscrete:
 		NFmiContourTree::ContourDiscrete(thePts,theValues);
@@ -111,14 +108,11 @@ namespace Imagine
    *
    * \param theValues The values at the points.
    * \param theInterpolation The interpolation method to be used.
-   * \param theMaxDepth The maximum recursion depth to be used for obtaining
-   *	(slightly) smoother contour lines.
    */
   // ----------------------------------------------------------------------
   
   void NFmiContourTree::Contour(const NFmiDataMatrix<float> & theValues,
-								const NFmiContourInterpolation & theInterpolation,
-								int theMaxDepth)
+								const NFmiContourInterpolation & theInterpolation)
   {
 	switch(theInterpolation)
 	  {
@@ -126,7 +120,7 @@ namespace Imagine
 		NFmiContourTree::ContourNearest(theValues);
 		break;
 	  case kFmiContourLinear:
-		NFmiContourTree::ContourLinear(theValues,theMaxDepth);
+		NFmiContourTree::ContourLinear(theValues);
 		break;
 	  case kFmiContourDiscrete:
 		NFmiContourTree::ContourDiscrete(theValues);
@@ -145,16 +139,13 @@ namespace Imagine
    * \param theValues The values at the points.
    * \param theHelper A NFmiContourDataHelper for speeding up contouring.
    * \param theInterpolation The interpolation method to be used.
-   * \param theMaxDepth The maximum recursion depth to be used for obtaining
-   *	(slightly) smoother contour lines.
    */
   // ----------------------------------------------------------------------
   
   void NFmiContourTree::Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
 								const NFmiDataMatrix<float> & theValues,
 								const NFmiContourDataHelper & theHelper,
-								const NFmiContourInterpolation & theInterpolation,
-								int theMaxDepth)
+								const NFmiContourInterpolation & theInterpolation)
   {
 	assert(thePts.NX()==theValues.NX() && thePts.NY()==theValues.NY());
 	
@@ -164,7 +155,7 @@ namespace Imagine
 		NFmiContourTree::ContourNearest(thePts,theValues,theHelper);
 		break;
 	  case kFmiContourLinear:
-		NFmiContourTree::ContourLinear(thePts,theValues,theHelper,theMaxDepth);
+		NFmiContourTree::ContourLinear(thePts,theValues,theHelper);
 		break;
 	  case kFmiContourDiscrete:
 		NFmiContourTree::ContourDiscrete(thePts,theValues,theHelper);
@@ -182,15 +173,12 @@ namespace Imagine
    * \param theValues The values at the points.
    * \param theHelper A NFmiContourDataHelper for speeding up contouring.
    * \param theInterpolation The interpolation method to be used.
-   * \param theMaxDepth The maximum recursion depth to be used for obtaining
-   *	(slightly) smoother contour lines.
    */
   // ----------------------------------------------------------------------
   
   void NFmiContourTree::Contour(const NFmiDataMatrix<float> & theValues,
 								const NFmiContourDataHelper & theHelper,
-								const NFmiContourInterpolation & theInterpolation,
-								int theMaxDepth)
+								const NFmiContourInterpolation & theInterpolation)
   {
 	switch(theInterpolation)
 	  {
@@ -198,7 +186,7 @@ namespace Imagine
 		NFmiContourTree::ContourNearest(theValues,theHelper);
 		break;
 	  case kFmiContourLinear:
-		NFmiContourTree::ContourLinear(theValues,theHelper,theMaxDepth);
+		NFmiContourTree::ContourLinear(theValues,theHelper);
 		break;
 	  case kFmiContourDiscrete:
 		NFmiContourTree::ContourDiscrete(theValues,theHelper);
@@ -544,14 +532,11 @@ namespace Imagine
    *
    * \param thePts The coordinates of the points.
    * \param theValues The values at the points.
-   * \param theMaxDepth The maximum recursion depth to be used for obtaining
-   *	(slightly) smoother contour lines.
    */
   // ----------------------------------------------------------------------
   
   void NFmiContourTree::ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
-									  const NFmiDataMatrix<float> & theValues,
-									  int theMaxDepth)
+									  const NFmiDataMatrix<float> & theValues)
   {
 	for(unsigned int j=0; j<thePts.NY()-1; j++)
 	  for(unsigned int i=0; i<thePts.NX()-1; i++)
@@ -559,9 +544,7 @@ namespace Imagine
 		ContourLinear4(thePts[i][j].X(),thePts[i][j].Y(),theValues[i][j],
 					   thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
 					   thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
-					   thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1],
-					   theMaxDepth);
-	
+					   thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1]);
   }
   
   // ----------------------------------------------------------------------
@@ -572,13 +555,10 @@ namespace Imagine
    * interpolation, the contours would be exactly equivalent.
    *
    * \param theValues The values at the points.
-   * \param theMaxDepth The maximum recursion depth to be used for obtaining
-   *	(slightly) smoother contour lines.
    */
   // ----------------------------------------------------------------------
   
-  void NFmiContourTree::ContourLinear(const NFmiDataMatrix<float> & theValues,
-									  int theMaxDepth)
+  void NFmiContourTree::ContourLinear(const NFmiDataMatrix<float> & theValues)
   {
 	for(unsigned int j=0; j<theValues.NY()-1; j++)
 	  for(unsigned int i=0; i<theValues.NX()-1; i++)
@@ -586,9 +566,7 @@ namespace Imagine
 		ContourLinear4(i,j,theValues[i][j],
 					   i+1,j,theValues[i+1][j],
 					   i+1,j+1,theValues[i+1][j+1],
-					   i,j+1,theValues[i][j+1],
-					   theMaxDepth);
-	
+					   i,j+1,theValues[i][j+1]);
   }
   
   // ----------------------------------------------------------------------
@@ -601,15 +579,12 @@ namespace Imagine
    * \param thePts The coordinates of the points.
    * \param theValues The values at the points.
    * \param theHelper A NFmiContourDataHelper for speeding up the contouring.
-   * \param theMaxDepth The maximum recursion depth to be used for obtaining
-   *	(slightly) smoother contour lines.
    */
   // ----------------------------------------------------------------------
   
   void NFmiContourTree::ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 									  const NFmiDataMatrix<float> & theValues,
-									  const NFmiContourDataHelper & theHelper,
-									  int theMaxDepth)
+									  const NFmiContourDataHelper & theHelper)
   {
 	if(theHelper.IsFullyMissing())
 	  return;
@@ -698,8 +673,7 @@ namespace Imagine
 			  ContourLinear4(thePts[i][j].X(),thePts[i][j].Y(),theValues[i][j],
 							 thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
 							 thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
-							 thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1],
-							 theMaxDepth);
+							 thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1]);
 		  }
 	  }
   }
@@ -713,14 +687,11 @@ namespace Imagine
    *
    * \param theValues The values at the points.
    * \param theHelper A NFmiContourDataHelper for speeding up the contouring.
-   * \param theMaxDepth The maximum recursion depth to be used for obtaining
-   *	(slightly) smoother contour lines.
    */
   // ----------------------------------------------------------------------
   
   void NFmiContourTree::ContourLinear(const NFmiDataMatrix<float> & theValues,
-									  const NFmiContourDataHelper & theHelper,
-									  int theMaxDepth)
+									  const NFmiContourDataHelper & theHelper)
   {
 	if(theHelper.IsFullyMissing())
 	  return;
@@ -797,8 +768,7 @@ namespace Imagine
 			  ContourLinear4(i,j,theValues[i][j],
 							 i+1,j,theValues[i+1][j],
 							 i+1,j+1,theValues[i+1][j+1],
-							 i,j+1,theValues[i][j+1],
-							 theMaxDepth);
+							 i,j+1,theValues[i][j+1]);
 		  }
 	  }
   }
@@ -819,8 +789,7 @@ namespace Imagine
   void NFmiContourTree::ContourLinear4(float x1, float y1, float z1,
 									   float x2, float y2, float z2,
 									   float x3, float y3, float z3,
-									   float x4, float y4, float z4,
-									   int maxdepth)
+									   float x4, float y4, float z4)
   {
 	// Abort if any of the coordinates is missing
 	
@@ -841,13 +810,13 @@ namespace Imagine
 	if(!IsValid(z1) || !IsValid(z2) || !IsValid(z3) || !IsValid(z4))
 	  {
 		if(IsValid(z1) && IsValid(z2) && IsValid(z3))
-		  ContourLinear3(x1,y1,z1,x2,y2,z2,x3,y3,z3,maxdepth);
+		  ContourLinear3(x1,y1,z1,x2,y2,z2,x3,y3,z3);
 		else if(IsValid(z1)  && IsValid(z2) && IsValid(z4))
-		  ContourLinear3(x1,y1,z1,x2,y2,z2,x4,y4,z4,maxdepth);
+		  ContourLinear3(x1,y1,z1,x2,y2,z2,x4,y4,z4);
 		else if(IsValid(z1) && IsValid(z3) && IsValid(z4))
-		  ContourLinear3(x1,y1,z1,x3,y3,z3,x4,y4,z4,maxdepth);
+		  ContourLinear3(x1,y1,z1,x3,y3,z3,x4,y4,z4);
 		else if(IsValid(z2) && IsValid(z3) && IsValid(z4))
-		  ContourLinear3(x2,y2,z2,x3,y3,z3,x4,y4,z4,maxdepth);
+		  ContourLinear3(x2,y2,z2,x3,y3,z3,x4,y4,z4);
 		return;
 	  }
 	
@@ -887,13 +856,6 @@ namespace Imagine
 		// Otherwise all points are inside, all we need to know is whether
 		// the rectangle edges are exact or not. An edge is exact, if the
 		// values on the edge are exactly equal to one of the range limits.
-		// Also, it is important to note that we must effectively recurse
-		// to cut the edges of the cell to the proper sizes as implied
-		// by the maxdepth argument. Otherwise the line segments from
-		// adjacent cells may not match. Luckily, we do not need to
-		// recurse the entire cell, recursing the outline alone is sufficient.
-		// The alternative would be to try matching overlapping edges, which
-		// would be an unnecessarily complex operation.
 		
 		Add(NFmiEdge(x1,y1,x2,y2,z1==z2 && (z1==LoLimit() || z1==HiLimit())));
 		Add(NFmiEdge(x2,y2,x3,y3,z2==z3 && (z2==LoLimit() || z2==HiLimit())));
@@ -952,10 +914,10 @@ namespace Imagine
 		float x0 = (x1+x2+x3+x4)/4;
 		float y0 = (y1+y2+y3+y4)/4;
 		float z0 = (z1+z2+z3+z4)/4;
-		ContourLinear3(x1,y1,z1,x2,y2,z2,x0,y0,z0,maxdepth-1);
-		ContourLinear3(x2,y2,z2,x3,y3,z3,x0,y0,z0,maxdepth-1);
-		ContourLinear3(x3,y3,z3,x4,y4,z4,x0,y0,z0,maxdepth-1);
-		ContourLinear3(x4,y4,z4,x1,y1,z1,x0,y0,z0,maxdepth-1);
+		ContourLinear3(x1,y1,z1,x2,y2,z2,x0,y0,z0);
+		ContourLinear3(x2,y2,z2,x3,y3,z3,x0,y0,z0);
+		ContourLinear3(x3,y3,z3,x4,y4,z4,x0,y0,z0);
+		ContourLinear3(x4,y4,z4,x1,y1,z1,x0,y0,z0);
 		return;
 	  }
 	
@@ -985,10 +947,10 @@ namespace Imagine
 		float x0 = (x1+x2+x3+x4)/4;
 		float y0 = (y1+y2+y3+y4)/4;
 		float z0 = (z1+z2+z3+z4)/4;
-		subpath.ContourLinear3(x1,y1,z1,x2,y2,z2,x0,y0,z0,maxdepth-1);
-		subpath.ContourLinear3(x2,y2,z2,x3,y3,z3,x0,y0,z0,maxdepth-1);
-		subpath.ContourLinear3(x3,y3,z3,x4,y4,z4,x0,y0,z0,maxdepth-1);
-		subpath.ContourLinear3(x4,y4,z4,x1,y1,z1,x0,y0,z0,maxdepth-1);
+		subpath.ContourLinear3(x1,y1,z1,x2,y2,z2,x0,y0,z0);
+		subpath.ContourLinear3(x2,y2,z2,x3,y3,z3,x0,y0,z0);
+		subpath.ContourLinear3(x3,y3,z3,x4,y4,z4,x0,y0,z0);
+		subpath.ContourLinear3(x4,y4,z4,x1,y1,z1,x0,y0,z0);
 		
 		// all ghostlines can be added as is
 		{
@@ -1316,8 +1278,7 @@ namespace Imagine
   
   void NFmiContourTree::ContourLinear3(float x1, float y1, float z1,
 									   float x2, float y2, float z2,
-									   float x3, float y3, float z3,
-									   int maxdepth)
+									   float x3, float y3, float z3)
   {
 	// Abort if any of the values is missing. We test z first, since
 	// it is most likely that z is missing, not x or y

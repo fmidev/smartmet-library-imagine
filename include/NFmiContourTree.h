@@ -306,25 +306,21 @@ namespace Imagine
 	
 	void Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
 				 const NFmiDataMatrix<float> & theValues,
-				 const NFmiContourInterpolation & theInterpolation,
-				 int theMaxDepth=0);
+				 const NFmiContourInterpolation & theInterpolation);
 	
 	void Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
 				 const NFmiDataMatrix<float> & theValues,
 				 const NFmiContourDataHelper & theHelper,
-				 const NFmiContourInterpolation & theInterpolation,
-				 int theMaxDepth=0);
+				 const NFmiContourInterpolation & theInterpolation);
 	
 	// These assume the coordinates run from 0 to size-1
 	
 	void Contour(const NFmiDataMatrix<float> & theValues,
-				 const NFmiContourInterpolation & theInterpolation,
-				 int theMaxDepth=0);
+				 const NFmiContourInterpolation & theInterpolation);
 	
 	void Contour(const NFmiDataMatrix<float> & theValues,
 				 const NFmiContourDataHelper & theHelper,
-				 const NFmiContourInterpolation & theInterpolation,
-				 int theMaxDepth=0);
+				 const NFmiContourInterpolation & theInterpolation);
 	
 	NFmiPath Path(void) const;
 	
@@ -397,21 +393,17 @@ namespace Imagine
 	
 	/// Contour a data-matrix using linear interpolation.
 	
-	void ContourLinear(const NFmiDataMatrix<float> & theValues,
-					   int theMaxDepth=0);
+	void ContourLinear(const NFmiDataMatrix<float> & theValues);
 	
 	void ContourLinear(const NFmiDataMatrix<float> & theValues,
-					   const NFmiContourDataHelper & theHelper,
-					   int theMaxDepth=0);
+					   const NFmiContourDataHelper & theHelper);
+	
+	void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
+					   const NFmiDataMatrix<float> & theValues);
 	
 	void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 					   const NFmiDataMatrix<float> & theValues,
-					   int theMaxDepth=0);
-	
-	void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
-					   const NFmiDataMatrix<float> & theValues,
-					   const NFmiContourDataHelper & theHelper,
-					   int theMaxDepth=0);
+					   const NFmiContourDataHelper & theHelper);
 	
 	/// Contour a data-matrix using nearest neighbour interpolation
 	
@@ -445,16 +437,14 @@ namespace Imagine
 	
 	void ContourLinear3(float x1, float y1, float z1,
 						float x2, float y2, float z2,
-						float x3, float y3, float z3,
-						int maxdepth=0);
+						float x3, float y3, float z3);
 	
 	/// Contour a rectangular element using linear interpolation
 	
 	void ContourLinear4(float x1, float y1, float z1,
 						float x2, float y2, float z2,
 						float x3, float y3, float z3,
-						float x4, float y4, float z4,
-						int maxdepth=0);
+						float x4, float y4, float z4);
 	
 	/// Contour a triangular element using nearest neighbour interpolation
 	
