@@ -288,7 +288,7 @@ namespace Imagine
 		  
 		  for(ColorList::iterator it = todo_colors.begin();
 			  it != todo_colors.end();
-			  ++it)
+			  )
 			{
 			  // Error compared to chosen color
 			  
@@ -301,17 +301,32 @@ namespace Imagine
 				{
 				  it->error = err;
 				  it->nearest = chosen_colors.size()-1;
+
+				  // Move the color away from the todo-list if the
+				  // remaining error is small
+
+				  if(err < theMaxError)
+					{
+					  close_colors.push_back(*it);
+					  ColorList::iterator tmp = it;
+					  ++it;
+					  todo_colors.erase(tmp);
+					}
+				  else
+					{
+					  if(it->error > maxerror)
+						{
+						  chosen = it;
+						  maxerror = it->error;
+						}
+					  ++it;
+					}
 				}
-			  
-			  // And check if the color has the biggest error
-			  
-			  if(it->error > maxerror)
-				{
-				  chosen = it;
-				  maxerror = it->error;
-				}
+			  else
+				++it;
+
 			}
-		  
+
 		  // If the next todo-color is popular enough, choose it
 		  // no matter what
 		  
@@ -361,23 +376,6 @@ namespace Imagine
 		  chosen_colors.push_back(color);
 		  todo_colors.erase(chosen);
 
-		  // Move all colors with small error from the todo-list
-
-		  for(ColorList::iterator dt = todo_colors.begin();
-			  dt != todo_colors.end();
-			  )
-			{
-			  if(dt->error < theMaxError)
-				{
-				  close_colors.push_back(*dt);
-				  ColorList::iterator tmp = dt;
-				  ++dt;
-				  todo_colors.erase(tmp);
-				}
-			  else
-				++dt;
-			}
-		  
 		}
 	  
 	  // Now fix the colors in the image. To help us we build a map
