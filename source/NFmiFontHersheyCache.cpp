@@ -17,6 +17,7 @@
 #include "NFmiSettings.h"
 #include "NFmiFontHersheyCache.h"
 #include "NFmiFontGlobals.h"
+#include <stdexcept>
 
 using namespace std;
 // ----------------------------------------------------------------------
@@ -38,19 +39,12 @@ const NFmiHersheyData & NFmiFontHersheyCache::Data(const string & theName)
   
   // Then, try loading the file. First current directory, then default path
   
-  bool ok = true;	// for now everything seems ok
-  
-  string filename = theName + kFmiSuffixHershey;
-  if(!FileExists(filename))
-    {
-      filename = hershey_path + filename;
-      if(!FileExists(filename))
-		ok = false;
-    }
+  string filename = FileComplete(theName + kFmiSuffixHershey, hershey_path);
   
   // If we found a correct filename - see if it is readable
   
-  if(ok) ok = FileReadable(filename);
+  if(!FileReadable(filename))
+	throw std::runtime_error("Hershey font " + filename + " is not readable");
   
   // Now, if we found an invalid font name, we would return
   // a dummy font name. However, constructing a dummy is
