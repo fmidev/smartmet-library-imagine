@@ -47,18 +47,18 @@ void NFmiGeoShape::ProjectXY(const NFmiArea & theArea)
 {
   switch(Type())
     {
-      case kFmiGeoShapeEsri:
-	if(itsEsriShape!=NULL)
-	  itsEsriShape->Project(ProjectXYEsriPoint(&theArea));
-	break;
-      case kFmiGeoShapeShoreLine:
-	cerr << "Error: NFmiGeoShape::Project() kFmiGeoShapeShoreLine not implemented" << endl;
-	exit(1);
-	break;
-      case kFmiGeoShapeGMT:
-	cerr << "Error: NFmiGeoShape::Project() kFmiGeoShapeGMT not implemented" << endl;
-	exit(1);
-	break;
+	case kFmiGeoShapeEsri:
+	  if(itsEsriShape!=NULL)
+		itsEsriShape->Project(ProjectXYEsriPoint(&theArea));
+	  break;
+	case kFmiGeoShapeShoreLine:
+	  cerr << "Error: NFmiGeoShape::Project() kFmiGeoShapeShoreLine not implemented" << endl;
+	  exit(1);
+	  break;
+	case kFmiGeoShapeGMT:
+	  cerr << "Error: NFmiGeoShape::Project() kFmiGeoShapeGMT not implemented" << endl;
+	  exit(1);
+	  break;
       
     }
 }
@@ -73,15 +73,15 @@ NFmiPath NFmiGeoShape::Path(void) const
   NFmiPath out;
   switch(Type())
     {
-      case kFmiGeoShapeEsri:
-	out = PathEsri();
-	break;
-      case kFmiGeoShapeShoreLine:
-	cerr << "Error: NFmiGeoShape::Path() kFmiGeoShapeShoreLine not implemented" << endl;
-	exit(1);
-      case kFmiGeoShapeGMT:
-	cerr << "Error: NFmiGeoShape::Path() kFmiGeoShapeGMT not implemented" << endl;
-	exit(1);
+	case kFmiGeoShapeEsri:
+	  out = PathEsri();
+	  break;
+	case kFmiGeoShapeShoreLine:
+	  cerr << "Error: NFmiGeoShape::Path() kFmiGeoShapeShoreLine not implemented" << endl;
+	  exit(1);
+	case kFmiGeoShapeGMT:
+	  cerr << "Error: NFmiGeoShape::Path() kFmiGeoShapeGMT not implemented" << endl;
+	  exit(1);
     }
   return out;
 }
@@ -94,19 +94,19 @@ void NFmiGeoShape::Add(NFmiFillMap & theMap) const
 {
   switch(Type())
     {
-      case kFmiGeoShapeEsri:
-//	return AddEsri(theMap); // MSVC kääntäjä ei hyväksynyt return void tapausta.
-		  AddEsri(theMap);
-	return ;
-	break;
-      case kFmiGeoShapeShoreLine:
-	cerr << "Error: NFmiGeoShape::Add() kFmiGeoShapeShoreLine not implemented" << endl;
-	exit(1);
-	break;
-      case kFmiGeoShapeGMT:
-	cerr << "Error: NFmiGeoShape::Add() kFmiGeoShapeGMT not implemented" << endl;
-	exit(1);
-	break;
+	case kFmiGeoShapeEsri:
+	  //	return AddEsri(theMap); // MSVC kääntäjä ei hyväksynyt return void tapausta.
+	  AddEsri(theMap);
+	  return ;
+	  break;
+	case kFmiGeoShapeShoreLine:
+	  cerr << "Error: NFmiGeoShape::Add() kFmiGeoShapeShoreLine not implemented" << endl;
+	  exit(1);
+	  break;
+	case kFmiGeoShapeGMT:
+	  cerr << "Error: NFmiGeoShape::Add() kFmiGeoShapeGMT not implemented" << endl;
+	  exit(1);
+	  break;
       
     }
 }
@@ -116,29 +116,29 @@ void NFmiGeoShape::Add(NFmiFillMap & theMap) const
 // ----------------------------------------------------------------------
 
 void NFmiGeoShape::Stroke(NFmiImage & theImage,
-			  NFmiColorTools::Color theColor,
-			  NFmiColorTools::NFmiBlendRule theRule) const
+						  NFmiColorTools::Color theColor,
+						  NFmiColorTools::NFmiBlendRule theRule) const
 {
   // Quick exit if color is not real
-
+  
   if(theColor==NFmiColorTools::NoColor)
     return;
-
+  
   switch(Type())
     {
-      case kFmiGeoShapeEsri:
-//	return StrokeEsri(theImage,theColor,theRule);
-		  StrokeEsri(theImage,theColor,theRule);
-	return ;
-	break;
-      case kFmiGeoShapeShoreLine:
-	cerr << "Error: NFmiGeoShape::Stroke() kFmiGeoShapeShoreLine not implemented" << endl;
-	exit(1);
-	break;
-      case kFmiGeoShapeGMT:
-	cerr << "Error: NFmiGeoShape::Stroke() kFmiGeoShapeGMT not implemented" << endl;
-	exit(1);
-	break;
+	case kFmiGeoShapeEsri:
+	  //	return StrokeEsri(theImage,theColor,theRule);
+	  StrokeEsri(theImage,theColor,theRule);
+	  return ;
+	  break;
+	case kFmiGeoShapeShoreLine:
+	  cerr << "Error: NFmiGeoShape::Stroke() kFmiGeoShapeShoreLine not implemented" << endl;
+	  exit(1);
+	  break;
+	case kFmiGeoShapeGMT:
+	  cerr << "Error: NFmiGeoShape::Stroke() kFmiGeoShapeGMT not implemented" << endl;
+	  exit(1);
+	  break;
       
     }
 }
@@ -148,26 +148,26 @@ void NFmiGeoShape::Stroke(NFmiImage & theImage,
 // ----------------------------------------------------------------------
 
 void NFmiGeoShape::Mark(NFmiImage & theImage,
-			const NFmiImage & theMarker,
-			NFmiColorTools::NFmiBlendRule theRule,
-			NFmiAlignment theAlignment,
-			float theAlpha) const
+						const NFmiImage & theMarker,
+						NFmiColorTools::NFmiBlendRule theRule,
+						NFmiAlignment theAlignment,
+						float theAlpha) const
 {
   switch(Type())
     {
-      case kFmiGeoShapeEsri:
-//	return MarkEsri(theImage,theMarker,theRule,theAlignment,theAlpha);
-		  MarkEsri(theImage,theMarker,theRule,theAlignment,theAlpha);
-	return ;
-	break;
-      case kFmiGeoShapeShoreLine:
-	cerr << "Error: NFmiGeoShape::Mark() kFmiGeoShapeShoreLine not implemented" << endl;
-	exit(1);
-	break;
-      case kFmiGeoShapeGMT:
-	cerr << "Error: NFmiGeoShape::Mark() kFmiGeoShapeGMT not implemented" << endl;
-	exit(1);
-	break;
+	case kFmiGeoShapeEsri:
+	  //	return MarkEsri(theImage,theMarker,theRule,theAlignment,theAlpha);
+	  MarkEsri(theImage,theMarker,theRule,theAlignment,theAlpha);
+	  return ;
+	  break;
+	case kFmiGeoShapeShoreLine:
+	  cerr << "Error: NFmiGeoShape::Mark() kFmiGeoShapeShoreLine not implemented" << endl;
+	  exit(1);
+	  break;
+	case kFmiGeoShapeGMT:
+	  cerr << "Error: NFmiGeoShape::Mark() kFmiGeoShapeGMT not implemented" << endl;
+	  exit(1);
+	  break;
       
     }
 }
@@ -177,23 +177,23 @@ void NFmiGeoShape::Mark(NFmiImage & theImage,
 // ----------------------------------------------------------------------
 
 void NFmiGeoShape::WriteImageMap(std::ostream & os,
-				 const string & theFieldName) const
+								 const string & theFieldName) const
 {
   switch(Type())
     {
-      case kFmiGeoShapeEsri:
-//	return WriteImageMapEsri(os,theFieldName);
-		  WriteImageMapEsri(os,theFieldName);
-	return ;
-	break;
-      case kFmiGeoShapeShoreLine:
-	cerr << "Error: NFmiGeoShape::WriteImageMap() kFmiGeoShapeShoreLine not implemented" << endl;
-	exit(1);
-	break;
-      case kFmiGeoShapeGMT:
-	cerr << "Error: NFmiGeoShape::WriteImageMap() kFmiGeoShapeGMT not implemented" << endl;
-	exit(1);
-	break;
+	case kFmiGeoShapeEsri:
+	  //	return WriteImageMapEsri(os,theFieldName);
+	  WriteImageMapEsri(os,theFieldName);
+	  return ;
+	  break;
+	case kFmiGeoShapeShoreLine:
+	  cerr << "Error: NFmiGeoShape::WriteImageMap() kFmiGeoShapeShoreLine not implemented" << endl;
+	  exit(1);
+	  break;
+	case kFmiGeoShapeGMT:
+	  cerr << "Error: NFmiGeoShape::WriteImageMap() kFmiGeoShapeGMT not implemented" << endl;
+	  exit(1);
+	  break;
       
     }
 }
@@ -216,164 +216,164 @@ void NFmiGeoShape::WriteImageMap(std::ostream & os,
 NFmiPath NFmiGeoShape::PathEsri(void) const
 {
   // The result is a single path containing all the moves
-
+  
   NFmiPath outpath;
-
+  
   // Just a safety, should not happen
-
+  
   if(itsEsriShape==NULL)
     return outpath;
-
+  
   // Iterate through all elements
-
+  
   NFmiEsriShape::const_iterator iter = itsEsriShape->Elements().begin();
-
+  
   for( ; iter != itsEsriShape->Elements().end(); ++iter)
     {
       // There may be deleted elements in the shape, which are to be ignored
-
+	  
       if(*iter==NULL)
-	continue;
-
+		continue;
+	  
       switch((*iter)->Type())
-	{
-	case kFmiEsriNull:
-	  break;
-
-	case kFmiEsriPoint:
-	case kFmiEsriPointM:
-	case kFmiEsriPointZ:
-	  {
-	    outpath.LineTo((*iter)->X(),(*iter)->Y());
-	    break;
-	  }
-
-	case kFmiEsriMultiPoint:
-	case kFmiEsriMultiPointM:
-	case kFmiEsriMultiPointZ:
-	  {
-	    const NFmiEsriMultiPoint * elem = static_cast<const NFmiEsriMultiPoint *>(*iter);
-	    for(int i=0; i<elem->NumPoints(); i++)
-	      outpath.LineTo(elem->Points()[i].X(), elem->Points()[i].Y());
-	    break;
-	  }
-
-	case kFmiEsriPolyLine:
-	case kFmiEsriPolyLineM:
-	case kFmiEsriPolyLineZ:
-	  {
-	    const NFmiEsriPolyLine * elem = static_cast<const NFmiEsriPolyLine *>(*iter);
-	    for(int part=0; part<elem->NumParts(); part++)
-	      {
-		int i1,i2;
-		i1 = elem->Parts()[part];		// start of part
-		if(part+1 == elem->NumParts())
-		  i2 = elem->NumPoints()-1;		// end of part
-		else
-		  i2 = elem->Parts()[part+1]-1;		// end of part
-
-		if(i2>=i1)
+		{
+		case kFmiEsriNull:
+		  break;
+		  
+		case kFmiEsriPoint:
+		case kFmiEsriPointM:
+		case kFmiEsriPointZ:
 		  {
-		    outpath.MoveTo(elem->Points()[i1].X(),
-				   elem->Points()[i1].Y());
-		    for(int i=i1+1; i<=i2; i++)
-		      outpath.LineTo(elem->Points()[i].X(),
-				     elem->Points()[i].Y());
-		  }
-	      }
-	    break;
-	   }
-	case kFmiEsriPolygon:
-	case kFmiEsriPolygonM:
-	case kFmiEsriPolygonZ:
-	  {
-	    const NFmiEsriPolygon * elem = static_cast<const NFmiEsriPolygon *>(*iter);
-	    for(int part=0; part<elem->NumParts(); part++)
-	      {
-		int i1,i2;
-		i1 = elem->Parts()[part];		// start of part
-		if(part+1 == elem->NumParts())
-		  i2 = elem->NumPoints()-1;		// end of part
-		else
-		  i2 = elem->Parts()[part+1]-1;	// end of part
-
-		if(i2>=i1)
-		  {
-		    outpath.MoveTo(elem->Points()[i1].X(),
-				   elem->Points()[i1].Y());
-		    for(int i=i1+1; i<=i2; i++)
-		      outpath.LineTo(elem->Points()[i].X(),
-				     elem->Points()[i].Y());
-		  }
-	      }
-	    break;
-	   }
-	case kFmiEsriMultiPatch:
-	  {
-	    const NFmiEsriMultiPatch * elem = static_cast<const NFmiEsriMultiPatch *>(*iter);
-	    for(int part=0; part<elem->NumParts(); part++)
-	      {
-		int i1,i2;
-		i1 = elem->Parts()[part];		// start of part
-		if(part+1 == elem->NumParts())
-		  i2 = elem->NumPoints()-1;		// end of part
-		else
-		  i2 = elem->Parts()[part+1]-1;	// end of part
-
-		if(i2>=i1)
-		  {
-		    switch(elem->PartTypes()[part])
-		      {
-		      case kFmiEsriTriangleStrip:
-			{
-			  for(int i=i1+2; i<=i2; i+=3)
-			    {
-			      outpath.MoveTo(elem->Points()[i-2].X(),
-					     elem->Points()[i-2].Y());
-			      outpath.LineTo(elem->Points()[i-1].X(),
-					     elem->Points()[i-1].Y());
-			      outpath.LineTo(elem->Points()[i-0].X(),
-					     elem->Points()[i-0].Y());
-			      outpath.LineTo(elem->Points()[i-2].X(),
-					     elem->Points()[i-2].Y());
-			    }
-			  break;
-			}
+			outpath.LineTo((*iter)->X(),(*iter)->Y());
 			break;
-		      case kFmiEsriTriangleFan:
-			{
-			  float x0 = elem->Points()[i1].X();
-			  float y0 = elem->Points()[i1].Y();
-			  for(int i=i1+2; i<=i2; i+=2)
-			    {
-			      outpath.MoveTo(x0,y0);
-			      outpath.LineTo(elem->Points()[i-1].X(),
-					     elem->Points()[i-1].Y());
-			      outpath.LineTo(elem->Points()[i-0].X(),
-					     elem->Points()[i-0].Y());
-			      outpath.LineTo(x0,y0);
-			    }
-			  break;
-			}
-		      case kFmiEsriOuterRing:
-		      case kFmiEsriInnerRing:
-		      case kFmiEsriFirstRing:
-		      case kFmiEsriRing:
-			{
-			  float x0 = elem->Points()[i1].X();
-			  float y0 = elem->Points()[i1].Y();
-			  outpath.MoveTo(x0,y0);
-			  for(int i=i1+1; i<=i2; i++)
-			    outpath.LineTo(elem->Points()[i].X(),
-					   elem->Points()[i].Y());
-			  break;
-			}
-		      }
 		  }
-	      }
-	    break;
-	   }
-	}
+		  
+		case kFmiEsriMultiPoint:
+		case kFmiEsriMultiPointM:
+		case kFmiEsriMultiPointZ:
+		  {
+			const NFmiEsriMultiPoint * elem = static_cast<const NFmiEsriMultiPoint *>(*iter);
+			for(int i=0; i<elem->NumPoints(); i++)
+			  outpath.LineTo(elem->Points()[i].X(), elem->Points()[i].Y());
+			break;
+		  }
+		  
+		case kFmiEsriPolyLine:
+		case kFmiEsriPolyLineM:
+		case kFmiEsriPolyLineZ:
+		  {
+			const NFmiEsriPolyLine * elem = static_cast<const NFmiEsriPolyLine *>(*iter);
+			for(int part=0; part<elem->NumParts(); part++)
+			  {
+				int i1,i2;
+				i1 = elem->Parts()[part];		// start of part
+				if(part+1 == elem->NumParts())
+				  i2 = elem->NumPoints()-1;		// end of part
+				else
+				  i2 = elem->Parts()[part+1]-1;		// end of part
+				
+				if(i2>=i1)
+				  {
+					outpath.MoveTo(elem->Points()[i1].X(),
+								   elem->Points()[i1].Y());
+					for(int i=i1+1; i<=i2; i++)
+					  outpath.LineTo(elem->Points()[i].X(),
+									 elem->Points()[i].Y());
+				  }
+			  }
+			break;
+		  }
+		case kFmiEsriPolygon:
+		case kFmiEsriPolygonM:
+		case kFmiEsriPolygonZ:
+		  {
+			const NFmiEsriPolygon * elem = static_cast<const NFmiEsriPolygon *>(*iter);
+			for(int part=0; part<elem->NumParts(); part++)
+			  {
+				int i1,i2;
+				i1 = elem->Parts()[part];		// start of part
+				if(part+1 == elem->NumParts())
+				  i2 = elem->NumPoints()-1;		// end of part
+				else
+				  i2 = elem->Parts()[part+1]-1;	// end of part
+				
+				if(i2>=i1)
+				  {
+					outpath.MoveTo(elem->Points()[i1].X(),
+								   elem->Points()[i1].Y());
+					for(int i=i1+1; i<=i2; i++)
+					  outpath.LineTo(elem->Points()[i].X(),
+									 elem->Points()[i].Y());
+				  }
+			  }
+			break;
+		  }
+		case kFmiEsriMultiPatch:
+		  {
+			const NFmiEsriMultiPatch * elem = static_cast<const NFmiEsriMultiPatch *>(*iter);
+			for(int part=0; part<elem->NumParts(); part++)
+			  {
+				int i1,i2;
+				i1 = elem->Parts()[part];		// start of part
+				if(part+1 == elem->NumParts())
+				  i2 = elem->NumPoints()-1;		// end of part
+				else
+				  i2 = elem->Parts()[part+1]-1;	// end of part
+				
+				if(i2>=i1)
+				  {
+					switch(elem->PartTypes()[part])
+					  {
+					  case kFmiEsriTriangleStrip:
+						{
+						  for(int i=i1+2; i<=i2; i+=3)
+							{
+							  outpath.MoveTo(elem->Points()[i-2].X(),
+											 elem->Points()[i-2].Y());
+							  outpath.LineTo(elem->Points()[i-1].X(),
+											 elem->Points()[i-1].Y());
+							  outpath.LineTo(elem->Points()[i-0].X(),
+											 elem->Points()[i-0].Y());
+							  outpath.LineTo(elem->Points()[i-2].X(),
+											 elem->Points()[i-2].Y());
+							}
+						  break;
+						}
+						break;
+					  case kFmiEsriTriangleFan:
+						{
+						  float x0 = elem->Points()[i1].X();
+						  float y0 = elem->Points()[i1].Y();
+						  for(int i=i1+2; i<=i2; i+=2)
+							{
+							  outpath.MoveTo(x0,y0);
+							  outpath.LineTo(elem->Points()[i-1].X(),
+											 elem->Points()[i-1].Y());
+							  outpath.LineTo(elem->Points()[i-0].X(),
+											 elem->Points()[i-0].Y());
+							  outpath.LineTo(x0,y0);
+							}
+						  break;
+						}
+					  case kFmiEsriOuterRing:
+					  case kFmiEsriInnerRing:
+					  case kFmiEsriFirstRing:
+					  case kFmiEsriRing:
+						{
+						  float x0 = elem->Points()[i1].X();
+						  float y0 = elem->Points()[i1].Y();
+						  outpath.MoveTo(x0,y0);
+						  for(int i=i1+1; i<=i2; i++)
+							outpath.LineTo(elem->Points()[i].X(),
+										   elem->Points()[i].Y());
+						  break;
+						}
+					  }
+				  }
+			  }
+			break;
+		  }
+		}
     }
   return outpath;
 }
@@ -396,127 +396,127 @@ NFmiPath NFmiGeoShape::PathEsri(void) const
 void NFmiGeoShape::AddEsri(NFmiFillMap & theMap) const
 {
   // Just a safety, should not happen
-
+  
   if(itsEsriShape==NULL)
     return;
-
+  
   // Iterate through all elements
-
+  
   NFmiEsriShape::const_iterator iter = itsEsriShape->Elements().begin();
-
+  
   for( ; iter != itsEsriShape->Elements().end(); ++iter)
     {
       // There may be deleted elements in the shape, which are to be ignored
-
+	  
       if(*iter==NULL)
-	continue;
-
+		continue;
+	  
       switch((*iter)->Type())
-	{
-	case kFmiEsriNull:
-	case kFmiEsriPoint:
-	case kFmiEsriPointM:
-	case kFmiEsriPointZ:
-	case kFmiEsriMultiPoint:
-	case kFmiEsriMultiPointM:
-	case kFmiEsriMultiPointZ:
-	case kFmiEsriPolyLine:
-	case kFmiEsriPolyLineM:
-	case kFmiEsriPolyLineZ:
-	  break;
-
-	case kFmiEsriPolygon:
-	case kFmiEsriPolygonM:
-	case kFmiEsriPolygonZ:
-	  {
-	    const NFmiEsriPolygon * elem = static_cast<const NFmiEsriPolygon *>(*iter);
-	    for(int part=0; part<elem->NumParts(); part++)
-	      {
-		int i1,i2;
-		i1 = elem->Parts()[part];		// start of part
-		if(part+1 == elem->NumParts())
-		  i2 = elem->NumPoints()-1;		// end of part
-		else
-		  i2 = elem->Parts()[part+1]-1;	// end of part
-
-		for(int i=i1+1; i<=i2; i++)
-		  theMap.Add(elem->Points()[i-1].X(),
-			     elem->Points()[i-1].Y(),
-			     elem->Points()[i].X(),
-			     elem->Points()[i].Y());
-	      }
-	    break;
-	   }
-	case kFmiEsriMultiPatch:
-	  {
-	    const NFmiEsriMultiPatch * elem = static_cast<const NFmiEsriMultiPatch *>(*iter);
-	    for(int part=0; part<elem->NumParts(); part++)
-	      {
-		int i1,i2;
-		i1 = elem->Parts()[part];		// start of part
-		if(part+1 == elem->NumParts())
-		  i2 = elem->NumPoints()-1;		// end of part
-		else
-		  i2 = elem->Parts()[part+1]-1;	// end of part
-
-		switch(elem->PartTypes()[part])
-		  {
-		  case kFmiEsriTriangleStrip:
-		    {
-		      for(int i=i1+2; i<=i2; i+=3)
-			{
-			  theMap.Add(elem->Points()[i-2].X(),
-				     elem->Points()[i-2].Y(),
-				     elem->Points()[i-1].X(),
-				     elem->Points()[i-1].Y());
-			  theMap.Add(elem->Points()[i-1].X(),
-				     elem->Points()[i-1].Y(),
-				     elem->Points()[i-0].X(),
-				     elem->Points()[i-0].Y());
-			  theMap.Add(elem->Points()[i-2].X(),
-				     elem->Points()[i-2].Y(),
-				     elem->Points()[i-0].X(),
-				     elem->Points()[i-0].Y());
-			}
-		      break;
-		    }
+		{
+		case kFmiEsriNull:
+		case kFmiEsriPoint:
+		case kFmiEsriPointM:
+		case kFmiEsriPointZ:
+		case kFmiEsriMultiPoint:
+		case kFmiEsriMultiPointM:
+		case kFmiEsriMultiPointZ:
+		case kFmiEsriPolyLine:
+		case kFmiEsriPolyLineM:
+		case kFmiEsriPolyLineZ:
 		  break;
-		  case kFmiEsriTriangleFan:
-		    {
-		      float x0 = elem->Points()[i1].X();
-		      float y0 = elem->Points()[i1].Y();
-		      for(int i=i1+2; i<=i2; i+=2)
-			{
-			  theMap.Add(x0,y0,
-				     elem->Points()[i-1].X(),
-				     elem->Points()[i-1].Y());
-			  theMap.Add(x0,y0,
-				     elem->Points()[i].X(),
-				     elem->Points()[i].Y());
-			  theMap.Add(elem->Points()[i-1].X(),
-				     elem->Points()[i-1].Y(),
-				     elem->Points()[i].X(),
-				     elem->Points()[i].Y());
-			}
-		      break;
-		    }
-		  case kFmiEsriOuterRing:
-		  case kFmiEsriInnerRing:
-		  case kFmiEsriFirstRing:
-		  case kFmiEsriRing:
-		    {
-		      for(int i=i1+1; i<=i2; i++)
-			theMap.Add(elem->Points()[i-1].X(),
-				   elem->Points()[i-1].Y(),
-				   elem->Points()[i].X(),
-				   elem->Points()[i].Y());
-		      break;
-		    }
+		  
+		case kFmiEsriPolygon:
+		case kFmiEsriPolygonM:
+		case kFmiEsriPolygonZ:
+		  {
+			const NFmiEsriPolygon * elem = static_cast<const NFmiEsriPolygon *>(*iter);
+			for(int part=0; part<elem->NumParts(); part++)
+			  {
+				int i1,i2;
+				i1 = elem->Parts()[part];		// start of part
+				if(part+1 == elem->NumParts())
+				  i2 = elem->NumPoints()-1;		// end of part
+				else
+				  i2 = elem->Parts()[part+1]-1;	// end of part
+				
+				for(int i=i1+1; i<=i2; i++)
+				  theMap.Add(elem->Points()[i-1].X(),
+							 elem->Points()[i-1].Y(),
+							 elem->Points()[i].X(),
+							 elem->Points()[i].Y());
+			  }
+			break;
 		  }
-	      }
-	    break;
-	   }
-	}
+		case kFmiEsriMultiPatch:
+		  {
+			const NFmiEsriMultiPatch * elem = static_cast<const NFmiEsriMultiPatch *>(*iter);
+			for(int part=0; part<elem->NumParts(); part++)
+			  {
+				int i1,i2;
+				i1 = elem->Parts()[part];		// start of part
+				if(part+1 == elem->NumParts())
+				  i2 = elem->NumPoints()-1;		// end of part
+				else
+				  i2 = elem->Parts()[part+1]-1;	// end of part
+				
+				switch(elem->PartTypes()[part])
+				  {
+				  case kFmiEsriTriangleStrip:
+					{
+					  for(int i=i1+2; i<=i2; i+=3)
+						{
+						  theMap.Add(elem->Points()[i-2].X(),
+									 elem->Points()[i-2].Y(),
+									 elem->Points()[i-1].X(),
+									 elem->Points()[i-1].Y());
+						  theMap.Add(elem->Points()[i-1].X(),
+									 elem->Points()[i-1].Y(),
+									 elem->Points()[i-0].X(),
+									 elem->Points()[i-0].Y());
+						  theMap.Add(elem->Points()[i-2].X(),
+									 elem->Points()[i-2].Y(),
+									 elem->Points()[i-0].X(),
+									 elem->Points()[i-0].Y());
+						}
+					  break;
+					}
+					break;
+				  case kFmiEsriTriangleFan:
+					{
+					  float x0 = elem->Points()[i1].X();
+					  float y0 = elem->Points()[i1].Y();
+					  for(int i=i1+2; i<=i2; i+=2)
+						{
+						  theMap.Add(x0,y0,
+									 elem->Points()[i-1].X(),
+									 elem->Points()[i-1].Y());
+						  theMap.Add(x0,y0,
+									 elem->Points()[i].X(),
+									 elem->Points()[i].Y());
+						  theMap.Add(elem->Points()[i-1].X(),
+									 elem->Points()[i-1].Y(),
+									 elem->Points()[i].X(),
+									 elem->Points()[i].Y());
+						}
+					  break;
+					}
+				  case kFmiEsriOuterRing:
+				  case kFmiEsriInnerRing:
+				  case kFmiEsriFirstRing:
+				  case kFmiEsriRing:
+					{
+					  for(int i=i1+1; i<=i2; i++)
+						theMap.Add(elem->Points()[i-1].X(),
+								   elem->Points()[i-1].Y(),
+								   elem->Points()[i].X(),
+								   elem->Points()[i].Y());
+					  break;
+					}
+				  }
+			  }
+			break;
+		  }
+		}
     }
 }
 
@@ -533,15 +533,15 @@ void NFmiGeoShape::AddEsri(NFmiFillMap & theMap) const
 // ----------------------------------------------------------------------
 
 void NFmiGeoShape::StrokeEsri(NFmiImage & theImage,
-			      NFmiColorTools::Color theColor,
-			      NFmiColorTools::NFmiBlendRule theRule) const
+							  NFmiColorTools::Color theColor,
+							  NFmiColorTools::NFmiBlendRule theRule) const
 {
   // We don't want to handle polyline stroking in several places,
   // it's easier just to create a path and let path stroker handle
   // all the tricky special cases. Not optimal, but it'll work.
   // Note that filling has no such special cases, hence we did optimize
   // Add(NFmiFillMap) above.
-
+  
   NFmiPath path = Path();
   path.Stroke(theImage,theColor,theRule);
 }
@@ -552,85 +552,85 @@ void NFmiGeoShape::StrokeEsri(NFmiImage & theImage,
 // ----------------------------------------------------------------------
 
 void NFmiGeoShape::MarkEsri(NFmiImage & theImage,
-			    const NFmiImage & theMarker,
-			    NFmiColorTools::NFmiBlendRule theRule,
-			    NFmiAlignment theAlignment,
-			    float theAlpha) const
+							const NFmiImage & theMarker,
+							NFmiColorTools::NFmiBlendRule theRule,
+							NFmiAlignment theAlignment,
+							float theAlpha) const
 {
   // Just a safety, should not happen
-
+  
   if(itsEsriShape==NULL)
     return;
-
+  
   // Iterate through all elements
-
+  
   NFmiEsriShape::const_iterator iter = itsEsriShape->Elements().begin();
-
+  
   for( ; iter != itsEsriShape->Elements().end(); ++iter)
     {
       // There may be deleted elements in the shape, which are to be ignored
-
+	  
       if(*iter==NULL)
-	continue;
-
+		continue;
+	  
       switch((*iter)->Type())
-	{
-	case kFmiEsriNull:
-	case kFmiEsriMultiPatch:
-	  break;
-
-	case kFmiEsriPoint:
-	case kFmiEsriPointM:
-	case kFmiEsriPointZ:
-	  {
-	    int x = static_cast<int>((*iter)->X());
-	    int y = static_cast<int>((*iter)->Y());
-	    theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
-	    break;
-	  }
-
-	case kFmiEsriMultiPoint:
-	case kFmiEsriMultiPointM:
-	case kFmiEsriMultiPointZ:
-	  {
-	    const NFmiEsriMultiPoint * elem = static_cast<const NFmiEsriMultiPoint *>(*iter);
-	    for(int i=0; i<elem->NumPoints(); i++)
-	      {
-		int x = static_cast<int>(elem->Points()[i].X());
-		int y = static_cast<int>(elem->Points()[i].Y());
-		theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
-	      }
-	    break;
-	  }
-
-	case kFmiEsriPolyLine:
-	case kFmiEsriPolyLineM:
-	case kFmiEsriPolyLineZ:
-	  {
-	    const NFmiEsriPolyLine * elem = static_cast<const NFmiEsriPolyLine *>(*iter);
-	    for(int i=0; i<elem->NumPoints(); i++)
-	      {
-		int x = static_cast<int>(elem->Points()[i].X());
-		int y = static_cast<int>(elem->Points()[i].Y());
-		theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
-	      }
-	    break;
-	   }
-	case kFmiEsriPolygon:
-	case kFmiEsriPolygonM:
-	case kFmiEsriPolygonZ:
-	  {
-	    const NFmiEsriPolygon * elem = static_cast<const NFmiEsriPolygon *>(*iter);
-	    // Note that the last one is ignored, it is equal to the first one!
-	    for(int i=0; i<elem->NumPoints()-1; i++)
-	      {
-		int x = static_cast<int>(elem->Points()[i].X());
-		int y = static_cast<int>(elem->Points()[i].Y());
-		theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
-	      }
-	    break;
-	   }
-	}
+		{
+		case kFmiEsriNull:
+		case kFmiEsriMultiPatch:
+		  break;
+		  
+		case kFmiEsriPoint:
+		case kFmiEsriPointM:
+		case kFmiEsriPointZ:
+		  {
+			int x = static_cast<int>((*iter)->X());
+			int y = static_cast<int>((*iter)->Y());
+			theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
+			break;
+		  }
+		  
+		case kFmiEsriMultiPoint:
+		case kFmiEsriMultiPointM:
+		case kFmiEsriMultiPointZ:
+		  {
+			const NFmiEsriMultiPoint * elem = static_cast<const NFmiEsriMultiPoint *>(*iter);
+			for(int i=0; i<elem->NumPoints(); i++)
+			  {
+				int x = static_cast<int>(elem->Points()[i].X());
+				int y = static_cast<int>(elem->Points()[i].Y());
+				theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
+			  }
+			break;
+		  }
+		  
+		case kFmiEsriPolyLine:
+		case kFmiEsriPolyLineM:
+		case kFmiEsriPolyLineZ:
+		  {
+			const NFmiEsriPolyLine * elem = static_cast<const NFmiEsriPolyLine *>(*iter);
+			for(int i=0; i<elem->NumPoints(); i++)
+			  {
+				int x = static_cast<int>(elem->Points()[i].X());
+				int y = static_cast<int>(elem->Points()[i].Y());
+				theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
+			  }
+			break;
+		  }
+		case kFmiEsriPolygon:
+		case kFmiEsriPolygonM:
+		case kFmiEsriPolygonZ:
+		  {
+			const NFmiEsriPolygon * elem = static_cast<const NFmiEsriPolygon *>(*iter);
+			// Note that the last one is ignored, it is equal to the first one!
+			for(int i=0; i<elem->NumPoints()-1; i++)
+			  {
+				int x = static_cast<int>(elem->Points()[i].X());
+				int y = static_cast<int>(elem->Points()[i].Y());
+				theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
+			  }
+			break;
+		  }
+		}
     }
 }
 
@@ -646,114 +646,114 @@ void NFmiGeoShape::MarkEsri(NFmiImage & theImage,
 // ----------------------------------------------------------------------
 
 void NFmiGeoShape::WriteImageMapEsri(std::ostream & os,
-				     const string & theFieldName) const
+									 const string & theFieldName) const
 {
   // Just a safety, should not happen
-
+  
   if(itsEsriShape==NULL)
     return;
-
+  
   // Make sure the attribute exists
-
+  
   const NFmiEsriAttributeName * attribute = itsEsriShape->AttributeName(theFieldName);
-
+  
   // Return if the shape has no such field. Maybe should error instead?
-
+  
   if(attribute==NULL)
     return;
-
+  
   // Iterate through all elements
-
+  
   NFmiEsriShape::const_iterator iter = itsEsriShape->Elements().begin();
-
+  
   for( ; iter != itsEsriShape->Elements().end(); ++iter)
     {
       // There may be deleted elements in the shape, which are to be ignored
-
+	  
       if(*iter==NULL)
-	continue;
-
+		continue;
+	  
       // The attribute value
-
+	  
       string fieldvalue = (*iter)->GetString(theFieldName);
-
+	  
       switch((*iter)->Type())
-	{
-	case kFmiEsriNull:
-	case kFmiEsriPolyLine:
-	case kFmiEsriPolyLineM:
-	case kFmiEsriPolyLineZ:
-	case kFmiEsriMultiPatch:
-	  break;
-
-	case kFmiEsriPoint:
-	case kFmiEsriPointM:
-	case kFmiEsriPointZ:
-	  {
-	    int x = static_cast<int>((*iter)->X());
-	    int y = static_cast<int>((*iter)->Y());
-
-	    os << '"' << fieldvalue << '"' << "=> " << '"'
-	       << x << ',' << y << '"'
-	       << endl;
-	    break;
-	  }
-
-	case kFmiEsriMultiPoint:
-	case kFmiEsriMultiPointM:
-	case kFmiEsriMultiPointZ:
-	  {
-	    const NFmiEsriMultiPoint * elem = static_cast<const NFmiEsriMultiPoint *>(*iter);
-	    for(int i=0; i<elem->NumPoints(); i++)
-	      {
-		int x = static_cast<int>(elem->Points()[i].X());
-		int y = static_cast<int>(elem->Points()[i].Y());
-		os << '"' << fieldvalue << '"' << " => " << '"'
-		   << x << ',' << y << '"'
-		   << endl;
-	      }
-	    break;
-	  }
-
-	case kFmiEsriPolygon:
-	case kFmiEsriPolygonM:
-	case kFmiEsriPolygonZ:
-	  {
-	    const NFmiEsriPolygon * elem = static_cast<const NFmiEsriPolygon *>(*iter);
-	    for(int part=0; part<elem->NumParts(); part++)
-	      {
-		int i1,i2;
-		i1 = elem->Parts()[part];		// start of part
-		if(part+1 == elem->NumParts())
-		  i2 = elem->NumPoints()-1;		// end of part
-		else
-		  i2 = elem->Parts()[part+1]-1;	// end of part
-
-		if(i2>=i1)
+		{
+		case kFmiEsriNull:
+		case kFmiEsriPolyLine:
+		case kFmiEsriPolyLineM:
+		case kFmiEsriPolyLineZ:
+		case kFmiEsriMultiPatch:
+		  break;
+		  
+		case kFmiEsriPoint:
+		case kFmiEsriPointM:
+		case kFmiEsriPointZ:
 		  {
-		    int lastx = 0;
-		    int lasty = 0;
-		    
-		    os << '"' << fieldvalue << '"' << " => " << '"';
-		    for(int i=i1; i<=i2; i++)
-		      {
-			int x = static_cast<int>(elem->Points()[i].X());
-			int y = static_cast<int>(elem->Points()[i].Y());
-
-			// Do not output point if no move in pixel resolution
+			int x = static_cast<int>((*iter)->X());
+			int y = static_cast<int>((*iter)->Y());
 			
-			if(i!=i1 && x==lastx && y==lasty)
-			  continue;
-			lastx = x;
-			lasty = y;
-			os << " " << x << "," << y;
-		      }
-		    os << '"' << endl;
+			os << '"' << fieldvalue << '"' << "=> " << '"'
+			   << x << ',' << y << '"'
+			   << endl;
+			break;
 		  }
-	      }
-	    break;
-	  }
-	}
+		  
+		case kFmiEsriMultiPoint:
+		case kFmiEsriMultiPointM:
+		case kFmiEsriMultiPointZ:
+		  {
+			const NFmiEsriMultiPoint * elem = static_cast<const NFmiEsriMultiPoint *>(*iter);
+			for(int i=0; i<elem->NumPoints(); i++)
+			  {
+				int x = static_cast<int>(elem->Points()[i].X());
+				int y = static_cast<int>(elem->Points()[i].Y());
+				os << '"' << fieldvalue << '"' << " => " << '"'
+				   << x << ',' << y << '"'
+				   << endl;
+			  }
+			break;
+		  }
+		  
+		case kFmiEsriPolygon:
+		case kFmiEsriPolygonM:
+		case kFmiEsriPolygonZ:
+		  {
+			const NFmiEsriPolygon * elem = static_cast<const NFmiEsriPolygon *>(*iter);
+			for(int part=0; part<elem->NumParts(); part++)
+			  {
+				int i1,i2;
+				i1 = elem->Parts()[part];		// start of part
+				if(part+1 == elem->NumParts())
+				  i2 = elem->NumPoints()-1;		// end of part
+				else
+				  i2 = elem->Parts()[part+1]-1;	// end of part
+				
+				if(i2>=i1)
+				  {
+					int lastx = 0;
+					int lasty = 0;
+					
+					os << '"' << fieldvalue << '"' << " => " << '"';
+					for(int i=i1; i<=i2; i++)
+					  {
+						int x = static_cast<int>(elem->Points()[i].X());
+						int y = static_cast<int>(elem->Points()[i].Y());
+						
+						// Do not output point if no move in pixel resolution
+						
+						if(i!=i1 && x==lastx && y==lasty)
+						  continue;
+						lastx = x;
+						lasty = y;
+						os << " " << x << "," << y;
+					  }
+					os << '"' << endl;
+				  }
+			  }
+			break;
+		  }
+		}
     }
 }
 

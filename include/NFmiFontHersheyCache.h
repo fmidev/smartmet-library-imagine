@@ -32,15 +32,15 @@ class NFmiFontHersheyCache
 public:
   NFmiFontHersheyCache(void) {}
   ~NFmiFontHersheyCache(void) {}
-
+  
   const NFmiHersheyData & Data(const std::string & theName);
-
+  
 private:
-
+  
   typedef std::map<std::string,NFmiHersheyData> HersheyCache;
-
+  
   HersheyCache itsData;
-
+  
 };
 
 #endif // _NFMIFONTHERSHEYCACHE_H

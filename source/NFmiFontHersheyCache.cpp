@@ -25,43 +25,43 @@ using namespace std;
 
 const NFmiHersheyData & NFmiFontHersheyCache::Data(const string & theName)
 {
-
+  
   // First try to find the font from the cache
-
+  
   HersheyCache::const_iterator find_iter;
-
+  
   find_iter = itsData.find(theName);
-
+  
   if(find_iter != itsData.end())
     return find_iter->second;
-
+  
   // Then, try loading the file. First current directory, then default path
-
+  
   bool ok = true;	// for now everything seems ok
-
+  
   string filename = theName + kFmiSuffixHershey;
   if(!FileExists(filename))
     {
       filename = kFmiPathHershey + filename;
       if(!FileExists(filename))
-	ok = false;
+		ok = false;
     }
-
+  
   // If we found a correct filename - see if it is readable
-
+  
   if(ok) ok = FileReadable(filename);
-
+  
   // Now, if we found an invalid font name, we would return
   // a dummy font name. However, constructing a dummy is
   // exactly equal to constructing the actual font, hence
   // there is no distinction here. Simply the fact that
   // opening the file fails is enough to make the font
   // created an empty one.
-
+  
   // insert returns pair<iterator,flag>, from which we return iterator->second
-
+  
   return itsData.insert(std::make_pair(theName,NFmiHersheyData(filename))).first->second;
-
+  
 }
 
 // ======================================================================

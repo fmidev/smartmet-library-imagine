@@ -28,24 +28,24 @@
 // ----------------------------------------------------------------------
 
 void NFmiDrawable::Fill(NFmiImage & theImage,
-			NFmiColorTools::Color theColor,
-			NFmiColorTools::NFmiBlendRule theRule) const
+						NFmiColorTools::Color theColor,
+						NFmiColorTools::NFmiBlendRule theRule) const
 {
   // Quick exit if color is not real
-
+  
   if(theColor==NFmiColorTools::NoColor)
     return;
-
+  
   // Create fillmap, clip it based on image height
-
+  
   NFmiFillMap fmap(0.0,theImage.Height());
-
+  
   // Add the drawable to the fillmap
-
+  
   Add(fmap);
-
+  
   // Render the fill map
-
+  
   fmap.Fill(theImage,theColor,theRule);
 }
 
@@ -59,20 +59,20 @@ void NFmiDrawable::Fill(NFmiImage & theImage,
 // ----------------------------------------------------------------------
 
 void NFmiDrawable::Fill(NFmiImage & theImage,
-			const NFmiImage & thePattern,
-			NFmiColorTools::NFmiBlendRule theRule,
-			float theAlphaFactor) const
+						const NFmiImage & thePattern,
+						NFmiColorTools::NFmiBlendRule theRule,
+						float theAlphaFactor) const
 {
   // Create fillmap, clip it based on image height
-
+  
   NFmiFillMap fmap(0.0,theImage.Height());
-
+  
   // Add the drawable to the fillmap
-
+  
   Add(fmap);
-
+  
   // Render the fill map
-
+  
   fmap.Fill(theImage,thePattern,theRule,theAlphaFactor);
 }
 
@@ -87,8 +87,8 @@ void NFmiDrawable::Fill(NFmiImage & theImage,
 // ----------------------------------------------------------------------
 
 void NFmiDrawable::Stroke(NFmiImage & theImage,
-			  NFmiColorTools::Color theColor,
-			  NFmiColorTools::NFmiBlendRule theRule) const
+						  NFmiColorTools::Color theColor,
+						  NFmiColorTools::NFmiBlendRule theRule) const
 {
 }
 

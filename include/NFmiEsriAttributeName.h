@@ -19,28 +19,28 @@
 #include <string>
 
 enum NFmiEsriAttributeType { kFmiEsriString,
-			     kFmiEsriInteger,
-			     kFmiEsriDouble };
+							 kFmiEsriInteger,
+							 kFmiEsriDouble };
 
 class NFmiEsriAttributeName
 {
 public:
-
+  
   // Constructor, destructor
-
+  
   ~NFmiEsriAttributeName(void) {}
-
+  
   NFmiEsriAttributeName(const std::string & theName,NFmiEsriAttributeType theType,int theFieldLength=-1,int theDecimalCount=-1,int theLength=-1)
     : itsName(theName)
     , itsType(theType)
     , itsFieldLength(static_cast<short>(theFieldLength))
     , itsDecimalCount(static_cast<short>(theDecimalCount))
     , itsLength(theLength)
-    {}
-
+  {}
+  
   // Special helper constructors based on the associated data type
   // The idea is to avoid switch statements when calling the constructor
-
+  
   NFmiEsriAttributeName(const std::string & theName,const std::string & theValue,int theLength=-1)
     : itsName(theName)
     , itsType(kFmiEsriString)
@@ -48,7 +48,7 @@ public:
     , itsDecimalCount(-1)
     , itsLength(theLength)
   {}
-
+  
   NFmiEsriAttributeName(const std::string & theName, int theValue,int theFieldLength=-1,int theDecimalCount=-1)
     : itsName(theName)
     , itsType(kFmiEsriInteger)
@@ -56,7 +56,7 @@ public:
     , itsDecimalCount(static_cast<short>(theDecimalCount))
     , itsLength(-1)
   {}
-
+  
   NFmiEsriAttributeName(const std::string & theName, double theValue,int theFieldLength=-1,int theDecimalCount=-1)
     : itsName(theName)
     , itsType(kFmiEsriDouble)
@@ -64,23 +64,23 @@ public:
     , itsDecimalCount(static_cast<short>(theDecimalCount))
     , itsLength(-1)
   {}
-
+  
   // Data-access
-
+  
   const std::string & Name(void) const		{ return itsName; }
   NFmiEsriAttributeType Type(void) const	{ return itsType; }
-
+  
 private:
-
+  
   NFmiEsriAttributeName(void);
-
+  
   std::string		itsName;
   NFmiEsriAttributeType	itsType;
-
+  
   short			itsFieldLength;
   short			itsDecimalCount;
   int			itsLength;
-
+  
 };
 
 #endif // _NFMIESRIATTRIBUTENAME_H

@@ -113,24 +113,24 @@ double NFmiEsriBuffer::LittleEndianDouble(const string & theBuffer, int thePos)
 string NFmiEsriBuffer::BigEndianInt(int theValue)
 {
   int value = theValue;
-
+  
   // Initialize string by reinterpreting 4 value bytes as characters
-
+  
   unsigned char *svalue = reinterpret_cast<unsigned char *>(&value);
-
+  
   // string tmp(svalue,4);  // Perkele kun ei toimi g++:ssa
-
+  
   string tmp(4,'\0');
   for(int i=0; i<4; i++)
     tmp[i] = svalue[i];
-
+  
   if(IsCpuLittleEndian())
     {
       swap(tmp[0],tmp[3]);
       swap(tmp[1],tmp[2]);
     }
   return tmp;
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -140,24 +140,24 @@ string NFmiEsriBuffer::BigEndianInt(int theValue)
 string NFmiEsriBuffer::LittleEndianInt(int theValue)
 {
   int value = theValue;
-
+  
   // Initialize string by reinterpreting 4 value bytes as characters
-
+  
   unsigned char *svalue = reinterpret_cast<unsigned char *>(&value);
-
+  
   // string tmp(svalue,4);  // Perkele kun ei toimi g++:ssa
-
+  
   string tmp(4,'\0');
   for(int i=0; i<4; i++)
     tmp[i] = svalue[i];
-
+  
   if(!IsCpuLittleEndian())
     {
       swap(tmp[0],tmp[3]);
       swap(tmp[1],tmp[2]);
     }
   return tmp;
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -179,17 +179,17 @@ string NFmiEsriBuffer::LittleEndianShort(int theValue)
 string NFmiEsriBuffer::LittleEndianDouble(double theValue)
 {
   double value = theValue;
-
+  
   // Initialize string by reinterpreting 8 value bytes as characters
-
+  
   unsigned char *svalue = reinterpret_cast<unsigned char *>(&value);
-
+  
   // string tmp(svalue,8);  // Perkele kun ei toimi g++:ssa
-
+  
   string tmp(8,'\0');
   for(int i=0; i<8; i++)
     tmp[i] = svalue[i];
-
+  
   if(!IsCpuLittleEndian())
     {
       swap(tmp[0],tmp[7]);
@@ -214,7 +214,7 @@ bool NFmiEsriBuffer::EsriRead(std::istream & is, string & theString, unsigned in
   // Note: Using a sizeable read-buffer for read is *significantly*
   // faster than reading 1 character at a time, the difference is
   // counted in seconds for largish files.
-
+  
   // Note: It is essential that the string is resized to zero, since
   //       in loops the same string may be used to read records again
   //       and again. Without the resize the string would keep on
@@ -224,7 +224,7 @@ bool NFmiEsriBuffer::EsriRead(std::istream & is, string & theString, unsigned in
   theString.reserve(theLength);
   
   const int bufsize = 1024;
-
+  
   char buffer[bufsize];
   int remainingsize = theLength;
   while(remainingsize>0)
@@ -234,8 +234,8 @@ bool NFmiEsriBuffer::EsriRead(std::istream & is, string & theString, unsigned in
       theString.append(buffer,readsize);
       remainingsize -= readsize;
     }
-
+  
   return(!is.fail() && (theString.size() == theLength));
-
+  
 }
 // ======================================================================

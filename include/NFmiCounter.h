@@ -51,26 +51,26 @@
 template<class T>
 class NFmiCounter
 {
-
+  
 protected:
-
+  
   //! The counted data is held in this type containers.
   typedef std::map<T,unsigned long> NFmiCounterData;
-
+  
   //! The data counted so far, along with the counts.
   NFmiCounterData itsData;
-
+  
 public:
-
+  
   //! Constructor
   NFmiCounter(void) {}
-
+  
   //! Destructor
   ~NFmiCounter(void) {}
-
+  
   //! Reset the counter to contain no data
   void Clear(void) { itsData.clear(); }
-
+  
   //! Add a new object to the counter.
   /*!
    * This adds the object to a map with the object as a key.
@@ -78,7 +78,7 @@ public:
    * The count of the object after insertion is returned, hence it
    * is always atleast one.
    */
-
+  
   long Add(T theElement)
   {
     pair<NFmiCounterData::iterator, bool> result = itsData.insert(make_pair(theElement,0));
@@ -87,14 +87,14 @@ public:
     else
       return ++(result.first->second);
   }
-
+  
   //! Query the count of an object.
   /*!
    * The count of the object is the number of times Add has been used
    * to add the object into the counter. The count is zero if the
    * object has not been added into the counter.
    */
-
+  
   long Count(T theElement) const
   {
     NFmiCounterData::iterator iter = itsData.find(theElement);

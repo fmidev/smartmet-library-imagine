@@ -36,42 +36,42 @@ class NFmiFillMap;	// Derived class, ...
 class NFmiDrawable
 {
 public:
-
+  
   //! Constructor
   /*!
    * In the future this might take as input a CSS style sheet,
    * and the class would have a data member storing it.
    */
-
+  
   NFmiDrawable(void) {}
-
+  
   //! Add the drawable into a fill map.
-
+  
   virtual void Add(NFmiFillMap & theMap) const {}
-
+  
   //! Fill onto given image using various colour blending rules.
-
+  
   virtual void Fill(NFmiImage & theImage,
-		    NFmiColorTools::Color theColor,
-		    NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
-
+					NFmiColorTools::Color theColor,
+					NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
+  
   //! Fill onto given image with given pattern.
-
+  
   virtual void Fill(NFmiImage & theImage,
-		    const NFmiImage & thePattern,
-		    NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy,
-		    float theAlphaFactor=1.0) const;
-
+					const NFmiImage & thePattern,
+					NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy,
+					float theAlphaFactor=1.0) const;
+  
   //! Stroke onto given image using various colour blending rules.
-
+  
   virtual void Stroke(NFmiImage & theImage,
-		    NFmiColorTools::Color theColor,
-		    NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
-
+					  NFmiColorTools::Color theColor,
+					  NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
+  
 private:
-
+  
   // In the future here might be a style sheet data element.
-
+  
 };
 
 #endif // _NFMIDRAWABLE_H

@@ -40,60 +40,60 @@ using namespace std;
 // Function1(MyClass1());
 template <class T>
 static void StrokeBasic2(T theBlender, float theX1, float theY1,
-			 float theX2, float theY2,
-			 NFmiColorTools::Color theColor,
-			 NFmiImage &theImage
-			 )
+						 float theX2, float theY2,
+						 NFmiColorTools::Color theColor,
+						 NFmiImage &theImage
+						 )
 {
   // Convert coodinates to device space
-
+  
   int x1 = static_cast<int>(floor(theX1+0.5));
   int y1 = static_cast<int>(floor(theY1+0.5));
   int x2 = static_cast<int>(floor(theX2+0.5));
   int y2 = static_cast<int>(floor(theY2+0.5));
-
+  
   // cout << "Rendering " << x1 << "," << y1 << " --> " << x2 << "," << y2
-       // << " (" << theX1 << "," << theY1 << " --> " << theX2 << "," << theY2 << ")" << endl;
-
+  // << " (" << theX1 << "," << theY1 << " --> " << theX2 << "," << theY2 << ")" << endl;
+  
   // Reduce the number of cases by ordering endpoints
   // so that y2-y1 = deltaY >= 0
-
+  
   if(y1>y2)
     {
       swap(x1,x2);
       swap(y1,y2);
     }
-
+  
   int dx = x2-x1;
   int dy = y2-y1;
   int dir = dx>0 ? 1 : -1;
   dx = abs(dx);
-
+  
   // Assign the first point
-
-//  (*this)(x1,y1) = T::Blend(theColor,(*this)(x1,y1));
+  
+  //  (*this)(x1,y1) = T::Blend(theColor,(*this)(x1,y1));
   theImage(x1,y1) = theBlender.Blend(theColor, theImage(x1,y1)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
-
+  
   if(dx>dy)
     {
       int adj1 = 2*dy;
       int adj2 = adj1 - 2*dx;
       int error = adj1 - dx;
-
+	  
       while(dx--)
-	{
-	  if(error>=0)
-	    {
-	      y1++;
-	      error += adj2;
-	    }
-	  else
-	    error += adj1;
-	  x1 += dir;
-
-//	  (*this)(x1,y1) = T::Blend(theColor,(*this)(x1,y1));
-	  theImage(x1,y1) = theBlender.Blend(theColor, theImage(x1,y1)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
-	}
+		{
+		  if(error>=0)
+			{
+			  y1++;
+			  error += adj2;
+			}
+		  else
+			error += adj1;
+		  x1 += dir;
+		  
+		  //	  (*this)(x1,y1) = T::Blend(theColor,(*this)(x1,y1));
+		  theImage(x1,y1) = theBlender.Blend(theColor, theImage(x1,y1)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
+		}
     }
   else
     {
@@ -101,19 +101,19 @@ static void StrokeBasic2(T theBlender, float theX1, float theY1,
       int adj2 = adj1 - 2*dy;
       int error = adj1 - dy;
       while(dy--)
-	{
-	  if(error>=0)
-	    {
-	      x1 += dir;
-	      error += adj2;
-	    }
-	  else
-	    error += adj1;
-	  y1++;
-
-//	  (*this)(x1,y1) = T::Blend(theColor,(*this)(x1,y1));
-	  theImage(x1,y1) = theBlender.Blend(theColor, theImage(x1,y1));
-	}
+		{
+		  if(error>=0)
+			{
+			  x1 += dir;
+			  error += adj2;
+			}
+		  else
+			error += adj1;
+		  y1++;
+		  
+		  //	  (*this)(x1,y1) = T::Blend(theColor,(*this)(x1,y1));
+		  theImage(x1,y1) = theBlender.Blend(theColor, theImage(x1,y1));
+		}
     }
 }
 
@@ -134,59 +134,59 @@ static void StrokeBasic2(T theBlender, float theX1, float theY1,
 // Function1(MyClass1());
 template <class T>
 static void StrokeBasic2(T theBlender, float theX1, float theY1,
-			 float theX2, float theY2,
-			 int r, int g, int b, int a,
-			 NFmiImage &theImage
-			 )
+						 float theX2, float theY2,
+						 int r, int g, int b, int a,
+						 NFmiImage &theImage
+						 )
 {
   // Convert coodinates to device space
-
+  
   int x1 = static_cast<int>(floor(theX1+0.5));
   int y1 = static_cast<int>(floor(theY1+0.5));
   int x2 = static_cast<int>(floor(theX2+0.5));
   int y2 = static_cast<int>(floor(theY2+0.5));
-
+  
   // cout << "Rendering " << x1 << "," << y1 << " --> " << x2 << "," << y2
-       // << " (" << theX1 << "," << theY1 << " --> " << theX2 << "," << theY2 << ")" << endl;
-
+  // << " (" << theX1 << "," << theY1 << " --> " << theX2 << "," << theY2 << ")" << endl;
+  
   // Reduce the number of cases by ordering endpoints
   // so that y2-y1 = deltaY >= 0
-
+  
   if(y1>y2)
     {
       swap(x1,x2);
       swap(y1,y2);
     }
-
+  
   int dx = x2-x1;
   int dy = y2-y1;
   int dir = dx>0 ? 1 : -1;
   dx = abs(dx);
-
+  
   // Assign the first point
-
-//  (*this)(x1,y1) = T::Blend(r,g,b,a,(*this)(x1,y1));
+  
+  //  (*this)(x1,y1) = T::Blend(r,g,b,a,(*this)(x1,y1));
   theImage(x1,y1) = theBlender.Blend(r,g,b,a, theImage(x1,y1)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
-
+  
   if(dx>dy)
     {
       int adj1 = 2*dy;
       int adj2 = adj1 - 2*dx;
       int error = adj1 - dx;
-
+	  
       while(dx--)
-	{
-	  if(error>=0)
-	    {
-	      y1++;
-	      error += adj2;
-	    }
-	  else
-	    error += adj1;
-	  x1 += dir;
-//	  (*this)(x1,y1) = T::Blend(r,g,b,a,(*this)(x1,y1));
-	  theImage(x1,y1) = theBlender.Blend(r,g,b,a, theImage(x1,y1)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
-	}
+		{
+		  if(error>=0)
+			{
+			  y1++;
+			  error += adj2;
+			}
+		  else
+			error += adj1;
+		  x1 += dir;
+		  //	  (*this)(x1,y1) = T::Blend(r,g,b,a,(*this)(x1,y1));
+		  theImage(x1,y1) = theBlender.Blend(r,g,b,a, theImage(x1,y1)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
+		}
     }
   else
     {
@@ -194,18 +194,18 @@ static void StrokeBasic2(T theBlender, float theX1, float theY1,
       int adj2 = adj1 - 2*dy;
       int error = adj1 - dy;
       while(dy--)
-	{
-	  if(error>=0)
-	    {
-	      x1 += dir;
-	      error += adj2;
-	    }
-	  else
-	    error += adj1;
-	  y1++;
-//	  (*this)(x1,y1) = T::Blend(r,g,b,a,(*this)(x1,y1));
-	  theImage(x1,y1) = theBlender.Blend(r,g,b,a, theImage(x1,y1)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
-	}
+		{
+		  if(error>=0)
+			{
+			  x1 += dir;
+			  error += adj2;
+			}
+		  else
+			error += adj1;
+		  y1++;
+		  //	  (*this)(x1,y1) = T::Blend(r,g,b,a,(*this)(x1,y1));
+		  theImage(x1,y1) = theBlender.Blend(r,g,b,a, theImage(x1,y1)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
+		}
     }
 }
 
@@ -226,37 +226,37 @@ static void StrokeBasic2(T theBlender, float theX1, float theY1,
 // Function1(MyClass1());
 template <class T>
 static void Composite2(T theBlender, const NFmiImage & thePattern,
-		       int theX, int theY, float theAlpha, NFmiImage &theThisImage)
+					   int theX, int theY, float theAlpha, NFmiImage &theThisImage)
 {
   // Establish the pixels of the pattern inside the target image
-
+  
   int i1 = FmiMax(0,-theX);
   int j1 = FmiMax(0,-theY);
-
+  
   int i2 = FmiMin(thePattern.Width(), theThisImage.Width()-theX)-1;
   int j2 = FmiMin(thePattern.Height(), theThisImage.Height()-theY)-1;
-
+  
   if(theAlpha==1.0)
     {
       for(int j=j1; j<=j2; j++)
-	for(int i=i1; i<=i2; i++)
-//	  (*this)(theX+i,theY+j) = T::Blend(thePattern(i,j),(*this)(theX+i,theY+j));
-	  theThisImage(theX+i,theY+j) = theBlender.Blend(thePattern(i,j), theThisImage(theX+i,theY+j)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
+		for(int i=i1; i<=i2; i++)
+		  //	  (*this)(theX+i,theY+j) = T::Blend(thePattern(i,j),(*this)(theX+i,theY+j));
+		  theThisImage(theX+i,theY+j) = theBlender.Blend(thePattern(i,j), theThisImage(theX+i,theY+j)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
     }
   else
     {
       NFmiColorTools::Color c;
       int a,aa;
       for(int j=j1; j<=j2; j++)
-	for(int i=i1; i<=i2; i++)
-	  {
-	    c = thePattern(i,j);
-	    a = NFmiColorTools::GetAlpha(c);
-	    aa = static_cast<int>(a + (1.0-theAlpha)*(NFmiColorTools::MaxAlpha-a));
-	    c = NFmiColorTools::ReplaceAlpha(c,aa);
-//	    (*this)(theX+i,theY+j) = T::Blend(c,(*this)(theX+i,theY+j));
-	    theThisImage(theX+i,theY+j) = theBlender.Blend(c, theThisImage(theX+i,theY+j)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
-	  }
+		for(int i=i1; i<=i2; i++)
+		  {
+			c = thePattern(i,j);
+			a = NFmiColorTools::GetAlpha(c);
+			aa = static_cast<int>(a + (1.0-theAlpha)*(NFmiColorTools::MaxAlpha-a));
+			c = NFmiColorTools::ReplaceAlpha(c,aa);
+			//	    (*this)(theX+i,theY+j) = T::Blend(c,(*this)(theX+i,theY+j));
+			theThisImage(theX+i,theY+j) = theBlender.Blend(c, theThisImage(theX+i,theY+j)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
+		  }
     }
 }
 
@@ -350,11 +350,11 @@ void NFmiImage::Allocate(int theWidth, int theHeight)
   if(itsPixels==NULL)
     {
       cerr << "Error: Insufficient memory for ("
-	   << theWidth
-	   << ","
-	   << theHeight
-	   << ") size image"
-	   << endl;
+		   << theWidth
+		   << ","
+		   << theHeight
+		   << ") size image"
+		   << endl;
       exit(1);
     }
 }
@@ -378,11 +378,11 @@ void NFmiImage::Reallocate(int theWidth, int theHeight)
 void NFmiImage::Read(const string & theFileName)
 {
   // Make sure old contents are destroyed
-
+  
   Destroy();
-
+  
   // Open the input file
-
+  
   FILE *in;
   in = fopen(theFileName.c_str(), "rb");
   if(in==NULL)
@@ -390,9 +390,9 @@ void NFmiImage::Read(const string & theFileName)
       cerr << "Error: Failed to open image " << theFileName << endl;
       exit(1);
     }
-
+  
   // Extract magic number from the stream
-
+  
   unsigned long magic;
   unsigned char strmagic[4];
   size_t num = fread(strmagic,1,4,in);
@@ -402,49 +402,49 @@ void NFmiImage::Read(const string & theFileName)
       exit(1);
     }
   rewind(in);
-
+  
   magic = (static_cast<unsigned long>(strmagic[0]) << 24)
-         +(static_cast<unsigned long>(strmagic[1]) << 16)
-         +(static_cast<unsigned long>(strmagic[2]) << 8)
-         +(static_cast<unsigned long>(strmagic[3]));
-
+	+(static_cast<unsigned long>(strmagic[1]) << 16)
+	+(static_cast<unsigned long>(strmagic[2]) << 8)
+	+(static_cast<unsigned long>(strmagic[3]));
+  
   // Magic numbers for /etc/magic and spec homepages
-
+  
 #define JPG_MAGIC 0xffd8ffe0
 #define PNG_MAGIC 0x89504e47
 #define GIF_MAGIC 0x47494638
-
+  
   switch(magic)
     {
     case(PNG_MAGIC):
       ReadPNG(in);
       break;
-
+	  
     case(JPG_MAGIC):
       ReadJPEG(in);
       break;
-
+	  
     case(GIF_MAGIC):
       ReadGIF(in);
       break;
-
+	  
     default:
       assert(magic==PNG_MAGIC);		// Unknown image type
       break;
     }
-
+  
   // Assert we got an image
-
+  
   if(itsPixels==NULL)
     {
       cerr << "Error: Failed to read image " << theFileName << endl;
       exit(1);
     }
-
+  
   // Close the input file
-
+  
   fclose(in);
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -499,10 +499,10 @@ void NFmiImage::WriteGif(const string & theFileName) const
 void NFmiImage::Erase(NFmiColorTools::Color theColor)
 {
   // Quick exit if color is not real
-
+  
   if(theColor==NFmiColorTools::NoColor)
     return;
-
+  
   for(int i=0; i<itsWidth*itsHeight; i++)
     itsPixels[i] = theColor;
 }
@@ -530,16 +530,16 @@ bool NFmiImage::IsFullyOpaqueOrTransparent(int threshold) const
 {
   // If the separation threshold is set, each pixel is then obviously
   // forced to be either fully opaque or fully transparent
-
+  
   if(threshold>=0)
     return true;
-
+  
   for(int i=0; i<itsWidth*itsHeight; i++)
     {
       register int alpha = NFmiColorTools::GetAlpha(itsPixels[i]);
       if(!(alpha==NFmiColorTools::Opaque ||
-	   alpha==NFmiColorTools::Transparent))
-	return false;
+		   alpha==NFmiColorTools::Transparent))
+		return false;
     }
   return true;
 }
@@ -564,37 +564,37 @@ bool NFmiImage::IsFullyOpaqueOrTransparent(int threshold) const
 NFmiColorTools::Color NFmiImage::UnusedColor(void) const
 {
   // Semi-eternal loop until a missing RGB triple is found
-
+  
   for(int try_number=0; try_number<1000; try_number++)
     {
       // A new color
-
+	  
       int r = rand()*NFmiColorTools::MaxRGB/RAND_MAX;
       int g = rand()*NFmiColorTools::MaxRGB/RAND_MAX;
       int b = rand()*NFmiColorTools::MaxRGB/RAND_MAX;
-
+	  
       cout << "Serching for " << r << "," << g << "," << b << endl;
       NFmiColorTools::Color rgb = NFmiColorTools::MakeColor(r,g,b);
-
+	  
       // See if it is unused
-
+	  
       bool used = false;
-
+	  
       for(int i=0; i<itsWidth*itsHeight; i++)
-	{
-	  if(rgb == NFmiColorTools::GetRGB(itsPixels[i]))
-	    {
-	      used = true;
-	      break;
-	    }
-	}
-
+		{
+		  if(rgb == NFmiColorTools::GetRGB(itsPixels[i]))
+			{
+			  used = true;
+			  break;
+			}
+		}
+	  
       // If it wasn't used, return the color
-
+	  
       if(!used)
-	return rgb;
+		return rgb;
     }
-
+  
   return NFmiColorTools::NoColor;
 }
 
@@ -609,73 +609,73 @@ NFmiColorTools::Color NFmiImage::UnusedColor(void) const
 // ----------------------------------------------------------------------
 
 bool NFmiImage::AddColors(set<NFmiColorTools::Color> & theSet,
-			  int maxcolors,
-			  int opaquethreshold,
-			  bool ignorealpha) const
+						  int maxcolors,
+						  int opaquethreshold,
+						  bool ignorealpha) const
 {
-
+  
   // First check if the maximum number has already been exceeded
-
+  
   int colorsnow = 0;
   if(maxcolors>0)
     {
       colorsnow = theSet.size();
       if(colorsnow > maxcolors)
-	return true;
+		return true;
     }
-
+  
   // We keep a record of last 4 colors for extremely fast access
-
+  
   NFmiColorTools::Color color1 = NFmiColorTools::NoColor;
   NFmiColorTools::Color color2 = NFmiColorTools::NoColor;
   NFmiColorTools::Color color3 = NFmiColorTools::NoColor;
   NFmiColorTools::Color color4 = NFmiColorTools::NoColor;
-
+  
   NFmiColorTools::Color color;
-
+  
   // Used when inserting a new color
-
+  
   pair<set<NFmiColorTools::Color>::iterator, bool> iter;
-
+  
   for(int i=0; i<itsWidth*itsHeight; i++)
     {
       // The next color, without alpha if so desired
-
+	  
       color = itsPixels[i];
-
+	  
       color = NFmiColorTools::Simplify(color,opaquethreshold,ignorealpha);
-
+	  
       // Quick continue of just handled the same color
-
+	  
       if(color==color1 || color==color2 || color==color3 || color==color4)
-	continue;
-
+		continue;
+	  
       // Otherwise add the color to the set
-
+	  
       iter = theSet.insert(color);
-
+	  
       // Increment total number and exit if needed
-
+	  
       if(iter.second && maxcolors>0)
-	{
-	  colorsnow++;
-	  if(colorsnow>maxcolors)
-	    return true;
-	}
-
+		{
+		  colorsnow++;
+		  if(colorsnow>maxcolors)
+			return true;
+		}
+	  
       // And shift back the last known colors
-
+	  
       color4 = color3;
       color3 = color2;
       color2 = color1;
       color1 = color;
-
+	  
     }
-
+  
   // Succesfully added all colors to the set without exceeding any limit
-
+  
   return false;
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -684,26 +684,26 @@ bool NFmiImage::AddColors(set<NFmiColorTools::Color> & theSet,
 // ----------------------------------------------------------------------
 
 void NFmiImage::StrokeBasic(float theX1, float theY1,
-			    float theX2, float theY2,
-			    NFmiColorTools::Color theColor,
-			    NFmiColorTools::NFmiBlendRule theRule
-			    )
+							float theX2, float theY2,
+							NFmiColorTools::Color theColor,
+							NFmiColorTools::NFmiBlendRule theRule
+							)
 {
   // Quick exit if color is not real
-
+  
   if(theColor==NFmiColorTools::NoColor)
     return;
-
+  
   // Clip the coordinates
-
+  
   float dx = theX2-theX1;	// y = dy/dx*(x-x1)+y1
   float dy = theY2-theY1;	// x = dx/dy*(y-y1)+x1
-
+  
   float x1 = theX1;
   float y1 = theY1;
   float x2 = theX2;
   float y2 = theY2;
-
+  
   // The top and right margins are calculated with pixel coordinates
   // in mind, while the input is real coordinates. In order to avoid
   // rounding up overflows, the last half-pixel line of the last
@@ -719,23 +719,23 @@ void NFmiImage::StrokeBasic(float theX1, float theY1,
   // If the offset was zero, the last pixel rows would be only
   // partially included in the image, and tiny half-pixel errors
   // may appear when comparing images drawn with different methods.
-
+  
   const float offset = 0.49f;	// pixel offset 0.5 minus some small epsilon
-
+  
   const float xmargin = Width()-1+offset;
   const float ymargin = Height()-1+offset;
-
+  
   if(x1>x2)
     {
       swap(x1,x2);
       swap(y1,y2);
     }
-
+  
   // This also makes sure we don't have to worry about dy/dx
-
+  
   if(x1>xmargin || x2<0)
     return;
-
+  
   if(x1<0)
     {
       x1 = 0;
@@ -746,18 +746,18 @@ void NFmiImage::StrokeBasic(float theX1, float theY1,
       x2 = xmargin;
       y2 = dy/dx*(xmargin-theX1)+theY1;
     }
-
+  
   if(y1>y2)
     {
       swap(x1,x2);
       swap(y1,y2);
     }
-
+  
   // This also makes sure we don't have to worry about dx/dy
-
+  
   if(y1>=ymargin || y2<0)
     return;
-
+  
   if(y1<0)
     {
       y1 = 0;
@@ -768,31 +768,31 @@ void NFmiImage::StrokeBasic(float theX1, float theY1,
       y2 = ymargin;
       x2 = dx/dy*(ymargin-theY1)+theX1;
     }
-
+  
   // When the color is opaque or transparent, some rules will simplify.
   // Instead of using ifs in the innermost loop, we will simplify the
   // rule itself here.
-
+  
   int alpha = NFmiColorTools::GetAlpha(theColor);
   NFmiColorTools::NFmiBlendRule rule = NFmiColorTools::Simplify(theRule,alpha);
-
+  
   // If the result is ColorKeep, the source alpha is such that there
   // is nothing to do!
-
+  
   if(rule==NFmiColorTools::kFmiColorKeep)
     return;
-
+  
   // Otherwise we instantiate the appropriate fill routine
-
+  
   int r = NFmiColorTools::GetRed  (theColor);
   int g = NFmiColorTools::GetGreen(theColor);
   int b = NFmiColorTools::GetBlue (theColor);
   int a = NFmiColorTools::GetAlpha(theColor);
-
+  
   switch(rule)
     {
-    // Cases for which Color stroke is faster:
-
+	  // Cases for which Color stroke is faster:
+	  
     case NFmiColorTools::kFmiColorClear:
       StrokeBasic2(NFmiColorBlendClear(), x1,y1,x2,y2,theColor, *this);
       break;
@@ -805,9 +805,9 @@ void NFmiImage::StrokeBasic(float theX1, float theY1,
     case NFmiColorTools::kFmiColorReduceContrast:
       StrokeBasic2(NFmiColorBlendReduceConstrast(), x1,y1,x2,y2,theColor, *this);
       break;
-
-    // Cases for which RGBA stroke is faster:
-
+	  
+	  // Cases for which RGBA stroke is faster:
+	  
     case NFmiColorTools::kFmiColorOver:
       StrokeBasic2(NFmiColorBlendOver(), x1,y1,x2,y2,r,g,b,a, *this);
       break;
@@ -898,8 +898,8 @@ void NFmiImage::StrokeBasic(float theX1, float theY1,
     case NFmiColorTools::kFmiColorOnTransparent:
       StrokeBasic2(NFmiColorBlendOnTransparent(), x1,y1,x2,y2,r,g,b,a, *this);
       break;
-
-    // Some special cases
+	  
+	  // Some special cases
     case NFmiColorTools::kFmiColorKeep:
     case NFmiColorTools::kFmiColorRuleMissing:
       break;
@@ -912,15 +912,15 @@ void NFmiImage::StrokeBasic(float theX1, float theY1,
 // ----------------------------------------------------------------------
 
 void NFmiImage::Composite(const NFmiImage & thePattern,
-			  NFmiColorTools::NFmiBlendRule theRule,
-			  NFmiAlignment theAlignment,
-			  int theX, int theY, float theAlpha)
+						  NFmiColorTools::NFmiBlendRule theRule,
+						  NFmiAlignment theAlignment,
+						  int theX, int theY, float theAlpha)
 {
   // Adjust the coordinates based on the alignment
-
+  
   int x = theX;
   int y = theY;
-
+  
   switch(theAlignment)
     {
     case kFmiAlignCenter:
@@ -928,31 +928,31 @@ void NFmiImage::Composite(const NFmiImage & thePattern,
     case kFmiAlignNorth:
       x -= thePattern.Width()/2;
       break;
-
+	  
     case kFmiAlignEast:
       x -= thePattern.Width();
     case kFmiAlignWest:
       y -= thePattern.Height()/2;
       break;
-
+	  
     case kFmiAlignSouthEast:
       y -= thePattern.Height();
     case kFmiAlignNorthEast:
       x -= thePattern.Width();
       break;
-
+	  
     case kFmiAlignSouth:
       x -= thePattern.Width()/2;
     case kFmiAlignSouthWest:
       y -= thePattern.Height();
       break;
-
+	  
     case kFmiAlignNorthWest:
     case kFmiAlignMissing:
       break;
-
+	  
     }
-
+  
   switch(theRule)
     {
     case NFmiColorTools::kFmiColorClear:
@@ -1057,8 +1057,8 @@ void NFmiImage::Composite(const NFmiImage & thePattern,
     case NFmiColorTools::kFmiColorOnTransparent:
       Composite2(NFmiColorBlendOnTransparent(), thePattern,x,y,theAlpha, *this);
       break;
-
-    // Some special cases
+	  
+	  // Some special cases
     case NFmiColorTools::kFmiColorKeep:
     case NFmiColorTools::kFmiColorRuleMissing:
       break;

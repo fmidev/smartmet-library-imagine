@@ -91,84 +91,84 @@ static const char kFmixBaseFieldInt     = 'I';
 
 class NFmiEsriShape
 {
-
+  
 public:
-
+  
   // Constructor, destructor
-
+  
   NFmiEsriShape(void) {}
   ~NFmiEsriShape(void) { Init(); }
-
+  
   // Access to data members
-
+  
   NFmiEsriElementType Type(void) const		{ return itsShapeType; }
   const NFmiEsriBoxZ & Box(void) const		{ return itsBox; }
   const std::vector<NFmiEsriElement *>& Elements(void) const	{ return itsElements; }
-
+  
   // Add an element
-
+  
   void Add(NFmiEsriElement * theElement);
-
+  
   // Add an attribute name
-
+  
   void Add(NFmiEsriAttributeName * theAttributeName);
-
+  
   // Reading and writing data
-
+  
   bool Read(const std::string & theFilename,  bool fDBF=true);
   bool Write(const std::string & theFilename, bool fDBF=true, bool fSHX=true) const;
-
+  
   bool WriteSHP(const std::string & theFilename) const;
   bool WriteSHX(const std::string & theFilename) const;
   bool WriteDBF(const std::string & theFilename) const;
-
+  
   // Projecting
-
+  
   void Project(const NFmiEsriProjector & theProjector);
-
+  
   // Return desired attributename, or null pointer if not found
-
+  
   NFmiEsriAttributeName * AttributeName(const std::string & theFieldName) const;
-
+  
   // Typedefs to aid iterating
-
+  
   typedef std::vector<NFmiEsriElement *>::const_iterator const_iterator;
   typedef std::vector<NFmiEsriElement *>::iterator iterator;
-
+  
 private:
-
+  
   // This one initializes by destroying possible old contents
-
+  
   void Init(void);
-
+  
   // Adding a stringed element
-
+  
   bool Add(int theRecordNumber, const std::string & theBuffer, int thePos);
-
+  
   int CountRecords(const std::string & theBuffer) const;
-
+  
   // Header writing utility
-
+  
   void WriteHeader(std::ostream & os, int theFileLength) const;
-
+  
   // Data members
-
+  
   NFmiEsriElementType		itsShapeType;	// The shape type
   NFmiEsriBoxZ			itsBox;		// The bounding box
-
+  
   std::vector<NFmiEsriElement *>	itsElements;	// the actual data
-
+  
   // This one is special, we store all the different EsriAttributeNames
   // into this list, so that when the shape is destructed we can
   // destroy all the AttributeNames used in the shape. The individual
   // elements will user pointers to these elements, and do not ever
   // attempt to destroy them.
-
+  
   std::list<NFmiEsriAttributeName *>	itsAttributeNames;
-
+  
   // Constants related to headers:
-
-
+  
+  
 };
 
 // ======================================================================

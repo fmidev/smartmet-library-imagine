@@ -161,33 +161,33 @@ using namespace std;
 void NFmiEsriShape::Init(void)
 {
   // Destroy attributename pointees
-
+  
   list<NFmiEsriAttributeName *>::iterator aiter = itsAttributeNames.begin();
   for( ; aiter!=itsAttributeNames.end(); ++aiter)
     delete *aiter;
-
+  
   // and clear the list
-
+  
   itsAttributeNames.clear();
-
+  
   // Destroy element pointees
-
+  
   NFmiEsriShape::iterator eiter = itsElements.begin();
   for( ; eiter!=itsElements.end(); ++eiter)
     delete *eiter;
-
+  
   // and clear the vector
-
+  
   itsElements.clear();
-
+  
   // Initialize bounding box
-
+  
   itsBox.Init();
-
+  
   // Initialize type
-
+  
   itsShapeType = kFmiEsriNull;
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -219,44 +219,44 @@ void NFmiEsriShape::Add(NFmiEsriAttributeName *theAttributeName)
 bool NFmiEsriShape::Read(const string & theFilename, bool fDBF)
 {
   // Derived file names
-
+  
   const string shpfilename = theFilename + ".shp";
   const string dbffilename = theFilename + ".dbf";
-
+  
   // Delete old contents if there are any
-
+  
   if(!itsElements.empty())
     Init();
-
+  
   // Open the shp file for reading
-
+  
   ifstream shpfile(shpfilename.c_str(), ios::in|ios::binary);
   if(!shpfile) return false;
-
+  
   // Read the 100-byte header
-
+  
   string shpheader;
   if(!EsriRead(shpfile,shpheader,kFmiEsriHeaderSize))
     {
       shpfile.close();
       return false;
     }
-
+  
   // Check the magic number
-
+  
   int shpmagic = BigEndianInt(shpheader,kFmiEsriPosMagic);
   if(shpmagic != kFmiEsriMagicNumber)
     {
       shpfile.close();
       return false;
     }
-
+  
   // Read header elements
-
+  
   int shpsize = BigEndianInt(shpheader,kFmiEsriPosFileLength);
   // int shpversion = LittleEndianInt(shpheader,kFmiEsriPosVersion);
   int shptype = LittleEndianInt(shpheader,kFmiEsriPosType);
-
+  
   // We ignore the bbox in the file, instead we recalculate it
   // while reading the elements. Same thing for the bounding
   // boxes of the elements themselves.
@@ -269,221 +269,221 @@ bool NFmiEsriShape::Read(const string & theFilename, bool fDBF)
   // double shpzmax = LittleEndianDouble(shpheader,kFmiEsriPosZmax);
   // double shpmmin = LittleEndianDouble(shpheader,kFmiEsriPosMmin);
   // double shpmmax = LittleEndianDouble(shpheader,kFmiEsriPosMmax);
-
+  
   itsShapeType = static_cast<NFmiEsriElementType>(shptype);
-
+  
   // Read all the records in the shape file into one big string
-
+  
   int remainingsize = shpsize - kFmiEsriHeaderSize/2; 
-
+  
   string shpdata;
-
+  
   if(!EsriRead(shpfile,shpdata,remainingsize*2))	// 16-bit units!!
     {
       shpfile.close();
       return false;
     }
-
+  
   shpfile.close();
-
+  
   // Count the number of elements in the buffer and reserve space
   // for that many elements. This doesn't save much though, since
   // the elements are pointers.
-
+  
   itsElements.reserve(CountRecords(shpdata));
-
+  
   // Then process all records in the file
-
+  
   unsigned int pos = 0;
   while(pos < shpdata.size())
     {
       // Record header
-
+	  
       int recnum = BigEndianInt(shpdata,pos+kFmiEsriRecordHeaderPosNum);
       int reclen = BigEndianInt(shpdata,pos+kFmiEsriRecordHeaderPosLen);
-
+	  
       pos += kFmiEsriRecordHeaderSize;
-
+	  
       // Interpret the data element
-
+	  
       bool ok = Add(recnum,shpdata,pos);
-
+	  
       pos += reclen*2;		// Esri sizes are in 16-bit units!
-
+	  
       // Abort if data seems strange
-
+	  
       if(!ok)
-	return false;
-
+		return false;
+	  
     }
-
+  
   // We're done if the DBF file is not desired
-
+  
   if(!fDBF)
     return true;
-
+  
   // Otherwise see if the file exists, if not we're done
-
+  
   ifstream dbffile(dbffilename.c_str(), ios::in|ios::binary);
   if(!dbffile) return true;
-
+  
   // Read the header
-
+  
   string dbfheader;
   if(!EsriRead(dbffile,dbfheader,kFmixBaseHeaderSize))
     {
       dbffile.close();
       return false;
     }
-
+  
   // Check proper type
-
+  
   if(dbfheader[0] != 3)
     {
       dbffile.close();
       return false;
     }
-
+  
   // We're interested only in the following fields
-
+  
   int numrecords   = LittleEndianInt(dbfheader,kFmixBaseNumRecordsPos);
   int headerlength = LittleEndianShort(dbfheader,kFmixBaseHeaderLengthPos);
   int recordlength = LittleEndianShort(dbfheader,kFmixBaseRecordLengthPos);
-
+  
   int numfields = (headerlength-kFmixBaseHeaderSize)/kFmixBaseFieldSize;
-
+  
   //  cout << "numrecords=" << numrecords << endl
   // << "headerlength=" << headerlength << endl
   //        << "recordlength=" << recordlength << endl
   // << "numfields=" << numfields << endl;
-
+  
   // Read all the fields in
-
+  
   string dbffields;
   if(!EsriRead(dbffile,dbffields,numfields*kFmixBaseFieldSize))
     {
       dbffile.close();
       return false;
     }
-
+  
   // Loop over all the fields, adding them into the attribute names
   // list one by one
-
+  
   // These are just utility vectors to aid reading the data part:
-
+  
   vector<int> fieldoffsets;			// offset to field
   vector<int> fieldsizes;			// size of field in bytes
   vector<NFmiEsriAttributeType> fieldtypes;	// field type
-
+  
   for(int num=0; num<numfields; num++)
     {
       int pos = num*kFmixBaseFieldSize;
       string fname = string(dbffields.c_str()+pos+kFmixBaseFieldNamePos);
       char ftype = dbffields[pos+kFmixBaseFieldTypePos];
-
+	  
       // See the docs in the beginning, slen and flen,dlen are mutually
       // exclusive fields, the one to be used depends in the field type
-
+	  
       int flen = dbffields[pos+kFmixBaseFieldLengthPos];
       int dlen = dbffields[pos+kFmixBaseFieldDecimalPos];
-
+	  
       int slen = LittleEndianShort(dbffields,pos+kFmixBaseFieldLengthPos);
       
       assert(ftype=='N' || ftype=='F' || ftype=='C');
-
+	  
       if(ftype=='N' || ftype=='F')
-	{
-	  if(dlen==0)
-	    {
-	      Add(new NFmiEsriAttributeName(fname,kFmiEsriInteger,flen,dlen,-1));
-	      fieldtypes.push_back(kFmiEsriInteger);
-	    }
-	  else
-	    {
-	      Add(new NFmiEsriAttributeName(fname,kFmiEsriDouble,flen,dlen,-1));
-	      fieldtypes.push_back(kFmiEsriDouble);
-	    }
-	  fieldsizes.push_back(flen);
-	}
+		{
+		  if(dlen==0)
+			{
+			  Add(new NFmiEsriAttributeName(fname,kFmiEsriInteger,flen,dlen,-1));
+			  fieldtypes.push_back(kFmiEsriInteger);
+			}
+		  else
+			{
+			  Add(new NFmiEsriAttributeName(fname,kFmiEsriDouble,flen,dlen,-1));
+			  fieldtypes.push_back(kFmiEsriDouble);
+			}
+		  fieldsizes.push_back(flen);
+		}
       else
-	{
-	  Add(new NFmiEsriAttributeName(fname,kFmiEsriString,-1,-1,slen));
-	  fieldsizes.push_back(slen);
-	  fieldtypes.push_back(kFmiEsriString);
-	}
-
+		{
+		  Add(new NFmiEsriAttributeName(fname,kFmiEsriString,-1,-1,slen));
+		  fieldsizes.push_back(slen);
+		  fieldtypes.push_back(kFmiEsriString);
+		}
+	  
       if(num==0)
-	fieldoffsets.push_back(1);	// size of leading delete flag is 1
+		fieldoffsets.push_back(1);	// size of leading delete flag is 1
       else
-	fieldoffsets.push_back(fieldoffsets[num-1]+fieldsizes[num-1]);
-
+		fieldoffsets.push_back(fieldoffsets[num-1]+fieldsizes[num-1]);
+	  
     }
-
+  
   // Read in the attributes themselves. By ESRI shapefile definition the
   // record order is the exact same in the shp file and the dbf file, hence
   // we need not worry about matching records.
-
+  
   // The first shape to get an attribute
-
+  
   NFmiEsriShape::iterator elementiter = itsElements.begin();
-
+  
   // Read all the records at once, including the leading terminator byte
-
+  
   string dbfrecord;
   if(!EsriRead(dbffile,dbfrecord,1+numrecords*recordlength))
     {
       dbffile.close();
       return false;
     }
-
+  
   // And loop over it, extracting the records and fields
-
+  
   for(int rec=1; rec<=numrecords; rec++, ++elementiter)
     {
       // Offset to the record (including the leading 1 byte terminator)
       
       int pos = 1+(rec-1)*recordlength;
-
+	  
       list<NFmiEsriAttributeName *>::iterator nameiter = itsAttributeNames.begin();
       for(int fieldnum=0; fieldnum<numfields; ++fieldnum, ++nameiter)
-	{
-	  // Position and size of the field
-
-	  int offset = pos + fieldoffsets[fieldnum];
-	  int size   = fieldsizes[fieldnum];
-
-	  // Extract the field data
-
-	  switch(fieldtypes[fieldnum])
-	    {
-	    case kFmiEsriString:
-	      {
-		// Count trailing whitespace first for stripping purposes
-		int i;
-		for(i=size; i>0; i--)
-		  if(!isspace(dbfrecord[offset+i-1]))
-		    break;
-		(*elementiter)->Add(NFmiEsriAttribute(dbfrecord.substr(offset,i),*nameiter));
-		break;
-	      }
-	    case kFmiEsriInteger:
-	      {
-		int value = atoi(dbfrecord.substr(offset,size).c_str());
-		(*elementiter)->Add(NFmiEsriAttribute(value,*nameiter));
-		break;
-	      }
-	    case kFmiEsriDouble:
-	      {
-		double value = atof(dbfrecord.substr(offset,size).c_str());
-		(*elementiter)->Add(NFmiEsriAttribute(value,*nameiter));
-		break;
-	      }
-	    }
-	}
+		{
+		  // Position and size of the field
+		  
+		  int offset = pos + fieldoffsets[fieldnum];
+		  int size   = fieldsizes[fieldnum];
+		  
+		  // Extract the field data
+		  
+		  switch(fieldtypes[fieldnum])
+			{
+			case kFmiEsriString:
+			  {
+				// Count trailing whitespace first for stripping purposes
+				int i;
+				for(i=size; i>0; i--)
+				  if(!isspace(dbfrecord[offset+i-1]))
+					break;
+				(*elementiter)->Add(NFmiEsriAttribute(dbfrecord.substr(offset,i),*nameiter));
+				break;
+			  }
+			case kFmiEsriInteger:
+			  {
+				int value = atoi(dbfrecord.substr(offset,size).c_str());
+				(*elementiter)->Add(NFmiEsriAttribute(value,*nameiter));
+				break;
+			  }
+			case kFmiEsriDouble:
+			  {
+				double value = atof(dbfrecord.substr(offset,size).c_str());
+				(*elementiter)->Add(NFmiEsriAttribute(value,*nameiter));
+				break;
+			  }
+			}
+		}
     }
-
+  
   return true;
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -493,15 +493,15 @@ bool NFmiEsriShape::Read(const string & theFilename, bool fDBF)
 bool NFmiEsriShape::Add(int theRecordNumber, const string & theBuffer, int thePos)
 {
   // Establish the type
-
+  
   int shptype = LittleEndianInt(theBuffer,thePos);
-
+  
   switch(shptype)
     {
     case kFmiEsriNull:
       Add(new NFmiEsriNull());
       break;
-
+	  
     case kFmiEsriPoint:
       Add(new NFmiEsriPoint(theBuffer,thePos,theRecordNumber));
       break;
@@ -514,7 +514,7 @@ bool NFmiEsriShape::Add(int theRecordNumber, const string & theBuffer, int thePo
     case kFmiEsriPolygon:
       Add(new NFmiEsriPolygon(theBuffer,thePos,theRecordNumber));
       break;
-
+	  
     case kFmiEsriPointM:
       Add(new NFmiEsriPointM(theBuffer,thePos,theRecordNumber));
       break;
@@ -527,7 +527,7 @@ bool NFmiEsriShape::Add(int theRecordNumber, const string & theBuffer, int thePo
     case kFmiEsriPolygonM:
       Add(new NFmiEsriPolygonM(theBuffer,thePos,theRecordNumber));
       break;
-
+	  
     case kFmiEsriPointZ:
       Add(new NFmiEsriPointZ(theBuffer,thePos,theRecordNumber));
       break;
@@ -540,13 +540,13 @@ bool NFmiEsriShape::Add(int theRecordNumber, const string & theBuffer, int thePo
     case kFmiEsriPolygonZ:
       Add(new NFmiEsriPolygonZ(theBuffer,thePos,theRecordNumber));
       break;
-
-    // Return false for unknown types
-
+	  
+	  // Return false for unknown types
+	  
     default:
       return false;
     }
-
+  
   return true;
 }
 
@@ -575,29 +575,29 @@ int NFmiEsriShape::CountRecords(const string & theBuffer) const
 bool NFmiEsriShape::Write(const string & theFilename, bool fDBF, bool fSHX) const
 {
   // Derived file names
-
+  
   const string shpfilename = theFilename + ".shp";
   const string dbffilename = theFilename + ".dbf";
   const string shxfilename = theFilename + ".shx";
-
+  
   bool ok = true;
-
+  
   // Write the shape file
-
+  
   ok |= WriteSHP(shpfilename);
-
+  
   // Write the index file
-
+  
   if(fSHX)
     ok |= WriteSHX(shxfilename);
-
+  
   // Write the attribute file
-
+  
   if(fDBF)
     ok |= WriteDBF(dbffilename);
-
+  
   return ok;
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -608,27 +608,27 @@ bool NFmiEsriShape::Write(const string & theFilename, bool fDBF, bool fSHX) cons
 bool NFmiEsriShape::WriteSHP(const string & theFilename) const
 {
   // Calculate the size the body will require
-
+  
   int bodysize = 0;
-
+  
   NFmiEsriShape::const_iterator iter;
-
+  
   for(iter=Elements().begin(); iter!=Elements().end(); ++iter)
     bodysize += kFmiEsriRecordHeaderSize + (*iter)->StringSize();
-
+  
   // The full file size in 16-bit units is then
-
+  
   int filesize = (bodysize+kFmiEsriHeaderSize)/2;
-
+  
   // Start writing the shp file
-
+  
   ofstream shpfile(theFilename.c_str(), ios::out|ios::binary);
   if(!shpfile) return false;
-
+  
   // Write the header
-
+  
   WriteHeader(shpfile,filesize);
-
+  
   // Then write the body, one record at a time
   //
   // Note: ArcView seems to start from record number 1, we use it too so
@@ -638,26 +638,26 @@ bool NFmiEsriShape::WriteSHP(const string & theFilename) const
   // Note: We allow null pointers in the list, we interpret it to
   //       mean the respective element has been deleted. This may
   //       prove to be useful when speed is required.
-
+  
   int recnum=1;
-
+  
   for(iter=Elements().begin(); iter!=Elements().end(); ++iter)
     {
       if(*iter != NULL)
-	{
-	  shpfile << BigEndianInt(recnum)
-		  << BigEndianInt(((*iter)->StringSize())/2)
-		  << **iter;
-	  ++recnum;
-	}
+		{
+		  shpfile << BigEndianInt(recnum)
+				  << BigEndianInt(((*iter)->StringSize())/2)
+				  << **iter;
+		  ++recnum;
+		}
     }
-
+  
   // Done
-
+  
   shpfile.close();
-
+  
   return(!shpfile.fail());
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -667,44 +667,44 @@ bool NFmiEsriShape::WriteSHP(const string & theFilename) const
 
 bool NFmiEsriShape::WriteSHX(const string & theFilename) const
 {
-
+  
   // Open output file
-
+  
   ofstream shxfile(theFilename.c_str(), ios::out|ios::binary);
   if(!shxfile) return false;
-
+  
   // Write the header
-
+  
   int shxlength = (kFmiEsriHeaderSize + 8*Elements().size())/2;
-
+  
   WriteHeader(shxfile,shxlength);
-
+  
   // The body consists of offsets to each record in the main file,
   // plus the length of the record as in the record header of the
   // main file
-
+  
   // The first offset is always this, the position right after
   // the header (in 16-bit units)
   
   int curoffset = kFmiEsriHeaderSize/2;
   
   NFmiEsriShape::const_iterator iter;
-
+  
   for(iter=Elements().begin(); iter!=Elements().end(); ++iter)
     {
       if(*iter != NULL)
-	{
-	  int recsize = ((*iter)->StringSize())/2;
-	  shxfile << BigEndianInt(curoffset)
-		  << BigEndianInt(recsize);
-	  curoffset += recsize + kFmiEsriRecordHeaderSize/2;
-	}
+		{
+		  int recsize = ((*iter)->StringSize())/2;
+		  shxfile << BigEndianInt(curoffset)
+				  << BigEndianInt(recsize);
+		  curoffset += recsize + kFmiEsriRecordHeaderSize/2;
+		}
     }
-
+  
   shxfile.close();
-
+  
   return(!shxfile.fail());
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -715,14 +715,14 @@ bool NFmiEsriShape::WriteSHX(const string & theFilename) const
 bool NFmiEsriShape::WriteDBF(const string & theFilename) const
 {
   // Open output file
-
+  
   ofstream dbffile(theFilename.c_str(), ios::out|ios::binary);
   if(!dbffile) return false;
-
+  
   // Missing
-
+  
   dbffile.close();
-
+  
   return(!dbffile.fail());
 }
 
@@ -733,7 +733,7 @@ bool NFmiEsriShape::WriteDBF(const string & theFilename) const
 void NFmiEsriShape::WriteHeader(ostream & os, int theFileLength) const
 {
   // Output the header
-
+  
   os << BigEndianInt(kFmiEsriMagicNumber)	// 0:magic number
      << BigEndianInt(0)				// 4:unused
      << BigEndianInt(0)				// 8:unused
@@ -743,10 +743,10 @@ void NFmiEsriShape::WriteHeader(ostream & os, int theFileLength) const
      << BigEndianInt(theFileLength)		// 24:file length
      << LittleEndianInt(kFmiEsriVersion)	// 28:version
      << LittleEndianInt(Type());		// 32:type
-
+  
   // Technical specs: Missing value must be written as zero
   // The order of limits is xmin,ymin,xmax,ymax,zmin,zmax,mmin,mmax
-
+  
   os << LittleEndianDouble(Box().IsValid() ? Box().Xmin() : 0.0)
      << LittleEndianDouble(Box().IsValid() ? Box().Ymin() : 0.0)
      << LittleEndianDouble(Box().IsValid() ? Box().Xmax() : 0.0)
@@ -755,7 +755,7 @@ void NFmiEsriShape::WriteHeader(ostream & os, int theFileLength) const
      << LittleEndianDouble(Box().IsValidZ() ? Box().Zmax() : 0.0)
      << LittleEndianDouble(Box().IsValidM() ? Box().Mmin() : 0.0)
      << LittleEndianDouble(Box().IsValidM() ? Box().Mmax() : 0.0);
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -766,18 +766,18 @@ void NFmiEsriShape::Project(const NFmiEsriProjector & theProjector)
 {
   // Invalidate the bounding box X-Y limits first
   // Note that we do not initialize the M or Z parts
-
+  
   static_cast<NFmiEsriBox>(itsBox).Init();
-
+  
   NFmiEsriShape::iterator iter = itsElements.begin();
-
+  
   for( ; iter!=itsElements.end(); ++iter)
     {
       if(*iter!=NULL)
-	{
-	  (*iter)->Project(theProjector);
-	  (*iter)->Update(itsBox);
-	}
+		{
+		  (*iter)->Project(theProjector);
+		  (*iter)->Update(itsBox);
+		}
     }
 }
 
@@ -787,31 +787,31 @@ void NFmiEsriShape::Project(const NFmiEsriProjector & theProjector)
 
 NFmiEsriAttributeName * NFmiEsriShape::AttributeName(const string & theFieldName) const
 {
-
+  
   list<NFmiEsriAttributeName *>::const_iterator begin = itsAttributeNames.begin();
   list<NFmiEsriAttributeName *>::const_iterator end   = itsAttributeNames.end();
   list<NFmiEsriAttributeName *>::const_iterator iter;
   
   NFmiEsriAttributeName * out = NULL;
-
+  
   for(iter=begin ; iter!=end ; ++iter)
     {
       // Just safety, should never happen
-
+	  
       if(*iter==NULL)
-	continue;
-
+		continue;
+	  
       // If found match, exit immediately with pointer to the name
-
+	  
       if((*iter)->Name() == theFieldName)
-	{
-	  out = *iter;
-	  break;
-	}
+		{
+		  out = *iter;
+		  break;
+		}
     }
-
+  
   return out;
-
+  
 }
 
 // ======================================================================

@@ -97,7 +97,7 @@ double XAlignmentFactor(NFmiAlignment theAlignment)
     default:
       return 0.0;
     }
-
+  
 }
 
 /*!

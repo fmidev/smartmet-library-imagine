@@ -29,24 +29,24 @@ NFmiEsriMultiPointM::NFmiEsriMultiPointM(const string & theBuffer, int thePos,in
   : NFmiEsriMultiPoint(theNumber,kFmiEsriMultiPointM)
 {
   int npoints = LittleEndianInt(theBuffer,thePos+36);
-
+  
   // Speed up by reserving enough space already
-
+  
   itsPoints.reserve(itsPoints.size()+npoints);
   
   for(int i=0; i<npoints; i++)
     {
       // Start position 40, then 2 doubles (16) for each point
-
+	  
       int pointpos = thePos+40+i*16;
-
+	  
       // Start position 40+16*n, then 2 doubles for range, then
       // 1 double for each measure
-
+	  
       int measurepos = thePos+40+16*npoints+16+i*8;
       Add(NFmiEsriPointM(LittleEndianDouble(theBuffer,pointpos),
-			 LittleEndianDouble(theBuffer,pointpos+8),
-			 LittleEndianDouble(theBuffer,measurepos)));
+						 LittleEndianDouble(theBuffer,pointpos+8),
+						 LittleEndianDouble(theBuffer,measurepos)));
     }
 }
 
@@ -57,12 +57,12 @@ NFmiEsriMultiPointM::NFmiEsriMultiPointM(const string & theBuffer, int thePos,in
 int NFmiEsriMultiPointM::StringSize(void) const
 {
   return (4			// the type	: 1 int
-	  +4*8			// bounding box : 4 doubles
-	  +4			// numpoints	: 1 int
-	  +NumPoints()*2*8	// points	: 2n doubles
-	  +2*8			// mbox		: 2 doubles
-	  +NumPoints()*8	// mvalues	: n doubles	
-	  );
+		  +4*8			// bounding box : 4 doubles
+		  +4			// numpoints	: 1 int
+		  +NumPoints()*2*8	// points	: 2n doubles
+		  +2*8			// mbox		: 2 doubles
+		  +NumPoints()*8	// mvalues	: n doubles	
+		  );
 }
 
 // ----------------------------------------------------------------------
@@ -77,20 +77,20 @@ void NFmiEsriMultiPointM::Write(ostream & os) const
      << LittleEndianDouble(Box().Xmax())
      << LittleEndianDouble(Box().Ymax())
      << LittleEndianInt(NumPoints());
-
+  
   int i;
   for(i=0; i<NumPoints(); i++)
     {
       os << LittleEndianDouble(Points()[i].X())
-	 << LittleEndianDouble(Points()[i].Y());
+		 << LittleEndianDouble(Points()[i].Y());
     }
-
+  
   os << LittleEndianDouble(Box().Mmin())
      << LittleEndianDouble(Box().Mmax());
-
+  
   for(i=0; i<NumPoints(); i++) // 18.12.2001/Marko Redifinition of i removed.
     os << LittleEndianDouble(Points()[i].M());
-
+  
 }
 
 // ======================================================================

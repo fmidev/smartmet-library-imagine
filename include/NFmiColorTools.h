@@ -205,245 +205,245 @@ struct Blend2Type
 class NFmiColorTools
 {
 public:
-
+  
   //! An RGBA colour is internally represented as an integer of the form 0xaarrggbb
-
+  
   typedef int Color;
-
+  
   // -------------------- special colors --------------------
-
+  
   //! A missing color means the color is unknown.
-
+  
   static const Color MissingColor; // 18.12.2001/Marko Moved static varible instantiation after class declaration
-
+  
   //! A "no-color" means no color is to be used. Strokes and fills are cancelled.
-
+  
   static const Color NoColor; // 18.12.2001/Marko Moved static varible instantiation after class declaration
-
+  
   //! Helper variable to identify a transparent color.
-
+  
   static const Color TransparentColor; // 18.12.2001/Marko Moved static varible instantiation after class declaration
-
+  
   //! Helper variable to identify a black color
-
+  
   static const Color Black; // 18.12.2001/Marko Moved static varible instantiation after class declaration
-
+  
   // -------------------- range definitions --------------------
-
+  
   //! RGB values are in range 0-255.
-
+  
   static const int MaxRGB; // 18.12.2001/Marko Moved static varible instantiation after class declaration
-
+  
   //! Alpha values are in range 0-127, as in the GD library.
-
+  
   static const int MaxAlpha; // 18.12.2001/Marko Moved static varible instantiation after class declaration
-
+  
   // -------------------- opacity definitions --------------------
-
+  
   //! A color is opaque when its alpha value is zero.
-
+  
   static const int Opaque; // 18.12.2001/Marko Moved static varible instantiation after class declaration
-
+  
   //! A color is transparent when its alpha value is 127.
-
+  
   static const int Transparent; // 18.12.2001/Marko Moved static varible instantiation after class declaration
-
+  
   // -------------------- extracting color components --------------------
-
+  
   //! Extract alpha component from a color.
-
+  
   static inline int GetAlpha(Color c)	{ return (c>>24)&0x7F; }
-
+  
   //! Extract red component from a color.
-
+  
   static inline int GetRed(Color c)	{ return (c>>16)&0xFF; }
-
+  
   //! Extract green component from a color.
-
+  
   static inline int GetGreen(Color c)	{ return (c>>8)&0xFF; }
-
+  
   //! Extract blue component from a color.
-
+  
   static inline int GetBlue(Color c)	{ return (c&0xFF); }
-
+  
   //! Extract RGB component from a color. Alpha will be zero (opaque color).
-
+  
   static inline Color GetRGB(Color c)	{ return (c&0xFFFFFF); }
-
+  
   // -------------------- building color from components --------------------
-
+  
   //! Convert RGBA values into a color. No argument checking.
-
+  
   static inline Color MakeColor(int r, int g, int b, int a=Opaque);
-
+  
   //! Convert RGBA values into a color. Positive overflows are checked.
-
+  
   static inline Color SafeColor(int r, int g, int b, int a=Opaque);
-
+  
   //! Convert RGBA values into a color. Positive and negative overflows are checked.
-
+  
   static inline Color SafestColor(int r, int g, int b, int a=Opaque);
-
+  
   // -------------------- replacing individual color components --------------------
-
+  
   //! Set new alpha component into the color.
-
+  
   static inline Color ReplaceAlpha(Color c, int alpha)
   { return ((c&0x00FFFFFF)|(alpha<<24)); }
-
+  
   //! Set new red component into the color.
-
+  
   static inline Color ReplaceRed(Color c, int red)
   { return ((c&0xFF00FFFF)|(red<<16)); }
-
+  
   //! Set new green component into the color.
-
+  
   static inline Color ReplaceGreen(Color c, int green)
   { return ((c&0xFFFF00FF)|(green<<8)); }
-
+  
   //! Set new blue component into the color
-
+  
   static inline Color ReplaceBlue(Color c, int blue)
   { return ((c&0xFFFFFF00)|(blue)); }
-
+  
   // -------------------- color intensity tools --------------------
-
+  
   //! Intensity range is 0-255.
-
+  
   static const int MaxIntensity; // 18.12.2001/Marko Moved static varible instantiation after class declaration
-
+  
   //! Return intensity of given RGBA components.
-
+  
   static inline int Intensity(int r, int g, int b, int a=0);
-
+  
   //! Return intensity of given color.
-
+  
   static inline int Intensity(Color c);
-
+  
   // -------------------- color contrast tools --------------------
-
+  
   // Adding contrast = increasing difference between light and dark colors
   // Reducing contrast = decreasing difference between light and dark colors
-
+  
   //! Add contrast to given color
-
+  
   static Color AddContrast(Color theColor)    { return Contrast(theColor,1); }
-
+  
   //! Reduce contrast in the given color
-
+  
   static Color ReduceContrast(Color theColor) { return Contrast(theColor,-1); }
-
+  
   //! Modify contrast into the given direction
-
+  
   static Color Contrast(Color theColor, int theSign);
-
+  
   // -------------------- colour blending --------------------
-
+  
   // Don't forget to update BlendNamesInit() when updating!
-
+  
   //! All available colour blending rules.
-
+  
   enum NFmiBlendRule { kFmiColorRuleMissing,
-		       kFmiColorClear,
-		       kFmiColorCopy,
-		       kFmiColorKeep,
-		       kFmiColorOver,
-		       kFmiColorUnder,
-		       kFmiColorIn,
-		       kFmiColorKeepIn,
-		       kFmiColorOut,
-		       kFmiColorKeepOut,
-		       kFmiColorAtop,
-		       kFmiColorKeepAtop,
-		       kFmiColorXor,
-
-		       kFmiColorPlus,
-		       kFmiColorMinus,
-		       kFmiColorAdd,
-		       kFmiColorSubstract,
-		       kFmiColorMultiply,
-		       kFmiColorDifference,
-		       kFmiColorCopyRed,
-		       kFmiColorCopyGreen,
-		       kFmiColorCopyBlue,
-		       kFmiColorCopyMatte,
-		       kFmiColorCopyHue,
-		       kFmiColorCopyLightness,
-		       kFmiColorCopySaturation,
-		       kFmiColorKeepMatte,
-		       kFmiColorKeepHue,
-		       kFmiColorKeepLightness,
-		       kFmiColorKeepSaturation,
-		       kFmiColorBumpmap,
-		       kFmiColorDentmap,
-		       kFmiColorAddContrast,
-		       kFmiColorReduceContrast,
-
-		       kFmiColorOnOpaque,
-		       kFmiColorOnTransparent  };
-
+					   kFmiColorClear,
+					   kFmiColorCopy,
+					   kFmiColorKeep,
+					   kFmiColorOver,
+					   kFmiColorUnder,
+					   kFmiColorIn,
+					   kFmiColorKeepIn,
+					   kFmiColorOut,
+					   kFmiColorKeepOut,
+					   kFmiColorAtop,
+					   kFmiColorKeepAtop,
+					   kFmiColorXor,
+					   
+					   kFmiColorPlus,
+					   kFmiColorMinus,
+					   kFmiColorAdd,
+					   kFmiColorSubstract,
+					   kFmiColorMultiply,
+					   kFmiColorDifference,
+					   kFmiColorCopyRed,
+					   kFmiColorCopyGreen,
+					   kFmiColorCopyBlue,
+					   kFmiColorCopyMatte,
+					   kFmiColorCopyHue,
+					   kFmiColorCopyLightness,
+					   kFmiColorCopySaturation,
+					   kFmiColorKeepMatte,
+					   kFmiColorKeepHue,
+					   kFmiColorKeepLightness,
+					   kFmiColorKeepSaturation,
+					   kFmiColorBumpmap,
+					   kFmiColorDentmap,
+					   kFmiColorAddContrast,
+					   kFmiColorReduceContrast,
+					   
+					   kFmiColorOnOpaque,
+					   kFmiColorOnTransparent  };
+  
   // -------------------- colour name conversion --------------------
-
+  
   // Color name <-> color conversion.
-
+  
   //! Convert colour name to colour.
-
+  
   static Color ColorValue(const std::string & theName); // 18.12.2001/Marko Added the std::-namespace mark
-
+  
   //! Convert colour to colour name.
-
+  
   static const std::string ColorName(const Color & theColor); // 18.12.2001/Marko Added the std::-namespace mark
-
+  
   //! Initialize colour name table.
-
+  
   static void ColorNamesInit(void);
-
+  
   //! A general purpose string to colour conversion
-
+  
   static Color ToColor(const std::string & theColor); // 18.12.2001/Marko Added the std::-namespace mark
-
+  
   //! Utility used by ToColor for converting hex to dec
-
+  
   static Color HexToColor(const std::string & theHex); // 18.12.2001/Marko Added the std::-namespace mark
-
+  
   // -------------------- blend name conversion --------------------
-
+  
   //! Convert blending rule name to enum.
-
+  
   static const NFmiBlendRule BlendValue(const std::string & theName); // 18.12.2001/Marko Added the std::-namespace mark
-
+  
   //! Convert blending rule to string name.
-
+  
   static const std::string BlendName(const NFmiBlendRule & theRule); // 18.12.2001/Marko Added the std::-namespace mark
-
+  
   //! Initialize blending rule name table .
-
+  
   static void BlendNamesInit(void);
   
   // -------------------- color space conversion --------------------
-
+  
   //! Convert RGB values to HLS values.
-
+  
   static void RGBtoHLS(int red, int green, int blue, float *h, float *l, float *s);
-
+  
   //! Convert HLS values to RGB values
-
+  
   static void HLStoRGB(float h, float l, float s, int *r, int *g, int *b);
-
+  
   //! Utility used by HLS -- RGB conversion functions.
-
+  
   static float hls_to_rgb_util(float m1, float m2, float h);
-
+  
   // -------------------- miscellaneous --------------------
-
+  
   //! Simplify a blending rule given the source color alpha value
-
+  
   static NFmiBlendRule Simplify(NFmiBlendRule theRule, int alpha);
-
+  
   //! Interpolate linearly in HLS space between 2 colors.
-
+  
   static int Interpolate(Color c1, Color c2, float fraction);
-
+  
   //! Simplify a color if possible.
   /*!
    * A color can be simplified when the user wishes to get rid of
@@ -453,7 +453,7 @@ public:
    * is used to indicate the alpha channel can be ignored completely, in which
    * case the color is made completely opaque.
    */
-
+  
   static Color Simplify(Color c, int opaquethreshold, bool ignorealpha)
   {
     if(ignorealpha)
@@ -467,7 +467,7 @@ public:
     else
       return TransparentColor;
   }
-
+  
 };
 
 
@@ -482,7 +482,7 @@ public:
 inline NFmiColorTools::Color NFmiColorTools::MakeColor
 (int r, int g, int b, int a)
 {
-//  return reinterpret_cast<NFmiColorTools::Color> // 18.12.2001/Marko Visual C++ compiler didn't allow 'int' to 'int' reinterpret_cast
+  //  return reinterpret_cast<NFmiColorTools::Color> // 18.12.2001/Marko Visual C++ compiler didn't allow 'int' to 'int' reinterpret_cast
   return ((a<<24) + (r<<16) + (g<<8) + b);
 }
 
@@ -503,9 +503,9 @@ inline NFmiColorTools::Color NFmiColorTools::SafeColor
   int gg = (g>NFmiColorTools::MaxRGB)   ? NFmiColorTools::MaxRGB   : g;
   int bb = (b>NFmiColorTools::MaxRGB)   ? NFmiColorTools::MaxRGB   : b;
   int aa = (a>NFmiColorTools::MaxAlpha) ? NFmiColorTools::MaxAlpha : a;
-
+  
   return NFmiColorTools::MakeColor(rr,gg,bb,aa);
-
+  
   // For some reason g++ does not get this right.
   //  return reinterpret_cast<NFmiColorTools::Color>
   //    ( ((a>NFmiColorTools::MaxAlpha) ? NFmiColorTools::MaxAlpha : a)<< 24 +
@@ -526,8 +526,8 @@ inline NFmiColorTools::Color NFmiColorTools::SafeColor
 inline NFmiColorTools::Color NFmiColorTools::SafestColor
 (int r, int g, int b, int a)
 {
-//  return reinterpret_cast<NFmiColorTools::Color> // 18.12.2001/Marko Visual C++ compiler didn't allow 'int' to 'int' reinterpret_cast
-	return
+  //  return reinterpret_cast<NFmiColorTools::Color> // 18.12.2001/Marko Visual C++ compiler didn't allow 'int' to 'int' reinterpret_cast
+  return
     (
      (((a<0) ? 0 : (a>NFmiColorTools::MaxAlpha)? NFmiColorTools::MaxAlpha: a)<< 24) + // 18.12.2001/Marko VC++ wanted 'extra' parentheses
      (((r<0) ? 0 : (r>NFmiColorTools::MaxRGB)  ? NFmiColorTools::MaxRGB  : r)<< 16) +
@@ -547,8 +547,8 @@ inline NFmiColorTools::Color NFmiColorTools::SafestColor
 inline int NFmiColorTools::Intensity(NFmiColorTools::Color c)
 {
   return NFmiColorTools::Intensity(NFmiColorTools::GetRed(c),
-				   NFmiColorTools::GetGreen(c),
-				   NFmiColorTools::GetBlue(c));
+								   NFmiColorTools::GetGreen(c),
+								   NFmiColorTools::GetBlue(c));
 }
 
 inline int NFmiColorTools::Intensity(int r, int g, int b, int a)

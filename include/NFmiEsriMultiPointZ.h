@@ -31,54 +31,54 @@
 class NFmiEsriMultiPointZ : public NFmiEsriMultiPointM
 {
 public:
-
+  
   // Constructors, destructors
-
+  
   ~NFmiEsriMultiPointZ(void) {}
-
+  
   NFmiEsriMultiPointZ(int theNumber=0,
-		      NFmiEsriElementType theType=kFmiEsriMultiPointZ)
+					  NFmiEsriElementType theType=kFmiEsriMultiPointZ)
     : NFmiEsriMultiPointM(theNumber,theType)
   {}
-
+  
   NFmiEsriMultiPointZ(const std::string & theBuffer, int thePos=0, int theNumber=0);
-
+  
   // Data access
-
+  
   const NFmiEsriBoxZ & Box(void) const		{ return itsBox; }
   int NumPoints(void) const			{ return itsPoints.size(); }
   const std::vector<NFmiEsriPointZ> & Points(void) const	{ return itsPoints; }
-
+  
   // This is intended to be used by projection etc methods
-
+  
   void Points(const std::vector<NFmiEsriPointZ> & pts) { itsPoints = pts; }
-
+  
   // Adding a point
-
+  
   void Add(const NFmiEsriPointZ & thePoint)
   {
     itsPoints.push_back(thePoint);
     itsBox.Update(thePoint.X(),thePoint.Y(),thePoint.Z(),thePoint.M());
   }
-
+  
   // Updating bounding boxes
   
   void Update(NFmiEsriBoxZ & theBox) const
   {
     theBox.Update(itsBox);
   }
-
+  
   // String buffer size, write and string
-
+  
   int StringSize(void) const;
   void Write(std::ostream & os) const;
-
+  
 private:
-
+  
   NFmiEsriBoxZ	itsBox;		// Bounding box
-
+  
   // int	itsNumPoints;	// Number of points = size of itsPoints
-
+  
   std::vector<NFmiEsriPointZ>	itsPoints;
 };
 

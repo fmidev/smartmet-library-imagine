@@ -24,9 +24,9 @@ using namespace std;
 
 NFmiEsriPointZ::NFmiEsriPointZ(const string & theBuffer, int thePos, int theNumber)
   : NFmiEsriPointM(LittleEndianDouble(theBuffer,thePos+4),
-		   LittleEndianDouble(theBuffer,thePos+12),
-		   LittleEndianDouble(theBuffer,thePos+28),
-		   theNumber,kFmiEsriPointZ)
+				   LittleEndianDouble(theBuffer,thePos+12),
+				   LittleEndianDouble(theBuffer,thePos+28),
+				   theNumber,kFmiEsriPointZ)
   , itsZ(LittleEndianDouble(theBuffer,thePos+20))
 {
 }

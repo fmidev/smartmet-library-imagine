@@ -33,15 +33,15 @@ void NFmiPath::Add(const NFmiPath & thePath, bool fExact)
   // We cannot simply copy, since we wish to change the first
   // moveto in the path being appended into a lineto of the
   // type implied by fExact
-
+  
   NFmiPathData::const_iterator iter = thePath.itsElements.begin();
-
+  
   for( ; iter!= thePath.itsElements.end() ; ++iter)
     {
       if(iter == thePath.itsElements.begin())
-	Add(fExact ? kFmiLineTo : kFmiGhostLineTo, iter->X(), iter->Y());
+		Add(fExact ? kFmiLineTo : kFmiGhostLineTo, iter->X(), iter->Y());
       else
-	Add(*iter);
+		Add(*iter);
     }
 }
 
@@ -57,14 +57,14 @@ void NFmiPath::Insert(const NFmiPath & thePath, bool fExact)
   // And insert one by one to get correct inverse order
   
   NFmiPathData::const_iterator iter = thePath.itsElements.begin();
-
+  
   bool first = true;
   for( ; iter!=thePath.itsElements.end(); ++iter)
     {
       if( (first&&fExact) || (!first && iter->Oper()==kFmiLineTo) )
-	InsertLineTo(iter->X(),iter->Y());
+		InsertLineTo(iter->X(),iter->Y());
       else
-	InsertGhostLineTo(iter->X(),iter->Y());
+		InsertGhostLineTo(iter->X(),iter->Y());
       first = false;
     }
 }
@@ -109,17 +109,17 @@ void NFmiPath::DoCloseLineTo(NFmiPathOperation theOper)
   for(iter=itsElements.rbegin(); iter!=itsElements.rend(); ++iter)
     {
       if(iter->Oper()==kFmiMoveTo)
-	{
-	  // The element to be added
-
-	  NFmiPathElement tmp(theOper,iter->X(),iter->Y());
-
-	  // Don't add if the last element is exactly the same
-
-	  if(!(itsElements.back()==tmp))
-	      Add(tmp);
-	  break;
-	}
+		{
+		  // The element to be added
+		  
+		  NFmiPathElement tmp(theOper,iter->X(),iter->Y());
+		  
+		  // Don't add if the last element is exactly the same
+		  
+		  if(!(itsElements.back()==tmp))
+			Add(tmp);
+		  break;
+		}
     }
 }
 
@@ -159,115 +159,115 @@ void NFmiPath::Add(const string & theString)
   float previous_x = 0;
   float previous_y = 0;
   bool previous_relative = false;
-
+  
   unsigned int pos = 0;		// parser position
-
+  
   int phase = 0;	// 0 = op, 1 = x, 2 = y
-
+  
   float x = 0.0f;
   float y = 0.0f;
   bool relative = false;
   NFmiPathOperation op = kFmiMoveTo;
-
+  
   while(pos<theString.size())
     {
       // Skip leading whitespace
-
+	  
       if(isspace(theString[pos]))
-	{
-	  pos++;
-	  continue;
-	}
-
+		{
+		  pos++;
+		  continue;
+		}
+	  
       // Skip comments
-
+	  
       if(theString[pos]=='#')
-	{
-	  while(pos<theString.size() && theString[pos]!='\n')
-	    pos++;
-	  continue;
-	}
-
+		{
+		  while(pos<theString.size() && theString[pos]!='\n')
+			pos++;
+		  continue;
+		}
+	  
       // Parse operator
-
+	  
       if(phase==0)
-	{
-	  // Initialize operator to be the previous one
+		{
+		  // Initialize operator to be the previous one
+		  
+		  relative = previous_relative;
+		  op = previous_op;
+		  
+		  // Assume there is an operator to be found
+		  
+		  char ch = theString[pos++];
+		  
+		  switch(toupper(ch))
+			{
+			case 'L':
+			  op = kFmiLineTo;
+			  relative = (ch!=toupper(ch));
+			  break;
+			case 'G':
+			  op = kFmiGhostLineTo;
+			  relative = (ch!=toupper(ch));
+			  break;
+			case 'M':
+			  op = kFmiMoveTo;
+			  relative = (ch!=toupper(ch));
+			  break;
+			case 'Q':
+			  op = kFmiConicTo;
+			  relative = (ch!=toupper(ch));
+			  break;
+			case 'C':
+			  op = kFmiCubicTo;
+			  relative = (ch!=toupper(ch));
+			  break;
+			default:
+			  pos--;		// correct backwards - there was no operator
+			}
+		}
 	  
-	  relative = previous_relative;
-	  op = previous_op;
-	  
-	  // Assume there is an operator to be found
-	  
-	  char ch = theString[pos++];
-	  
-	  switch(toupper(ch))
-	    {
-	    case 'L':
-	      op = kFmiLineTo;
-	      relative = (ch!=toupper(ch));
-	      break;
-	    case 'G':
-	      op = kFmiGhostLineTo;
-	      relative = (ch!=toupper(ch));
-	      break;
-	    case 'M':
-	      op = kFmiMoveTo;
-	      relative = (ch!=toupper(ch));
-	      break;
-	    case 'Q':
-	      op = kFmiConicTo;
-	      relative = (ch!=toupper(ch));
-	      break;
-	    case 'C':
-	      op = kFmiCubicTo;
-	      relative = (ch!=toupper(ch));
-	      break;
-	    default:
-	      pos--;		// correct backwards - there was no operator
-	    }
-	}
-
       // Parse coordinates
-
-      else
-	{
-	  // Expecting some float, either x or y
 	  
-	  string asciinumber;
-	  while(pos<theString.size() && !isspace(theString[pos]) && theString[pos]!=',')
-	    asciinumber += theString[pos++];
-
-	  // Skip the possible comma we may have found
-
-	  if(theString[pos]==',')
-	    pos++;
-
-	  float number = atof(asciinumber.c_str());
-
-	  if(phase==1)
-	    x = number;
-	  else
-	    y = number;
-	}
-
+      else
+		{
+		  // Expecting some float, either x or y
+		  
+		  string asciinumber;
+		  while(pos<theString.size() && !isspace(theString[pos]) && theString[pos]!=',')
+			asciinumber += theString[pos++];
+		  
+		  // Skip the possible comma we may have found
+		  
+		  if(theString[pos]==',')
+			pos++;
+		  
+		  float number = atof(asciinumber.c_str());
+		  
+		  if(phase==1)
+			x = number;
+		  else
+			y = number;
+		}
+	  
       // Output movement
-
+	  
       if(phase==2)
-	{
-	  if(relative)
-	    {
-	      x += previous_x;
-	      y += previous_y;
-	    }
-	  Add(op,x,y);
-	  previous_op = op;
-	  previous_x = x;
-	  previous_y = y;
-	  previous_relative = relative;
-	}
+		{
+		  if(relative)
+			{
+			  x += previous_x;
+			  y += previous_y;
+			}
+		  Add(op,x,y);
+		  previous_op = op;
+		  previous_x = x;
+		  previous_y = y;
+		  previous_relative = relative;
+		}
       phase = (phase+1)%3;
-
+	  
     }
 }
 
@@ -291,34 +291,34 @@ void NFmiPath::Simplify(float epsilon)
 {
   if(epsilon<0.0)
     return;
-
+  
   // Count the important points
-
+  
   NFmiCounter<pair<float,float> > counter;
-
+  
   NFmiPathData::const_iterator iter;
   for(iter=Elements().begin() ; iter!=Elements().end(); ++iter)
     {
       switch(iter->Oper())
-	{
-	case kFmiMoveTo:
-	case kFmiLineTo:
-	case kFmiGhostLineTo:
-	  counter.Add(make_pair(iter->X(),iter->Y()));
-	  break;
-	default:
-	  break;
-	}
+		{
+		case kFmiMoveTo:
+		case kFmiLineTo:
+		case kFmiGhostLineTo:
+		  counter.Add(make_pair(iter->X(),iter->Y()));
+		  break;
+		default:
+		  break;
+		}
     }
-
+  
   // Then simplify all linear segments of equal type
   //
   // a) Optional one moveto + lineto's
   // b) Optional one moveto + ghostlineto's
   
   
-
-
+  
+  
 }
 
 // ----------------------------------------------------------------------
@@ -328,7 +328,7 @@ void NFmiPath::Simplify(float epsilon)
 void NFmiPath::Translate(float theX, float theY)
 {
   NFmiPathData::iterator iter;
-
+  
   for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
     {
       iter->X(iter->X()+theX);	// X += theX
@@ -343,7 +343,7 @@ void NFmiPath::Translate(float theX, float theY)
 void NFmiPath::Scale(float theScale)
 {
   NFmiPathData::iterator iter;
-
+  
   for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
     {
       iter->X(iter->X()*theScale);
@@ -358,12 +358,12 @@ void NFmiPath::Scale(float theScale)
 void NFmiPath::Rotate(float theAngle)
 {
   const float pi = 3.14159265358979f;
-
+  
   NFmiPathData::iterator iter;
-
+  
   float cosa = cos(theAngle*pi/180);
   float sina = sin(theAngle*pi/180);
-
+  
   for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
     {
       float x = iter->X();
@@ -380,7 +380,7 @@ void NFmiPath::Rotate(float theAngle)
 void NFmiPath::Transform(NFmiAffine & theAffine)
 {
   NFmiPathData::iterator iter;
-
+  
   for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
     {
       float x = iter->X();
@@ -397,12 +397,12 @@ void NFmiPath::Transform(NFmiAffine & theAffine)
 void NFmiPath::Align(NFmiAlignment theAlignment, float theX, float theY)
 {
   NFmiEsriBox box(BoundingBox());
-
+  
   double xfactor = XAlignmentFactor(theAlignment);
   double yfactor = YAlignmentFactor(theAlignment);
-
+  
   Translate(theX - (box.Xmin()*(1-xfactor)+box.Xmax()*xfactor),
-	    theY - (box.Ymin()*(1-yfactor)+box.Ymax()*yfactor));
+			theY - (box.Ymin()*(1-yfactor)+box.Ymax()*yfactor));
 }
 
 // ----------------------------------------------------------------------
@@ -415,11 +415,11 @@ void NFmiPath::Project(NFmiArea * theArea)
     {
       NFmiPathData::iterator iter;
       for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
-	{
-	  NFmiPoint pt = theArea->ToXY(NFmiPoint(iter->X(),iter->Y()));
-	  iter->X(pt.X());
-	  iter->Y(pt.Y());
-	}
+		{
+		  NFmiPoint pt = theArea->ToXY(NFmiPoint(iter->X(),iter->Y()));
+		  iter->X(pt.X());
+		  iter->Y(pt.Y());
+		}
     }
 }
 
@@ -431,25 +431,25 @@ void NFmiPath::Project(NFmiArea * theArea)
 NFmiEsriBox NFmiPath::BoundingBox(void) const
 {
   NFmiEsriBox box;
-
+  
   NFmiPathData::const_iterator iter;
-
+  
   for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
     {
       switch(iter->Oper())
-	{
-	case kFmiMoveTo:
-	case kFmiLineTo:
-	case kFmiGhostLineTo:
-	  box.Update(iter->X(),iter->Y());
-	  break;
-	case kFmiConicTo:
-	  break;
-	case kFmiCubicTo:
-	  break;
-	}
+		{
+		case kFmiMoveTo:
+		case kFmiLineTo:
+		case kFmiGhostLineTo:
+		  box.Update(iter->X(),iter->Y());
+		  break;
+		case kFmiConicTo:
+		  break;
+		case kFmiCubicTo:
+		  break;
+		}
     }
-
+  
   return box;
 }
 
@@ -474,83 +474,83 @@ void NFmiPath::SimplifyLines(float theOffset)
 {
   NFmiPathData::iterator iter = itsElements.begin();
   NFmiPathData::iterator end  = itsElements.end();
-
+  
   NFmiPathData::iterator deliter;	// used when deleting
-
+  
   // Cached previous path element:
-
+  
   NFmiPathOperation oper1,oper2,oper3;
   float x1,y1,x2,y2,x3,y3;
-
+  
   oper1 = oper2 = oper3 = kFmiMoveTo;
   x1 = y1 = x2 = y2 = x3 = y3 = kFloatMissing;
-
+  
   int cachesize = 0;
-
+  
   while(iter!=end)
     {
       // Shift old data backwards
-
+	  
       oper1=oper2; oper2=oper3;
       x1=x2; x2=x3;
       y1=y2; y2=y3;
-
+	  
       // Establish new data
-
+	  
       oper3 = iter->Oper();
       x3 = theOffset+iter->X();
       y3 = theOffset+iter->Y();
-
+	  
       // Delete-iterator is current element, 
-
+	  
       ++iter;
-
+	  
       // Get atleast 3 points before doing anything
-
-//      cachesize = min(3,cachesize+1);
+	  
+	  //      cachesize = min(3,cachesize+1);
       cachesize = FmiMin(3,cachesize+1); // 18.12.2001/Marko MSVC++ version of STL doesn't define standard min function use FmiMin here.
-
+	  
       if(cachesize <3)
-	continue;
-
+		continue;
+	  
       // Now, if the last 2 operations are of equal lineto-type,
       // we may simplify the sequence of 3 points:
       //
       // A--B--C becomes A---C if B is somewhere on the
       // line connecting A and C.
-
+	  
       if(oper2==oper3 && (oper2==kFmiLineTo || oper2==kFmiGhostLineTo))
-	{
-	  // The line cannot be straight unless it is monotonous
-
-	  if(x1<x2 && x2>x3) continue;
-	  if(x1>x2 && x2<x3) continue;
-	  if(y1<y2 && y2>y3) continue;
-	  if(y1>y2 && y2<y3) continue;
-
-
-	  // Vertical and horizontal lines are easily tested
-	  // General case lines are compared based on their
-	  // angles: dy/dx must be equal so that
-	  //       (y2-y1)/(x2-x1) == (y3-y2)/(x3-x2)
-	  // <==>  (y2-y1)(x3-x2) == (y3-y2)(x2-x1)
-	  // We do not allow for rounding errors in the test,
-	  // it's probably not worth the trouble.
-
-	  if ( (x1==x2 && x2==x3) || (y1==y2 && y2==y3) ||
-	       ((x3-x1)*(y2-y1)-(y3-y1)*(x2-x1)==0.0) )
-	    {
-	      oper2 = oper1;
-	      x2=x1;
-	      y2=y1;
-	      cachesize--;
-
-	      deliter = iter;			// ABC->D
-	      --deliter;			// AB->CD
-	      --deliter;			// A->BCD
-	      itsElements.erase(deliter);	// A->CD
-	    }
-	}
+		{
+		  // The line cannot be straight unless it is monotonous
+		  
+		  if(x1<x2 && x2>x3) continue;
+		  if(x1>x2 && x2<x3) continue;
+		  if(y1<y2 && y2>y3) continue;
+		  if(y1>y2 && y2<y3) continue;
+		  
+		  
+		  // Vertical and horizontal lines are easily tested
+		  // General case lines are compared based on their
+		  // angles: dy/dx must be equal so that
+		  //       (y2-y1)/(x2-x1) == (y3-y2)/(x3-x2)
+		  // <==>  (y2-y1)(x3-x2) == (y3-y2)(x2-x1)
+		  // We do not allow for rounding errors in the test,
+		  // it's probably not worth the trouble.
+		  
+		  if ( (x1==x2 && x2==x3) || (y1==y2 && y2==y3) ||
+			   ((x3-x1)*(y2-y1)-(y3-y1)*(x2-x1)==0.0) )
+			{
+			  oper2 = oper1;
+			  x2=x1;
+			  y2=y1;
+			  cachesize--;
+			  
+			  deliter = iter;			// ABC->D
+			  --deliter;			// AB->CD
+			  --deliter;			// A->BCD
+			  itsElements.erase(deliter);	// A->CD
+			}
+		}
     }
 }
 
@@ -565,25 +565,25 @@ std::ostream& operator<< (std::ostream& os,const NFmiPath & thePath)
   for( ; iter!=thePath.Elements().end(); ++iter)
     {
       // Special code for first move
-
+	  
       if(iter != thePath.Elements().begin())
-	os << " ";
-
+		os << " ";
+	  
       if(iter->Oper() == kFmiMoveTo)
-	os << 'M';
+		os << 'M';
       else if(iter->Oper() == kFmiLineTo)
-	os << 'L';
+		os << 'L';
       else if(iter->Oper() == kFmiGhostLineTo)
-	os << 'G';
+		os << 'G';
       else if(iter->Oper() == kFmiConicTo)
-	os << 'Q';
+		os << 'Q';
       else if(iter->Oper() == kFmiCubicTo)
-	os << 'C';
+		os << 'C';
       else
-	os << '?';
-
+		os << '?';
+	  
       os << iter->X() << "," << iter->Y();
-
+	  
     }
   return os;
 }
@@ -601,59 +601,59 @@ string NFmiPath::SVG(bool relative_moves) const
   //       mess up the output string. Instead we reserve a reasonable
   //       amount of space for the string from the beginning in the
   //       hope that output will be reasonably fast.
-
+  
   string os;
-
+  
   float last_x, last_y;
   NFmiPathOperation last_op = kFmiMoveTo;
-
+  
   last_x = last_y = kFloatMissing;
-
+  
   NFmiPathData::const_iterator iter = Elements().begin();
   for( ; iter!=Elements().end(); ++iter)
     {
       // Special code for first move
-
+	  
       if(iter->Oper()==kFmiConicTo || iter->Oper()==kFmiCubicTo)
-	{
-	  cerr << "Error: Conic and Cubic control points not supported in NFmiPath::SVG() yet" << endl;
-	  exit(1);
-	}
-
+		{
+		  cerr << "Error: Conic and Cubic control points not supported in NFmiPath::SVG() yet" << endl;
+		  exit(1);
+		}
+	  
       if(iter==Elements().begin())
-	{
-	  os += (relative_moves ? "m" : "M")
-	    + ftoa(iter->X()) + "," + ftoa(iter->Y());
-	}
-
+		{
+		  os += (relative_moves ? "m" : "M")
+			+ ftoa(iter->X()) + "," + ftoa(iter->Y());
+		}
+	  
       // Relative moves are "m dx dy" and "l dx dy"
       else if(relative_moves)
-	{
-	  if(iter->Oper() == kFmiMoveTo)
-	    os += (last_op==kFmiMoveTo ? " " : " m");
-	  else if(iter->Oper() == kFmiLineTo)
-	    os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
-	  os += ftoa((iter->X()-last_x)) + "," + ftoa((iter->Y()-last_y));
-	}
-
+		{
+		  if(iter->Oper() == kFmiMoveTo)
+			os += (last_op==kFmiMoveTo ? " " : " m");
+		  else if(iter->Oper() == kFmiLineTo)
+			os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
+		  os += ftoa((iter->X()-last_x)) + "," + ftoa((iter->Y()-last_y));
+		}
+	  
       // Absolute moves are "M x y" and "L x y"
       else
-	{
-	  if(iter->Oper() == kFmiMoveTo)
-	    os += (last_op==kFmiMoveTo ? " " : " M");
-	  else
-	    os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
-	  os += ftoa(iter->X()) + "," + ftoa(iter->Y());
-	}
-
+		{
+		  if(iter->Oper() == kFmiMoveTo)
+			os += (last_op==kFmiMoveTo ? " " : " M");
+		  else
+			os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
+		  os += ftoa(iter->X()) + "," + ftoa(iter->Y());
+		}
+	  
       last_op = iter->Oper();
-
+	  
       if(relative_moves)
-	{
-	  last_x = iter->X();
-	  last_y = iter->Y();
-	}
-
+		{
+		  last_x = iter->X();
+		  last_y = iter->Y();
+		}
+	  
     }
   return os;
 }
@@ -678,7 +678,7 @@ string NFmiPath::ftoa(float theValue) const
 void NFmiPath::Add(NFmiFillMap & theMap) const
 {
   // Data holders for moves. 1 is the newest, 4 the oldest
-
+  
   NFmiPathOperation op1 = kFmiMoveTo;
   NFmiPathOperation op2 = kFmiMoveTo;
   NFmiPathOperation op3 = kFmiMoveTo;
@@ -691,11 +691,11 @@ void NFmiPath::Add(NFmiFillMap & theMap) const
   float y2 = kFloatMissing;
   float y3 = kFloatMissing;
   float y4 = kFloatMissing;
-
+  
   // The iterator for traversing the data
   
   NFmiPathData::const_iterator iter = Elements().begin();
-
+  
   for( ; iter!=Elements().end(); ++iter)
     {
       x1 = iter->X();
@@ -703,40 +703,40 @@ void NFmiPath::Add(NFmiFillMap & theMap) const
       op1 = iter->Oper();
       
       switch(iter->Oper())
-	{
-	case kFmiMoveTo:
-	  break;
-
-	case kFmiLineTo:
-	case kFmiGhostLineTo:
-	  {
-	    switch(op2)
-	      {
-	      case kFmiConicTo:
-		theMap.AddConic(x3,y3,x2,y1,x1,y1);	// Conic segment
-		break;
-	      case kFmiCubicTo:
-		if(op3==kFmiCubicTo)
-		  theMap.AddCubic(x4,y4,x4,y3,x2,y2,x1,y1);
-		break;
-	      default:
-		theMap.Add(x2,y2,x1,y1);	// Line segment
-		break;
-	      }
-	  }
-
-	case kFmiConicTo:
-	  break;
-	case kFmiCubicTo:
-	  break;
-	}
-
+		{
+		case kFmiMoveTo:
+		  break;
+		  
+		case kFmiLineTo:
+		case kFmiGhostLineTo:
+		  {
+			switch(op2)
+			  {
+			  case kFmiConicTo:
+				theMap.AddConic(x3,y3,x2,y1,x1,y1);	// Conic segment
+				break;
+			  case kFmiCubicTo:
+				if(op3==kFmiCubicTo)
+				  theMap.AddCubic(x4,y4,x4,y3,x2,y2,x1,y1);
+				break;
+			  default:
+				theMap.Add(x2,y2,x1,y1);	// Line segment
+				break;
+			  }
+		  }
+		  
+		case kFmiConicTo:
+		  break;
+		case kFmiCubicTo:
+		  break;
+		}
+	  
       // Update movement history
-
+	  
       op4=op3; op3=op2; op2=op1;
       x4=x3; x3=x2; x2=x1;
       y4=y3; y3=y2; y2=y1;
-
+	  
     }
 }
 
@@ -745,49 +745,49 @@ void NFmiPath::Add(NFmiFillMap & theMap) const
 // ----------------------------------------------------------------------
 
 void NFmiPath::Stroke(NFmiImage & theImage,
-		      NFmiColorTools::Color theColor,
-		      NFmiColorTools::NFmiBlendRule theRule) const
+					  NFmiColorTools::Color theColor,
+					  NFmiColorTools::NFmiBlendRule theRule) const
 {
   // Quick exit if color is not real
-
+  
   if(theColor==NFmiColorTools::NoColor)
     return;
-
+  
   // Current point is not defined yet
-
+  
   float lastX = kFloatMissing;
   float lastY = kFloatMissing;
-
+  
   NFmiPathData::const_iterator iter = Elements().begin();
-
+  
   for( ; iter!= Elements().end() ; ++iter)
     {
       // Next point
-
+	  
       float nextX = iter->X();
       float nextY = iter->Y();
-
+	  
       if(iter->Oper()==kFmiConicTo || iter->Oper()==kFmiCubicTo)
-	{
-	  cerr << "Error: Conic/Cubic control points not supported in NFmiPath::Stroke()" << endl;
-	  exit(1);
-	}
-
+		{
+		  cerr << "Error: Conic/Cubic control points not supported in NFmiPath::Stroke()" << endl;
+		  exit(1);
+		}
+	  
       // Only LineTo operations get rendered
-
+	  
       if(iter->Oper() == kFmiLineTo)
-	if(lastX!=kFloatMissing && lastY!=kFloatMissing &&
-	   nextX!=kFloatMissing && nextY!=kFloatMissing)
-	  {
-	    theImage.StrokeBasic(lastX,lastY,nextX,nextY,theColor,theRule);
-	  }
+		if(lastX!=kFloatMissing && lastY!=kFloatMissing &&
+		   nextX!=kFloatMissing && nextY!=kFloatMissing)
+		  {
+			theImage.StrokeBasic(lastX,lastY,nextX,nextY,theColor,theRule);
+		  }
       
       // New last point
-
+	  
       lastX = nextX;
       lastY = nextY;
     }
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -829,102 +829,102 @@ void NFmiPath::Stroke(NFmiImage & theImage,
 
 NFmiPath NFmiPath::StrokePath(float theWidth) const
 {
-
+  
   // The path being generated
-
+  
   NFmiPath outpath;
-
+  
   // The current open subsegment
-
+  
   NFmiPath segment;
-
+  
   // Status variables
-
+  
   float firstX,firstY;
   float lastX,lastY;
-
+  
   firstX = firstY = lastX = lastY = kFloatMissing;
-
-
+  
+  
   // Iterate through the data
-
+  
   NFmiPathData::const_iterator iter;
-
+  
   for(iter=Elements().begin(); iter!=Elements().end(); ++iter)
     {
       float x = iter->X();
       float y = iter->Y();
       NFmiPathOperation op = iter->Oper();
-
+	  
       switch(op)
-	{
-	case kFmiConicTo:
-	case kFmiCubicTo:
-	  // Unfinished
-	  break;
-
-	case kFmiMoveTo:
-	case kFmiGhostLineTo:
-	  {
-	    // If there is an unfinished segment, we must close it now.
-
-	    if(!segment.Elements().empty())
-	      segment.CloseLineTo();
-
-	    // Append it to the outpath
-
-	    outpath.Add(segment);
-
-	    // And begin a new segment
-
-	    segment.Clear();
-	    break;
-	  }
-
-	case kFmiLineTo:
-	  {
-	    // Calculate widened line offsets
-
-	    float DX = x-lastX;
-	    float DY = y-lastY;
-	    float DF = theWidth/2/sqrt(DX*DX+DY*DY);
-
-	    float dx = -DF*DY;
-	    float dy = DF*DX;
-
-	    // If haven't started yet, start
-
-	    if(segment.Elements().empty())
-	      {
-		firstX = x;
-		firstY = y;
-		outpath.MoveTo(lastX+dx,lastY+dy);
-		outpath.LineTo(lastX-dx,lastY-dy);
-		outpath.LineTo(x-dx,y-dy);
-		outpath.InsertLineTo(x+dx,y+dy);
-	      }
-
-	    // Otherwise recalculate the current open path
-
-	    else
-	      {
-	      }
-
-	  }
-	}
+		{
+		case kFmiConicTo:
+		case kFmiCubicTo:
+		  // Unfinished
+		  break;
+		  
+		case kFmiMoveTo:
+		case kFmiGhostLineTo:
+		  {
+			// If there is an unfinished segment, we must close it now.
+			
+			if(!segment.Elements().empty())
+			  segment.CloseLineTo();
+			
+			// Append it to the outpath
+			
+			outpath.Add(segment);
+			
+			// And begin a new segment
+			
+			segment.Clear();
+			break;
+		  }
+		  
+		case kFmiLineTo:
+		  {
+			// Calculate widened line offsets
+			
+			float DX = x-lastX;
+			float DY = y-lastY;
+			float DF = theWidth/2/sqrt(DX*DX+DY*DY);
+			
+			float dx = -DF*DY;
+			float dy = DF*DX;
+			
+			// If haven't started yet, start
+			
+			if(segment.Elements().empty())
+			  {
+				firstX = x;
+				firstY = y;
+				outpath.MoveTo(lastX+dx,lastY+dy);
+				outpath.LineTo(lastX-dx,lastY-dy);
+				outpath.LineTo(x-dx,y-dy);
+				outpath.InsertLineTo(x+dx,y+dy);
+			  }
+			
+			// Otherwise recalculate the current open path
+			
+			else
+			  {
+			  }
+			
+		  }
+		}
       lastX = x;
       lastY = y;
-
+	  
     }
-
+  
   // If we were left with a open segment, close it and append it too
-
+  
   if(!segment.Elements().empty())
     {
       segment.CloseLineTo();
       outpath.Add(segment);
     }
-
+  
   return outpath;
 }
 

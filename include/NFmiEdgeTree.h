@@ -38,40 +38,40 @@
 class NFmiEdgeTree : public NFmiDrawable
 {
 public:
-
+  
 #ifdef  EDGETREE_HASH
   typedef std::hash_set<NFmiEdge,NFmiEdgeHasher> EdgeTreeType;
 #else
   typedef std::set<NFmiEdge> EdgeTreeType;
 #endif
-
+  
   // Constructors
-
+  
   NFmiEdgeTree(void);
-
+  
   // Destructors
-
+  
   virtual ~NFmiEdgeTree(void) {}
-
+  
   // Access to edge-data for iterating through the data, not for
   // modifying it.
-
+  
   const EdgeTreeType & Edges(void) const { return itsEdges; };
-
+  
   // Adding a single edge
-
+  
   void Add(const NFmiEdge & theEdge);
-
+  
   // Build a path from the tree.
-
+  
   NFmiPath Path(void) const;
-
+  
   // Add the tree to a fill map
-
+  
   void Add(NFmiFillMap & theMap) const;
-
+  
 private:
-
+  
   EdgeTreeType itsEdges;
 };
 

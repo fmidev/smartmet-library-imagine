@@ -24,15 +24,15 @@
 //! Enumeration of possible alignments.
 
 enum NFmiAlignment { kFmiAlignMissing,
-		     kFmiAlignCenter,
-		     kFmiAlignNorthWest,
-		     kFmiAlignNorth,
-		     kFmiAlignNorthEast,
-		     kFmiAlignEast,
-		     kFmiAlignSouthEast,
-		     kFmiAlignSouth,
-		     kFmiAlignSouthWest,
-		     kFmiAlignWest };
+					 kFmiAlignCenter,
+					 kFmiAlignNorthWest,
+					 kFmiAlignNorth,
+					 kFmiAlignNorthEast,
+					 kFmiAlignEast,
+					 kFmiAlignSouthEast,
+					 kFmiAlignSouth,
+					 kFmiAlignSouthWest,
+					 kFmiAlignWest };
 
 //! Convert string to enumerated value
 

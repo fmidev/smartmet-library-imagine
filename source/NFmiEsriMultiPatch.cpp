@@ -40,25 +40,25 @@ NFmiEsriMultiPatch::NFmiEsriMultiPatch(const string & theBuffer, int thePos, int
 {
   int nparts = LittleEndianInt(theBuffer,thePos+36);
   int npoints = LittleEndianInt(theBuffer,thePos+40);
-
+  
   // Speed up by reserving enough space already
-
+  
   itsParts.reserve(itsParts.size()+nparts);
   itsPartTypes.reserve(itsPartTypes.size()+nparts);
   itsPoints.reserve(itsPoints.size()+npoints);
-
+  
   // Establish the parts
-
+  
   int i=0;
   for(i=0; i<nparts; i++)
     itsParts.push_back(LittleEndianInt(theBuffer,thePos+44+4*i));
-
+  
   // Establish the part types
-
+  
   for(i=0; i<nparts; i++)
     itsPartTypes.push_back(static_cast<NFmiEsriMultiPatchType>
-			   (LittleEndianInt(theBuffer,thePos+44+4*nparts+4*i)));
-
+						   (LittleEndianInt(theBuffer,thePos+44+4*nparts+4*i)));
+  
   // And the points
   
   for(i=0; i<npoints; i++)
@@ -67,9 +67,9 @@ NFmiEsriMultiPatch::NFmiEsriMultiPatch(const string & theBuffer, int thePos, int
       int zpos = thePos + 44 + 8*nparts + 16*npoints + 16 + 8*i;
       int mpos = zpos + 8*npoints + 16;
       Add(NFmiEsriPointZ(LittleEndianDouble(theBuffer,pointpos),
-			 LittleEndianDouble(theBuffer,pointpos+8),
-			 LittleEndianDouble(theBuffer,zpos),
-			 LittleEndianDouble(theBuffer,mpos)));
+						 LittleEndianDouble(theBuffer,pointpos+8),
+						 LittleEndianDouble(theBuffer,zpos),
+						 LittleEndianDouble(theBuffer,mpos)));
     }
 }
 
@@ -80,17 +80,17 @@ NFmiEsriMultiPatch::NFmiEsriMultiPatch(const string & theBuffer, int thePos, int
 int NFmiEsriMultiPatch::StringSize(void) const
 {
   return (4			// the type	: 1 int
-	  +4*8			// bounding box : 4 doubles
-	  +4			// numparts	: 1 int
-	  +4			// numpoints	: 1 int
-	  +NumParts()*4		// parts	: np ints
-	  +NumParts()*4		// parttypes	: np ints
-	  +NumPoints()*2*8	// points	: 2n doubles
-	  +2*8			// zbox		: 2 doubles
-	  +NumPoints()*8	// zvalues	: n doubles
-	  +2*8			// mbox		: 2 doubles
-	  +NumPoints()*8	// mvalues	: n doubles
-	  );
+		  +4*8			// bounding box : 4 doubles
+		  +4			// numparts	: 1 int
+		  +4			// numpoints	: 1 int
+		  +NumParts()*4		// parts	: np ints
+		  +NumParts()*4		// parttypes	: np ints
+		  +NumPoints()*2*8	// points	: 2n doubles
+		  +2*8			// zbox		: 2 doubles
+		  +NumPoints()*8	// zvalues	: n doubles
+		  +2*8			// mbox		: 2 doubles
+		  +NumPoints()*8	// mvalues	: n doubles
+		  );
 }
 
 // ----------------------------------------------------------------------
@@ -106,29 +106,29 @@ void NFmiEsriMultiPatch::Write(ostream & os) const
      << LittleEndianDouble(Box().Ymax())
      << LittleEndianInt(NumParts())
      << LittleEndianInt(NumPoints());
-
+  
   int i=0;
   for(i=0; i<NumParts(); i++)
     os << LittleEndianInt(Parts()[i]);
-
+  
   for(i=0; i<NumParts(); i++)
     os << LittleEndianInt(PartTypes()[i]);
-
+  
   for(i=0; i<NumPoints(); i++)
     {
       os << LittleEndianDouble(Points()[i].X())
-	 << LittleEndianDouble(Points()[i].Y());
+		 << LittleEndianDouble(Points()[i].Y());
     }
-
+  
   os << LittleEndianDouble(Box().Zmin())
      << LittleEndianDouble(Box().Zmax());
-
+  
   for(i=0; i<NumPoints(); i++)
     os << LittleEndianDouble(Points()[i].Z());
   
   os << LittleEndianDouble(Box().Mmin())
      << LittleEndianDouble(Box().Mmax());
-
+  
   for(i=0; i<NumPoints(); i++)
     os << LittleEndianDouble(Points()[i].M());
 }

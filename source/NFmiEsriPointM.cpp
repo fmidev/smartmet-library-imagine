@@ -23,8 +23,8 @@ using namespace std;
 
 NFmiEsriPointM::NFmiEsriPointM(const string & theBuffer, int thePos, int theNumber)
   : NFmiEsriPoint(LittleEndianDouble(theBuffer,thePos+4),
-		  LittleEndianDouble(theBuffer,thePos+12),
-		  theNumber,kFmiEsriPointM)
+				  LittleEndianDouble(theBuffer,thePos+12),
+				  theNumber,kFmiEsriPointM)
   , itsM(LittleEndianDouble(theBuffer,thePos+20))
 {
 }

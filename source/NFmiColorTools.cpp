@@ -62,19 +62,19 @@ static map<string,NFmiColorTools::NFmiBlendRule> itsBlendNames;
 // ----------------------------------------------------------------------
 
 void NFmiColorTools::RGBtoHLS(int red, int green, int blue,
-			      float *h, float *l, float *s)
+							  float *h, float *l, float *s)
 {
   float v,m,delta,l1,h1,r,g,b;
-
+  
   // Normalize input to range 0-1 for calculations
-
+  
   r = static_cast<float>(red)/MaxRGB;
   g = static_cast<float>(green)/MaxRGB;
   b = static_cast<float>(blue)/MaxRGB;
-
+  
   v = (r>g) ? ((r>b) ? r : b) : ((g>b) ? g : b);
   m = (r<g) ? ((r<b) ? r : b) : ((g<b) ? g : b);
-
+  
   l1 = (m+v)/2;
   delta = v-m;
   if(l1<=0)
@@ -89,11 +89,11 @@ void NFmiColorTools::RGBtoHLS(int red, int green, int blue,
       *s = (l1<0.5) ? delta/(v+m) : delta/(2-v-m);
       *l = l1;
       if(r==v)
-	h1 = (g-b)/delta;
+		h1 = (g-b)/delta;
       else if(g==v)
-	h1 = 2+(b-r)/delta;
+		h1 = 2+(b-r)/delta;
       else
-	h1 = 4+(r-g)/delta;
+		h1 = 4+(r-g)/delta;
       h1 = h1*60;
       if(h1<0) h1=h1+360;
       *h = h1;
@@ -108,10 +108,10 @@ void NFmiColorTools::RGBtoHLS(int red, int green, int blue,
 // ----------------------------------------------------------------------
 
 void NFmiColorTools::HLStoRGB(float h, float l, float s,
-			      int *r, int *g, int *b)
+							  int *r, int *g, int *b)
 {
   float m1, m2;
-
+  
   // handle greyscale separately
   if(s < 1e-10)
     *r = *g = *b = static_cast<int>(MaxRGB*l);
@@ -155,25 +155,25 @@ float NFmiColorTools::hls_to_rgb_util(float m1, float m2, float h)
 // ----------------------------------------------------------------------
 
 NFmiColorTools::Color NFmiColorTools::Interpolate(Color c1, Color c2,
-						  float fraction)
+												  float fraction)
 {
   // Handle extrapolation
-
+  
   if(fraction<=0)
     return c1;
   if(fraction>=1)
     return c2;
-
+  
   float h1,l1,s1, h2,l2,s2, h,l,s;
   int   r,g,b,a;
-
+  
   // Covert to HLS space
-
+  
   RGBtoHLS(GetRed(c1),GetGreen(c1),GetBlue(c1),&h1,&l1,&s1);
   RGBtoHLS(GetRed(c2),GetGreen(c2),GetBlue(c2),&h2,&l2,&s2);
-
+  
   // Interpolate in HLS space
-
+  
   l = l1 + (l2-l1)*fraction;
   s = s1 + (s2-s1)*fraction;
   if(abs(h1-h2)<=180)
@@ -186,13 +186,13 @@ NFmiColorTools::Color NFmiColorTools::Interpolate(Color c1, Color c2,
   if(h>=360) h -= 360;
   
   // Back to RGB space
-
+  
   HLStoRGB(h,l,s,&r,&g,&b);
-
+  
   // Interpolate alpha
-
+  
   a = static_cast<int>((1-fraction)*GetAlpha(c1)+fraction*GetAlpha(c2));
-
+  
   return MakeColor(r,g,b,a);
 }
 
@@ -203,33 +203,33 @@ NFmiColorTools::Color NFmiColorTools::Interpolate(Color c1, Color c2,
 // ----------------------------------------------------------------------
 
 NFmiColorTools::Color NFmiColorTools::Contrast(NFmiColorTools::Color theColor,
-					       int theSign)
+											   int theSign)
 {
   // Get RGBA components
-
+  
   int r = GetRed(theColor);
   int g = GetGreen(theColor);
   int b = GetBlue(theColor);
   int a = GetAlpha(theColor);
-
+  
   // Transform to hls space
-
+  
   float h,l,s;
   RGBtoHLS(r,g,b,&h,&l,&s);
-
+  
   // Calculate adjustment
-
+  
   const float m=0.5;
   float adjustment = m*theSign*(m*(sin(3.14159265358979323846264*(l-m))+1)-l);
   l += adjustment;
   l = FmiMax(FmiMin(l,1.0f),0.0f);
-
+  
   // Transform back
-
+  
   HLStoRGB(h,l,s,&r,&g,&b);
-
+  
   return MakeColor(r,g,b,a);
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -257,41 +257,41 @@ NFmiColorTools::NFmiBlendRule NFmiColorTools::Simplify(NFmiColorTools::NFmiBlend
   if(alpha==NFmiColorTools::Opaque)
     {
       if(rule==NFmiColorTools::kFmiColorOver)
-	return NFmiColorTools::kFmiColorCopy;
-
+		return NFmiColorTools::kFmiColorCopy;
+	  
       if(rule==NFmiColorTools::kFmiColorKeepIn)
-	return NFmiColorTools::kFmiColorKeep;
-
+		return NFmiColorTools::kFmiColorKeep;
+	  
       if(rule==NFmiColorTools::kFmiColorKeepOut)
-	return NFmiColorTools::kFmiColorKeep;
-
+		return NFmiColorTools::kFmiColorKeep;
+	  
       if(rule==NFmiColorTools::kFmiColorKeepAtop)
-	return NFmiColorTools::kFmiColorUnder;
-
+		return NFmiColorTools::kFmiColorUnder;
+	  
       if(rule==NFmiColorTools::kFmiColorXor)
-	return NFmiColorTools::kFmiColorUnder;
+		return NFmiColorTools::kFmiColorUnder;
     }
-
+  
   else if(alpha==NFmiColorTools::Transparent)
     {
       if(rule==NFmiColorTools::kFmiColorKeepIn)
-	return NFmiColorTools::kFmiColorClear;
-
+		return NFmiColorTools::kFmiColorClear;
+	  
       if(rule==NFmiColorTools::kFmiColorKeepOut)
-	return NFmiColorTools::kFmiColorClear;
-
+		return NFmiColorTools::kFmiColorClear;
+	  
       if(rule==NFmiColorTools::kFmiColorAtop)
-	return NFmiColorTools::kFmiColorIn;
-
+		return NFmiColorTools::kFmiColorIn;
+	  
       if(rule==NFmiColorTools::kFmiColorKeepAtop)
-	return NFmiColorTools::kFmiColorKeepOut;
-
+		return NFmiColorTools::kFmiColorKeepOut;
+	  
       if(rule==NFmiColorTools::kFmiColorXor)
-	return NFmiColorTools::kFmiColorKeepOut;
+		return NFmiColorTools::kFmiColorKeepOut;
     }
-
+  
   return rule;
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -309,12 +309,12 @@ NFmiColorTools::NFmiBlendRule NFmiColorTools::Simplify(NFmiColorTools::NFmiBlend
 NFmiColorTools::Color NFmiColorTools::ToColor(const string & theColor)
 {
   // Handle hex format number
-
+  
   if(theColor[0] == '#')
     return HexToColor(theColor.substr(1));
-
+  
   // Handle ascii format
-
+  
   else if(theColor[0]<'0' || theColor[0]>'9')
     {
       unsigned int pos = theColor.find(",");
@@ -341,9 +341,9 @@ NFmiColorTools::Color NFmiColorTools::ToColor(const string & theColor)
           return ReplaceAlpha(tmp,value);
         }
     }
-
+  
   // Handle decimal format
-
+  
   else
     {
       vector<int> tmp;
@@ -367,7 +367,7 @@ NFmiColorTools::Color NFmiColorTools::ToColor(const string & theColor)
         }
       if(value>=0)
         tmp.push_back(value);
-
+	  
       if(tmp.size()==3)
         return MakeColor(tmp[0],tmp[1],tmp[2],0);
       else if(tmp.size()==4)
@@ -388,13 +388,13 @@ NFmiColorTools::Color NFmiColorTools::HexToColor(const std::string & theHex)
     {
       c <<= 4;
       if(theHex[i]>='0' && theHex[i]<='9')
-	c += theHex[i]-'0';
+		c += theHex[i]-'0';
       else if(theHex[i]>='A' && theHex[i]<='F')
-	c += 10 + theHex[i] - 'A';
+		c += 10 + theHex[i] - 'A';
       else if(theHex[i]>='a' && theHex[i]<='f')
-	c += 10 + theHex[i]-'a';
+		c += 10 + theHex[i]-'a';
       else
-	return MissingColor;
+		return MissingColor;
     }
   return c;
 }
@@ -407,12 +407,12 @@ NFmiColorTools::Color NFmiColorTools::HexToColor(const std::string & theHex)
 NFmiColorTools::Color NFmiColorTools::ColorValue(const string & theName)
 {
   ColorNamesInit();
-
+  
   // Search for the string
-
+  
   map<string,NFmiColorTools::Color>::iterator iter;
   iter = itsColorNames.find(theName);
-
+  
   if(iter == itsColorNames.end())
     return MissingColor;
   else
@@ -427,11 +427,11 @@ NFmiColorTools::Color NFmiColorTools::ColorValue(const string & theName)
 const string NFmiColorTools::ColorName(const NFmiColorTools::Color & theColor)
 {
   ColorNamesInit();
-
+  
   // Search for the color value
-
+  
   map<string,NFmiColorTools::Color>::iterator iter;
-
+  
   for(iter=itsColorNames.begin() ; iter!=itsColorNames.end(); ++iter)
     {
       if(iter->second == theColor)
@@ -439,7 +439,7 @@ const string NFmiColorTools::ColorName(const NFmiColorTools::Color & theColor)
     }
   static const string MissingColorName = string("");
   return MissingColorName;
-
+  
 }
 
 // ----------------------------------------------------------------------
@@ -450,16 +450,16 @@ const string NFmiColorTools::ColorName(const NFmiColorTools::Color & theColor)
 void NFmiColorTools::ColorNamesInit(void)
 {
   // Abort if already initialized
-
+  
   if(!itsColorNames.empty())
     return;
-
+  
 #define COLORINSERT(N,R,G,B) \
   itsColorNames.insert(make_pair(string(N),MakeColor(R,G,B)))
-
+  
   itsColorNames.insert(make_pair(string("none"),NoColor));
   itsColorNames.insert(make_pair(string("transparent"),TransparentColor));
-
+  
   COLORINSERT("aliceblue",240,248,255);
   COLORINSERT("antiquewhite",250,235,215);
   COLORINSERT("aqua",0,255,255);
@@ -617,12 +617,12 @@ void NFmiColorTools::ColorNamesInit(void)
 const NFmiColorTools::NFmiBlendRule NFmiColorTools::BlendValue(const string & theName)
 {
   BlendNamesInit();
-
+  
   // Search for the string
-
+  
   map<string,NFmiColorTools::NFmiBlendRule>::iterator iter;
   iter = itsBlendNames.find(theName);
-
+  
   if(iter == itsBlendNames.end())
     return kFmiColorRuleMissing;
   else
@@ -637,11 +637,11 @@ const NFmiColorTools::NFmiBlendRule NFmiColorTools::BlendValue(const string & th
 const string NFmiColorTools::BlendName(const NFmiColorTools::NFmiBlendRule & theRule)
 {
   BlendNamesInit();
-
+  
   // Search for the blend value
-
+  
   map<string,NFmiColorTools::NFmiBlendRule>::iterator iter;
-
+  
   for(iter=itsBlendNames.begin() ; iter!=itsBlendNames.end(); ++iter)
     {
       if(iter->second == theRule)
@@ -649,7 +649,7 @@ const string NFmiColorTools::BlendName(const NFmiColorTools::NFmiBlendRule & the
     }
   static const string MissingBlendName = string("");
   return MissingBlendName;
-
+  
 }
 // ----------------------------------------------------------------------
 // Initialize table of Porter-Duff blending rule names
@@ -659,12 +659,12 @@ const string NFmiColorTools::BlendName(const NFmiColorTools::NFmiBlendRule & the
 void NFmiColorTools::BlendNamesInit(void)
 {
   // Abort if already initialized
-
+  
   if(!itsBlendNames.empty())
     return;
-
+  
 #define BLENDINSERT(N,B) itsBlendNames.insert(make_pair(string(N),B))
-
+  
   BLENDINSERT("Clear",kFmiColorClear);
   BLENDINSERT("Copy",kFmiColorCopy);
   BLENDINSERT("Keep",kFmiColorKeep);
@@ -677,7 +677,7 @@ void NFmiColorTools::BlendNamesInit(void)
   BLENDINSERT("Atop",kFmiColorAtop);
   BLENDINSERT("KeepAtop",kFmiColorKeepAtop);
   BLENDINSERT("Xor",kFmiColorXor);
-
+  
   BLENDINSERT("Plus",kFmiColorPlus);
   BLENDINSERT("Minus",kFmiColorMinus);
   BLENDINSERT("Add",kFmiColorAdd);
@@ -699,10 +699,10 @@ void NFmiColorTools::BlendNamesInit(void)
   BLENDINSERT("Dentmap",kFmiColorDentmap);
   BLENDINSERT("AddContrast",kFmiColorAddContrast);
   BLENDINSERT("ReduceContrast",kFmiColorReduceContrast);
-
+  
   BLENDINSERT("OnOpaque",kFmiColorOnOpaque);
   BLENDINSERT("OnTransparent",kFmiColorOnTransparent);
-
+  
 }
 
 //======================================================================

@@ -23,13 +23,13 @@
 class NFmiEsriBox
 {
 public:
-
+  
   // Constructors, destructors
-
+  
   ~NFmiEsriBox(void) {}
-
+  
   NFmiEsriBox(void) { Init(); }
-
+  
   void Init(void)
   {
     itsValidity = false;
@@ -38,11 +38,11 @@ public:
     itsYmin = 0.0;
     itsYmax = 0.0;
   }
-
+  
   // Data access
-
+  
   bool IsValid(void) const { return itsValidity; }
-
+  
   double Xmin(void) const { return itsXmin; }
   double Xmax(void) const { return itsXmax; }
   double Ymin(void) const { return itsYmin; }
@@ -50,37 +50,37 @@ public:
   
   // Note: There is no direct setting methods for the limits,
   // since we wish to make sure the validity flag is correct
-
+  
   // Update utility
-
+  
   void Update(double theX, double theY)
   {
     if(itsValidity)
       {
-	itsXmin = MIN(itsXmin,theX);
-	itsXmax = MAX(itsXmax,theX);
-	itsYmin = MIN(itsYmin,theY);
-	itsYmax = MAX(itsYmax,theY);
+		itsXmin = MIN(itsXmin,theX);
+		itsXmax = MAX(itsXmax,theX);
+		itsYmin = MIN(itsYmin,theY);
+		itsYmax = MAX(itsYmax,theY);
       }
     else
       {
-	itsXmin = itsXmax = theX;
-	itsYmin = itsYmax = theY;
-	itsValidity = true;
+		itsXmin = itsXmax = theX;
+		itsYmin = itsYmax = theY;
+		itsValidity = true;
       }
   }
-
+  
   void Update(const NFmiEsriBox & theBox)
   {
     if(theBox.IsValid())
       {
-	Update(theBox.Xmin(),theBox.Ymin());
-	Update(theBox.Xmax(),theBox.Ymax());
+		Update(theBox.Xmin(),theBox.Ymin());
+		Update(theBox.Xmax(),theBox.Ymax());
       }
   }
-
+  
 private:
-
+  
   bool itsValidity;
   double itsXmin;
   double itsXmax;

@@ -40,95 +40,95 @@
 // These are the part types that can be in a multipatch
 
 enum NFmiEsriMultiPatchType { kFmiEsriTriangleStrip	= 0,
-			      kFmiEsriTriangleFan	= 1,
- 			      kFmiEsriOuterRing		= 2,
- 			      kFmiEsriInnerRing		= 3,
- 			      kFmiEsriFirstRing		= 4,
- 			      kFmiEsriRing		= 5 };
- 
+							  kFmiEsriTriangleFan	= 1,
+							  kFmiEsriOuterRing		= 2,
+							  kFmiEsriInnerRing		= 3,
+							  kFmiEsriFirstRing		= 4,
+							  kFmiEsriRing		= 5 };
+
 
 class NFmiEsriMultiPatch : public NFmiEsriElement
 {
 public:
-
+  
   // Constructors, destructors
-
+  
   ~NFmiEsriMultiPatch(void) {}
-
+  
   NFmiEsriMultiPatch(int theNumber=0)
     : NFmiEsriElement(kFmiEsriMultiPatch,theNumber)
   {}
-
+  
   NFmiEsriMultiPatch(const std::string & theBuffer, int thePos=0, int theNumber=0);
-
+  
   // Data access
-
+  
   const NFmiEsriBoxZ & Box(void) const	{ return itsBox; }
-
+  
   int NumPoints(void) const		{ return itsPoints.size(); }
   int NumParts(void) const		{ return itsParts.size(); }
-
+  
   const std::vector<int> & Parts(void) const
   { return itsParts; }
   
   const std::vector<NFmiEsriMultiPatchType> & PartTypes(void) const
   { return itsPartTypes; }
-
+  
   const std::vector<NFmiEsriPointZ> & Points(void) const
   { return itsPoints; }
   
   // This is intended to be used by projection etc methods
-
+  
   void Points(const std::vector<NFmiEsriPointZ> & pts) { itsPoints = pts; }
-
+  
   // Adding data
-
+  
   void Add(const NFmiEsriPointZ & thePoint)
   {
     itsPoints.push_back(thePoint);
     itsBox.Update(thePoint.X(),thePoint.Y(),thePoint.Z(),thePoint.M());
     if(NumParts()==0)
       {
-	itsParts.push_back(0);
-	itsPartTypes.push_back(kFmiEsriFirstRing);
+		itsParts.push_back(0);
+		itsPartTypes.push_back(kFmiEsriFirstRing);
       }
   }
-
+  
   // Adding data and beginning a new part
-
+  
   void AddPart(const NFmiEsriPointZ & thePoint, NFmiEsriMultiPatchType theType)
   {
     itsParts.push_back(NumPoints());	// index of next free location
     itsPartTypes.push_back(theType);	// the new type
     Add(thePoint);			// and the first point in it
   }
-
+  
   // Updating bounding boxes
   
   void Update(NFmiEsriBoxZ & theBox) const
   {
     theBox.Update(itsBox);
   }
-
+  
   // String buffer size, write and string
-
+  
   int StringSize(void) const;
   void Write(std::ostream & os) const;
-
+  
   // Projection
-
+  
   void Project(const NFmiEsriProjector & theProjector);
-
+  
 private:
-
+  
   NFmiEsriBoxZ	itsBox;		// Bounding box
   // int	itsNumParts;	// Number of parts = size of itsParts
   // int	itsNumPoints;	// Number of points = size of itsPoints
-
+  
   std::vector<int>				itsParts;	// 1st point in part
   std::vector<NFmiEsriMultiPatchType>	itsPartTypes;	// Part types
   std::vector<NFmiEsriPointZ>		itsPoints;	// Points for all parts
-
+  
 };
 
 #endif // _NFMIESRIMULTIPATCH_H

@@ -43,7 +43,7 @@ struct NFmiColorBlendClear
   {
     return NFmiColorTools::Black;
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -62,7 +62,7 @@ struct NFmiColorBlendCopy
   {
     return src;
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -81,7 +81,7 @@ struct NFmiColorBlendKeep
   {
     return dst;
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -99,31 +99,31 @@ struct NFmiColorBlendOver
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-  // This is as in ImageMagick
+	// This is as in ImageMagick
     
-  if(srca==NFmiColorTools::Transparent)
-    return dst;
+	if(srca==NFmiColorTools::Transparent)
+	  return dst;
     
-  int srcp = NFmiColorTools::MaxAlpha-srca;
-  int dsta = NFmiColorTools::GetAlpha(dst);
-  int dstp = (NFmiColorTools::MaxAlpha-dsta)*srca/NFmiColorTools::MaxAlpha;
+	int srcp = NFmiColorTools::MaxAlpha-srca;
+	int dsta = NFmiColorTools::GetAlpha(dst);
+	int dstp = (NFmiColorTools::MaxAlpha-dsta)*srca/NFmiColorTools::MaxAlpha;
     
-  return NFmiColorTools::MakeColor
-    (
-     (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srca + dstp*dsta                         )/NFmiColorTools::MaxAlpha
-     );
+	return NFmiColorTools::MakeColor
+	  (
+	   (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srca + dstp*dsta                         )/NFmiColorTools::MaxAlpha
+	   );
   }
 };
 
@@ -137,26 +137,26 @@ struct NFmiColorBlendUnder
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-  int srcp = (NFmiColorTools::MaxAlpha-srca)*srca/NFmiColorTools::MaxAlpha;
-  int dsta = NFmiColorTools::GetAlpha(dst);
-  int dstp = NFmiColorTools::MaxAlpha-dsta;
-  
-  return NFmiColorTools::SafeColor
-    (
-     (srcp*srcr +dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcg +dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcb +dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srca +dstp*dsta                         )/NFmiColorTools::MaxAlpha
-     );
+	int srcp = (NFmiColorTools::MaxAlpha-srca)*srca/NFmiColorTools::MaxAlpha;
+	int dsta = NFmiColorTools::GetAlpha(dst);
+	int dstp = NFmiColorTools::MaxAlpha-dsta;
+	
+	return NFmiColorTools::SafeColor
+	  (
+	   (srcp*srcr +dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcg +dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcb +dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srca +dstp*dsta                         )/NFmiColorTools::MaxAlpha
+	   );
   }
 };
 
@@ -170,18 +170,18 @@ struct NFmiColorBlendIn
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);
     int srcp = (NFmiColorTools::MaxAlpha-srca)*(NFmiColorTools::MaxAlpha-dsta)/NFmiColorTools::MaxAlpha;
-  
+	
     return NFmiColorTools::SafeColor
       (srcp*srcr/NFmiColorTools::MaxAlpha,
        srcp*srcg/NFmiColorTools::MaxAlpha,
@@ -201,12 +201,12 @@ struct NFmiColorBlendKeepIn
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -232,12 +232,12 @@ struct NFmiColorBlendOut
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -263,12 +263,12 @@ struct NFmiColorBlendKeepOut
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -294,26 +294,26 @@ struct NFmiColorBlendAtop
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-  int dsta = NFmiColorTools::GetAlpha(dst);
-  int srcp = (NFmiColorTools::MaxAlpha-srca)*(NFmiColorTools::MaxAlpha-dsta)/NFmiColorTools::MaxAlpha;
-  int dstp = (NFmiColorTools::MaxAlpha-dsta)*srca/NFmiColorTools::MaxAlpha;
-
-  return NFmiColorTools::SafeColor
-    (
-     (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srca + dstp*dsta                         )/NFmiColorTools::MaxAlpha
-     );
+	int dsta = NFmiColorTools::GetAlpha(dst);
+	int srcp = (NFmiColorTools::MaxAlpha-srca)*(NFmiColorTools::MaxAlpha-dsta)/NFmiColorTools::MaxAlpha;
+	int dstp = (NFmiColorTools::MaxAlpha-dsta)*srca/NFmiColorTools::MaxAlpha;
+	
+	return NFmiColorTools::SafeColor
+	  (
+	   (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srca + dstp*dsta                         )/NFmiColorTools::MaxAlpha
+	   );
   }
 };
 
@@ -327,26 +327,26 @@ struct NFmiColorBlendKeepAtop
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-  int dsta = NFmiColorTools::GetAlpha(dst);
-  int srcp = (NFmiColorTools::MaxAlpha-srca)*dsta/NFmiColorTools::MaxAlpha;
-  int dstp = (NFmiColorTools::MaxAlpha-dsta)*(NFmiColorTools::MaxAlpha-srca)/NFmiColorTools::MaxAlpha;
-  
-  return NFmiColorTools::SafeColor
-    (
-     (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srca + dstp*dsta         )/NFmiColorTools::MaxAlpha
-     );
+	int dsta = NFmiColorTools::GetAlpha(dst);
+	int srcp = (NFmiColorTools::MaxAlpha-srca)*dsta/NFmiColorTools::MaxAlpha;
+	int dstp = (NFmiColorTools::MaxAlpha-dsta)*(NFmiColorTools::MaxAlpha-srca)/NFmiColorTools::MaxAlpha;
+	
+	return NFmiColorTools::SafeColor
+	  (
+	   (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srca + dstp*dsta         )/NFmiColorTools::MaxAlpha
+	   );
   }
 };
 
@@ -360,25 +360,25 @@ struct NFmiColorBlendXor
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-  int dsta = NFmiColorTools::GetAlpha(dst);
-  int srcp = (NFmiColorTools::MaxAlpha-srca)*dsta/NFmiColorTools::MaxAlpha;
-  int dstp = (NFmiColorTools::MaxAlpha-dsta)*(NFmiColorTools::MaxAlpha-srca)/NFmiColorTools::MaxAlpha;
-  return NFmiColorTools::SafeColor
-    (
-     (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srca + dstp*dsta         )/NFmiColorTools::MaxAlpha
-     );
+	int dsta = NFmiColorTools::GetAlpha(dst);
+	int srcp = (NFmiColorTools::MaxAlpha-srca)*dsta/NFmiColorTools::MaxAlpha;
+	int dstp = (NFmiColorTools::MaxAlpha-dsta)*(NFmiColorTools::MaxAlpha-srca)/NFmiColorTools::MaxAlpha;
+	return NFmiColorTools::SafeColor
+	  (
+	   (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srca + dstp*dsta         )/NFmiColorTools::MaxAlpha
+	   );
   }
 };
 
@@ -396,25 +396,25 @@ struct NFmiColorBlendPlus
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-  int dsta = NFmiColorTools::GetAlpha(dst);
-  int srcp = (NFmiColorTools::MaxAlpha-srca);
-  int dstp = (NFmiColorTools::MaxAlpha-dsta);
-  return NFmiColorTools::SafeColor
-    (
-     (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srca + dstp*dsta                         )/NFmiColorTools::MaxAlpha
-     );
+	int dsta = NFmiColorTools::GetAlpha(dst);
+	int srcp = (NFmiColorTools::MaxAlpha-srca);
+	int dstp = (NFmiColorTools::MaxAlpha-dsta);
+	return NFmiColorTools::SafeColor
+	  (
+	   (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srca + dstp*dsta                         )/NFmiColorTools::MaxAlpha
+	   );
   }
 };
 
@@ -428,25 +428,25 @@ struct NFmiColorBlendMinus
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-  int dsta = NFmiColorTools::GetAlpha(dst);
-  int srcp = (NFmiColorTools::MaxAlpha-srca);
-  int dstp = -(NFmiColorTools::MaxAlpha-dsta);
-  return NFmiColorTools::SafestColor
-    (
-     (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srca + dstp*dsta         )/NFmiColorTools::MaxAlpha
-     );
+	int dsta = NFmiColorTools::GetAlpha(dst);
+	int srcp = (NFmiColorTools::MaxAlpha-srca);
+	int dstp = -(NFmiColorTools::MaxAlpha-dsta);
+	return NFmiColorTools::SafestColor
+	  (
+	   (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srca + dstp*dsta         )/NFmiColorTools::MaxAlpha
+	   );
   }
 };
 
@@ -460,12 +460,12 @@ struct NFmiColorBlendAdd
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -489,12 +489,12 @@ struct NFmiColorBlendSubstract
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -518,12 +518,12 @@ struct NFmiColorBlendMultiply
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -547,12 +547,12 @@ struct NFmiColorBlendDifference
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -577,7 +577,7 @@ struct NFmiColorBlendCopyRed
   {
     return NFmiColorTools::ReplaceRed(dst,NFmiColorTools::GetRed(src));
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -596,7 +596,7 @@ struct NFmiColorBlendCopyGreen
   {
     return NFmiColorTools::ReplaceGreen(dst,NFmiColorTools::GetGreen(src));
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -615,7 +615,7 @@ struct NFmiColorBlendCopyBlue
   {
     return NFmiColorTools::ReplaceBlue(dst,NFmiColorTools::GetBlue(src));
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -634,7 +634,7 @@ struct NFmiColorBlendCopyMatte
   {
     return NFmiColorTools::ReplaceAlpha(dst,NFmiColorTools::GetAlpha(src));
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -652,12 +652,12 @@ struct NFmiColorBlendCopyHue
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -666,9 +666,9 @@ struct NFmiColorBlendCopyHue
     
     float hdst,ldst,sdst;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
-			     NFmiColorTools::GetGreen(dst),
-			     NFmiColorTools::GetBlue(dst),
-			     &hdst,&ldst,&sdst);
+							 NFmiColorTools::GetGreen(dst),
+							 NFmiColorTools::GetBlue(dst),
+							 &hdst,&ldst,&sdst);
     int r,g,b;
     NFmiColorTools::HLStoRGB(hsrc,ldst,sdst,&r,&g,&b);
     
@@ -686,12 +686,12 @@ struct NFmiColorBlendCopyLightness
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -700,9 +700,9 @@ struct NFmiColorBlendCopyLightness
     
     float hdst,ldst,sdst;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
-			     NFmiColorTools::GetGreen(dst),
-			     NFmiColorTools::GetBlue(dst),
-			     &hdst,&ldst,&sdst);
+							 NFmiColorTools::GetGreen(dst),
+							 NFmiColorTools::GetBlue(dst),
+							 &hdst,&ldst,&sdst);
     int r,g,b;
     NFmiColorTools::HLStoRGB(hdst,lsrc,sdst,&r,&g,&b);
     
@@ -720,12 +720,12 @@ struct NFmiColorBlendCopySaturation
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -734,9 +734,9 @@ struct NFmiColorBlendCopySaturation
     
     float hdst,ldst,sdst;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
-			     NFmiColorTools::GetGreen(dst),
-			     NFmiColorTools::GetBlue(dst),
-			     &hdst,&ldst,&sdst);
+							 NFmiColorTools::GetGreen(dst),
+							 NFmiColorTools::GetBlue(dst),
+							 &hdst,&ldst,&sdst);
     
     int r,g,b;
     NFmiColorTools::HLStoRGB(hdst,ldst,ssrc,&r,&g,&b);
@@ -755,12 +755,12 @@ struct NFmiColorBlendKeepMatte
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -778,12 +778,12 @@ struct NFmiColorBlendKeepHue
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -792,9 +792,9 @@ struct NFmiColorBlendKeepHue
     
     float hdst,ldst,sdst;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
-			     NFmiColorTools::GetGreen(dst),
-			     NFmiColorTools::GetBlue(dst),
-			     &hdst,&ldst,&sdst);
+							 NFmiColorTools::GetGreen(dst),
+							 NFmiColorTools::GetBlue(dst),
+							 &hdst,&ldst,&sdst);
     int r,g,b;
     NFmiColorTools::HLStoRGB(hdst,lsrc,ssrc,&r,&g,&b);
     
@@ -812,12 +812,12 @@ struct NFmiColorBlendKeepLightness
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -826,9 +826,9 @@ struct NFmiColorBlendKeepLightness
     
     float hdst,ldst,sdst;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
-			     NFmiColorTools::GetGreen(dst),
-			     NFmiColorTools::GetBlue(dst),
-			     &hdst,&ldst,&sdst);
+							 NFmiColorTools::GetGreen(dst),
+							 NFmiColorTools::GetBlue(dst),
+							 &hdst,&ldst,&sdst);
     int r,g,b;
     NFmiColorTools::HLStoRGB(hsrc,ldst,ssrc,&r,&g,&b);
     
@@ -846,12 +846,12 @@ struct NFmiColorBlendKeepSaturation
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -860,9 +860,9 @@ struct NFmiColorBlendKeepSaturation
     
     float hdst,ldst,sdst;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
-			     NFmiColorTools::GetGreen(dst),
-			     NFmiColorTools::GetBlue(dst),
-			     &hdst,&ldst,&sdst);
+							 NFmiColorTools::GetGreen(dst),
+							 NFmiColorTools::GetBlue(dst),
+							 &hdst,&ldst,&sdst);
     int r,g,b;
     NFmiColorTools::HLStoRGB(hsrc,lsrc,sdst,&r,&g,&b);
     
@@ -880,22 +880,22 @@ struct NFmiColorBlendBumpmap
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int intensity = NFmiColorTools::Intensity(srcr,srcg,srcb);
     return NFmiColorTools::SafeColor(
-	intensity*NFmiColorTools::GetRed  (dst)/NFmiColorTools::MaxIntensity,
-	intensity*NFmiColorTools::GetGreen(dst)/NFmiColorTools::MaxIntensity,
-	intensity*NFmiColorTools::GetBlue (dst)/NFmiColorTools::MaxIntensity,
-	intensity*NFmiColorTools::GetAlpha(dst)/NFmiColorTools::MaxIntensity
-	);
+									 intensity*NFmiColorTools::GetRed  (dst)/NFmiColorTools::MaxIntensity,
+									 intensity*NFmiColorTools::GetGreen(dst)/NFmiColorTools::MaxIntensity,
+									 intensity*NFmiColorTools::GetBlue (dst)/NFmiColorTools::MaxIntensity,
+									 intensity*NFmiColorTools::GetAlpha(dst)/NFmiColorTools::MaxIntensity
+									 );
   }
 };
 
@@ -909,22 +909,22 @@ struct NFmiColorBlendDentmap
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int intensity = NFmiColorTools::Intensity(dst);
     return NFmiColorTools::SafeColor(
-				intensity*srcr/NFmiColorTools::MaxIntensity,
-				intensity*srcg/NFmiColorTools::MaxIntensity,
-				intensity*srcb/NFmiColorTools::MaxIntensity,
-				intensity*srca/NFmiColorTools::MaxIntensity
-				);
+									 intensity*srcr/NFmiColorTools::MaxIntensity,
+									 intensity*srcg/NFmiColorTools::MaxIntensity,
+									 intensity*srcb/NFmiColorTools::MaxIntensity,
+									 intensity*srca/NFmiColorTools::MaxIntensity
+									 );
   }
 };
 
@@ -939,7 +939,7 @@ struct NFmiColorBlendAddContrast
   {
     return NFmiColorTools::AddContrast(dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -958,7 +958,7 @@ struct NFmiColorBlendReduceConstrast
   {
     return NFmiColorTools::ReduceContrast(dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
@@ -976,27 +976,27 @@ struct NFmiColorBlendOnOpaque
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-  int dsta = NFmiColorTools::GetAlpha(dst);
-
-  int dstp = srca+dsta-srca*dsta/NFmiColorTools::MaxAlpha;
-  int srcp = NFmiColorTools::MaxAlpha-dstp;
-
-  return NFmiColorTools::SafeColor
-    (
-     (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srca + dstp*dsta                         )/NFmiColorTools::MaxAlpha
-     );
+	int dsta = NFmiColorTools::GetAlpha(dst);
+	
+	int dstp = srca+dsta-srca*dsta/NFmiColorTools::MaxAlpha;
+	int srcp = NFmiColorTools::MaxAlpha-dstp;
+	
+	return NFmiColorTools::SafeColor
+	  (
+	   (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srca + dstp*dsta                         )/NFmiColorTools::MaxAlpha
+	   );
   }
 };
 
@@ -1010,28 +1010,28 @@ struct NFmiColorBlendOnTransparent
   (NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
-		 NFmiColorTools::GetGreen(src),
-		 NFmiColorTools::GetBlue(src),
-		 NFmiColorTools::GetAlpha(src),
-		 dst);
+				 NFmiColorTools::GetGreen(src),
+				 NFmiColorTools::GetBlue(src),
+				 NFmiColorTools::GetAlpha(src),
+				 dst);
   }
-
+  
   static inline NFmiColorTools::Color Blend
   (int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-  int dsta = NFmiColorTools::GetAlpha(dst);
-  int dstb = NFmiColorTools::MaxAlpha-dsta;
-
-  int dstp = srca+dstb-srca*dstb/NFmiColorTools::MaxAlpha;
-  int srcp = NFmiColorTools::MaxAlpha-dstp;
-
-  return NFmiColorTools::SafeColor
-    (
-     (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
-     (srcp*srca + dstp*dsta                         )/NFmiColorTools::MaxAlpha
-     );
+	int dsta = NFmiColorTools::GetAlpha(dst);
+	int dstb = NFmiColorTools::MaxAlpha-dsta;
+	
+	int dstp = srca+dstb-srca*dstb/NFmiColorTools::MaxAlpha;
+	int srcp = NFmiColorTools::MaxAlpha-dstp;
+	
+	return NFmiColorTools::SafeColor
+	  (
+	   (srcp*srcr + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcg + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srcb + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
+	   (srcp*srca + dstp*dsta                         )/NFmiColorTools::MaxAlpha
+	   );
   }
 };
 

@@ -21,9 +21,9 @@
 // ----------------------------------------------------------------------
 
 void NFmiFontTrueType::Fill(const NFmiText & theText,
-			    NFmiImage & theImage,
-			    NFmiColorTools::Color theColor,
-			    NFmiColorTools::NFmiBlendRule theRule) const
+							NFmiImage & theImage,
+							NFmiColorTools::Color theColor,
+							NFmiColorTools::NFmiBlendRule theRule) const
 {
   
 }
@@ -33,10 +33,10 @@ void NFmiFontTrueType::Fill(const NFmiText & theText,
 // ----------------------------------------------------------------------
 
 void NFmiFontTrueType::Fill(const NFmiText & theText,
-			    NFmiImage & theImage,
-			    const NFmiImage & thePattern,
-			    NFmiColorTools::NFmiBlendRule theRule,
-			    float theAlphaFactor) const
+							NFmiImage & theImage,
+							const NFmiImage & thePattern,
+							NFmiColorTools::NFmiBlendRule theRule,
+							float theAlphaFactor) const
 {
 }
 
@@ -46,9 +46,9 @@ void NFmiFontTrueType::Fill(const NFmiText & theText,
 // ----------------------------------------------------------------------
 
 void NFmiFontTrueType::Stroke(const NFmiText & theText,
-			      NFmiImage & theImage,
-			      NFmiColorTools::Color theColor,
-			      NFmiColorTools::NFmiBlendRule theRule) const
+							  NFmiImage & theImage,
+							  NFmiColorTools::Color theColor,
+							  NFmiColorTools::NFmiBlendRule theRule) const
 {
 }
 
