@@ -10,34 +10,46 @@
 #ifndef IMAGINE_NFMIFREETYPE_H
 #define IMAGINE_NFMIFREETYPE_H
 
-extern "C" {
- #include <ft2build.h>
- #include FT_FREETYPE_H
-}
+#include "NFmiAlignment.h"
+#include "NFmiColorTools.h"
 
+#include "boost/shared_ptr.hpp"
 #include <string>
 
 namespace Imagine
 {
-  class NFmiFace;
+  class NFmiImage;
 
   class NFmiFreeType
   {
   public:
 
 	static NFmiFreeType & Instance();
-	NFmiFace Face(const std::string & theFile, int theWidth, int theHeight);
+
+	void Draw(NFmiImage & theImage,
+			  const std::string & theFont, int theWidth, int theHeight,
+			  int theX, int theY,
+			  const std::string & theText,
+			  NFmiAlignment theAlignment = kFmiAlignNorthWest,
+			  NFmiColorTools::Color theColor = NFmiColorTools::Black,
+			  NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorOnOpaque,
+			  bool theBackgroundOn = false,
+			  int theBackgroundWidth = 3,
+			  int theBackgroundHeight = 3,
+			  NFmiColorTools::Color theBackgroundColor  = NFmiColorTools::MakeColor(180,180,180,32),
+			  NFmiColorTools::NFmiBlendRule theBackgroundRule = NFmiColorTools::kFmiColorOnOpaque) const;
 
   private:
 
+	class Pimple;
+	boost::shared_ptr<Pimple> itsPimple;
+
+	// Private - only NFmiFreeType itself is allowed to call these
 	~NFmiFreeType();
 	NFmiFreeType();
 
-	void Init();
-	bool itsInitialized;
-	FT_Library itsLibrary;
+	// Disabled intentionally:
 
-	// Not implemented:
 	NFmiFreeType(const NFmiFreeType & theOb);
 	NFmiFreeType & operator=(const NFmiFreeType & theOb);
 

@@ -12,12 +12,6 @@
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"
 
-extern "C" {
- #include <ft2build.h>
- #include FT_FREETYPE_H
-}
-
-#include "boost/shared_ptr.hpp"
 #include <string>
 
 namespace Imagine
@@ -30,9 +24,13 @@ namespace Imagine
   public:
 
 	~NFmiFace();
+	NFmiFace(const std::string & theFontSpec);
+	NFmiFace(const std::string & theFile, int theWidth, int theHeight);
+#ifndef NO_COMPILER_GENERATED
 	NFmiFace(const NFmiFace & theFace);
 	NFmiFace & operator=(const NFmiFace & theFace);
-	
+#endif
+
 	void Background(bool theMode);
 	void BackgroundMargin(int theWidth, int theHeight);
 	void BackgroundColor(NFmiColorTools::Color theColor);
@@ -47,16 +45,18 @@ namespace Imagine
 
   private:
 
-	friend class NFmiFreeType;
-	NFmiFace(FT_Library & theLibrary,
-			 const std::string & theFile,
-			 int theWidth,
-			 int theHeight);
-
 	NFmiFace();
 
-	class Pimple;
-	boost::shared_ptr<Pimple> itsPimple;
+	std::string itsFile;
+	int itsWidth;
+	int itsHeight;
+
+	bool itsBackgroundOn;
+	int itsBackgroundWidth;
+	int itsBackgroundHeight;
+	NFmiColorTools::Color itsBackgroundColor;
+	NFmiColorTools::NFmiBlendRule itsBackgroundRule;
+
 
   }; // class NFmiFace
 } // namespace Imagine
