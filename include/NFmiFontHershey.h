@@ -81,6 +81,6 @@ namespace Imagine
 
 } // namespace Imagine
   
-#endif // IMAGINE_NFMIFONRHERSHEY_H
+#endif // IMAGINE_NFMIFONTHERSHEY_H
   
 // ======================================================================
