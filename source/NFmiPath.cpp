@@ -344,12 +344,21 @@ void NFmiPath::Translate(float theX, float theY)
 
 void NFmiPath::Scale(float theScale)
 {
+	Scale(theScale, theScale);
+}
+
+// ----------------------------------------------------------------------
+// Scale the path by the given amounts in x- and y-directions
+// ----------------------------------------------------------------------
+
+void NFmiPath::Scale(float theXScale, float theYScale)
+{
   NFmiPathData::iterator iter;
   
   for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
     {
-      iter->X(iter->X()*theScale);
-      iter->Y(iter->Y()*theScale);
+      iter->X(iter->X()*theXScale);
+      iter->Y(iter->Y()*theYScale);
     }
 }
 
@@ -647,6 +656,9 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 		  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
 			os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
 
+		  else
+			os += " ";
+
 		  os += ftoa((iter->X()-last_x)) + "," + ftoa((iter->Y()-last_y));
 		}
 	  
@@ -661,6 +673,9 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 
 		  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
 			os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
+
+		  else
+			os += " ";
 
 		  os += ftoa(iter->X()) + "," + ftoa(iter->Y());
 		}

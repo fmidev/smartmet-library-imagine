@@ -198,6 +198,10 @@ public:
   
   void Scale(float theScale);
   
+  // Scale the path by the given amounts in x- and y-directions
+  
+  void Scale(float theXScale, float theYScale);
+
   // Apply a general affine transformation
   
   void Transform(NFmiAffine & theAffine);
