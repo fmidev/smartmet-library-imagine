@@ -171,7 +171,7 @@ namespace Imagine
 	// Append a reversed path using a line of desired type
 	
 	void AddReverse(const NFmiPath & thePath, bool fExact);
-
+	
 	// Simplify using Douglas-Peucker algorithm. The input is the
 	// maximum allowed error for any line segment.
 	
