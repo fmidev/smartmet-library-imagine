@@ -58,6 +58,18 @@ void NFmiEdgeTree::Add(const NFmiEdge& theEdge)
 }
 
 // ----------------------------------------------------------------------
+// Add another edge tree into this one.
+// ----------------------------------------------------------------------
+
+void NFmiEdgeTree::Add(const NFmiEdgeTree & theTree)
+{
+  for(EdgeTreeType::const_iterator iter = theTree.itsEdges.begin();
+	  iter != theTree.itsEdges.end();
+	  ++iter)
+	Add(*iter);
+}
+
+// ----------------------------------------------------------------------
 // Build a path from the tree.
 //
 // All path segments will be of maximum possible length. Hence, if

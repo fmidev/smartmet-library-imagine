@@ -61,6 +61,9 @@ public:
   // Adding a single edge
   
   void Add(const NFmiEdge & theEdge);
+
+  // Adding another edge tree
+  void Add(const NFmiEdgeTree & theTree);
   
   // Build a path from the tree.
   
