@@ -34,12 +34,12 @@ namespace Imagine
   
   namespace NFmiGshhsTools
   {
-	NFmiPath ReadPath(const std::string & theFilename,
-					  double theMinLongitude,
-					  double theMinLatitude,
-					  double theMaxLongitude,
-					  double theMaxLatitude,
-					  double theMinArea=-1);
+	const NFmiPath ReadPath(const std::string & theFilename,
+							double theMinLongitude,
+							double theMinLatitude,
+							double theMaxLongitude,
+							double theMaxLatitude,
+							double theMinArea=-1);
 	
   } // namespace NFmiGshhsTools
 

@@ -32,14 +32,14 @@ namespace Imagine
 
 	bool IsClosed(const NFmiPath & thePath);
 
-	NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths & thePaths);
+	const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths & thePaths);
 
-	Segments SplitSegments(const NFmiPath & thePath);
+	const Segments SplitSegments(const NFmiPath & thePath);
 
-	PathList SplitPath(const NFmiPath & thePath);
+	const PathList SplitPath(const NFmiPath & thePath);
 
-	PathList SplitPath(const NFmiPath & thePath,
-					   const NFmiCounter<NFmiPoint> & theCounts);
+	const PathList SplitPath(const NFmiPath & thePath,
+							 const NFmiCounter<NFmiPoint> & theCounts);
 
 	double BezierLength(const NFmiPath & thePath, double theRelativeAccuracy);
 

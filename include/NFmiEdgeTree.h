@@ -59,7 +59,7 @@ namespace Imagine
 	
 	// Build a path from the tree.
 	
-	NFmiPath Path(void) const;
+	const NFmiPath Path(void) const;
 	
 	// Add the tree to a fill map
 	

@@ -237,7 +237,7 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths & thePaths)
+	const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths & thePaths)
 	{
 	  NFmiCounter<NFmiPoint> counts;
 	  
@@ -292,7 +292,7 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	Segments SplitSegments(const NFmiPath & thePath)
+	const Segments SplitSegments(const NFmiPath & thePath)
 	{
 	  Segments out;
 
@@ -365,7 +365,7 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	PathList SplitPath(const NFmiPath & thePath)
+	const PathList SplitPath(const NFmiPath & thePath)
 	{
 	  PathList out;
 
@@ -408,8 +408,8 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	PathList SplitPath(const NFmiPath & thePath,
-					   const NFmiCounter<NFmiPoint> & theCounts)
+	const PathList SplitPath(const NFmiPath & thePath,
+							 const NFmiCounter<NFmiPoint> & theCounts)
 	{
 	  PathList out;
 

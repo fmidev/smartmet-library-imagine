@@ -21,10 +21,10 @@ namespace Imagine
 	int LittleEndianShort(const std::string & theBuffer, int thePos);
 	double LittleEndianDouble(const std::string & theBuffer, int thePos);
 	
-	std::string BigEndianInt(int theValue);
-	std::string LittleEndianInt(int theValue);
-	std::string LittleEndianDouble(double theValue);
-	std::string LittleEndianShort(int theValue);
+	const std::string BigEndianInt(int theValue);
+	const std::string LittleEndianInt(int theValue);
+	const std::string LittleEndianDouble(double theValue);
+	const std::string LittleEndianShort(int theValue);
 	
 	bool EsriRead(std::istream & is, std::string & theString, unsigned int theLength);
 	

@@ -520,7 +520,7 @@ namespace Imagine
   // Note: Bezier curve bounding boxes not implemented yet
   // ----------------------------------------------------------------------
   
-  NFmiEsriBox NFmiPath::BoundingBox(void) const
+  const NFmiEsriBox NFmiPath::BoundingBox(void) const
   {
 	NFmiEsriBox box;
 	
@@ -997,7 +997,7 @@ namespace Imagine
 	
   }
   
-  NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, double theMargin) const
+  const NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, double theMargin) const
   {
 	if(itsElements.empty())
 	  return *this;

@@ -16,7 +16,6 @@
 #ifndef IMAGINE_NFMIESRIATTRIBUTENAME_H
 #define IMAGINE_NFMIESRIATTRIBUTENAME_H
 
-#include "NFmiGlobals.h"
 #include <string>
 
 namespace Imagine

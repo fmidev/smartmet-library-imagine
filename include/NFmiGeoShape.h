@@ -23,16 +23,16 @@
 
 namespace Imagine
 {
-
+  
   // Implemented shape types
-
+  
   enum NFmiGeoShapeType
 	{
 	  kFmiGeoShapeEsri,			// ESRI shapefiles (.shp,.shx,.dbf)
 	  kFmiGeoShapeShoreLine,	// GMT shoreline databases
 	  kFmiGeoShapeGMT			// GMT type ASCII databases
 	};
-
+  
   //! Generic shape error
   struct NFmiGeoShapeError : public std::runtime_error
   {
@@ -45,16 +45,16 @@ namespace Imagine
   public:
 	
 	// Constructor
-  NFmiGeoShape(void)
-	:itsType(kFmiGeoShapeEsri)
-	,itsEsriShape(0)
-  {}
-
+	NFmiGeoShape(void)
+	  :itsType(kFmiGeoShapeEsri)
+	   ,itsEsriShape(0)
+	{}
+	
 	
 	NFmiGeoShape(const std::string & theFilename,
 				 NFmiGeoShapeType theType = kFmiGeoShapeEsri)
 	  : itsType(theType)
-	  , itsEsriShape(0)
+		, itsEsriShape(0)
 	{
 	  Read(theFilename, theType);
 	}
@@ -76,7 +76,7 @@ namespace Imagine
 	
 	// Create a path from the map data
 	
-	NFmiPath Path(void) const;
+	const NFmiPath Path(void) const;
 	
 	// Add the data to a fill map
 	
@@ -100,30 +100,30 @@ namespace Imagine
 	
 	void WriteImageMap(std::ostream & os, const std::string & theFieldName) const;
 	
-  void Read(const std::string & theFilename, NFmiGeoShapeType theType)
-  {
-	delete itsEsriShape;
-	itsEsriShape = 0;
-    itsType = theType;
-    switch(itsType)
-      {
-      case kFmiGeoShapeEsri:
-		itsEsriShape = new NFmiEsriShape();
-		if(!itsEsriShape->Read(theFilename))
-		  throw NFmiGeoShapeError(std::string("Failed to read shape ")+theFilename);
-		break;
-      case kFmiGeoShapeShoreLine:
-		throw NFmiGeoShapeError("kFmiGeoShapeShoreLine not implemented");
-      case kFmiGeoShapeGMT:
-		throw NFmiGeoShapeError("kFmiGeoShapeFMT not implemented");
-      }
-  }
-
+	void Read(const std::string & theFilename, NFmiGeoShapeType theType)
+	{
+	  delete itsEsriShape;
+	  itsEsriShape = 0;
+	  itsType = theType;
+	  switch(itsType)
+		{
+		case kFmiGeoShapeEsri:
+		  itsEsriShape = new NFmiEsriShape();
+		  if(!itsEsriShape->Read(theFilename))
+			throw NFmiGeoShapeError(std::string("Failed to read shape ")+theFilename);
+		  break;
+		case kFmiGeoShapeShoreLine:
+		  throw NFmiGeoShapeError("kFmiGeoShapeShoreLine not implemented");
+		case kFmiGeoShapeGMT:
+		  throw NFmiGeoShapeError("kFmiGeoShapeFMT not implemented");
+		}
+	}
+	
   private:
 	
 	// Path creation
 	
-	NFmiPath PathEsri(void) const;
+	const NFmiPath PathEsri(void) const;
 	
 	// Stroking
 	

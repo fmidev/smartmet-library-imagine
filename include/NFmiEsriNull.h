@@ -51,7 +51,7 @@ namespace Imagine
 	
 	// Conversion to string buffer
 	
-	std::string ToString(void) const
+	const std::string ToString(void) const
 	{
 	  return LittleEndianInt(kFmiEsriNull);
 	}

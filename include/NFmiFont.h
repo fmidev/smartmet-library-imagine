@@ -79,7 +79,7 @@ namespace Imagine
 	// Font-type conversions
 	
 	NFmiFontType FontType(const std::string & theName) const;
-	std::string FontType(NFmiFontType theType) const;
+	const std::string FontType(NFmiFontType theType) const;
 	
 	// Rendering text on an image.
 	
@@ -104,7 +104,7 @@ namespace Imagine
 	
 	// Return text as a path
 	
-	virtual NFmiPath Path(const NFmiText & theText) const
+	virtual const NFmiPath Path(const NFmiText & theText) const
 	{
 	  return NFmiPath();
 	}

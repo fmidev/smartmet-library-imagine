@@ -55,7 +55,7 @@ namespace Imagine
   // Return text as a path
   // ----------------------------------------------------------------------
   
-  NFmiPath NFmiFontTrueType::Path(const NFmiText & theText) const
+  const NFmiPath NFmiFontTrueType::Path(const NFmiText & theText) const
   {
 	NFmiPath outpath;
 	return outpath;

@@ -64,7 +64,7 @@ namespace Imagine
   // an empty path is returned.
   // ----------------------------------------------------------------------
   
-  NFmiPath NFmiGeoShape::Path(void) const
+  const NFmiPath NFmiGeoShape::Path(void) const
   {
 	NFmiPath out;
 	switch(Type())
@@ -179,7 +179,7 @@ namespace Imagine
   //
   // ----------------------------------------------------------------------
   
-  NFmiPath NFmiGeoShape::PathEsri(void) const
+  const NFmiPath NFmiGeoShape::PathEsri(void) const
   {
 	// The result is a single path containing all the moves
 	

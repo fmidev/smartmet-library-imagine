@@ -111,12 +111,12 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 	
-	NFmiPath ReadPath(const std::string & theFilename,
-					  double theMinLongitude,
-					  double theMinLatitude,
-					  double theMaxLongitude,
-					  double theMaxLatitude,
-					  double theMinArea)
+	const NFmiPath ReadPath(const std::string & theFilename,
+							double theMinLongitude,
+							double theMinLatitude,
+							double theMaxLongitude,
+							double theMaxLatitude,
+							double theMinArea)
 	{
 	  // The path to be returned
 	  

@@ -17,10 +17,10 @@ namespace Imagine
   namespace NFmiCardinalBezierFit
   {
 
-	NFmiPath Fit(const NFmiPath & thePath, double theSmoothness);
+	const NFmiPath Fit(const NFmiPath & thePath, double theSmoothness);
 
 	typedef NFmiBezierTools::NFmiPaths NFmiPaths;
-	NFmiPaths Fit(const NFmiPaths & thePaths, double theMaxError);
+	const NFmiPaths Fit(const NFmiPaths & thePaths, double theMaxError);
 
   } // namespace NFmiCardinalBezierFit
 } // namespace Imagine

@@ -78,7 +78,7 @@ namespace Imagine
   // Return text as a path
   // ----------------------------------------------------------------------
   
-  NFmiPath NFmiFontHershey::Path(const NFmiText & theText) const
+  const NFmiPath NFmiFontHershey::Path(const NFmiText & theText) const
   {
 	NFmiPath outpath;
 	

@@ -136,7 +136,7 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	NFmiPath Fit(const NFmiPath & thePath, double theMaxError)
+	const NFmiPath Fit(const NFmiPath & thePath, double theMaxError)
 	{
 	  NFmiPath subpath = SubdividePath(thePath,theMaxError);
 	  return NFmiApproximateBezierFit::Fit(subpath,theMaxError);
@@ -171,7 +171,7 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	NFmiPaths Fit(const NFmiPaths & thePaths, double theMaxError)
+	const NFmiPaths Fit(const NFmiPaths & thePaths, double theMaxError)
 	{
 	  using namespace NFmiBezierTools;
 

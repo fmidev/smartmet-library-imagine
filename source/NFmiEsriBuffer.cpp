@@ -117,7 +117,7 @@ namespace Imagine
   // Return a big endian integer buffer
   // ----------------------------------------------------------------------
   
-  string NFmiEsriBuffer::BigEndianInt(int theValue)
+  const string NFmiEsriBuffer::BigEndianInt(int theValue)
   {
 	int value = theValue;
 	
@@ -144,7 +144,7 @@ namespace Imagine
   // Return a little endian integer buffer
   // ----------------------------------------------------------------------
   
-  string NFmiEsriBuffer::LittleEndianInt(int theValue)
+  const string NFmiEsriBuffer::LittleEndianInt(int theValue)
   {
 	int value = theValue;
 	
@@ -171,7 +171,7 @@ namespace Imagine
   // Return a little endian unsigned short buffer
   // ----------------------------------------------------------------------
   
-  string NFmiEsriBuffer::LittleEndianShort(int theValue)
+  const string NFmiEsriBuffer::LittleEndianShort(int theValue)
   {
 	string tmp(2,'\0');
 	tmp[0] = theValue % 256;
@@ -183,7 +183,7 @@ namespace Imagine
   // Return a little endian double buffer
   // ----------------------------------------------------------------------
   
-  string NFmiEsriBuffer::LittleEndianDouble(double theValue)
+  const string NFmiEsriBuffer::LittleEndianDouble(double theValue)
   {
 	double value = theValue;
 	

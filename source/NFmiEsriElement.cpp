@@ -16,7 +16,7 @@ namespace Imagine
   // Return string value of attribute
   // ----------------------------------------------------------------------
   
-  std::string NFmiEsriElement::GetString(const string &  theName) const
+  const std::string NFmiEsriElement::GetString(const string &  theName) const
   {
 	list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
 	list<NFmiEsriAttribute>::const_iterator end   = itsAttributes.end();

@@ -118,7 +118,7 @@ namespace Imagine
 	bool WantPalette(void) const		{ return itsWantPaletteFlag; }
 	bool ForcePalette(void) const		{ return itsForcePaletteFlag; }
 	float Gamma(void) const		{ return itsGamma; }
-	std::string Intent(void) const	{ return itsIntent; }
+	const std::string Intent(void) const	{ return itsIntent; }
 	
 	void JpegQuality(int quality)		{ itsJpegQuality = quality; }
 	void PngQuality(int quality)		{ itsPngQuality = quality; }

@@ -17,10 +17,10 @@ namespace Imagine
   namespace NFmiApproximateBezierFit
   {
 
-	NFmiPath Fit(const NFmiPath & thePath, double theMaxError);
+	const NFmiPath Fit(const NFmiPath & thePath, double theMaxError);
 
 	typedef NFmiBezierTools::NFmiPaths NFmiPaths;
-	NFmiPaths Fit(const NFmiPaths & thePaths, double theMaxError);
+	const NFmiPaths Fit(const NFmiPaths & thePaths, double theMaxError);
 
   } // namespace NFmiApproximateBezierFit
 } // namespace Imagine

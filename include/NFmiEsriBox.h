@@ -20,8 +20,6 @@
 #define MAX(a,b) ((a)>(b) ? (a) : (b))
 #endif
 
-#include "NFmiGlobals.h"
-
 namespace Imagine
 {
 

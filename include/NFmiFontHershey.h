@@ -71,7 +71,7 @@ namespace Imagine
 	
 	// Return text as a path
 	
-	NFmiPath Path(const NFmiText & theText) const;
+	const NFmiPath Path(const NFmiText & theText) const;
 	
 	// Data-part
 	

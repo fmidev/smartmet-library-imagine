@@ -909,7 +909,7 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	NFmiPath Fit(const NFmiPath & thePath, double theMaxError)
+	const NFmiPath Fit(const NFmiPath & thePath, double theMaxError)
 	{
 	  using namespace NFmiBezierTools;
 
@@ -957,7 +957,7 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	NFmiPaths Fit(const NFmiPaths & thePaths, double theMaxError)
+	const NFmiPaths Fit(const NFmiPaths & thePaths, double theMaxError)
 	{
 	  using namespace NFmiBezierTools;
 

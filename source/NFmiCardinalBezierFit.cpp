@@ -187,7 +187,7 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	NFmiPath Fit(const NFmiPath & thePath, double theSmoothness)
+	const NFmiPath Fit(const NFmiPath & thePath, double theSmoothness)
 	{
 	  using namespace NFmiBezierTools;
 
@@ -236,7 +236,7 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	NFmiPaths Fit(const NFmiPaths & thePaths, double theSmoothness)
+	const NFmiPaths Fit(const NFmiPaths & thePaths, double theSmoothness)
 	{
 	  using namespace NFmiBezierTools;
 

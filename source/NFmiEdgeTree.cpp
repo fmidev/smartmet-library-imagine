@@ -68,7 +68,7 @@ namespace Imagine
   //
   // ----------------------------------------------------------------------
   
-  NFmiPath NFmiEdgeTree::Path(void) const
+  const NFmiPath NFmiEdgeTree::Path(void) const
   {
 	// The result is a path containing only closed subpaths
 	

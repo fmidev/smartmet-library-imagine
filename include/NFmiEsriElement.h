@@ -61,7 +61,7 @@ namespace Imagine
 	
 	// Returning an attribute value
 	
-	std::string GetString(const std::string & theName) const;
+	const std::string GetString(const std::string & theName) const;
 	int GetInteger(const std::string & theName) const;
 	double GetDouble(const std::string & theName) const;
 	
