@@ -244,13 +244,32 @@ namespace Imagine
 	NFmiPoint ComputeCenterTangent(const NFmiPathData & thePath,
 								   unsigned int thePos)
 	{
-	  const double dx1 = thePath[thePos-1].X() - thePath[thePos].X();
-	  const double dy1 = thePath[thePos-1].Y() - thePath[thePos].Y();
-	  const double dx2 = thePath[thePos].X() - thePath[thePos+1].X();
-	  const double dy2 = thePath[thePos].Y() - thePath[thePos+1].Y();
-	  const double dx = (dx1+dx2)/2;
-	  const double dy = (dy1+dy2)/2;
-	  return Tangent(dx,dy);
+	  // Assume we have points p2,p3,p4 and p3 is the split
+	  // point. Then if p2==p4, the tangent estimated at p3
+	  // is (0,0). Hence we must iterate further to get
+	  // some tangent estimate, we use p1,p5 and so on until
+	  // we get a result
+
+	  for(unsigned int d=1; d<thePath.size(); d++)
+		{
+		  int prev = (thePos>=d ? thePos-d : 0);
+		  int next = (thePos+d<thePath.size() ? thePos+d : thePath.size()-1);
+
+		  double dx1 = thePath[prev].X() - thePath[thePos].X();
+		  double dy1 = thePath[prev].Y() - thePath[thePos].Y();
+		  double dx2 = thePath[thePos].X() - thePath[next].X();
+		  double dy2 = thePath[thePos].Y() - thePath[next].Y();
+		  double dx = (dx1+dx2)/2;
+		  double dy = (dy1+dy2)/2;
+
+		  if(dx!=0 || dy!=0)
+			return Tangent(dx,dy);
+		}
+
+	  // Make some stupid guess in case the entire curve is
+	  // a big spike.
+
+	  return Tangent(1,0);
 	  
 	}
 
