@@ -1,7 +1,7 @@
 LIB = imagine
 
 CC = g++
-CFLAGS = -DUNIX -O2 -g -Wall
+CFLAGS = -DUNIX -g -Wall
 LDFLAGS = -s
 ARFLAGS = -r
 INCLUDES = -I $(includedir)/newbase -I/usr/local/include/freetype2

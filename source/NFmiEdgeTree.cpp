@@ -19,17 +19,6 @@
 using namespace std;
 
 // ----------------------------------------------------------------------
-// Constructor
-// ----------------------------------------------------------------------
-
-NFmiEdgeTree::NFmiEdgeTree(void)
-{
-#ifdef EDGETREE_HASH
-  itsEdges.resize(10000);
-#endif
-}
-
-// ----------------------------------------------------------------------
 // Add a contour edge to the set of unique edges. If the edge exists in
 // the set already, it is removed.
 // ----------------------------------------------------------------------
