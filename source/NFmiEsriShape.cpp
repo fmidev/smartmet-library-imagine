@@ -130,6 +130,13 @@
 //
 // ======================================================================
 
+#ifdef GCC_MAJOR_VERSION
+ #if GCC_MAJOR_VERSION < 3
+  #define PERKELEEN_296					
+ #endif
+#endif
+
+
 #include "NFmiEsriShape.h"
 #include "NFmiEsriNull.h"
 #include "NFmiEsriPointZ.h"
@@ -141,6 +148,9 @@
 #include "NFmiFileSystem.h"
 #include "NFmiSettings.h"
 #include "NFmiTime.h"
+#ifdef PERKELEEN_296
+ #include "NFmiValueString.h"
+#endif
 
 #include <cassert>
 #include <fstream>
@@ -864,11 +874,19 @@ namespace Imagine
 					  const double value = element->GetDouble(name);
 					  const int length = (*jt)->FieldLength();
 					  const int decimals = (*jt)->DecimalCount();
+#ifdef PERKELEEN_296					
+					  // Perkeleen g++ v2.96, std::fixed puuttuu
+					  NFmiString str = NFmiValueString::GetStringWithMaxDecimalsSmartWay(value,decimals);
+					  dbffile << setw(length)
+							  << setfill(' ')
+							  << str.CharPtr();
+#else
 					  dbffile << setw(length)
 							  << setfill(' ')
 							  << fixed
 							  << setprecision(decimals)
 							  << value;
+#endif
 					  break;
 					}
 				  }
