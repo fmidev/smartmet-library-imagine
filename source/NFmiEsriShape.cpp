@@ -137,8 +137,10 @@
 #include "NFmiEsriPolyLineZ.h"
 #include "NFmiEsriPolygonZ.h"
 #include "NFmiEsriMultiPatch.h"
+
 #include "NFmiFileSystem.h"
 #include "NFmiSettings.h"
+#include "NFmiTime.h"
 
 #include <cassert>
 #include <fstream>
@@ -733,7 +735,12 @@ namespace Imagine
 	// Handle the special case of no attributes by writing
 	// a dummy database.
 
-	dbffile << "\x03\x5f\x07\x1a"	// signature + date?
+	NFmiTime date;
+
+	dbffile << '\x03'	// plain dBaseIII+ file without extras
+			<< static_cast<unsigned char>(date.GetYear()-1900)
+			<< static_cast<unsigned char>(date.GetMonth())
+			<< static_cast<unsigned char>(date.GetDay())
 			<< LittleEndianInt(element_count);
 
 	if(itsAttributeNames.empty())
