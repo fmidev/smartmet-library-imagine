@@ -189,10 +189,15 @@ namespace Imagine
 		  // Correct test for Eurasia
 		  if(ee < ww)
 			{
-			  outside = ((theMinLongitude > ee && theMinLongitude < ww) ||
-						 (theMaxLongitude > ee && theMaxLongitude < ww) ||
-						 s>theMaxLatitude ||
-						 n<theMinLatitude);
+			  bool outside1 = (ww>theMaxLongitude ||
+							   s>theMaxLatitude ||
+							   n<theMinLatitude);
+
+			  bool outside2 = (ee<theMinLongitude ||
+							   s>theMaxLatitude ||
+							   n<theMinLatitude);
+
+			  outside = (outside1 && outside2);
 			}
 
 		  if(outside || (area<theMinArea && theMinArea>=0))
