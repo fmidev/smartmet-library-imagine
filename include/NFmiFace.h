@@ -33,12 +33,17 @@ namespace Imagine
 	NFmiFace(const NFmiFace & theFace);
 	NFmiFace & operator=(const NFmiFace & theFace);
 	
+	void Background(bool theMode);
+	void BackgroundMargin(int theWidth, int theHeight);
+	void BackgroundColor(NFmiColorTools::Color theColor);
+	void BackgroundRule(NFmiColorTools::NFmiBlendRule theRule);
+
 	void Draw(NFmiImage & theImage,
 			  int theX, int theY,
 			  const std::string & theText,
 			  NFmiAlignment theAlignment = kFmiAlignNorthWest,
 			  NFmiColorTools::Color theColor = NFmiColorTools::Black,
-			  NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorAtop) const;
+			  NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorOnOpaque) const;
 
   private:
 

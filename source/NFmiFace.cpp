@@ -31,6 +31,7 @@
 #include "NFmiColorBlend.h"
 #include "NFmiFreeType.h"
 #include "NFmiImage.h"
+#include "NFmiPath.h"
 
 #include "NFmiFileSystem.h"
 #include "NFmiSettings.h"
@@ -76,6 +77,12 @@ namespace Imagine
 			  NFmiAlignment theAlignment,
 			  NFmiColorTools::Color theColor);
 
+	void Background(bool theMode) { itsBackgroundOn = theMode; }
+	void BackgroundWidth(int theWidth) { itsBackgroundWidth = theWidth; }
+	void BackgroundHeight(int theHeight) { itsBackgroundHeight = theHeight; }
+	void BackgroundColor(NFmiColorTools::Color theColor) { itsBackgroundColor = theColor; }
+	void BackgroundRule(NFmiColorTools::NFmiBlendRule theRule) { itsBackgroundRule = theRule; }
+
   private:
 
 	Pimple();
@@ -96,6 +103,13 @@ namespace Imagine
 	string itsFile;
 	int itsWidth;
 	int itsHeight;
+
+	bool itsBackgroundOn;
+	int itsBackgroundWidth;
+	int itsBackgroundHeight;
+	NFmiColorTools::Color itsBackgroundColor;
+	NFmiColorTools::NFmiBlendRule itsBackgroundRule;
+
 	FT_Face itsFace;
 
   }; // class NFmiFace::Pimple
@@ -124,6 +138,11 @@ namespace Imagine
 	: itsFile(theFile)
 	, itsWidth(theWidth)
 	, itsHeight(theHeight)
+	, itsBackgroundOn(false)
+	, itsBackgroundWidth(3)
+	, itsBackgroundHeight(3)
+	, itsBackgroundColor(NFmiColorTools::MakeColor(180,180,180,32))
+	, itsBackgroundRule(NFmiColorTools::kFmiColorOnOpaque)
   {
 	if(itsWidth < 0 || itsHeight < 0)
 	  throw runtime_error("Face width and height cannot both be zero");
@@ -288,6 +307,25 @@ namespace Imagine
 	const int start_x = static_cast<int>(64*(theX - xfactor*width));
 	const int start_y = static_cast<int>(64*(theY + (1- yfactor)*height));
 
+	// Render the background
+
+	if(itsBackgroundOn)
+	  {
+		const int x1 = (start_x >> 6) - itsBackgroundWidth;
+		const int y2 = (start_y >> 6) + itsBackgroundHeight;
+		const int x2 = x1 + width  + 2*itsBackgroundWidth;
+		const int y1 = y2 - height - 2*itsBackgroundHeight;
+
+		NFmiPath path;
+		path.MoveTo(x1,y1);
+		path.LineTo(x2,y1);
+		path.LineTo(x2,y2);
+		path.LineTo(x1,y2);
+		path.CloseLineTo();
+
+		path.Fill(theImage,itsBackgroundColor,itsBackgroundRule);
+	  }
+
 	// And render the glyphs
 
 	for(i = 0; i<glyphs.size(); i++)
@@ -412,6 +450,60 @@ namespace Imagine
 					 int theHeight)
 	: itsPimple(new Pimple(theLibrary,theFile,theWidth,theHeight))
   {
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Set background rendering on or off
+   */
+  // ----------------------------------------------------------------------
+
+  void NFmiFace::Background(bool theMode)
+  {
+	itsPimple->Background(theMode);
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Set background margins
+   *
+   * \param theWidth The extra padding in x-direction
+   * \param theHeight The extra padding in y-direction
+   */
+  // ----------------------------------------------------------------------
+
+  void NFmiFace::BackgroundMargin(int theWidth, int theHeight)
+  {
+	if(theWidth < 0 || theHeight < 0)
+	  throw runtime_error("Background margins must be nonnegative");
+	itsPimple->BackgroundWidth(theWidth);
+	itsPimple->BackgroundHeight(theHeight);
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Set background color
+   *
+   * \param theColor The background color
+   */
+  // ----------------------------------------------------------------------
+
+  void NFmiFace::BackgroundColor(NFmiColorTools::Color theColor)
+  {
+	itsPimple->BackgroundColor(theColor);
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Set background blending rule
+   *
+   * \param theRule The blending rule
+   */
+  // ----------------------------------------------------------------------
+
+  void NFmiFace::BackgroundRule(NFmiColorTools::NFmiBlendRule theRule)
+  {
+	itsPimple->BackgroundRule(theRule);
   }
 
   // ----------------------------------------------------------------------

@@ -11,6 +11,7 @@
 #include "NFmiFileSystem.h"
 #include "NFmiFreeType.h"
 #include "NFmiImage.h"
+#include "NFmiPath.h"
 
 #include <iostream>
 
@@ -26,7 +27,14 @@ void demo()
   NFmiColorTools::Color white = NFmiColorTools::MakeColor(255,255,255);
   NFmiImage image(width,height,white);
 
-#if 1
+  NFmiPath path;
+  path.MoveTo(0,0);
+  path.LineTo(width,height);
+  path.MoveTo(width,0);
+  path.LineTo(0,height);
+  path.Stroke(image,NFmiColorTools::MakeColor(0,255,0));
+
+#if 0
   const string font = "ttf/ArialNarrow.ttf";
   NFmiFace face(NFmiFreeType::Instance().Face(font,0,20));
 #else  
@@ -38,10 +46,14 @@ void demo()
   face.Draw(image,width/2,0,"North",kFmiAlignNorth);
   face.Draw(image,width,0,"NorthEast",kFmiAlignNorthEast);
 
+  face.Background(true);
+  // face.BackgroundRule(NFmiColorTools::kFmiColorOver);
   face.Draw(image,0,height/2,"West",kFmiAlignWest);
   face.Draw(image,width/2,height/2,"Center",kFmiAlignCenter);
   face.Draw(image,width,height/2,"East",kFmiAlignEast);
 
+  face.BackgroundColor(NFmiColorTools::MakeColor(255,0,0));
+  // face.BackgroundRule(NFmiColorTools::kFmiColorAtop);
   face.Draw(image,0,height,"SouthWest",kFmiAlignSouthWest);
   face.Draw(image,width/2,height,"South",kFmiAlignSouth);
   face.Draw(image,width,height,"SouthEast",kFmiAlignSouthEast);
