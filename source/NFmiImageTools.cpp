@@ -93,6 +93,47 @@ namespace Imagine
 		  }
 	}
 
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Determine image mime-type from image header
+	 *
+	 * Throws if the image format is unknown
+	 *
+	 * \param theFileName The file containing the image
+	 * \return "png", "jpeg" or "gif"
+	 */
+	// ----------------------------------------------------------------------
+
+	std::string MimeType(const string & theFileName)
+	{
+	  FILE * in;
+	  in = fopen(theFileName.c_str(), "rb");
+	  if(in == NULL)
+		throw runtime_error("Unable to determine image type of '"+theFileName+"'");
+
+	  unsigned char strmagic[4];
+	  size_t num = fread(strmagic,1,4,in);
+	  fclose(in);
+
+	  if(num != 4)
+		throw runtime_error("Failed to read image magic number from '"+theFileName+"'");
+
+	  unsigned long magic = (static_cast<unsigned long>(strmagic[0]) << 24)
+		+(static_cast<unsigned long>(strmagic[1]) << 16)
+		+(static_cast<unsigned long>(strmagic[2]) << 8)
+		+(static_cast<unsigned long>(strmagic[3]));
+
+	  if(magic == 0xffd8ffe0)
+		return "jpeg";
+	  else if(magic == 0x89504e47)
+		return "png";
+	  else if(magic == 0x47494638)
+		return "gif";
+	  else
+		throw runtime_error("Unknown image format in '"+theFileName+"'");
+	  
+	}
+
   } // namespace NFmiImageTools
 
 } // namespace Imagine

@@ -5,6 +5,8 @@
  */
 // ======================================================================
 
+#include <string>
+
 namespace Imagine
 {
   class NFmiImage;
@@ -16,6 +18,8 @@ namespace Imagine
 					  int theGreenBits = 8,
 					  int theBlueBits = 8,
 					  int theAlphaBits = 8);
+
+	std::string MimeType(const std::string & theFileName);
 
   } // namespace NFmiImageTools
 
