@@ -57,10 +57,6 @@ namespace Imagine
 	
 	static_cast<void>(jpeg_read_header(&cinfo, TRUE));
 	
-	// This is the only NFmiImage method being used:
-	
-	Allocate(cinfo.output_width,cinfo.output_height);
-	
 	// We can ignore the return value from jpeg_read_header since
 	//   (a) suspension is not possible with the stdio data source, and
 	//   (b) we passed TRUE to reject a tables-only JPEG file as an error.
@@ -95,15 +91,22 @@ namespace Imagine
 	// Make a one-row-high sample array that will go away when done with image
 	
 	JSAMPROW row = static_cast<JSAMPROW>(calloc(cinfo.output_width*3,sizeof(JSAMPLE)));
+	if(row == NULL)
+	  throw runtime_error("Failed to allocate memory for a JPEG data row");
+
 	JSAMPROW rowptr[1];
 	rowptr[0] = row;
 	
 	// Step 6: while (scan lines remain to be read)
 	//           jpeg_read_scanlines(...);
+
+	// This is the only NFmiImage method being used:
 	
+	Allocate(cinfo.output_width,cinfo.output_height);
+
 	// Here we use the library's state variable cinfo.output_scanline as the
-	//loop counter, so that we don't have to keep track ourselves.
-	
+	// loop counter, so that we don't have to keep track ourselves.
+
 	for(unsigned int j=0; j<cinfo.output_height; j++)
 	  {
 		// jpeg_read_scanlines expects an array of pointers to scanlines.
