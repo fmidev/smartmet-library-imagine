@@ -41,6 +41,8 @@ namespace Imagine
 	PathList SplitPath(const NFmiPath & thePath,
 					   const NFmiCounter<NFmiPoint> & theCounts);
 
+	double BezierLength(const NFmiPath & thePath, double theRelativeAccuracy);
+
   } // namespace NFmiBezierTools
 } // namespace Imagine
 

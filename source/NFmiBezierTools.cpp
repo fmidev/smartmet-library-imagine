@@ -21,6 +21,8 @@
 #include "NFmiCounter.h"
 #include "NFmiPath.h"
 
+#include "NFmiGeoTools.h"
+
 #include <stdexcept>
 #include <utility>
 #include <vector>
@@ -64,6 +66,137 @@ namespace Imagine
 		
 		if(!outpath.Empty())
 		  theList.push_back(outpath);
+	  }
+
+	  // ----------------------------------------------------------------------
+	  /*!
+	   * \brief Split a Bezier
+	   *
+	   * We assume the path data starts with a moveto and then
+	   *
+	   *  - for a size-3 data is followed by 2 conicto commands
+	   *  - for a size-4 data is followed by 3 cubicto commands
+	   *
+	   * All other sizes are error conditions
+	   *
+	   * \param thePath The path to split
+	   * \return Pair of splitted paths
+	   */
+	  // ----------------------------------------------------------------------
+
+	  std::pair<NFmiPath,NFmiPath> BezierSplit(const NFmiPath & thePath)
+	  {
+		const NFmiPathData & path = thePath.Elements();
+
+		if(path.size() == 3)
+		  {
+			const double x1 = path[0].X();
+			const double y1 = path[0].Y();
+			double cx = path[1].X();
+			double cy = path[1].Y();
+			const double x2 = path[2].X();
+			const double y2 = path[2].Y();
+
+			const double cx1 = (x1 + cx) / 2.0;
+			const double cy1 = (y1 + cy) / 2.0;
+			const double cx2 = (x2 + cx) / 2.0;
+			const double cy2 = (y2 + cy) / 2.0;
+			cx = (cx1 + cx2) / 2.0;
+			cy = (cy1 + cy2) / 2.0;
+
+			NFmiPath left;
+			left.MoveTo(x1,y1);
+			left.ConicTo(cx1,cy1);
+			left.ConicTo(cx,cy);
+
+			NFmiPath right;
+			right.MoveTo(cx,cy);
+			right.ConicTo(cx2,cy2);
+			right.ConicTo(x2,y2);
+
+			return std::make_pair(left,right);
+
+		  }
+		else if(path.size() == 4)
+		  {
+			const double x1 = path[0].X();
+			const double y1 = path[0].Y();
+			double cx1 = path[1].X();
+			double cy1 = path[1].Y();
+			double cx2 = path[2].X();
+			double cy2 = path[2].Y();
+			const double x2 = path[3].X();
+			const double y2 = path[3].Y();
+
+			double cx = (cx1 + cx2) / 2.0;
+			double cy = (cy1 + cy2) / 2.0;
+			cx1 = (x1 + cx1) / 2.0;
+			cy1 = (y1 + cy1) / 2.0;
+			cx2 = (x2 + cx2) / 2.0;
+			cy2 = (y2 + cy2) / 2.0;
+			const double cx12 = (cx1 + cx) / 2.0;
+			const double cy12 = (cy1 + cy) / 2.0;
+			const double cx21 = (cx2 + cx) / 2.0;
+			const double cy21 = (cy2 + cy) / 2.0;
+			cx = (cx12 + cx21) / 2.0;
+			cy = (cy12 + cy21) / 2.0;
+
+			NFmiPath left;
+			left.MoveTo(x1,y1);
+			left.CubicTo(cx1,cx1);
+			left.CubicTo(cx12,cy12);
+			left.CubicTo(cx,cy);
+
+			NFmiPath right;
+			right.MoveTo(cx,cy);
+			right.CubicTo(cx21,cy21);
+			right.CubicTo(cx2,cy2);
+			right.CubicTo(x2,y2);
+
+			return std::make_pair(left,right);
+
+		  }
+		else
+		  throw std::runtime_error("BezierSplit does not support arbitrary Bezier degrees");
+	  }
+
+	  // ----------------------------------------------------------------------
+	  /*!
+	   * \brief Recursive Bezier length calculation
+	   */
+	  // ----------------------------------------------------------------------
+
+	  double BezierLengthRecursion(const NFmiPath & thePath,
+								   double theRelativeAccuracy)
+	  {
+		const int n = thePath.Size()-1;
+		double arclength = 0;
+		for(int i=0; i<n; i++)
+		  arclength += NFmiGeoTools::Distance(thePath.Elements()[i].X(),
+											  thePath.Elements()[i].Y(),
+											  thePath.Elements()[i+1].X(),
+											  thePath.Elements()[i+1].Y());
+		
+		const double chordlength
+		  = NFmiGeoTools::Distance(thePath.Elements().front().X(),
+								   thePath.Elements().front().Y(),
+								   thePath.Elements().back().X(),
+								   thePath.Elements().back().Y());
+
+		const double len = (2*chordlength + (n-1)*arclength)/(n+1);
+		const double err = arclength - chordlength;
+
+		if(err/len <= theRelativeAccuracy)
+		  {
+			return len;
+		  }
+		else
+		  {
+			std::pair<NFmiPath,NFmiPath> parts = BezierSplit(thePath);
+			double l1 = BezierLengthRecursion(parts.first,2*theRelativeAccuracy);
+			double l2 = BezierLengthRecursion(parts.second,2*theRelativeAccuracy);
+			return l1+l2;
+		  }
 	  }
 	  
 	} // namespace anonymous
@@ -350,6 +483,44 @@ namespace Imagine
 		}
 
 	  return out;
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Approximate the length of a Bezier segment
+	 *
+	 * We assume the path data starts with a moveto and then
+	 *
+	 *  - for a size-2 data is followed by a lineto
+	 *  - for a size-3 data is followed by 2 conicto commands
+	 *  - for a size-4 data is followed by 3 cubicto commands
+	 *
+	 * \param thePath The Bezier curve
+	 * \param theRelativeAccuracy The desired relative accuracy
+	 * \return The estimated length of the Bezier segment
+	 */
+	// ----------------------------------------------------------------------
+
+	double BezierLength(const NFmiPath & thePath, double theRelativeAccuracy)
+	{
+	  switch(thePath.Size())
+		{
+		case 0:
+		case 1:
+		  return 0;
+		case 2:
+		  return NFmiGeoTools::Distance(thePath.Elements().front().X(),
+										thePath.Elements().front().Y(),
+										thePath.Elements().back().X(),
+										thePath.Elements().back().Y());
+		case 3:
+		case 4:
+		  {
+			return BezierLengthRecursion(thePath,theRelativeAccuracy);
+		  }
+		default:
+		  throw std::runtime_error("NFmiBezierTools::BezierLength not implemented for high degree basis");
+		}
 	}
 
 
