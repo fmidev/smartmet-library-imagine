@@ -99,13 +99,13 @@ public:
   
   void Fill(NFmiImage & theImage,
 			NFmiColorTools::Color theColor,
-			NFmiColorTools::NFmiBlendRule theRule);
+			NFmiColorTools::NFmiBlendRule theRule) const;
   
   void Fill(NFmiImage & theImage,
 			const NFmiImage & thePattern,
 			NFmiColorTools::NFmiBlendRule theRule,
 			float theAlpha=1.0,
-			int theX=0, int theY=0);
+			int theX=0, int theY=0) const;
   
 private:
   
