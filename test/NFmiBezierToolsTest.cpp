@@ -100,7 +100,84 @@ namespace NFmiBezierToolsTest
 
   void bezierlength()
   {
-	TEST_NOT_IMPLEMENTED();
+	using namespace Imagine;
+
+	// simple straight line
+	{
+	  NFmiPath path;
+	  path.MoveTo(0,0);
+	  path.CubicTo(1,0);
+	  path.CubicTo(2,0);
+	  path.CubicTo(3,0);
+	  
+	  double len = NFmiBezierTools::BezierLength(path,0.1);
+	  if(len != 3)
+		TEST_FAILED("Failed to calculate trivial length exactly");
+	  
+	}
+
+	// a simple parabola type curve
+
+	{
+	  NFmiPath path;
+	  path.MoveTo(0,0);
+	  path.CubicTo(1,1);
+	  path.CubicTo(2,1);
+	  path.CubicTo(3,0);
+
+	  const double accurate = 3.44338072408896;
+	  double len;
+
+	  len = NFmiBezierTools::BezierLength(path,0.1);
+	  if(abs(len-accurate) > 0.1)
+		TEST_FAILED("Failed to calculate length to accuracy 0.1");
+
+	  len = NFmiBezierTools::BezierLength(path,0.01);
+	  if(abs(len-accurate) > 0.01)
+		TEST_FAILED("Failed to calculate length to accuracy 0.01");
+
+	  len = NFmiBezierTools::BezierLength(path,0.001);
+	  if(abs(len-accurate) > 0.001)
+		TEST_FAILED("Failed to calculate length to accuracy 0.001");
+
+	  len = NFmiBezierTools::BezierLength(path,0.0001);
+	  if(abs(len-accurate) > 0.0001)
+		TEST_FAILED("Failed to calculate length to accuracy 0.0001");
+
+	}
+
+	// up and down curve
+
+	{
+	  NFmiPath path;
+	  path.MoveTo(0,0);
+	  path.CubicTo(1,1);
+	  path.CubicTo(2,-1);
+	  path.CubicTo(3,0);
+
+	  const double accurate = 3.27480396;
+	  double len;
+
+	  len = NFmiBezierTools::BezierLength(path,0.1);
+	  if(abs(len-accurate) > 0.1)
+		TEST_FAILED("Failed to calculate length to accuracy 0.1");
+
+	  len = NFmiBezierTools::BezierLength(path,0.01);
+	  if(abs(len-accurate) > 0.01)
+		TEST_FAILED("Failed to calculate length to accuracy 0.01");
+
+	  len = NFmiBezierTools::BezierLength(path,0.001);
+	  if(abs(len-accurate) > 0.001)
+		TEST_FAILED("Failed to calculate length to accuracy 0.001");
+
+	  len = NFmiBezierTools::BezierLength(path,0.0001);
+	  if(abs(len-accurate) > 0.0001)
+		TEST_FAILED("Failed to calculate length to accuracy 0.0001");
+
+	}
+	 
+	TEST_PASSED();
+
   }
 
   // ----------------------------------------------------------------------

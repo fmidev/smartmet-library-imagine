@@ -143,7 +143,7 @@ namespace Imagine
 
 			NFmiPath left;
 			left.MoveTo(x1,y1);
-			left.CubicTo(cx1,cx1);
+			left.CubicTo(cx1,cy1);
 			left.CubicTo(cx12,cy12);
 			left.CubicTo(cx,cy);
 
