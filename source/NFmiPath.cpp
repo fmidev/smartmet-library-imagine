@@ -643,7 +643,7 @@ std::ostream& operator<< (std::ostream& os,const NFmiPath & thePath)
 // absolute moves. This usually generates shorter SVG.
 // ----------------------------------------------------------------------
 
-string NFmiPath::SVG(bool relative_moves, bool removeghostlines, float precision) const
+string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 {
   // Note: Do NOT use output string streams, atleast not with
   //       g++ v2.92. The implementation is broken, and will
@@ -669,14 +669,8 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines, float precision
 #endif
 
 
-	  float x = iter->X();//Round2Precision(iter->X(), precision);
-	  float y = iter->Y();//Round2Precision(iter->Y(), precision);
-
-	  NFmiPathData::const_iterator nextIter(iter);
-	  ++nextIter;
-
-	  if(nextIter->Oper() != kFmiMoveTo && iter != Elements().begin() && ::fabs(x - last_out_x) < precision && ::fabs(y - last_out_y) < precision && iter->Oper() == last_op)
-		  continue;
+	  float x = iter->X();
+	  float y = iter->Y();
       // Special code for first move
 	  
       if(iter->Oper()==kFmiConicTo || iter->Oper()==kFmiCubicTo)
