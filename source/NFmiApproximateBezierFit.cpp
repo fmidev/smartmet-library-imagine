@@ -16,7 +16,11 @@
 #include "NFmiBezierTools.h"
 #include "NFmiPath.h"
 
+#include "NFmiGeoTools.h"
+
 #include <list>
+#include <vector>
+#include <utility>
 
 using namespace std;
 
@@ -25,6 +29,104 @@ namespace Imagine
 
   namespace
   {
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Bezier multiplier 0 = (1-u)^3
+	 */
+	// ----------------------------------------------------------------------
+
+	double B0(double u)
+	{
+	  double tmp = 1-u;
+	  return (tmp*tmp*tmp);
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Bezier multiplier 1 = 3u(1-u)^2
+	 */
+	// ----------------------------------------------------------------------
+
+	double B1(double u)
+	{
+	  double tmp = 1-u;
+	  return (3*u*tmp*tmp);
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Bezier multiplier 2 = 3u^2(1-u)
+	 */
+	// ----------------------------------------------------------------------
+
+	double B2(double u)
+	{
+	  double tmp = 1-u;
+	  return (3*u*u*tmp);
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Bezier multiplier 3 = u^3
+	 */
+	// ----------------------------------------------------------------------
+
+	double B3(double u)
+	{
+	  return (u*u*u);
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Dot product
+	 */
+	// ----------------------------------------------------------------------
+
+	double DotProduct(const NFmiPoint & theLhs, const NFmiPoint & theRhs)
+	{
+	  return (theLhs.X()*theRhs.X() + theLhs.Y()*theRhs.Y());
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Rescale tangent vector
+	 *
+	 * \param theTangent The tangent vector
+	 * \param theScale The new scale
+	 * \return The scaled tangent vector
+	 */
+	// ----------------------------------------------------------------------
+
+	NFmiPoint ScaleTangent(const NFmiPoint & theTangent, double theScale)
+	{
+	  const double x = theTangent.X();
+	  const double y = theTangent.Y();
+	  const double len = sqrt(x*x+y*y);
+	  if(len==0)
+		return theTangent;
+	  else
+		return NFmiPoint(x*theScale/len,y*theScale/len);
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Construct normalized tangent
+	 *
+	 * \param theX The x-part of the tangent vector
+	 * \param theY The y-part of the tangent vector
+	 * \return Normalized vector
+	 */
+	// ----------------------------------------------------------------------
+
+	NFmiPoint Tangent(double theX, double theY)
+	{
+	  const double len = sqrt(theX*theX+theY*theY);
+	  if(len == 0)
+		return NFmiPoint(theX,theY);
+	  else
+		return NFmiPoint(theX/len,theY/len);
+	}
 
 	// ----------------------------------------------------------------------
 	/*!
@@ -39,11 +141,7 @@ namespace Imagine
 	{
 	  const double dx = thePath[1].X() - thePath[0].X();
 	  const double dy = thePath[1].Y() - thePath[0].Y();
-	  const double len = sqrt(dx*dx+dy*dy);
-	  if(len==0)
-		return NFmiPoint(0,0);
-	  else
-		return NFmiPoint(dx/len,dy/len);
+	  return Tangent(dx,dy);
 	}
 
 	// ----------------------------------------------------------------------
@@ -60,11 +158,30 @@ namespace Imagine
 	  const int n = thePath.size();
 	  const double dx = thePath[n-2].X() - thePath[n-1].X();
 	  const double dy = thePath[n-2].Y() - thePath[n-1].Y();
-	  const double len = sqrt(dx*dx+dy*dy);
-	  if(len==0)
-		return NFmiPoint(0,0);
-	  else
-		return NFmiPoint(dx/len,dy/len);
+	  return Tangent(dx,dy);
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Estimate center tangent
+	 *
+	 * \param thePath The path from which to estimate
+	 * \param thePos The position
+	 * \return The tangent estimate at the position
+	 */
+	// ----------------------------------------------------------------------
+
+	NFmiPoint ComputeCenterTangent(const NFmiPathData & thePath,
+								   unsigned int thePos)
+	{
+	  const double dx1 = thePath[thePos-1].X() - thePath[thePos].X();
+	  const double dy1 = thePath[thePos-1].Y() - thePath[thePos].Y();
+	  const double dx2 = thePath[thePos].X() - thePath[thePos+1].X();
+	  const double dy2 = thePath[thePos].Y() - thePath[thePos+1].Y();
+	  const double dx = (dx1+dx2)/2;
+	  const double dy = (dy1+dy2)/2;
+	  return Tangent(dx,dy);
+	  
 	}
 
 	// ----------------------------------------------------------------------
@@ -91,11 +208,312 @@ namespace Imagine
 	  const double dx = (dx1+dx2)/2;
 	  const double dy = (dy1+dy2)/2;
 
-	  const double len = sqrt(dx*dx+dy*dy);
-	  if(len==0)
-		return NFmiPoint(0,0);
+	  return Tangent(dx,dy);
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Evaluate a Bezier curve segment
+	 *
+	 * \param theBezier The Bezier segment, including the initial point
+	 * \param theValue The value at which to evaluate
+	 * \return The curve coordinate
+	 */
+	// ----------------------------------------------------------------------
+
+	NFmiPoint Bezier(const NFmiPathData & thePath, double theValue)
+	{
+	  NFmiPathData tmp = thePath;
+	  // triangle computation
+	  const unsigned int degree = thePath.size()-1;
+	  for(unsigned int i=1; i<=degree; i++)
+		for(unsigned int j=0; j<=degree-i; j++)
+		  {
+			tmp[j].X((1-theValue)*tmp[j].X() + theValue*tmp[j+1].X());
+			tmp[j].Y((1-theValue)*tmp[j].Y() + theValue*tmp[j+1].Y());
+		  }
+	  return NFmiPoint(tmp[0].X(),tmp[0].Y());
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Parameterize a regular path segment
+	 *
+	 * Assign parameter values to digitized points using relative
+	 * distances between points.
+	 *
+	 * \param thePath The path data
+	 * \param theFirst The index of the first point
+	 * \param theLast The index of the last point
+	 * \return The parameters to digitized points
+	 */
+	// ----------------------------------------------------------------------
+
+	vector<double> ChordLengthParameterize(const NFmiPathData & thePath,
+										   unsigned int theFirst,
+										   unsigned int theLast)
+	{
+	  vector<double> out(theLast-theFirst+1,0);
+
+	  out[0] = 0;
+	  unsigned int i;
+	  for(i = theFirst+1; i <= theLast; i++)
+		{
+		  const double dist = NFmiGeoTools::Distance(thePath[i].X(),
+													 thePath[i].Y(),
+													 thePath[i-1].X(),
+													 thePath[i-1].Y());
+		  out[i-theFirst] = out[i-theFirst-1] + dist;
+		}
+
+	  for(i = theFirst+1; i<=theLast; i++)
+		{
+		  out[i-theFirst] = out[i-theFirst] / out[theLast-theFirst];
+		}
+
+	  return out;
+
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Root finder
+	 *
+	 * Use Newton-Raphson iteration to find better root
+	 *
+	 * \param theBezier The Bezier curve
+	 * \param thePoint The point
+	 * \param theU The parameter value for the point
+	 * \return The root
+	 */
+	// ----------------------------------------------------------------------
+
+	double NewtonRaphsonRootFind(const NFmiPathData & thePath,
+								 const NFmiPathElement & thePoint,
+								 double theU)
+	{
+	  unsigned int i;
+
+	  // Compute Q(u)
+	  NFmiPoint Q_u = Bezier(thePath,theU);
+
+	  // Generate control vertices for Q'
+	  NFmiPath Q1;
+	  for(i=0; i<=2; i++)
+		Q1.ConicTo(3*(thePath[i+1].X() - thePath[i].X()),
+				   3*(thePath[i+1].Y() - thePath[i].Y()));
+
+	  // Generate control vertices for Q''
+	  NFmiPath Q2;
+	  for(i=0; i<=1; i++)
+		Q2.LineTo(2*(Q1.Elements()[i+1].X()-Q1.Elements()[i].X()),
+				  2*(Q1.Elements()[i+1].Y()-Q1.Elements()[i].Y()));
+
+	  // Compute Q'(u) and Q''(u)
+
+	  NFmiPoint Q1_u = Bezier(Q1.Elements(),theU);
+	  NFmiPoint Q2_u = Bezier(Q2.Elements(),theU);
+
+	  // Compute f(u)/f'(u)
+
+	  double numerator = ( (Q_u.X()-thePoint.X()) * Q1_u.X() +
+						   (Q_u.Y()-thePoint.Y()) * Q1_u.Y());
+	  double denominator = ( (Q1_u.X()*Q1_u.X() + Q1_u.Y()*Q1_u.Y() +
+							  (Q_u.X()-thePoint.X())*Q2_u.X() +
+							  (Q_u.Y()-thePoint.Y())*Q2_u.Y()) );
+
+	  // u = u - f(u)/f'(u)
+
+	  double uprime = theU - numerator/denominator;
+
+	  return uprime;
+
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Reparameterize
+	 *
+	 * Given a set of points and their parameterization, try to find a
+	 * better parameterization.
+	 *
+	 * \param thePath The path
+	 * \param theFirst The start index
+	 * \param theLast The end index
+	 * \param theU Old parameterization
+	 * \param theBezier The Bezier approximation
+	 * \return New parameterization
+	 */
+	// ----------------------------------------------------------------------
+
+	vector<double> Reparameterize(const NFmiPathData & thePath,
+								  unsigned int theFirst,
+								  unsigned int theLast,
+								  const vector<double> & theU,
+								  const NFmiPath & theBezier)
+	{
+	  const int n = theLast - theFirst + 1;
+	  vector<double> out;
+	  out.reserve(n);
+
+	  for(unsigned int i=theFirst; i<=theLast; i++)
+		{
+		  out.push_back(NewtonRaphsonRootFind(theBezier.Elements(),
+											  thePath[i],
+											  theU[i-theFirst]));
+		}
+	  return out;
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Compute maximum error
+	 *
+	 * Find the maximum squared distance of digitized points to fitted curve
+	 *
+	 * \param thePath The path
+	 * \param theFirst The start index of the segment
+	 * \param theLast The end index of the segment
+	 * \param theBezier The approximation
+	 * \param theU The parameterization of points
+	 * \param theSplitPoint The point where the maximum error is found
+	 * \return Error estimate
+	 */
+	// ----------------------------------------------------------------------
+
+	double ComputeMaxError(const NFmiPathData & thePath,
+						   unsigned int theFirst,
+						   unsigned int theLast,
+						   const NFmiPathData & theBezier,
+						   const vector<double> & theU,
+						   unsigned int & theSplitPoint)
+	{
+	  theSplitPoint = (theLast - theFirst + 1) / 2;
+	  double maxdist = 0.0;
+	  for(unsigned int i = theFirst+1; i < theLast; i++)
+		{
+		  NFmiPoint P = Bezier(theBezier,theU[i-theFirst]);
+		  const double dx = P.X() - thePath[i].X();
+		  const double dy = P.Y() - thePath[i].Y();
+		  double dist = dx*dx+dy*dy;
+		  if(dist >= maxdist)
+			{
+			  maxdist = dist;
+			  theSplitPoint = i;
+			}
+		}
+	  return maxdist;
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Find least-squares Bezier fit
+	 *
+	 * Use least-squares method to find Bezier control points for region
+	 *
+	 * \param thePath The path to approximate
+	 * \param theFirst The first path point
+	 * \param theLast The last path point
+	 * \param theU The parameter values
+	 * \param theTangent1 The left tangent
+	 * \param theTangent2 The right tangent
+	 * \return The Bezier path
+	 */
+	// ----------------------------------------------------------------------
+
+	NFmiPath GenerateBezier(const NFmiPathData & thePath,
+							unsigned int theFirst,
+							unsigned int theLast,
+							const vector<double> & theU,
+							const NFmiPoint & theTangent1,
+							const NFmiPoint & theTangent2)
+	{
+	  NFmiPath outpath;
+
+	  const unsigned int n = theLast - theFirst + 1;
+
+	  // Compute the A's
+
+	  unsigned int i;
+
+	  vector<pair<NFmiPoint,NFmiPoint> > A;
+	  A.reserve(thePath.size());
+	  for(i=0; i<n; i++)
+		{
+		  const NFmiPoint v1 = ScaleTangent(theTangent1,B1(theU[i]));
+		  const NFmiPoint v2 = ScaleTangent(theTangent2,B2(theU[i]));
+		  A.push_back(make_pair(v1,v2));
+		}
+
+	  // Create the C and X matrices
+
+	  double C[2][2] = { {0,0},{0,0} };
+	  double X[2] = { 0,0 };
+
+	  const NFmiPoint p0(thePath[theFirst].X(),thePath[theFirst].Y());
+	  const NFmiPoint p3(thePath[theLast].X(),thePath[theLast].Y());
+
+	  for(i=0; i<n; i++)
+		{
+		  C[0][0] += DotProduct(A[i].first, A[i].first);
+		  C[0][1] += DotProduct(A[i].first, A[i].second);
+		  C[1][0] = C[0][1];
+		  C[1][1] += DotProduct(A[i].second,A[i].second);
+
+		  const double u = theU[i];
+		  const NFmiPoint p(thePath[theFirst+i].X(),thePath[theFirst+i].Y()); 
+
+		  NFmiPoint tmp = p - (p0*(B0(u)+B1(u)) + p3*(B2(u)+B3(u)));
+
+		  X[0] += DotProduct(A[i].first,tmp);
+		  X[1] += DotProduct(A[i].second,tmp);
+		}
+
+	  // Compute the determinants of C and X
+
+	  double det_C0_C1 = C[0][0] * C[1][1] - C[1][0] * C[0][1];
+	  double det_C0_X  = C[0][0] * X[1]    - C[0][1] * X[0];
+	  double det_X_C1  = X[0]    * C[1][1] - X[1]    * C[0][1];
+
+	  // Finally, derive alpha values
+
+	  if (det_C0_C1 == 0.0)
+		{
+		  det_C0_C1 = (C[0][0] * C[1][1]) * 10e-12;
+		}
+	  const double alpha_l = det_X_C1 / det_C0_C1;
+	  const double alpha_r = det_C0_X / det_C0_C1;
+
+	  NFmiPoint tan1,tan2;
+
+	  //  If alpha negative, use the Wu/Barsky heuristic (see text)
+	  // (if alpha is 0, you get coincident control points that lead to
+	  // divide by zero in any subsequent NewtonRaphsonRootFind() call.
+	  if(alpha_l < 1e-6 || alpha_r < 1e-6)
+		{
+		  // If alpha negative, use the Wu/Barsky heuristic
+		  const double dist = p0.Distance(p3)/3;
+
+		  tan1 = ScaleTangent(theTangent1,dist);
+		  tan2 = ScaleTangent(theTangent2,dist);
+		}
 	  else
-		return NFmiPoint(dx/len,dy/len);
+		{
+		  // First and last control points of the Bezier curve are
+		  // positioned exactly at the first and last data points.
+		  // Control points 1 and 2 are positioned an alpha distance out
+		  // on the tangent vectors, left and right, respectively.
+
+		  tan1 = ScaleTangent(theTangent1,alpha_l);
+		  tan2 = ScaleTangent(theTangent2,alpha_r);
+		}
+
+	  outpath.MoveTo(p0.X(),p0.Y());
+	  outpath.CubicTo(p0.X()+tan1.X(), p0.Y()+tan1.Y());
+	  outpath.CubicTo(p3.X()+tan2.X(), p3.Y()+tan2.Y());
+	  outpath.CubicTo(p3.X(),p3.Y());
+
+	  return outpath;
 	}
 
 	// ----------------------------------------------------------------------
@@ -109,19 +527,106 @@ namespace Imagine
 	 * \param theLast The last index (path size -1 at the start)
 	 * \param theTangent1 The left tangent
 	 * \param theTangent2 The right tangent
-	 * \param theSquaredMaxError The maximum allowed error squared
+	 * \param theError The maximum allowed error squared
 	 * \return The Bezier path
 	 */
 	// ----------------------------------------------------------------------
 
 	NFmiPath RecursiveFit(const NFmiPathData & thePath,
-											 int theFirst,
-											 int theLast,
-											 const NFmiPoint & theTangent1,
-											 const NFmiPoint & theTangent2,
-											 double theSquaredMaxError)
+						  unsigned int theFirst,
+						  unsigned int theLast,
+						  const NFmiPoint & theTangent1,
+						  const NFmiPoint & theTangent2,
+						  double theError)
 	{
 	  NFmiPath outpath;
+
+	  const unsigned int n = theLast - theFirst + 1;
+
+	  // Use heuristic if region has only two points in it
+	  if(n == 2)
+		{
+		  const double x0 = thePath[theFirst].X();
+		  const double y0 = thePath[theFirst].Y();
+		  const double x3 = thePath[theLast].X();
+		  const double y3 = thePath[theLast].Y();
+		  
+		  const double dist = NFmiGeoTools::Distance(x0,y0,x3,y3);
+
+		  const NFmiPoint t1 = ScaleTangent(theTangent1,dist);
+		  const NFmiPoint t2 = ScaleTangent(theTangent2,dist);
+
+		  outpath.MoveTo(x0,y0);
+		  outpath.CubicTo(x0+t1.X(),y0+t1.Y());
+		  outpath.CubicTo(x3+t2.X(),y3+t2.Y());
+		  outpath.CubicTo(x3,y3);
+		  return outpath;
+		}
+
+	  // Parameterize points and attempt to fit curve
+
+	  vector<double> u = ChordLengthParameterize(thePath,theFirst,theLast);
+
+	  outpath = GenerateBezier(thePath,
+							   theFirst, theLast,
+							   u,
+							   theTangent1, theTangent2);
+
+	  // find max deviation of points to fitted curve
+	  unsigned int splitpoint;
+	  double maxerror = ComputeMaxError(thePath,
+										theFirst, theLast,
+										outpath.Elements(),
+										u,
+										splitpoint);
+
+	  if(maxerror < theError)
+		return outpath;
+
+	  // if error not too large, try some reparameterization and iteration
+
+	  const double iterationerror = theError*theError;
+	  if(maxerror < iterationerror)
+		{
+		  vector<double> uprime;
+		  const unsigned int maxiterations = 4;
+
+		  for(unsigned i = 0; i<maxiterations; i++)
+			{
+			  uprime = Reparameterize(thePath,
+									  theFirst, theLast,
+									  u,
+									  outpath);
+			  outpath = GenerateBezier(thePath,
+									   theFirst, theLast,
+									   uprime,
+									   theTangent1, theTangent2);
+			  maxerror = ComputeMaxError(thePath,
+										 theFirst, theLast,
+										 outpath.Elements(),
+										 uprime,
+										 splitpoint);
+			  if(maxerror < theError)
+				return outpath;
+			}
+		  u = uprime;
+		}
+
+	  // fitting failed - split at max error point and fit recursively
+
+	  NFmiPoint tangent1 = ComputeCenterTangent(thePath, splitpoint);
+	  NFmiPoint tangent2(-tangent1.X(),-tangent1.Y());
+	  
+	  NFmiPath part1 = RecursiveFit(thePath, theFirst, splitpoint,
+									theTangent1, tangent1, theError);
+	  NFmiPath part2 = RecursiveFit(thePath, splitpoint, theLast,
+									tangent2, theTangent2, theError);
+
+	  // Append all but the first move
+	  outpath = part1;
+	  for(int i=1; i<part2.Size(); i++)
+		outpath.Add(part2.Elements()[i]);
+
 	  return outpath;
 	}
 
@@ -142,8 +647,7 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	NFmiPath SimpleFit(const NFmiPath & thePath,
-										  double theMaxError)
+	NFmiPath SimpleFit(const NFmiPath & thePath, double theMaxError)
 	{
 	  // safety against too small paths
 	  if(thePath.Size()<3)
