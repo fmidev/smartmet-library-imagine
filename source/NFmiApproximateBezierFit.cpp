@@ -9,6 +9,9 @@
  *
  * \brief Calculating an approximate bezier fit
  *
+ * The original C-code was published in the Graphics Gems series
+ * The code is available from the url
+ * <a href="http://www1.acm.org/pubs/tog/GraphicsGems/gems/FitCurves.c">FitCurves.c</a>
  */
 // ======================================================================
 
