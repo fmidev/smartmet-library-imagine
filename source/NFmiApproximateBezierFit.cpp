@@ -174,7 +174,7 @@ namespace Imagine
 	  const double y = theTangent.Y();
 	  const double len = sqrt(x*x+y*y);
 	  if(len==0)
-		return theTangent;
+		throw runtime_error("Failed to fit bezier curve due to a 0-tangent");
 	  else
 		return NFmiPoint(x*theScale/len,y*theScale/len);
 	}
@@ -297,7 +297,13 @@ namespace Imagine
 	  const double dx = (dx1+dx2)/2;
 	  const double dy = (dy1+dy2)/2;
 
-	  return Tangent(dx,dy);
+	  if(dx!=0 && dy!=0)
+		return Tangent(dx,dy);
+
+	  // We have a spike. We return a normal to the spike direction
+
+	  return Tangent(dy1,-dx1);
+
 	}
 
 	// ----------------------------------------------------------------------
@@ -855,9 +861,9 @@ namespace Imagine
 
 	  if(!IsPositivelyOriented(path))
 		{
-		  NFmiPath path = Reverse(thePath);
-		  path = SimpleFit(path,theMaxError);
-		  return Reverse(path);
+		  NFmiPath tmppath = Reverse(thePath);
+		  tmppath = SimpleFit(tmppath,theMaxError);
+		  return Reverse(tmppath);
 		}
   
 	  // Estimate tangent vectors at endpoints of the curve
