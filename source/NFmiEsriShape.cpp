@@ -134,17 +134,17 @@
 #pragma warning(disable : 4786) // poistaa n. 100 VC varoitusta
 #endif
 
-#include <fstream>
-#include <cassert>
-
 #include "NFmiEsriShape.h"
-
 #include "NFmiEsriNull.h"
 #include "NFmiEsriPointZ.h"
 #include "NFmiEsriMultiPointZ.h"
 #include "NFmiEsriPolyLineZ.h"
 #include "NFmiEsriPolygonZ.h"
 #include "NFmiEsriMultiPatch.h"
+#include "NFmiFileSystem.h"
+#include "NFmiSettings.h"
+#include <fstream>
+#include <cassert>
 
 using namespace NFmiEsriBuffer;	// Conversion tools
 using namespace std;
@@ -218,10 +218,13 @@ void NFmiEsriShape::Add(NFmiEsriAttributeName *theAttributeName)
 
 bool NFmiEsriShape::Read(const string & theFilename, bool fDBF)
 {
+  // Default search path for shape files
+  const string shapes_path = NFmiSettings::instance().value("imagine::shapes_path");
+
   // Derived file names
   
-  const string shpfilename = theFilename + ".shp";
-  const string dbffilename = theFilename + ".dbf";
+  const string shpfilename = FileComplete(theFilename + ".shp",shapes_path);
+  const string dbffilename = FileComplete(theFilename + ".dbf",shapes_path);
   
   // Delete old contents if there are any
   
