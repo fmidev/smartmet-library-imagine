@@ -45,23 +45,17 @@ namespace Imagine
   public:
 	
 	// Constructor
+  NFmiGeoShape(void)
+	  :itsEsriShape(0)
+      ,itsType(kFmiGeoShapeEsri)
+  {}
+
 	
 	NFmiGeoShape(const std::string & theFilename,
 				 NFmiGeoShapeType theType = kFmiGeoShapeEsri)
 	  : itsType(theType)
 	{
-	  switch(theType)
-		{
-		case kFmiGeoShapeEsri:
-		  itsEsriShape = new NFmiEsriShape();
-		  if(!itsEsriShape->Read(theFilename))
-			throw NFmiGeoShapeError(std::string("Failed to read shape ")+theFilename);
-		  break;
-		case kFmiGeoShapeShoreLine:
-		  throw NFmiGeoShapeError("kFmiGeoShapeShoreLine not implemented");
-		case kFmiGeoShapeGMT:
-		  throw NFmiGeoShapeError("kFmiGeoShapeFMT not implemented");
-		}
+	  Read(theFilename, theType);
 	}
 	
 	// Destructor
@@ -105,6 +99,25 @@ namespace Imagine
 	
 	void WriteImageMap(std::ostream & os, const std::string & theFieldName) const;
 	
+  void Read(const std::string & theFilename, NFmiGeoShapeType theType)
+  {
+	delete itsEsriShape;
+	itsEsriShape = 0;
+    itsType = theType;
+    switch(itsType)
+      {
+      case kFmiGeoShapeEsri:
+		itsEsriShape = new NFmiEsriShape();
+		if(!itsEsriShape->Read(theFilename))
+		  throw NFmiGeoShapeError(std::string("Failed to read shape ")+theFilename);
+		break;
+      case kFmiGeoShapeShoreLine:
+		throw NFmiGeoShapeError("kFmiGeoShapeShoreLine not implemented");
+      case kFmiGeoShapeGMT:
+		throw NFmiGeoShapeError("kFmiGeoShapeFMT not implemented");
+      }
+  }
+
   private:
 	
 	// Path creation
