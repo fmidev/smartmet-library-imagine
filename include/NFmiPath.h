@@ -75,6 +75,7 @@ namespace Imagine
 	const NFmiPathData & Elements(void) const { return itsElements; }
 	
 	int Size(void) const { return itsElements.size(); }
+	int Empty(void) const { return itsElements.empty(); }
 	
 	// Clear contents
 	
