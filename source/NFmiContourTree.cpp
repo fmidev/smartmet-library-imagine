@@ -119,6 +119,35 @@ void NFmiContourTree::Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
  * Contour the given data values with given coordinates. The input data
  * is expected to be topologically equivalent to a 2D uniform rectangle.
  *
+ * \param theValues The values at the points.
+ * \param theInterpolation The interpolation method to be used.
+ * \param theMaxDepth The maximum recursion depth to be used for obtaining
+ *	(slightly) smoother contour lines.
+ */
+// ----------------------------------------------------------------------
+
+void NFmiContourTree::Contour(const NFmiDataMatrix<float> & theValues,
+							  const NFmiContourInterpolation & theInterpolation,
+							  int theMaxDepth)
+{
+  switch(theInterpolation)
+    {
+    case kFmiContourNearest:
+      NFmiContourTree::ContourNearest(theValues);
+      break;
+    case kFmiContourLinear:
+      NFmiContourTree::ContourLinear(theValues,theMaxDepth);
+      break;
+    default:
+      break;
+    }
+}
+
+// ----------------------------------------------------------------------
+/*!
+ * Contour the given data values with given coordinates. The input data
+ * is expected to be topologically equivalent to a 2D uniform rectangle.
+ *
  * \param thePts The coordinates of the points.
  * \param theValues The values at the points.
  * \param theHelper A NFmiContourDataHelper for speeding up contouring.
@@ -153,6 +182,37 @@ void NFmiContourTree::Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
 /*!
  * Contour the given data values with given coordinates. The input data
  * is expected to be topologically equivalent to a 2D uniform rectangle.
+ *
+ * \param theValues The values at the points.
+ * \param theHelper A NFmiContourDataHelper for speeding up contouring.
+ * \param theInterpolation The interpolation method to be used.
+ * \param theMaxDepth The maximum recursion depth to be used for obtaining
+ *	(slightly) smoother contour lines.
+ */
+// ----------------------------------------------------------------------
+
+void NFmiContourTree::Contour(const NFmiDataMatrix<float> & theValues,
+							  const NFmiContourDataHelper & theHelper,
+							  const NFmiContourInterpolation & theInterpolation,
+							  int theMaxDepth)
+{
+  switch(theInterpolation)
+    {
+    case kFmiContourNearest:
+      NFmiContourTree::ContourNearest(theValues,theHelper);
+      break;
+    case kFmiContourLinear:
+      NFmiContourTree::ContourLinear(theValues,theHelper,theMaxDepth);
+      break;
+    default:
+      break;
+    }
+}
+
+// ----------------------------------------------------------------------
+/*!
+ * Contour the given data values with given coordinates. The input data
+ * is expected to be topologically equivalent to a 2D uniform rectangle.
  * Note that contour recursion depth is meaningless for nearest neighbour
  * interpolation, the contours would be exactly equivalent.
  *
@@ -171,6 +231,28 @@ void NFmiContourTree::ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
 					  thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
 					  thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
 					  thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1]);
+}
+
+// ----------------------------------------------------------------------
+/*!
+ * Contour the given data values with given coordinates. The input data
+ * is expected to be topologically equivalent to a 2D uniform rectangle.
+ * Note that contour recursion depth is meaningless for nearest neighbour
+ * interpolation, the contours would be exactly equivalent.
+ *
+ * \param theValues The values at the points.
+ */
+// ----------------------------------------------------------------------
+
+void NFmiContourTree::ContourNearest(const NFmiDataMatrix<float> & theValues)
+{
+  for(unsigned int j=0; j<theValues.NY()-1; j++)
+    for(unsigned int i=0; i<theValues.NX()-1; i++)
+	  
+      ContourNearest4(i,j,theValues[i][j],
+					  i+1,j,theValues[i+1][j],
+					  i+1,j+1,theValues[i+1][j+1],
+					  i,j+1,theValues[i][j+1]);
 }
 
 // ----------------------------------------------------------------------
@@ -234,6 +316,66 @@ void NFmiContourTree::ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
     }
 }
 
+
+// ----------------------------------------------------------------------
+/*!
+ * Contour the given data values with given coordinates. The input data
+ * is expected to be topologically equivalent to a 2D uniform rectangle.
+ * Note that contour recursion depth is meaningless for nearest neighbour
+ * interpolation, the contours would be exactly equivalent.
+ *
+ * \param theValues The values at the points.
+ * \param theHelper A NFmiContourDataHelper for speeding up the contouring
+ */
+// ----------------------------------------------------------------------
+
+void NFmiContourTree::ContourNearest(const NFmiDataMatrix<float> & theValues,
+									 const NFmiContourDataHelper & theHelper)
+{
+  if(theHelper.IsFullyMissing())
+    return;
+  
+  VertexInsidedness cmin = Insidedness(theHelper.Min());
+  VertexInsidedness cmax = Insidedness(theHelper.Max());
+  
+  // If min,max both below or above, skip the contour
+  
+  if(cmin==cmax && cmin!=kInside)
+    return;
+  
+  // If min,max both inside, we could contour the entire matrix at once,
+  // except that we'd need to check whether the matrix contained missing
+  // values which are NOT to be included. For now we ignore this
+  // optimization and just contour the matrix as usual.
+  
+  for(unsigned int j=0; j<theValues.NY()-1; j++)
+    {
+      // Ignore fully missing rows
+	  
+      if(theHelper.IsFullyMissing(j))
+		continue;
+	  
+      cmin = Insidedness(theHelper.Min(j));
+      cmax = Insidedness(theHelper.Max(j));
+	  
+      // If min,max both below or above, skip to next row
+	  
+      if(cmin==cmax && cmin!=kInside)
+		continue;
+	  
+      // If min,max both inside, we could contour the entire row at once,
+      // except that we'd need to check whether the row contained missing
+      // values which are NOT to be included. For now we ignore this
+      // optimization and just contour the row as usual.
+	  
+      for(unsigned int i=0; i<theValues.NX()-1; i++)
+		ContourNearest4(i,j,theValues[i][j],
+						i+1,j,theValues[i+1][j],
+						i+1,j+1,theValues[i+1][j+1],
+						i,j+1,theValues[i][j+1]);
+    }
+}
+
 // ----------------------------------------------------------------------
 /*!
  * Contour the given data values with given coordinates. The input data
@@ -259,6 +401,33 @@ void NFmiContourTree::ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 					 thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
 					 thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
 					 thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1],
+					 theMaxDepth);
+  
+}
+
+// ----------------------------------------------------------------------
+/*!
+ * Contour the given data values with given coordinates. The input data
+ * is expected to be topologically equivalent to a 2D uniform rectangle.
+ * Note that contour recursion depth is meaningless for nearest neighbour
+ * interpolation, the contours would be exactly equivalent.
+ *
+ * \param theValues The values at the points.
+ * \param theMaxDepth The maximum recursion depth to be used for obtaining
+ *	(slightly) smoother contour lines.
+ */
+// ----------------------------------------------------------------------
+
+void NFmiContourTree::ContourLinear(const NFmiDataMatrix<float> & theValues,
+									int theMaxDepth)
+{
+  for(unsigned int j=0; j<theValues.NY()-1; j++)
+    for(unsigned int i=0; i<theValues.NX()-1; i++)
+      
+      ContourLinear4(i,j,theValues[i][j],
+					 i+1,j,theValues[i+1][j],
+					 i+1,j+1,theValues[i+1][j+1],
+					 i,j+1,theValues[i][j+1],
 					 theMaxDepth);
   
 }
@@ -371,6 +540,105 @@ void NFmiContourTree::ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 						   thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
 						   thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
 						   thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1],
+						   theMaxDepth);
+		}
+	}
+}
+
+// ----------------------------------------------------------------------
+/*!
+ * Contour the given data values with given coordinates. The input data
+ * is expected to be topologically equivalent to a 2D uniform rectangle.
+ * Note that contour recursion depth is meaningless for nearest neighbour
+ * interpolation, the contours would be exactly equivalent.
+ *
+ * \param theValues The values at the points.
+ * \param theHelper A NFmiContourDataHelper for speeding up the contouring.
+ * \param theMaxDepth The maximum recursion depth to be used for obtaining
+ *	(slightly) smoother contour lines.
+ */
+// ----------------------------------------------------------------------
+
+void NFmiContourTree::ContourLinear(const NFmiDataMatrix<float> & theValues,
+									const NFmiContourDataHelper & theHelper,
+									int theMaxDepth)
+{
+  if(theHelper.IsFullyMissing())
+    return;
+  
+  VertexInsidedness cmin = Insidedness(theHelper.Min());
+  VertexInsidedness cmax = Insidedness(theHelper.Max());
+  
+  // If min,max both below or above, skip the contour
+  
+  if(cmin==cmax && cmin!=kInside)
+    return;
+  
+  // If fully inside and there are no missing values, we can do it quickly
+  // Is is especially beneficial for contouring the missing part of Tuliset,
+  // since there are no missing values in the grid.
+  
+  if(cmin==cmax && cmin==kInside && !theHelper.HasMissing())
+    {
+      // First and last columns
+	  unsigned int j=0;
+	  unsigned int i=0;
+      for(j=0; j<theValues.NY()-1; j++)
+		for(i=0; i<theValues.NX(); i+=theValues.NX()-1)
+		  {
+			VertexExactness c1 = Exactness(theValues[i][j]);
+			VertexExactness c2 = Exactness(theValues[i][j+1]);
+			
+			Add(NFmiEdge(i,j,i,j+1,c1==c2 && c1!=kNeither));
+		  }
+	  
+      // First and last rows
+	  
+      for(j=0; j<theValues.NY(); j+=theValues.NY()-1)
+		for(i=0; i<theValues.NX()-1; i++)
+		  {
+			VertexExactness c1 = Exactness(theValues[i][j]);
+			VertexExactness c2 = Exactness(theValues[i+1][j]);
+			
+			Add(NFmiEdge(i,j,i+1,j,c1==c2 && c1!=kNeither));
+		  }
+	  
+    }
+  
+
+  else
+
+	{
+	  // If min,max both inside, we could contour the entire matrix at once,
+	  // except that we'd need to check whether the matrix contained missing
+	  // values which are NOT to be included. For now we ignore this
+	  // optimization and just contour the matrix as usual.
+	  
+	  for(unsigned int j=0; j<theValues.NY()-1; j++)
+		{
+		  // Ignore fully missing rows
+		  
+		  if(theHelper.IsFullyMissing(j))
+			continue;
+		  
+		  cmin = Insidedness(theHelper.Min(j));
+		  cmax = Insidedness(theHelper.Max(j));
+		  
+		  // If min,max both below or above, skip to next row
+		  
+		  if(cmin==cmax && cmin!=kInside)
+			continue;
+		  
+		  // If min,max both inside, we could contour the entire row at once,
+		  // except that we'd need to check whether the row contained missing
+		  // values which are NOT to be included. For now we ignore this
+		  // optimization and just contour the row as usual.
+		  
+		  for(unsigned int i=0; i<theValues.NX()-1; i++)
+			ContourLinear4(i,j,theValues[i][j],
+						   i+1,j,theValues[i+1][j],
+						   i+1,j+1,theValues[i+1][j+1],
+						   i,j+1,theValues[i][j+1],
 						   theMaxDepth);
 		}
 	}

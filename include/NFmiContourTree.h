@@ -305,6 +305,17 @@ public:
 			   const NFmiContourInterpolation & theInterpolation,
 			   int theMaxDepth=0);
   
+  // These assume the coordinates run from 0 to size-1
+
+  void Contour(const NFmiDataMatrix<float> & theValues,
+			   const NFmiContourInterpolation & theInterpolation,
+			   int theMaxDepth=0);
+  
+  void Contour(const NFmiDataMatrix<float> & theValues,
+			   const NFmiContourDataHelper & theHelper,
+			   const NFmiContourInterpolation & theInterpolation,
+			   int theMaxDepth=0);
+
 private:
   
   /// Disabled default constructor.
@@ -374,12 +385,17 @@ private:
   
   /// Contour a data-matrix using linear interpolation.
   
+  void ContourLinear(const NFmiDataMatrix<float> & theValues,
+					 int theMaxDepth=0);
+
+  void ContourLinear(const NFmiDataMatrix<float> & theValues,
+					 const NFmiContourDataHelper & theHelper,
+					 int theMaxDepth=0);
+
   void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 					 const NFmiDataMatrix<float> & theValues,
 					 int theMaxDepth=0);
-  
-  /// Contour a data-matrix using linear interpolation.
-  
+
   void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 					 const NFmiDataMatrix<float> & theValues,
 					 const NFmiContourDataHelper & theHelper,
@@ -387,10 +403,13 @@ private:
   
   /// Contour a data-matrix using nearest neighbour interpolation
   
+  void ContourNearest(const NFmiDataMatrix<float> & theValues);
+
+  void ContourNearest(const NFmiDataMatrix<float> & theValues,
+					  const NFmiContourDataHelper & theHelper);
+
   void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
 					  const NFmiDataMatrix<float> & theValues);
-  
-  /// Contour a data-matrix using nearest neighbour interpolation
   
   void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
 					  const NFmiDataMatrix<float> & theValues,
