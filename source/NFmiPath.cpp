@@ -679,7 +679,7 @@ std::ostream& operator<< (std::ostream& os,const NFmiPath & thePath)
 // Return a SVG-string representation of the path
 // If relative_moves=true, relative movements are preferred over
 // absolute moves. This usually generates shorter SVG.
-// Tulostetaan polku vain kahden desimaalin tarkkuudella (yksi desimaali 
+// Tulostetaan polku vain kolmen desimaalin tarkkuudella (kaksi desimaali 
 // ei riittänyt, kun tuli pieni väli maiden välille?).
 // ----------------------------------------------------------------------
 
@@ -734,23 +734,23 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 					{
 					  os += 'm';
 //					  os += ftoa(last_x) + "," + ftoa(last_y);
-					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x, 2)) + string(",");
-					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y, 2));
+					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x, 3)) + string(",");
+					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y, 3));
 					}
 				  else
 					{
 					  os += " m";
 //					  os += ftoa(last_x - last_out_x) + "," + ftoa(last_y - last_out_y);
-					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x - last_out_x, 2)) + string(",");
-					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y - last_out_y, 2));
+					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x - last_out_x, 3)) + string(",");
+					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y - last_out_y, 3));
 					}
 				}
 			  else
 				{
 				  os += " M";
 //				  os += ftoa(last_x) + "," + ftoa(last_y);
-				  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x, 2)) + string(",");
-				  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y, 2));
+				  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x, 3)) + string(",");
+				  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y, 3));
 				}
 			  last_op = kFmiMoveTo;
 			  last_out_x = last_x;
@@ -761,8 +761,8 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 			{
 			  os += (relative_moves ? "m" : "M");
 //				+ ftoa(x) + "," + ftoa(y);
-			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x, 2)) + string(",");
-			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y, 2));
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x, 3)) + string(",");
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y, 3));
 			}
 		  
 		  // Relative moves are "m dx dy" and "l dx dy"
@@ -781,8 +781,8 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 				os += " ";
 			  
 //			  os += ftoa((x-last_out_x)) + "," + ftoa((y-last_out_y));
-			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x-last_out_x, 2)) + string(",");
-			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y-last_out_y, 2));
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x-last_out_x, 3)) + string(",");
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y-last_out_y, 3));
 			}
 		  
 		  // Absolute moves are "M x y" and "L x y"
@@ -801,8 +801,8 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 				os += " ";
 			  
 //			  os += ftoa(x) + "," + ftoa(y);
-			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x, 2)) + string(",");
-			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y, 2));
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x, 3)) + string(",");
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y, 3));
 			}
 		}
 	  
