@@ -142,6 +142,9 @@ namespace Imagine
 	const attributes_type & Attributes(void) const { return itsAttributeNames; }
 	
   private:
+
+	NFmiEsriShape(const NFmiEsriShape & theShape);
+	NFmiEsriShape & operator=(const NFmiEsriShape);
 	
 	// This one initializes by destroying possible old contents
 	
