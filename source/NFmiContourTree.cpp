@@ -63,24 +63,27 @@ using namespace std;
 
 // ----------------------------------------------------------------------
 /*!
- * This is called by NFmiConstructors to check the given numerical
- * limits. In particular, the special case \f$(-\infty,\infty)\f$
- * implies contouring the missing values, which is done by finding
- * all valid values \em and adding an extra area covering the entire
- * real number domain. This effectively reverses the area to contain
- * the \em NOT valid numbers.
+ * \brief Return the path
+ *
+ * Note how we handle missing value contouring by explicitly adding
+ * a surrounding box afterwards.
  */
 // ----------------------------------------------------------------------
 
-void NFmiContourTree::PrepareLimits(void)
+NFmiPath NFmiContourTree::Path(void) const
 {
-  if(ContouringMissing())
-    {
-      Add(NFmiEdge(-CLIMIT,CLIMIT,CLIMIT,CLIMIT,false));
-      Add(NFmiEdge(CLIMIT,CLIMIT,CLIMIT,-CLIMIT,false));
-      Add(NFmiEdge(CLIMIT,-CLIMIT,-CLIMIT,-CLIMIT,false));
-      Add(NFmiEdge(-CLIMIT,-CLIMIT,-CLIMIT,CLIMIT,false));
-    }
+  NFmiPath path = NFmiEdgeTree::Path();
+
+  if(path.Size() != 0 && ContouringMissing())
+	{
+	  path.MoveTo(-CLIMIT,CLIMIT);
+	  path.GhostLineTo(CLIMIT,CLIMIT);
+	  path.GhostLineTo(CLIMIT,-CLIMIT);
+	  path.GhostLineTo(-CLIMIT,-CLIMIT);
+	  path.GhostLineTo(-CLIMIT,CLIMIT);
+	}
+
+  return path;
 }
 
 // ----------------------------------------------------------------------

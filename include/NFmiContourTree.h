@@ -205,7 +205,7 @@ public:
 	, itsDataLoLimit()
 	, itsDataHiLimit()
 	, itsSubTrianglesOn(true)
-  { PrepareLimits(); }
+  { }
   
   /// Returns the active (read-only) \em low limit of the contoured interval
   
@@ -277,7 +277,6 @@ public:
   // Returns the subtriangle-mode flag
   bool SubTriangleMode() const { return itsSubTrianglesOn; }
 
-  
   /// Test if a value is valid for contouring
   /*!
    * A value is considered invalid if
@@ -323,6 +322,8 @@ public:
 			   const NFmiContourDataHelper & theHelper,
 			   const NFmiContourInterpolation & theInterpolation,
 			   int theMaxDepth=0);
+
+  NFmiPath Path(void) const;
 
 private:
   
@@ -388,7 +389,7 @@ private:
   
   //! Test whether we're contouring missing values
   
-  bool ContouringMissing(void)
+  bool ContouringMissing(void) const
   { return (LoLimit()==kFloatMissing && HiLimit()==kFloatMissing); }
   
   /// Contour a data-matrix using linear interpolation.
@@ -507,7 +508,7 @@ private:
   float itsDataHiLimit;		//!< Low limit to data validity.
 
   bool itsSubTrianglesOn;	//!< True if rectangles subdivide into triangles
-  
+
 };
 
 // ----------------------------------------------------------------------
