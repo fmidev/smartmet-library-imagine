@@ -9,8 +9,9 @@
 //	Implemented
 //
 // ======================================================================
-#ifdef _MSC_VER
-#pragma warning(disable : 4786) // poistaa n kpl VC++ kääntäjän varoitusta (liian pitkä nimi >255 merkkiä joka johtuu 'puretuista' STL-template nimistä)
+
+#ifdef OLD_MSC
+#pragma warning(disable : 4786)
 #endif
 
 #include "NFmiFontHershey.h"
@@ -168,10 +169,6 @@ namespace Imagine
 	// This aligns the text to the desired corner
 	
 	outpath.Align(theText.Alignment());
-	
-	// Now we establish the bounding box
-	
-	NFmiEsriBox box = outpath.BoundingBox();
 	
 	// And derive the remaining transformation
 	
