@@ -741,11 +741,20 @@ namespace Imagine
 	// Handle the special case of no attributes by writing
 	// a dummy database.
 
+	dbffile << "\x03\x5f\x07\x1a"	// signature + date?
+			<< LittleEndianInt(itsElements.size());
+
 	if(itsAttributeNames.empty())
 	  {
-		dbffile << '\x03'				// signature
-				<< "\x5f\x07\x1a"		// date ?
-				<< LittleEndianInt(itsElements.size());
+		for(unsigned int b=0; b<HEADERSIZE; b++)
+		  dbffile << static_cast<unsigned char>(header[b]);
+
+		for(unsigned int i=1; i<=itsElements.size(); i++)
+		  dbffile << setw(7) << setfill(' ') << i;
+	  }
+	else
+	  {
+		// THIS IS WRONG - SHOULD OUTPUT STORED DATA!
 		for(unsigned int b=0; b<HEADERSIZE; b++)
 		  dbffile << static_cast<unsigned char>(header[b]);
 
