@@ -33,6 +33,11 @@
 
 // Essential includes
 
+#include "NFmiPathElement.h"
+#include "NFmiFillMap.h"
+#include "NFmiAffine.h"
+#include "NFmiArea.h"
+
 #include <string>
 #include <deque>
 #include <algorithm>
@@ -40,11 +45,6 @@
 #include <cstdio>		// for sprintf in ftoa
 
 #include <iostream>		// << is overloaded
-
-#include "NFmiPathElement.h"
-#include "NFmiFillMap.h"
-#include "NFmiAffine.h"
-#include "NFmiArea.h"
 
 class NFmiGrid;
 
