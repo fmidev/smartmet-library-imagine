@@ -60,6 +60,8 @@ class _FMI_DLL NFmiPath : public NFmiDrawable
 public:
   
   virtual ~NFmiPath(void) {}
+
+  NFmiPath() : itsInsideOut(false), itsElements() { }
   
   // Tulostusoperaattorin ylikuormitus
   
@@ -74,7 +76,7 @@ public:
   // Clear contents
   
   void Clear(void)
-  { itsElements.clear(); }
+  { itsElements.clear(); itsInsideOut=false; }
   
   // Add the given path element
   
@@ -243,7 +245,10 @@ public:
   NFmiEsriBox BoundingBox(void) const;
 
   NFmiPath Clip(double theX1, double theY1, double theX2, double theY2, double theMargin = 0);
- 
+
+  void InsideOut(void) { itsInsideOut = !itsInsideOut; }
+  bool IsInsideOut() const { return itsInsideOut; }
+
 private:
   
   // Close the last subpath with an invisible or visible line
@@ -263,6 +268,7 @@ private:
   
   // Data-members
   
+  bool itsInsideOut;
   NFmiPathData itsElements;
   
 };

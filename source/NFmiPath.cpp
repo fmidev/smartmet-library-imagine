@@ -34,6 +34,10 @@
 
 namespace
 {
+
+  // Inside-out inversion limit
+  const float inside_out_limit = 1e8;
+
   //! The number identifying the region within the rectangle
   const int central_quadrant = 4;
 
@@ -518,24 +522,32 @@ void NFmiPath::InvGrid(const NFmiGrid * const theGrid)
 NFmiEsriBox NFmiPath::BoundingBox(void) const
 {
   NFmiEsriBox box;
-  
-  NFmiPathData::const_iterator iter;
-  
-  for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
-    {
-      switch((*iter).Oper())
+
+  if(itsInsideOut)
+	{
+	  box.Update(-inside_out_limit,-inside_out_limit);
+	  box.Update(inside_out_limit,inside_out_limit);
+	}
+  else
+	{
+	  NFmiPathData::const_iterator iter;
+	  
+	  for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 		{
-		case kFmiMoveTo:
-		case kFmiLineTo:
-		case kFmiGhostLineTo:
-		  box.Update((*iter).X(),(*iter).Y());
-		  break;
-		case kFmiConicTo:
-		  break;
-		case kFmiCubicTo:
-		  break;
+		  switch((*iter).Oper())
+			{
+			case kFmiMoveTo:
+			case kFmiLineTo:
+			case kFmiGhostLineTo:
+			  box.Update((*iter).X(),(*iter).Y());
+			  break;
+			case kFmiConicTo:
+			  break;
+			case kFmiCubicTo:
+			  break;
+			}
 		}
-    }
+	}
   
   return box;
 }
@@ -649,6 +661,10 @@ void NFmiPath::SimplifyLines(float theOffset)
 std::ostream& operator<< (std::ostream& os,const NFmiPath & thePath)
 {
   NFmiPathData::const_iterator iter = thePath.Elements().begin();
+
+  if(thePath.IsInsideOut())
+	os << "INSIDEOUT ";
+
   for( ; iter!=thePath.Elements().end(); ++iter)
     {
       // Special code for first move
@@ -692,7 +708,8 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
   //       hope that output will be reasonably fast.
   
   string os;
-  
+
+ 
   float last_x, last_y;
   float last_out_x, last_out_y;
   NFmiPathOperation last_op = kFmiMoveTo;
@@ -701,6 +718,7 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
   last_out_x = last_out_y = kFloatMissing;
 
   NFmiPathData::const_iterator iter = Elements().begin();
+
   for( ; iter!=Elements().end(); ++iter)
     {
 #ifdef _MSC_VER // MSVC:n stringi on paska kun se täyttyy ei sitä kasvateta tarpeeksi
@@ -817,6 +835,13 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 	  }
 	  
     }
+
+  if(!removeghostlines && itsInsideOut)
+	{
+	  assert(inside_out_limit == 1e8);
+	  os += "M -1e8,-1e8 L -1e8,1e8 L 1e8,1e8 L 1e8,-1e8 Z";
+	}
+
   return os;
 }
 
@@ -902,6 +927,15 @@ void NFmiPath::Add(NFmiFillMap & theMap) const
       y4=y3; y3=y2; y2=y1;
 	  
     }
+  
+  if(itsInsideOut)
+	{
+	  theMap.Add(-inside_out_limit,-inside_out_limit, -inside_out_limit, inside_out_limit);
+	  theMap.Add(-inside_out_limit, inside_out_limit,  inside_out_limit, inside_out_limit);
+	  theMap.Add( inside_out_limit, inside_out_limit,  inside_out_limit,-inside_out_limit);
+	  theMap.Add( inside_out_limit,-inside_out_limit, -inside_out_limit,-inside_out_limit);
+	}
+
 }
 
 // ----------------------------------------------------------------------

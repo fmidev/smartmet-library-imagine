@@ -49,16 +49,6 @@
 #define square(a) ((a)*(a))
 #endif
 
-/// A reasonably large value to indicate an 'infinite' domain
-
-/*!
- * This value must be reasonably large, but not too large or it has
- * no effect on contouring, since contouring uses integer arithmetic
- * 10e8 < 2^32, so this is safe.
- */
-
-#define CLIMIT 10e8
-
 using namespace std;
 
 // ----------------------------------------------------------------------
@@ -75,13 +65,7 @@ NFmiPath NFmiContourTree::Path(void) const
   NFmiPath path = NFmiEdgeTree::Path();
 
   if(path.Size() != 0 && ContouringMissing())
-	{
-	  path.MoveTo(-CLIMIT,CLIMIT);
-	  path.GhostLineTo(CLIMIT,CLIMIT);
-	  path.GhostLineTo(CLIMIT,-CLIMIT);
-	  path.GhostLineTo(-CLIMIT,-CLIMIT);
-	  path.GhostLineTo(-CLIMIT,CLIMIT);
-	}
+	path.InsideOut();
 
   return path;
 }
