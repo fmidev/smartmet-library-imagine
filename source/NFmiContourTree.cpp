@@ -1337,30 +1337,39 @@ namespace Imagine
 		Add(NFmiEdge(x4,y4,x1,y1,false));
 		return;
 	  }
-	
-	// Establish where the edges reside with respect to the desired range
-	// -1 implies below, 0 inside, 1 above. Also note that in the errorneous
-	// case of having both limits missing, which should by definition
-	// mean range (-infinity,infinity), the default insidedness value is
-	// correct.
-	
-	VertexInsidedness c1 = Insidedness(z1);
-	VertexInsidedness c2 = Insidedness(z2);
-	VertexInsidedness c3 = Insidedness(z3);
-	VertexInsidedness c4 = Insidedness(z4);
 
-	// Make new subcontourer
-	NFmiContourTree subpath(0.5,1.5,true,true,false);
-	subpath.ContourLinear4(x1,y1,c1==kInside ? 1 : 2,
-						   x2,y2,c2==kInside ? 1 : 2,
-						   x3,y3,c3==kInside ? 1 : 2,
-						   x4,y4,c4==kInside ? 1 : 2);
+	// If the square contains only two different values, we may use
+	// the linear interpolation trick. If there are more values,
+	// we risk generating gaps between the contours.
 
-	for(EdgeTreeType::iterator it=subpath.itsEdges.begin();
-		it != subpath.itsEdges.end();
-		++it)
+	set<float> values;
+	values.insert(z1);
+	values.insert(z2);
+	values.insert(z3);
+	values.insert(z4);
+
+	if(values.size() > 2)
+	  ContourNearest4(x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4);
+	else
 	  {
-		Add(*it);
+		VertexInsidedness c1 = Insidedness(z1);
+		VertexInsidedness c2 = Insidedness(z2);
+		VertexInsidedness c3 = Insidedness(z3);
+		VertexInsidedness c4 = Insidedness(z4);
+		
+		// Make new subcontourer
+		NFmiContourTree subpath(0.5,1.5,true,true,false);
+		subpath.ContourLinear4(x1,y1,c1==kInside ? 1 : 2,
+							   x2,y2,c2==kInside ? 1 : 2,
+							   x3,y3,c3==kInside ? 1 : 2,
+							   x4,y4,c4==kInside ? 1 : 2);
+
+		for(EdgeTreeType::iterator it=subpath.itsEdges.begin();
+			it != subpath.itsEdges.end();
+			++it)
+		  {
+			Add(*it);
+		  }
 	  }
 
   }
