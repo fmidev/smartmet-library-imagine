@@ -611,8 +611,8 @@ namespace Imagine
 										 splitpoint);
 			  if(maxerror < theError)
 				return outpath;
+			  u = uprime;
 			}
-		  u = uprime;
 		}
 
 	  // fitting failed - split at max error point and fit recursively
