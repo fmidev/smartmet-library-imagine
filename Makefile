@@ -2,16 +2,33 @@ LIB = imagine
 
 MAINFLAGS = -Wall -W -Wno-unused-parameter
 
-EXTRAFLAGS = -Werror -pedantic -Wpointer-arith -Wcast-qual \
-	-Wcast-align -Wwrite-strings -Wconversion -Winline \
-	-Wctor-dtor-privacy -Wnon-virtual-dtor -Wno-pmf-conversions \
-	-Wsign-promo -Wchar-subscripts -Wold-style-cast
+EXTRAFLAGS = \
+        -ansi \
+        -pedantic \
+        -Wcast-align \
+        -Wcast-qual \
+        -Wconversion \
+        -Wctor-dtor-privacy \
+        -Winline \
+        -Wmissing-prototypes \
+        -Wno-multichar \
+        -Wno-pmf-conversions \
+        -Wold-style-cast \
+        -Woverloaded-virtual  \
+        -Wpointer-arith \
+        -Wredundant-decls \
+        -Wshadow \
+        -Wsign-promo \
+        -Wstrict-prototypes \
+        -Wwrite-strings
+
+RELEASEFLAGS = -Wuninitialized
 
 DIFFICULTFLAGS = -Weffc++ -Wredundant-decls -Wshadow -Woverloaded-virtual -Wunreachable-code
 
 CC = g++
 CFLAGS = -DUNIX -O0 -g $(MAINFLAGS) $(EXTRAFLAGS) -Werror
-CFLAGS_RELEASE =  -DUNIX -O2 -DNDEBUG $(MAINFLAGS)
+CFLAGS_RELEASE =  -DUNIX -O2 -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
 LDFLAGS = -s
 ARFLAGS = -r
 INCLUDES = -I $(includedir) -I $(includedir)/newbase -I /usr/include/freetype2
