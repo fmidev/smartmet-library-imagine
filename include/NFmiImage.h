@@ -160,12 +160,6 @@ namespace Imagine
 	
 	void Erase(NFmiColorTools::Color theColor);
 	
-	// Reducing the number of colors in an image
-	
-	void Quantize(int maxcolors,
-				  int opaquethreshold=-1,
-				  bool ignoreAlpha=false) const;
-	
 	// A simple non-antialiased line of width 1 pixel
 	
 	void StrokeBasic(float theX1, float theY1,
