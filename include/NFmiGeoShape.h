@@ -54,6 +54,7 @@ namespace Imagine
 	NFmiGeoShape(const std::string & theFilename,
 				 NFmiGeoShapeType theType = kFmiGeoShapeEsri)
 	  : itsType(theType)
+	  , itsEsriShape(0)
 	{
 	  Read(theFilename, theType);
 	}
