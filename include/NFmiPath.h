@@ -46,6 +46,7 @@
 #include "NFmiAffine.h"
 #include "NFmiArea.h"
 
+class NFmiGrid;
 class NFmiEsriBox;
 
 typedef std::list<NFmiPathElement> NFmiPathData;
@@ -215,6 +216,8 @@ public:
   void Project(const NFmiArea * const theArea);
   
   void InvProject(const NFmiArea * const theArea);
+
+  void InvGrid(const NFmiGrid * const theGrid);
   
   // Return a new path which is the widened version of this one
   
