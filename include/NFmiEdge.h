@@ -13,9 +13,8 @@
 #ifndef IMAGINE_NFMIEDGE_H
 #define IMAGINE_NFMIEDGE_H
 
-#include <cmath>
-
 #include "NFmiGlobals.h"	// for kFloatMissing
+#include <cmath>
 
 namespace Imagine
 {
@@ -100,20 +99,6 @@ namespace Imagine
 	bool  fExact;		// Is the edge exactly on a contour?
   };
   
-  // A hash function intended for hash_set() etc
-  
-  struct NFmiEdgeHasher
-  {
-	size_t operator()(const NFmiEdge & theEdge) const
-	{
-	  return ((static_cast<size_t>(theEdge.GetX1()*134631) << 0 )^
-			  (static_cast<size_t>(theEdge.GetY1()*13123) << 3) ^
-			  (static_cast<size_t>(theEdge.GetX2()*124132) << 7) ^
-			  (static_cast<size_t>(theEdge.GetY2()*439216) << 9) ^
-			  theEdge.Exact() << 20);
-	}
-  };
-
 } // namespace Imagine
   
 // ----------------------------------------------------------------------
