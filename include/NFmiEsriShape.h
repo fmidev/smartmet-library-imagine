@@ -98,6 +98,7 @@ namespace Imagine
 	
 	// Constructor, destructor
 	
+	NFmiEsriShape(NFmiEsriElementType theType) : itsShapeType(theType) { }
 	NFmiEsriShape(void) {}
 	~NFmiEsriShape(void) { Init(); }
 	
