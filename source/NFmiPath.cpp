@@ -616,9 +616,11 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
   string os;
   
   float last_x, last_y;
+  float last_out_x, last_out_y;
   NFmiPathOperation last_op = kFmiMoveTo;
   
   last_x = last_y = kFloatMissing;
+  last_out_x = last_out_y = kFloatMissing;
   
   NFmiPathData::const_iterator iter = Elements().begin();
   for( ; iter!=Elements().end(); ++iter)
@@ -627,63 +629,93 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 	  
       if(iter->Oper()==kFmiConicTo || iter->Oper()==kFmiCubicTo)
 		throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::SVG()");
+	  bool out_ok = true;
+	  if(removeghostlines && iter->Oper() == kFmiGhostLineTo)
+	  {
+		  out_ok = false;
+	  }
+	  else
+	  {
+		  // If ghostlines are being ignored, we must output a moveto
+		  // when the ghostlines end and next operation is lineto.
+			if( removeghostlines &&
+			  (last_op == kFmiGhostLineTo) &&
+			  (iter->Oper() == kFmiLineTo) )
+			{
+			  if(relative_moves)
+			  {
+				  if(last_out_x == kFloatMissing && last_out_y == kFloatMissing)
+				  {
+					  os += 'm';
+					  os += ftoa(last_x) + "," + ftoa(last_y);
+				  }
+				  else
+				  {
+					  os += " m";
+					  os += ftoa(last_x - last_out_x) + "," + ftoa(last_y - last_out_y);
+					  last_out_x = last_x;
+					  last_out_y = last_y;
+				  }
+			  }
+			  else
+			  {
+				  os += " M";
+				  os += ftoa(last_x) + "," + ftoa(last_y);
+			  }
+			}
+		  
+			if(iter==Elements().begin())
+			{
+			  os += (relative_moves ? "m" : "M")
+				+ ftoa(iter->X()) + "," + ftoa(iter->Y());
+			}
+		  
+		  // Relative moves are "m dx dy" and "l dx dy"
+		  else if(relative_moves)
+			{
+			  if(iter->Oper() == kFmiMoveTo)
+				os += (last_op==kFmiMoveTo ? " " : " m");
 
-	  // If ghostlines are being ignored, we must output a moveto
-	  // when the ghostlines end.
-	  if( removeghostlines &&
-		  (last_op == kFmiGhostLineTo) &&
-		  (iter->Oper() != kFmiGhostLineTo) )
-		{
-		  os += " M";
-		  os += ftoa(iter->X()) + "," + ftoa(iter->Y());
-		}
-	  
-      if(iter==Elements().begin())
-		{
-		  os += (relative_moves ? "m" : "M")
-			+ ftoa(iter->X()) + "," + ftoa(iter->Y());
-		}
-	  
-      // Relative moves are "m dx dy" and "l dx dy"
-      else if(relative_moves)
-		{
-		  if(iter->Oper() == kFmiMoveTo)
-			os += (last_op==kFmiMoveTo ? " " : " m");
+			  else if(iter->Oper() == kFmiLineTo)
+				os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
 
-		  else if(iter->Oper() == kFmiLineTo)
-			os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
+			  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
+				os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
 
-		  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
-			os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
+			  else
+				os += " ";
 
+			  os += ftoa((iter->X()-last_x)) + "," + ftoa((iter->Y()-last_y));
+			}
+		  
+		  // Absolute moves are "M x y" and "L x y"
 		  else
-			os += " ";
+			{
+			  if(iter->Oper() == kFmiMoveTo)
+				os += (last_op==kFmiMoveTo ? " " : " M");
 
-		  os += ftoa((iter->X()-last_x)) + "," + ftoa((iter->Y()-last_y));
-		}
-	  
-      // Absolute moves are "M x y" and "L x y"
-      else
-		{
-		  if(iter->Oper() == kFmiMoveTo)
-			os += (last_op==kFmiMoveTo ? " " : " M");
+			  else if(iter->Oper() == kFmiLineTo)
+				os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
 
-		  else if(iter->Oper() == kFmiLineTo)
-			os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
+			  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
+				os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
 
-		  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
-			os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
+			  else
+				os += " ";
 
-		  else
-			os += " ";
-
-		  os += ftoa(iter->X()) + "," + ftoa(iter->Y());
-		}
+			  os += ftoa(iter->X()) + "," + ftoa(iter->Y());
+			}
+	  }
 	  
       last_op = iter->Oper();
 	  
 	  last_x = iter->X();
 	  last_y = iter->Y();
+	  if(out_ok)
+	  {
+		  last_out_x = iter->X();
+		  last_out_y = iter->Y();
+	  }
 	  
     }
   return os;
