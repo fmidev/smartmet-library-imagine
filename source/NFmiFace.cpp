@@ -257,7 +257,9 @@ namespace Imagine
 	string::size_type i;
 	for(i = 0; i<theText.size(); i++)
 	  {
-		glyph_index = FT_Get_Char_Index(itsFace,theText[i]);
+		unsigned char ch = static_cast<unsigned char>(theText[i]);
+
+		glyph_index = FT_Get_Char_Index(itsFace,ch);
 
 		// Retrieve kerning distance and move pen accordingly
 		if(use_kerning && previous!=0 && glyph_index!=0)
