@@ -34,6 +34,11 @@
 #ifndef _NFMIAFFINE_H
 #define _NFMIAFFINE_H
 
+#ifdef __BORLANDC__
+     using std::sin;
+     using std::cos;
+#endif
+
 //! A class to perform affine transformations
 class _FMI_DLL NFmiAffine
 {

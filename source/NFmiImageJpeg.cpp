@@ -15,6 +15,8 @@
 
 // JPEG group idiots.. I wasted hours on this one
 
+#ifndef IMAGINE_IGNORE_FORMATS
+
 extern "C" {
 #include "jpeglib.h"
 }
@@ -243,5 +245,6 @@ void NFmiImage::WriteJPEG(FILE *out) const
   // Done
   
 }
+#endif // IMAGINE_IGNORE_FORMATS
 
 // ======================================================================

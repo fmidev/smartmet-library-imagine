@@ -412,6 +412,7 @@ void NFmiImage::Read(const string & theFileName)
   
   switch(magic)
 	{
+#ifndef IMAGINE_IGNORE_FORMATS
 	case(PNG_MAGIC):
 	  ReadPNG(in);
 	  break;
@@ -419,14 +420,14 @@ void NFmiImage::Read(const string & theFileName)
 	case(JPG_MAGIC):
 	  ReadJPEG(in);
 	  break;
-	  
+#endif // IMAGINE_IGNORE_FORMATS
+
 	case(GIF_MAGIC):
 	  ReadGIF(in);
 	  break;
 	  
 	default:
 	  throw NFmiImageFormatError("Unrecognized image format");
-	  break;
 	}
   
   // Assert we got an image
@@ -445,6 +446,7 @@ void NFmiImage::Read(const string & theFileName)
 // The quality should be negative to imply default quality, or
 // in the range 0-95.
 // ----------------------------------------------------------------------
+#ifndef IMAGINE_IGNORE_FORMATS
 
 void NFmiImage::WriteJpeg(const string & theFileName) const
 {
@@ -468,6 +470,7 @@ void NFmiImage::WritePng(const string & theFileName) const
   WritePNG(out);
   fclose(out);
 }
+#endif // IMAGINE_IGNORE_FORMATS
 
 // ----------------------------------------------------------------------
 // Write image as GIF into given file.

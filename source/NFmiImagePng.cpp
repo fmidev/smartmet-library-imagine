@@ -13,6 +13,8 @@
 #pragma warning(disable : 4786) // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
 #endif
 
+#ifndef IMAGINE_IGNORE_FORMATS
+
 #include <png.h>
 #include <map>
 #include <iostream> // 2.1.2002/Marko cerr vaatii t‰m‰n MSVC-k‰‰nt‰j‰ss‰.
@@ -457,5 +459,7 @@ void NFmiImage::WritePNG(FILE *out) const
   
   png_destroy_write_struct(&png_ptr, &info_ptr);
 }
+
+#endif // IMAGINE_IGNORE_FORMATS
 
 // ======================================================================

@@ -19,6 +19,10 @@
 
 #include "NFmiColorTools.h"
 
+#ifdef __BORLANDC__
+     using std::abs;
+#endif
+
 //
 // Porter-Duff and other miscellaneous blending rules
 //

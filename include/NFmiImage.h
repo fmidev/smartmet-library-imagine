@@ -28,6 +28,10 @@
 #include "NFmiDrawable.h"
 #include "NFmiAlignment.h"
 
+#ifdef __BORLANDC__
+     using std::FILE;
+#endif
+
 //! Generic NFmiImage exception from which all others are derived
 struct NFmiImageError : public std::runtime_error
 {
@@ -103,6 +107,7 @@ public:
   
   // Access to individual options
   
+#ifndef IMAGINE_IGNORE_FORMATS
   int JpegQuality(void) const		{ return itsJpegQuality; }
   int PngQuality(void) const		{ return itsPngQuality; }
   int AlphaLimit(void) const		{ return itsAlphaLimit; }
@@ -120,6 +125,7 @@ public:
   void ForcePalette(bool flag)		{ itsForcePaletteFlag = flag; }
   void Gamma(float value)		{ itsGamma = value; }
   void Intent(const std::string & value){ itsIntent = value; }
+#endif  // IMAGINE_IGNORE_FORMATS
   
   // This makes  A(i,j) = B(x,y) work
   
@@ -139,8 +145,10 @@ public:
   
   // Writing the image
   
+#ifndef IMAGINE_IGNORE_FORMATS
   void WriteJpeg(const std::string & theFileName) const;
   void WritePng(const std::string & theFileName) const;
+#endif // IMAGINE_IGNORE_FORMATS
   void WriteGif(const std::string & theFileName) const;
   
   // Erasing image with desired colour
@@ -179,15 +187,17 @@ private:
   
   // Reading and writing various image formats
   
+#ifndef IMAGINE_IGNORE_FORMATS
   void ReadPNG(FILE *in);
   void WritePNG(FILE *out) const;
   
   void ReadJPEG(FILE *in);
   void WriteJPEG(FILE *out) const;
+#endif // IMAGINE_IGNORE_FORMATS
   
   void ReadGIF(FILE *in);
   void WriteGIF(FILE *out) const;
-  
+
   // Test whether the image is opaque
   
   bool IsOpaque(int threshold = -1) const;
