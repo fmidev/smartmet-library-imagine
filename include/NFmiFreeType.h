@@ -10,8 +10,10 @@
 #ifndef IMAGINE_NFMIFREETYPE_H
 #define IMAGINE_NFMIFREETYPE_H
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
+extern "C" {
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+}
 
 #include <string>
 

@@ -9,10 +9,13 @@
 #ifndef IMAGINE_NFMIFACE_H
 #define IMAGINE_NFMIFACE_H
 
+#include "NFmiAlignment.h"
 #include "NFmiColorTools.h"
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
+extern "C" {
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+}
 
 #include "boost/shared_ptr.hpp"
 #include <string>
@@ -20,7 +23,6 @@
 namespace Imagine
 {
   class NFmiFreeType;
-  class NFmiText;
   class NFmiImage;
 
   class NFmiFace
@@ -31,10 +33,12 @@ namespace Imagine
 	NFmiFace(const NFmiFace & theFace);
 	NFmiFace & operator=(const NFmiFace & theFace);
 	
-	void Draw(const NFmiText & theText,
-			  NFmiImage & theImage,
-			  NFmiColorTools::Color theColor,
-			  NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const;
+	void Draw(NFmiImage & theImage,
+			  int theX, int theY,
+			  const std::string & theText,
+			  NFmiAlignment theAlignment = kFmiAlignNorthWest,
+			  NFmiColorTools::Color theColor = NFmiColorTools::Black,
+			  NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorOver) const;
 
   private:
 
