@@ -97,6 +97,8 @@ namespace Imagine
 	  case kFmiContourLinear:
 		NFmiContourTree::ContourLinear(thePts,theValues,theMaxDepth);
 		break;
+	  case kFmiContourDiscrete:
+		NFmiContourTree::ContourDiscrete(thePts,theValues);
 	  default:
 		break;
 	  }
@@ -125,6 +127,9 @@ namespace Imagine
 		break;
 	  case kFmiContourLinear:
 		NFmiContourTree::ContourLinear(theValues,theMaxDepth);
+		break;
+	  case kFmiContourDiscrete:
+		NFmiContourTree::ContourDiscrete(theValues);
 		break;
 	  default:
 		break;
@@ -161,6 +166,9 @@ namespace Imagine
 	  case kFmiContourLinear:
 		NFmiContourTree::ContourLinear(thePts,theValues,theHelper,theMaxDepth);
 		break;
+	  case kFmiContourDiscrete:
+		NFmiContourTree::ContourDiscrete(thePts,theValues,theHelper);
+		break;
 	  default:
 		break;
 	  }
@@ -192,6 +200,9 @@ namespace Imagine
 	  case kFmiContourLinear:
 		NFmiContourTree::ContourLinear(theValues,theHelper,theMaxDepth);
 		break;
+	  case kFmiContourDiscrete:
+		NFmiContourTree::ContourDiscrete(theValues,theHelper);
+		break;
 	  default:
 		break;
 	  }
@@ -220,6 +231,30 @@ namespace Imagine
 						thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
 						thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1]);
   }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
+   * Note that contour recursion depth is meaningless for discrete
+   * interpolation.
+   *
+   * \param thePts The coordinates of the points.
+   * \param theValues The values at the points.
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourDiscrete(const NFmiDataMatrix<NFmiPoint> & thePts,
+										const NFmiDataMatrix<float> & theValues)
+  {
+	for(unsigned int j=0; j<thePts.NY()-1; j++)
+	  for(unsigned int i=0; i<thePts.NX()-1; i++)
+		
+		ContourDiscrete4(thePts[i][j].X(),thePts[i][j].Y(),theValues[i][j],
+						 thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
+						 thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
+						 thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1]);
+  }
   
   // ----------------------------------------------------------------------
   /*!
@@ -241,6 +276,26 @@ namespace Imagine
 						i+1,j,theValues[i+1][j],
 						i+1,j+1,theValues[i+1][j+1],
 						i,j+1,theValues[i][j+1]);
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
+   *
+   * \param theValues The values at the points.
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourDiscrete(const NFmiDataMatrix<float> & theValues)
+  {
+	for(unsigned int j=0; j<theValues.NY()-1; j++)
+	  for(unsigned int i=0; i<theValues.NX()-1; i++)
+		
+		ContourDiscrete4(i,j,theValues[i][j],
+						 i+1,j,theValues[i+1][j],
+						 i+1,j+1,theValues[i+1][j+1],
+						 i,j+1,theValues[i][j+1]);
   }
   
   // ----------------------------------------------------------------------
@@ -303,6 +358,65 @@ namespace Imagine
 						  thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1]);
 	  }
   }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
+   *
+   * \param thePts The coordinates of the points.
+   * \param theValues The values at the points.
+   * \param theHelper A NFmiContourDataHelper for speeding up the contouring
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourDiscrete(const NFmiDataMatrix<NFmiPoint> & thePts,
+										const NFmiDataMatrix<float> & theValues,
+										const NFmiContourDataHelper & theHelper)
+  {
+	if(theHelper.IsFullyMissing())
+	  return;
+	
+	VertexInsidedness cmin = Insidedness(theHelper.Min());
+	VertexInsidedness cmax = Insidedness(theHelper.Max());
+	
+	// If min,max both below or above, skip the contour
+	
+	if(cmin==cmax && cmin!=kInside)
+	  return;
+	
+	// If min,max both inside, we could contour the entire matrix at once,
+	// except that we'd need to check whether the matrix contained missing
+	// values which are NOT to be included. For now we ignore this
+	// optimization and just contour the matrix as usual.
+	
+	for(unsigned int j=0; j<thePts.NY()-1; j++)
+	  {
+		// Ignore fully missing rows
+		
+		if(theHelper.IsFullyMissing(j))
+		  continue;
+		
+		cmin = Insidedness(theHelper.Min(j));
+		cmax = Insidedness(theHelper.Max(j));
+		
+		// If min,max both below or above, skip to next row
+		
+		if(cmin==cmax && cmin!=kInside)
+		  continue;
+		
+		// If min,max both inside, we could contour the entire row at once,
+		// except that we'd need to check whether the row contained missing
+		// values which are NOT to be included. For now we ignore this
+		// optimization and just contour the row as usual.
+		
+		for(unsigned int i=0; i<thePts.NX()-1; i++)
+		  ContourDiscrete4(thePts[i][j].X(),thePts[i][j].Y(),theValues[i][j],
+						   thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
+						   thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
+						   thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1]);
+	  }
+  }
   
   
   // ----------------------------------------------------------------------
@@ -361,6 +475,63 @@ namespace Imagine
 						  i+1,j,theValues[i+1][j],
 						  i+1,j+1,theValues[i+1][j+1],
 						  i,j+1,theValues[i][j+1]);
+	  }
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
+   *
+   * \param theValues The values at the points.
+   * \param theHelper A NFmiContourDataHelper for speeding up the contouring
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourDiscrete(const NFmiDataMatrix<float> & theValues,
+										const NFmiContourDataHelper & theHelper)
+  {
+	if(theHelper.IsFullyMissing())
+	  return;
+	
+	VertexInsidedness cmin = Insidedness(theHelper.Min());
+	VertexInsidedness cmax = Insidedness(theHelper.Max());
+	
+	// If min,max both below or above, skip the contour
+	
+	if(cmin==cmax && cmin!=kInside)
+	  return;
+	
+	// If min,max both inside, we could contour the entire matrix at once,
+	// except that we'd need to check whether the matrix contained missing
+	// values which are NOT to be included. For now we ignore this
+	// optimization and just contour the matrix as usual.
+	
+	for(unsigned int j=0; j<theValues.NY()-1; j++)
+	  {
+		// Ignore fully missing rows
+		
+		if(theHelper.IsFullyMissing(j))
+		  continue;
+		
+		cmin = Insidedness(theHelper.Min(j));
+		cmax = Insidedness(theHelper.Max(j));
+		
+		// If min,max both below or above, skip to next row
+		
+		if(cmin==cmax && cmin!=kInside)
+		  continue;
+		
+		// If min,max both inside, we could contour the entire row at once,
+		// except that we'd need to check whether the row contained missing
+		// values which are NOT to be included. For now we ignore this
+		// optimization and just contour the row as usual.
+		
+		for(unsigned int i=0; i<theValues.NX()-1; i++)
+		  ContourDiscrete4(i,j,theValues[i][j],
+						   i+1,j,theValues[i+1][j],
+						   i+1,j+1,theValues[i+1][j+1],
+						   i,j+1,theValues[i][j+1]);
 	  }
   }
   
@@ -1103,6 +1274,88 @@ namespace Imagine
 	  Add(NFmiEdge(x41,y41,x0,y0,true));
 	
   }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour a rectangular element using discrete interpolation.
+   * The input is the 4 coordinates defining the rectangle, and the values
+   * at the rectangle vertices. The order of the vertices may be clockwise
+   * or counter-clockwise, it does not matter.
+   *
+   * Algorithm:
+   *
+   *  -# Fix inside points to value 1, outside points to value 2
+   *     and then use regular linear interpolation.
+   *
+   * Any of the input values may be missing, which implies the polygon
+   * will not cause any contours to be output, except in the case
+   * when only one value is missing, when ContourDiscrete3 is called.
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourDiscrete4(float x1, float y1, float z1,
+										 float x2, float y2, float z2,
+										 float x3, float y3, float z3,
+										 float x4, float y4, float z4)
+  {
+	// Abort if any of the coordinates is missing
+	
+	if(x1==kFloatMissing ||
+	   x2==kFloatMissing ||
+	   x3==kFloatMissing ||
+	   x4==kFloatMissing ||
+	   y1==kFloatMissing ||
+	   y2==kFloatMissing ||
+	   y3==kFloatMissing ||
+	   y4==kFloatMissing)
+	  return;
+	
+	// Handle missing values
+	
+	if(!IsValid(z1) || !IsValid(z2) || !IsValid(z3) || !IsValid(z4))
+	  {
+		if(IsValid(z1) && IsValid(z2) && IsValid(z3))
+		  ContourDiscrete3(x1,y1,z1,x2,y2,z2,x3,y3,z3);
+		else if(IsValid(z1) && IsValid(z2) && IsValid(z4))
+		  ContourDiscrete3(x1,y1,z1,x2,y2,z2,x4,y4,z4);
+		else if(IsValid(z1) && z3!=kFloatMissing && IsValid(z4))
+		  ContourDiscrete3(x1,y1,z1,x3,y3,z3,x4,y4,z4);
+		else if(IsValid(z2) && z3!=kFloatMissing && IsValid(z4))
+		  ContourDiscrete3(x2,y2,z2,x3,y3,z3,x4,y4,z4);
+		return;
+	  }
+	
+	// If both limits are missing, cover the entire rectangle, since
+	// it contains only valid values now. The contours are never exact
+	// when contouring missing values
+	
+	if(ContouringMissing())
+	  {
+		Add(NFmiEdge(x1,y1,x2,y2,false));
+		Add(NFmiEdge(x2,y2,x3,y3,false));
+		Add(NFmiEdge(x3,y3,x4,y4,false));
+		Add(NFmiEdge(x4,y4,x1,y1,false));
+		return;
+	  }
+	
+	// Establish where the edges reside with respect to the desired range
+	// -1 implies below, 0 inside, 1 above. Also note that in the errorneous
+	// case of having both limits missing, which should by definition
+	// mean range (-infinity,infinity), the default insidedness value is
+	// correct.
+	
+	VertexInsidedness c1 = Insidedness(z1);
+	VertexInsidedness c2 = Insidedness(z2);
+	VertexInsidedness c3 = Insidedness(z3);
+	VertexInsidedness c4 = Insidedness(z4);
+
+	// Now we perform regular linear interpolation instead
+
+	ContourLinear4(x1,y1,c1 == kInside ? 1 : 2,
+				   x2,y2,c2 == kInside ? 1 : 2,
+				   x3,y3,c3 == kInside ? 1 : 2,
+				   x4,y4,c4 == kInside ? 1 : 2);
+  }
   
   // ----------------------------------------------------------------------
   /*!
@@ -1397,6 +1650,28 @@ namespace Imagine
 	  Add(NFmiEdge(x31,y31,x0,y0,true));
 	
   }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour a triangular element using discrete interpolation.
+   * The input is the 3 coordinates defining
+   * the triangle, and the values at the triangle vertices. The order
+   * of the vertices does not matter, the resulting triangle is always
+   * uniquely definined by the vertex coordinates.
+   * (This is not the case for a polygon with more vertices)
+   *
+   * Any of the input values may be missing, which implies the polygon
+   * will not cause any contours to be output.
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourDiscrete3(float x1, float y1, float z1,
+										 float x2, float y2, float z2,
+										 float x3, float y3, float z3)
+  {
+	// The results are equivalent!
+	NFmiContourTree::ContourNearest3(x1,y1,z1,x2,y2,z2,x3,y3,z3);
+  }
   
   // ----------------------------------------------------------------------
   /*!
@@ -1562,6 +1837,8 @@ namespace Imagine
 	  return kFmiContourNearest;
 	else if(theName=="Linear")
 	  return kFmiContourLinear;
+	else if(theName=="Discrete")
+	  return kFmiContourDiscrete;
 	else
 	  return kFmiContourMissingInterpolation;
   }
@@ -1582,6 +1859,8 @@ namespace Imagine
 		return string("Nearest");
 	  case kFmiContourLinear:
 		return string("Linear");
+	  case kFmiContourDiscrete:
+		return string("Discrete");
 	  default:
 		return string("Missing");
 	  }

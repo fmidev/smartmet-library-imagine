@@ -165,8 +165,9 @@ namespace Imagine
 	enum NFmiContourInterpolation
 	  {
 		kFmiContourMissingInterpolation,	///< No interpolation defined
-		kFmiContourNearest,		///< Nearest neighbour interpolation
-		kFmiContourLinear			///< Linear interpolation
+		kFmiContourNearest,					///< Nearest neighbour interpolation
+		kFmiContourLinear,					///< Linear interpolation
+		kFmiContourDiscrete					///< Discrete interpolation
 	  };
 	
 	/// Convert a name of interpolation method to enumerated type.
@@ -425,6 +426,20 @@ namespace Imagine
 	void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
 						const NFmiDataMatrix<float> & theValues,
 						const NFmiContourDataHelper & theHelper);
+
+	/// Contour a data-matrix using discrete interpolation
+	
+	void ContourDiscrete(const NFmiDataMatrix<float> & theValues);
+	
+	void ContourDiscrete(const NFmiDataMatrix<float> & theValues,
+						 const NFmiContourDataHelper & theHelper);
+	
+	void ContourDiscrete(const NFmiDataMatrix<NFmiPoint> & thePts,
+						 const NFmiDataMatrix<float> & theValues);
+	
+	void ContourDiscrete(const NFmiDataMatrix<NFmiPoint> & thePts,
+						 const NFmiDataMatrix<float> & theValues,
+						 const NFmiContourDataHelper & theHelper);
 	
 	/// Contour a triangular element using linear interpolation
 	
@@ -447,12 +462,25 @@ namespace Imagine
 						 float x2, float y2, float z2,
 						 float x3, float y3, float z3);
 	
-	/// Contour a triangular element using nearest neighbour interpolation
+	/// Contour a rectangular element using nearest neighbour interpolation
 	
 	void ContourNearest4(float x1, float y1, float z1,
 						 float x2, float y2, float z2,
 						 float x3, float y3, float z3,
 						 float x4, float y4, float z4);
+
+	/// Contour a triangular element using discrete interpolation
+	
+	void ContourDiscrete3(float x1, float y1, float z1,
+						  float x2, float y2, float z2,
+						  float x3, float y3, float z3);
+	
+	/// Contour a rectangular element using discrete interpolation
+	
+	void ContourDiscrete4(float x1, float y1, float z1,
+						  float x2, float y2, float z2,
+						  float x3, float y3, float z3,
+						  float x4, float y4, float z4);
 	
 	/// A utility function used by the constructor to check the limits.
 	
