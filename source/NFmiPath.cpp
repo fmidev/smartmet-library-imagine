@@ -577,8 +577,8 @@ namespace Imagine
 	NFmiPathData::iterator iter = itsElements.begin();
 	NFmiPathData::iterator end  = itsElements.end();
 	
-	NFmiPathData::iterator deliter;	// used when deleting
-	
+	NFmiPathData newelements;
+
 	// Cached previous path element:
 	
 	NFmiPathOperation oper1,oper2,oper3;
@@ -599,6 +599,8 @@ namespace Imagine
 		
 		// Establish new data
 		
+		newelements.push_back(*iter);
+
 		oper3 = (*iter).Oper();
 		x3 = theOffset+(*iter).X();
 		y3 = theOffset+(*iter).Y();
@@ -606,7 +608,7 @@ namespace Imagine
 		// Delete-iterator is current element, 
 		
 		++iter;
-		
+
 		// Get atleast 3 points before doing anything
 		
 		//      cachesize = min(3,cachesize+1);
@@ -642,18 +644,22 @@ namespace Imagine
 			if ( (x1==x2 && x2==x3) || (y1==y2 && y2==y3) ||
 				 ((x3-x1)*(y2-y1)-(y3-y1)*(x2-x1)==0.0) )
 			  {
+				NFmiPathElement last = newelements.back();
+				newelements.pop_back();
+				newelements.pop_back();
+				newelements.push_back(last);
+				cachesize--;
+
 				oper2 = oper1;
 				x2=x1;
 				y2=y1;
 				cachesize--;
-				
-				deliter = iter;			// ABC->D
-				--deliter;			// AB->CD
-				--deliter;			// A->BCD
-				itsElements.erase(deliter);	// A->CD
 			  }
 		  }
 	  }
+
+	swap(itsElements,newelements);
+
   }
   
   
