@@ -65,7 +65,9 @@ namespace Imagine
 	// This is intended to be used by projection etc methods
 	
 	void Points(const std::vector<NFmiEsriPoint> & pts) { itsPoints = pts; }
-	
+
+	using NFmiEsriElement::Add;
+
 	// Adding a new data point to the current part, or the first
 	// one if this is the first point
 	
