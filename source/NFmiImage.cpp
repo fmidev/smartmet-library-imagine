@@ -12,9 +12,11 @@
 //
 // ======================================================================
 
+#include "NFmiFileSystem.h"
 #include "NFmiImage.h"
 #include "NFmiImageTools.h"
 #include "NFmiColorBlend.h"
+#include "NFmiStringTools.h"
 #include <cassert>	// for assert
 #include <cstdlib>	// for rand, RAND_MAX
 #include <png.h>	// for pnglib
@@ -23,6 +25,22 @@
 #include <sstream>
 
 using namespace std;
+
+namespace
+{
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Create an unique temporary file name
+   */
+  // ----------------------------------------------------------------------
+
+  const string mytmpnam()
+  {
+	string tmp = tmpnam(NULL);
+	return tmp;
+  }
+
+}
 
 namespace Imagine
 {
@@ -446,11 +464,19 @@ namespace Imagine
   
   void NFmiImage::WriteJpeg(const string & theFileName) const
   {
+	const string tmp = mytmpnam();
+
 	FILE *out;
-	out = fopen(theFileName.c_str(),"wb");
+	out = fopen(tmp.c_str(),"wb");
 	assert(out!=NULL);
 	WriteJPEG(out);
 	fclose(out);
+
+	bool status = NFmiFileSystem::CopyFile(tmp,theFileName);
+	NFmiFileSystem::RemoveFile(tmp);
+	
+	if(!status)
+	  throw runtime_error("Failed to write '"+theFileName+"'");
   }
   
   // ----------------------------------------------------------------------
@@ -460,11 +486,20 @@ namespace Imagine
   
   void NFmiImage::WritePng(const string & theFileName) const
   {
+	const string tmp = mytmpnam();
+
 	FILE *out;
-	out = fopen(theFileName.c_str(),"wb");
+	out = fopen(tmp.c_str(),"wb");
 	assert(out!=NULL);
 	WritePNG(out);
 	fclose(out);
+
+	bool status = NFmiFileSystem::CopyFile(tmp,theFileName);
+	NFmiFileSystem::RemoveFile(tmp);
+	
+	if(!status)
+	  throw runtime_error("Failed to write '"+theFileName+"'");
+
   }
 #endif // IMAGINE_IGNORE_FORMATS
   
@@ -474,11 +509,19 @@ namespace Imagine
   
   void NFmiImage::WriteGif(const string & theFileName) const
   {
+	const string tmp = mytmpnam();
+
 	FILE *out;
-	out = fopen(theFileName.c_str(),"wb");
+	out = fopen(tmp.c_str(),"wb");
 	assert(out!=NULL);
 	WriteGIF(out);
 	fclose(out);
+
+	bool status = NFmiFileSystem::CopyFile(tmp,theFileName);
+	NFmiFileSystem::RemoveFile(tmp);
+	
+	if(!status)
+	  throw runtime_error("Failed to write '"+theFileName+"'");
   }
   
   // ----------------------------------------------------------------------
