@@ -113,6 +113,7 @@ namespace Imagine
 	  ColorTree();
 	  void insert(value_type theColor);
 
+	  bool empty() const;
 	  value_type nearest(value_type theColor);
 
 	  static float distance(value_type theColor1, value_type theColor2);
@@ -179,6 +180,16 @@ namespace Imagine
 
 	}
 
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Test whether the tree is empty
+	 */
+	// ----------------------------------------------------------------------
+
+	bool ColorTree::empty() const
+	{
+	  return (itsLeftObject.get() != 0);
+	}
 
 	// ----------------------------------------------------------------------
 	/*!
@@ -261,7 +272,8 @@ namespace Imagine
 							ColorTree::value_type & theNearest,
 							float & theRadius) const
 	{
-	  double tmpradius;
+	  float left_dist = -1;
+	  float right_dist = -1;
 	  bool found = false;
 
 	  // first test each of the left and right positions to see if
@@ -269,10 +281,10 @@ namespace Imagine
 
 	  if(itsLeftObject.get() != 0)
 		{
-		  tmpradius = distance(theColor,*itsLeftObject);
-		  if(theRadius<0  || tmpradius<=theRadius)
+		  left_dist = distance(theColor,*itsLeftObject);
+		  if(theRadius<0  || left_dist<=theRadius)
 			{
-			  theRadius = tmpradius;
+			  theRadius = left_dist;
 			  theNearest = *itsLeftObject;
 			  found = true;
 			}
@@ -280,10 +292,10 @@ namespace Imagine
 
 	  if(itsRightObject.get() != 0)
 		{
-		  tmpradius = distance(theColor,*itsRightObject);
-		  if(theRadius<0  || tmpradius<=theRadius)
+		  right_dist = distance(theColor,*itsRightObject);
+		  if(theRadius<0  || right_dist<=theRadius)
 			{
-			  theRadius = tmpradius;
+			  theRadius = right_dist;
 			  theNearest = *itsRightObject;
 			  found = true;
 			}
@@ -297,14 +309,15 @@ namespace Imagine
 
 	  // Now we test to see if the branches below might hold an object
 	  // nearer than the best so far found. The triangle rule is used
-	  // to test whether it's even necessary to descend
+	  // to test whether it's even necessary to descend. We may be
+	  // able to skip skanning both branches if we can guess
 
 	  if((itsLeftBranch.get() != 0) &&
-		 ((theRadius + itsMaxLeft) >= distance(theColor,*itsLeftObject)))
+		 ((theRadius + itsMaxLeft) >= left_dist))
 		found |= itsLeftBranch->nearest(theColor,theNearest,theRadius);
 
 	  if((itsRightBranch.get() != 0) &&
-		 ((theRadius + itsMaxRight) >= distance(theColor,*itsRightObject)))
+		 ((theRadius + itsMaxRight) >= right_dist))
 		found |= itsRightBranch->nearest(theColor,theNearest,theRadius);
 
 	  return found;
@@ -414,7 +427,7 @@ namespace Imagine
 			it != histogram.end();
 			++it)
 		  {
-			if(it->first >= limit)
+			if(it->first >= limit || tree.empty())
 			  {
 				tree.insert(it->second);
 				colormap.insert(ColorMap::value_type(it->second,it->second));
