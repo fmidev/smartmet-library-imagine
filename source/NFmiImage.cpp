@@ -329,7 +329,7 @@ namespace Imagine
   {
 	itsType = "";
 	itsJpegQuality = 75;			// 0-100
-	itsPngQuality = 7;			// 0=none, 1=fast,9=slow
+	itsPngQuality = 6;			// 0=none, 1=fast,9=slow
 	itsAlphaLimit = -1;			// do not force opaque/transparent
 	itsPngFilter = PNG_FILTER_TYPE_DEFAULT;	// usually fastest and often best
 	itsSaveAlphaFlag = true;		// yes, save alpha channel
