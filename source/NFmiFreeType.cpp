@@ -111,6 +111,18 @@ namespace Imagine
 	return face;
   }
 
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Return the FT_Library in use
+   */
+  // ----------------------------------------------------------------------
+
+  FT_Library & NFmiFreeType::Library()
+  {
+	Init();
+	return itsLibrary;
+  }
+
 } // namespace Imagine
 
 #endif // UNIX
