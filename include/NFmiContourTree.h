@@ -501,11 +501,6 @@ namespace Imagine
 							   float x4, float y4, float z4,
 							   int depth);
 	
-	/// Contour recursion of line segments
-	
-	void Contour2Recurse(float x1, float y1, float x2, float y2,
-						 bool exact, int depth);
-	
 	/// Calculate contour intersections at an edge.
 	
 	void IntersectEdge(std::vector<float> & X,

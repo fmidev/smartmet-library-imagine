@@ -895,21 +895,10 @@ namespace Imagine
 		// The alternative would be to try matching overlapping edges, which
 		// would be an unnecessarily complex operation.
 		
-		Contour2Recurse(x1,y1,x2,y2,
-						z1==z2 && (z1==LoLimit() || z1==HiLimit()),
-						maxdepth);
-		
-		Contour2Recurse(x2,y2,x3,y3,
-						z2==z3 && (z2==LoLimit() || z2==HiLimit()),
-						maxdepth);
-		
-		Contour2Recurse(x3,y3,x4,y4,
-						z3==z4 && (z3==LoLimit() || z3==HiLimit()),
-						maxdepth);
-		
-		Contour2Recurse(x4,y4,x1,y1,
-						z4==z1 && (z4==LoLimit() || z4==HiLimit()),
-						maxdepth);
+		Add(NFmiEdge(x1,y1,x2,y2,z1==z2 && (z1==LoLimit() || z1==HiLimit())));
+		Add(NFmiEdge(x2,y2,x3,y3,z2==z3 && (z2==LoLimit() || z2==HiLimit())));
+		Add(NFmiEdge(x3,y3,x4,y4,z3==z4 && (z3==LoLimit() || z3==HiLimit())));
+		Add(NFmiEdge(x4,y4,x1,y1,z4==z1 && (z4==LoLimit() || z4==HiLimit())));
 		
 		return;
 	  }
@@ -1376,36 +1365,6 @@ namespace Imagine
   
   // ----------------------------------------------------------------------
   /*!
-   * Handle contour recursion for an edge known to be in the desired
-   * range. We basically split the line into smaller pieces, and add
-   * them into the tree.
-   *
-   * It would be possible to unwind the recursion into a loop to gain
-   * better speed.
-   *
-   * \note
-   * The calculations are of the form (a+b)/2, which is numerically
-   * safe with respect to rounding errors when the arguments are
-   * swapped.
-   */
-  // ----------------------------------------------------------------------
-  
-  void NFmiContourTree::Contour2Recurse(float x1, float y1,
-										float x2, float y2,
-										bool exact, int depth)
-  {
-	if(depth<=0)
-	  Add(NFmiEdge(x1,y1,x2,y2,exact));
-	
-	else
-	  {
-		Contour2Recurse(x1,y1,(x1+x2)/2,(y1+y2)/2,exact,depth-1);
-		Contour2Recurse((x1+x2)/2,(y1+y2)/2,x2,y2,exact,depth-1);
-	  }
-  }
-  
-  // ----------------------------------------------------------------------
-  /*!
    * Contour a triangular element. The input is the 3 coordinates defining
    * the triangle, and the values at the triangle vertices. The order
    * of the vertices does not matter, the resulting triangle is always
@@ -1480,17 +1439,9 @@ namespace Imagine
 		// The edges must be recursed to full depth though to guarantee
 		// matching line segments!
 		
-		Contour2Recurse(x1,y1,x2,y2,
-						z1==z2 && (z1==LoLimit() || z1==HiLimit()),
-						maxdepth);
-		
-		Contour2Recurse(x2,y2,x3,y3,
-						z2==z3 && (z2==LoLimit() || z2==HiLimit()),
-						maxdepth);
-		
-		Contour2Recurse(x3,y3,x1,y1,
-						z3==z1 && (z3==LoLimit() || z3==HiLimit()),
-						maxdepth);
+		Add(NFmiEdge(x1,y1,x2,y2,z1==z2 && (z1==LoLimit() || z1==HiLimit())));
+		Add(NFmiEdge(x2,y2,x3,y3,z2==z3 && (z2==LoLimit() || z2==HiLimit())));
+		Add(NFmiEdge(x3,y3,x1,y1,z3==z1 && (z3==LoLimit() || z3==HiLimit())));
 		return;
 	  }
 	
