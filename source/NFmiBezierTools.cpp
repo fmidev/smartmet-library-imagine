@@ -182,6 +182,41 @@ namespace Imagine
 
 	// ----------------------------------------------------------------------
 	/*!
+	 * \brief Split the given path at moveto points
+	 *
+	 * The basic idea is that once this split has been done, it is
+	 * easier to process closed subsegments.
+	 *
+	 * \param thePath The path to be splitted
+	 * \return List of subpaths
+	 */
+	// ----------------------------------------------------------------------
+
+	PathList SplitPath(const NFmiPath & thePath)
+	{
+	  PathList out;
+
+	  NFmiPath outpath;
+	  for(NFmiPathData::const_iterator it = thePath.Elements().begin();
+		  it != thePath.Elements().end();
+		  ++it)
+		{
+		  if(it->Oper() == kFmiMoveTo && !outpath.Empty())
+			{
+			  out.push_back(outpath);
+			  outpath.Clear();
+			}
+		  outpath.Add(*it);
+		}
+
+	  if(!outpath.Empty())
+		out.push_back(outpath);
+
+	  return out;
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
 	 * \brief Split the given regular path into unique use segments
 	 *
 	 * A regular line segment is considered to be one with
@@ -192,6 +227,7 @@ namespace Imagine
 	 * is used in some collection of paths. This information
 	 * can then be used to split the paths into segments
 	 * which are common to at most two paths at a time.
+	 *
 	 *
 	 * \param thePath The path to be splitted
 	 * \param theCounts The counts
@@ -204,43 +240,51 @@ namespace Imagine
 	{
 	  PathList out;
 
-	  const NFmiPathData & path = thePath.Elements();
+	  // we process all individual connected segments separately
+	  // to detect closed subsegments more easily
+	  PathList input = SplitPath(thePath);
 
-	  // establish the counts for each element
-
-	  std::vector<long> counts;
-	  counts.reserve(path.size());
-
-	  for(NFmiPathData::const_iterator it = path.begin();
-		  it != path.end();
-		  ++it)
+	  for(PathList::const_iterator it=input.begin(); it!=input.end(); ++it)
 		{
-		  const NFmiPoint point(it->X(),it->Y());
-		  const long count = theCounts.Count(point);
-		  counts.push_back(count);
-		}
+		  const NFmiPathData & path = it->Elements();
 
-	  // Split the path at points where count is greater than
-	  // the count at an adjacent point
+		  // establish the counts for each element
+		  
+		  std::vector<long> counts;
+		  counts.reserve(path.size());
 
-	  NFmiPath outpath;
-	  const unsigned long n = path.size();
-	  for(unsigned long i=0; i<n; i++)
-		{
-		  if(i>0 && i<n-1 &&
-			 (counts[i-1]<counts[i] || counts[i+1]<counts[i]))
+		  for(NFmiPathData::const_iterator it = path.begin();
+			  it != path.end();
+			  ++it)
 			{
-			  out.push_back(outpath);
-			  outpath.Clear();
+			  const NFmiPoint point(it->X(),it->Y());
+			  const long count = theCounts.Count(point);
+			  counts.push_back(count);
 			}
-		  // prepend a leading moveto to all new path segments
-		  if(i>0 && outpath.Empty() && path[i].Oper()!=Imagine::kFmiMoveTo)
-			outpath.MoveTo(path[i-1].X(),path[i-1].Y());
 
-		  outpath.Add(path[i]);
+		  // Split the path at points where count is greater than
+		  // the count at an adjacent point
+		  
+		  NFmiPath outpath;
+		  const unsigned long n = path.size();
+		  for(unsigned long i=0; i<n; i++)
+			{
+			  outpath.Add(path[i]);
+
+			  if(i>0 && i<n-1 &&
+				 (counts[i-1]<counts[i] || counts[i+1]<counts[i]))
+				{
+				  out.push_back(outpath);
+				  outpath.Clear();
+				}
+			  // prepend a leading moveto to all new path segments
+			  if(i>0 && outpath.Empty() && path[i].Oper()!=Imagine::kFmiMoveTo)
+				outpath.MoveTo(path[i].X(),path[i].Y());
+			  
+			}
+		  if(!outpath.Empty())
+			out.push_back(outpath);
 		}
-	  if(!outpath.Empty())
-		out.push_back(outpath);
 
 	  return out;
 	}

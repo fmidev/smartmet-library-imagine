@@ -24,15 +24,18 @@ namespace Imagine
   namespace NFmiBezierTools
   {
 
+	typedef std::list<std::pair<NFmiPath,bool> > Segments;
+	typedef std::vector<NFmiPath> NFmiPaths;
+	typedef std::list<NFmiPath> PathList;
+
 	bool IsClosed(const NFmiPath & thePath);
 
-	typedef std::vector<NFmiPath> NFmiPaths;
 	NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths & thePaths);
 
-	typedef std::list<std::pair<NFmiPath,bool> > Segments;
 	Segments SplitSegments(const NFmiPath & thePath);
 
-	typedef std::list<NFmiPath> PathList;
+	PathList SplitPath(const NFmiPath & thePath);
+
 	PathList SplitPath(const NFmiPath & thePath,
 					   const NFmiCounter<NFmiPoint> & theCounts);
 
