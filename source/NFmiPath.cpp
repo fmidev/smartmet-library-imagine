@@ -743,6 +743,7 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 				  os += " M";
 				  os += ftoa(last_x) + "," + ftoa(last_y);
 				}
+			  last_op = kFmiMoveTo;
 			  last_out_x = last_x;
 			  last_out_y = last_y;
 			}
@@ -768,7 +769,7 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 			  else
 				os += " ";
 			  
-			  os += ftoa((x-last_x)) + "," + ftoa((y-last_y));
+			  os += ftoa((x-last_out_x)) + "," + ftoa((y-last_out_y));
 			}
 		  
 		  // Absolute moves are "M x y" and "L x y"
