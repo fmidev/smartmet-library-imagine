@@ -83,6 +83,12 @@ namespace Imagine
   }
 
 } // namespace Imagine
+
+
+std::ostream & operator<<(std::ostream & os, const Imagine::NFmiEsriElement & theElement)
+{
+  return theElement.Write(os);
+}
   
 // ----------------------------------------------------------------------
   

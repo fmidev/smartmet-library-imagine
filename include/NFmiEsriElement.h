@@ -107,10 +107,7 @@ namespace Imagine
 
 } // namespace Imagine
 
-std::ostream & operator<<(std::ostream & os, const Imagine::NFmiEsriElement & theElement)
-{
-  return theElement.Write(os);
-}
+std::ostream & operator<<(std::ostream & os, const Imagine::NFmiEsriElement & theElement);
   
 #endif // IMAGINE_NFMIESRIELEMENT_H
   
