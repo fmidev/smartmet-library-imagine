@@ -26,8 +26,13 @@ namespace
 {
   float myround(float theValue)
   {
+#ifdef OLDGCC
+	if(abs(theValue-rint(theValue)) < 0.001) // 0.001 pixels is meaningless
+	  return rint(theValue);
+#else
 	if(abs(theValue-round(theValue)) < 0.001) // 0.001 pixels is meaningless
 	  return round(theValue);
+#endif
 	else
 	  return theValue;
   }
