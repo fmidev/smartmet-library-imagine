@@ -10,7 +10,7 @@ EXTRAFLAGS = -Werror -pedantic -Wpointer-arith -Wcast-qual \
 DIFFICULTFLAGS = -Weffc++ -Wredundant-decls -Wshadow -Woverloaded-virtual
 
 CC = g++
-CFLAGS = -DUNIX -g $(MAINFLAGS) $(EXTRAFLAGS) -Werror
+CFLAGS = -DUNIX -O0 -g $(MAINFLAGS) $(EXTRAFLAGS) -Werror
 CFLAGS_RELEASE =  -DUNIX -O2 -DNDEBUG $(MAINFLAGS)
 LDFLAGS = -s
 ARFLAGS = -r
