@@ -497,7 +497,7 @@ namespace Imagine
 	  
 	  if (( itsLeftBranch  != 0 ) &&
 		  ( (theRadius - itsMaxLeft) <= Distance(thePoint,*itsLeftObject) ) )
-		found |=  itsLeftBranch->FindFarthest( theRadius, theFarthest, theObject );
+		found |=  itsLeftBranch->FindFarthest( theRadius, theFarthest, thePoint );
 	  
 	  if (( itsRightBranch != 0 ) &&
 		  ( (theRadius - itsMaxRight) <= Distance(thePoint,*itsRightObject) ) )
