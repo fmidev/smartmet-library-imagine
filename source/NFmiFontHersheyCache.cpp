@@ -13,10 +13,10 @@
 #pragma warning(disable : 4786) // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
 #endif
 
-#include "NFmiFontHersheyCache.h"
-
-#include "NFmiFontGlobals.h"
 #include "NFmiFileSystem.h"
+#include "NFmiSettings.h"
+#include "NFmiFontHersheyCache.h"
+#include "NFmiFontGlobals.h"
 
 using namespace std;
 // ----------------------------------------------------------------------
@@ -25,7 +25,8 @@ using namespace std;
 
 const NFmiHersheyData & NFmiFontHersheyCache::Data(const string & theName)
 {
-  
+  const string hershey_path = NFmiSettings::instance().value("imagine::hershey_path",".");
+
   // First try to find the font from the cache
   
   HersheyCache::const_iterator find_iter;
@@ -42,7 +43,7 @@ const NFmiHersheyData & NFmiFontHersheyCache::Data(const string & theName)
   string filename = theName + kFmiSuffixHershey;
   if(!FileExists(filename))
     {
-      filename = kFmiPathHershey + filename;
+      filename = hershey_path + filename;
       if(!FileExists(filename))
 		ok = false;
     }
