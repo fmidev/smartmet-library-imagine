@@ -15,10 +15,10 @@
 #ifndef IMAGINE_NFMIESRIMULTIPOINT_H
 #define IMAGINE_NFMIESRIMULTIPOINT_H
 
-#include <vector>
-
 #include "NFmiEsriPoint.h"
 #include "NFmiEsriBox.h"
+
+#include <vector>
 
 namespace Imagine
 {

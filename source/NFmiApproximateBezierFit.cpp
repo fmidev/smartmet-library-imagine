@@ -342,13 +342,14 @@ namespace Imagine
 	  if(theU.size()<2)
 		return true;
 
-	  for(unsigned int i=0; i<theU.size(); i++)
+	  unsigned int i=0;
+	  for(i=0; i<theU.size(); i++)
 		{
 		  if(theU[i] < 0 || theU[i] > 1)
 			return false;
 		}
 
-	  for(unsigned int i=1; i<theU.size(); i++)
+	  for(i=1; i<theU.size(); i++)
 		{
 		  if(theU[i] <= theU[i-1])
 			return false;
@@ -444,7 +445,8 @@ namespace Imagine
 	  vector<double> out;
 	  out.reserve(n);
 
-	  for(unsigned int i=theFirst; i<=theLast; i++)
+	  unsigned int i=0;
+	  for(i=theFirst; i<=theLast; i++)
 		{
 		  out.push_back(NewtonRaphsonRootFind(theBezier.Elements(),
 											  thePath[i],
@@ -452,7 +454,7 @@ namespace Imagine
 		}
 
 	  // Replace invalid parameterizations by linear interpolation
-	  for(unsigned int i=1; i<out.size()-1; i++)
+	  for(i=1; i<out.size()-1; i++)
 		{
 		  if(out[i]<0 || out[i]>1 ||
 			 out[i] < out[i-1] || out[i]>out[i+1])

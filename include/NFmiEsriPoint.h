@@ -14,10 +14,10 @@
 #ifndef IMAGINE_NFMIESRIPOINT_H
 #define IMAGINE_NFMIESRIPOINT_H
 
-#include <string>
-
 #include "NFmiEsriElement.h"
 #include "NFmiEsriBoxZ.h"
+
+#include <string>
 
 namespace Imagine
 {

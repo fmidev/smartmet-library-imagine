@@ -29,11 +29,11 @@
 #ifndef IMAGINE_NFMIESRIMULTIPATCH_H
 #define IMAGINE_NFMIESRIMULTIPATCH_H
 
-#include <string>
-#include <vector>
-
 #include "NFmiEsriPointZ.h"
 #include "NFmiEsriBoxZ.h"
+
+#include <string>
+#include <vector>
 
 namespace Imagine
 {

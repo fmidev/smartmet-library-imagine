@@ -16,6 +16,9 @@
 #ifndef IMAGINE_NFMIIMAGE_H
 #define IMAGINE_NFMIIMAGE_H
 
+#include "NFmiDrawable.h"
+#include "NFmiAlignment.h"
+
 #include <string>	// for filenames, drawing text etc
 #include <utility>	// for pairs
 #include <vector>	// for vectors
@@ -24,9 +27,6 @@
 #include <cassert>
 #include <cstdio>
 #include <stdexcept>
-
-#include "NFmiDrawable.h"
-#include "NFmiAlignment.h"
 
 #ifdef __BORLANDC__
      using std::FILE;

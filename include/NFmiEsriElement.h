@@ -8,14 +8,14 @@
 #ifndef IMAGINE_NFMIESRIELEMENT_H
 #define IMAGINE_NFMIESRIELEMENT_H
 
+#include "NFmiEsriProjector.h"
+#include "NFmiEsriAttribute.h"
+#include "NFmiEsriBuffer.h"
+
 #include <string>
 #include <vector>
 #include <list>
 #include <iostream>
-
-#include "NFmiEsriProjector.h"
-#include "NFmiEsriAttribute.h"
-#include "NFmiEsriBuffer.h"
 
 namespace Imagine
 {

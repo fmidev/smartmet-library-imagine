@@ -26,13 +26,13 @@
 //
 // These are the element types, which can be in a shapefile
 
-#include <string>
-#include <list>
-#include <vector>
-
 #include "NFmiEsriElement.h"
 #include "NFmiEsriBoxZ.h"
 #include "NFmiEsriAttributeName.h"
+
+#include <string>
+#include <list>
+#include <vector>
 
 namespace Imagine
 {
