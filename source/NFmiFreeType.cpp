@@ -65,7 +65,7 @@ namespace
 	string name;
 	int index;
 
-	FaceID(const string & theName, int theIndex)
+	FaceID(const string & theName, int theIndex=0)
 	  : name(theName), index(theIndex)
 	{ }
 
@@ -380,15 +380,19 @@ namespace Imagine
 		pen.x = start_x + 64*pos[i].x;
 		pen.y = start_y + 64*pos[i].y;
 
-		error = FT_Glyph_To_Bitmap(&image, FT_RENDER_MODE_NORMAL, &pen, 0);
+		error = FT_Glyph_To_Bitmap(&image, FT_RENDER_MODE_NORMAL, 0, 0);
 
 		if(!error)
 		  {
 			FT_BitmapGlyph bit = reinterpret_cast<FT_BitmapGlyph>(image);
+
+			int x = (pen.x >> 6);
+			int y = (pen.y >> 6) - bit->bitmap.rows;
+
 			this->Draw(theBlender, theImage, theColor,
 					   bit->bitmap,
-					   (pen.x >> 6) + bit->left,
-					   (pen.y >> 6) - bit->top);
+					   x,
+					   y);
 
 			FT_Done_Glyph(image);
 		  }
@@ -414,7 +418,7 @@ namespace Imagine
 	FT_Int i, j, p, q;
 	FT_Int x_max = theX + theBitmap.width;
 	FT_Int y_max = theY + theBitmap.rows;
-	
+
 	for ( i = theX, p = 0; i < x_max; i++, p++ )
 	  {
 		for ( j = theY, q = 0; j < y_max; j++, q++ )
@@ -546,8 +550,10 @@ namespace Imagine
 	FT_Error error = FTC_Manager_LookupSize(itsPimple->itsManager,
 											&scaler,
 											&size);
-	FT_Face face = size->face;
 
+
+	FT_Face face = size->face;
+	
 	if(error == FT_Err_Unknown_File_Format)
 	  throw runtime_error("Unknown font format in '"+file+"'");
 
