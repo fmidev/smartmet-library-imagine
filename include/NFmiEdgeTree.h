@@ -65,7 +65,7 @@ namespace Imagine
 	
 	void Add(NFmiFillMap & theMap) const;
 
-	void  LinesOnly(bool theFlag){ itsLinesOnly = theFlag;}
+	void LinesOnly(bool theFlag){ itsLinesOnly = theFlag;}
 	
   protected:
 	  bool itsLinesOnly;
