@@ -43,6 +43,8 @@
 
 #ifndef FT_PIXEL_MODE_GRAY
 #define FT_PIXEL_MODE_GRAY ft_pixel_mode_grays
+#define FT_KERNING_DEFAULT ft_kerning_default
+#define FT_RENDER_MODE_NORMAL ft_render_mode_normal
 #endif
 
 using namespace std;
