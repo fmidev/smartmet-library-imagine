@@ -87,7 +87,7 @@ namespace Imagine
   // Write the element
   // ----------------------------------------------------------------------
   
-  void NFmiEsriMultiPointZ::Write(ostream & os) const
+  std::ostream & NFmiEsriMultiPointZ::Write(ostream & os) const
   {
 	os << LittleEndianInt(Type())
 	   << LittleEndianDouble(Box().Xmin())
@@ -114,6 +114,8 @@ namespace Imagine
 	
 	for(i=0; i<NumPoints(); i++) // 18.12.2001/Marko Redifinition of i removed.
 	  os << LittleEndianDouble(Points()[i].M());
+
+	return os;
   }
 
 } // namespace Imagine

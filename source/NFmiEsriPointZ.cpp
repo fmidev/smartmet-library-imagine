@@ -47,13 +47,14 @@ namespace Imagine
   // Writing element
   // ----------------------------------------------------------------------
   
-  void NFmiEsriPointZ::Write(ostream & os) const
+  std::ostream & NFmiEsriPointZ::Write(ostream & os) const
   {
 	os << LittleEndianInt(Type())
 	   << LittleEndianDouble(X())
 	   << LittleEndianDouble(Y())
 	   << LittleEndianDouble(Z())
 	   << LittleEndianDouble(M());
+	return os;
   }
 
 } // namespace Imagine

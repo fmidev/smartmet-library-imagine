@@ -44,11 +44,6 @@ namespace Imagine
   {
   public:
 	
-	// Tulostusoperaattori ylikuormitetaan
-	
-	friend std::ostream & operator<<(std::ostream & os,
-									 const NFmiEsriElement & theElement);
-	
 	virtual ~NFmiEsriElement(void) {}
 	
 	NFmiEsriElement(NFmiEsriElementType theType, int theNumber=0)
@@ -76,7 +71,7 @@ namespace Imagine
 	
 	// Write element as character buffer
 	
-	virtual void Write(std::ostream & os) const {}
+	virtual std::ostream & Write(std::ostream & os) const { return os; }
 	
 	// Return only the size the character buffer would take
 	
@@ -111,6 +106,11 @@ namespace Imagine
   };
 
 } // namespace Imagine
+
+std::ostream & operator<<(std::ostream & os, const Imagine::NFmiEsriElement & theElement)
+{
+  return theElement.Write(os);
+}
   
 #endif // IMAGINE_NFMIESRIELEMENT_H
   

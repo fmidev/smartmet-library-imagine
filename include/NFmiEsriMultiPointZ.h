@@ -75,7 +75,7 @@ namespace Imagine
 	// String buffer size, write and string
 	
 	int StringSize(void) const;
-	void Write(std::ostream & os) const;
+	std::ostream & Write(std::ostream & os) const;
 	
   private:
 	

@@ -76,7 +76,7 @@ namespace Imagine
   // Write the element
   // ----------------------------------------------------------------------
   
-  void NFmiEsriPolygon::Write(ostream & os) const
+  std::ostream & NFmiEsriPolygon::Write(ostream & os) const
   {
 	os << LittleEndianInt(Type())
 	   << LittleEndianDouble(Box().Xmin())
@@ -95,6 +95,8 @@ namespace Imagine
 		os << LittleEndianDouble(Points()[i].X())
 		   << LittleEndianDouble(Points()[i].Y());
 	  }
+
+	return os;
   }
   
   // ----------------------------------------------------------------------

@@ -84,7 +84,7 @@ namespace Imagine
   // Write the element
   // ----------------------------------------------------------------------
   
-  void NFmiEsriPolyLineM::Write(ostream & os) const
+  std::ostream & NFmiEsriPolyLineM::Write(ostream & os) const
   {
 	os << LittleEndianInt(Type())
 	   << LittleEndianDouble(Box().Xmin())
@@ -109,7 +109,8 @@ namespace Imagine
 	
 	for(i=0; i<NumPoints(); i++)
 	  os << LittleEndianDouble(Points()[i].M());
-	
+
+	return os;
   }
 
 } // namespace Imagine

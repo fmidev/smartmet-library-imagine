@@ -9,16 +9,6 @@
 
 using namespace std;
 
-// ----------------------------------------------------------------------
-// Overload <<
-// ----------------------------------------------------------------------
-
-std::ostream& operator<<(std::ostream & os,const Imagine::NFmiEsriElement & theElement)
-{
-  theElement.Write(os);
-  return os;
-}
-
 namespace Imagine
 {
 

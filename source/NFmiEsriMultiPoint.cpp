@@ -61,7 +61,7 @@ namespace Imagine
   // Writing element
   // ----------------------------------------------------------------------
   
-  void NFmiEsriMultiPoint::Write(ostream & os) const
+  std::ostream & NFmiEsriMultiPoint::Write(ostream & os) const
   {
 	os << LittleEndianInt(Type())
 	   << LittleEndianDouble(Box().Xmin())
@@ -75,6 +75,8 @@ namespace Imagine
 		os << LittleEndianDouble(Points()[i].X())
 		   << LittleEndianDouble(Points()[i].Y());
 	  }
+
+	return os;
   }
   
   // ----------------------------------------------------------------------

@@ -39,9 +39,10 @@ namespace Imagine
 	
 	// Writing string buffer
 	
-	void Write(std::ostream & os) const
+	std::ostream & Write(std::ostream & os) const
 	{
 	  os << LittleEndianInt(kFmiEsriNull);
+	  return os;
 	}
 	
 	// Conversion to string buffer
