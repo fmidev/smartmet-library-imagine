@@ -57,7 +57,6 @@ namespace Imagine
 	string itsFile;
 	int itsWidth;
 	int itsHeight;
-	bool itsInitialized;
 
   }; // class NFmiFace::Pimple
 
@@ -81,7 +80,6 @@ namespace Imagine
 	: itsFile(theFile)
 	, itsWidth(theWidth)
 	, itsHeight(theHeight)
-	, itsInitialized(false)
   {
 	if(itsWidth < 0 || itsHeight < 0)
 	  throw runtime_error("Face width and height cannot both be zero");
