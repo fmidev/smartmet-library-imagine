@@ -38,25 +38,27 @@ void demo()
   const string font = "ttf/ArialNarrow.ttf";
   const int w = 0;
   const int h = 20;
+  const int dh = -1;
 #else  
   const string font = "misc/6x13.pcf.gz";
   const int w = 6;
   const int h = 13;
+  const int dh = 0;
 #endif
 
   const NFmiFreeType & ft = NFmiFreeType::Instance();
   ft.Draw(image,font,w,h,0,0,"NorthWest",kFmiAlignNorthWest);
-  ft.Draw(image,font,w,h,width/2,0,"North",kFmiAlignNorth);
-  ft.Draw(image,font,w,h,width,0,"NorthEast",kFmiAlignNorthEast);
+  ft.Draw(image,font,w,h+dh,width/2,0,"North",kFmiAlignNorth);
+  ft.Draw(image,font,w,h+2*dh,width,0,"NorthEast",kFmiAlignNorthEast);
 
-  ft.Draw(image,font,w,h,0,height/2,"West",kFmiAlignWest,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true);
-  ft.Draw(image,font,w,h,width/2,height/2,"Center",kFmiAlignCenter,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true);
-  ft.Draw(image,font,w,h,width,height/2,"East",kFmiAlignEast,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true);
+  ft.Draw(image,font,w,h+3*dh,0,height/2,"West",kFmiAlignWest,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true);
+  ft.Draw(image,font,w,h+4*dh,width/2,height/2,"Center",kFmiAlignCenter,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true);
+  ft.Draw(image,font,w,h+5*dh,width,height/2,"East",kFmiAlignEast,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true);
 
   NFmiColorTools::Color bg = NFmiColorTools::MakeColor(255,0,0);
-  ft.Draw(image,font,w,h,0,height,"SouthWest",kFmiAlignSouthWest,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true,3,3,bg);
-  ft.Draw(image,font,w,h,width/2,height,"South",kFmiAlignSouth,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true,3,3,bg);
-  ft.Draw(image,font,w,h,width,height,"SouthEast",kFmiAlignSouthEast,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true,3,3,bg);
+  ft.Draw(image,font,w,h+6*dh,0,height,"SouthWest",kFmiAlignSouthWest,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true,3,3,bg);
+  ft.Draw(image,font,w,h+7*dh,width/2,height,"South",kFmiAlignSouth,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true,3,3,bg);
+  ft.Draw(image,font,w,h+8*dh,width,height,"SouthEast",kFmiAlignSouthEast,NFmiColorTools::Black,NFmiColorTools::kFmiColorOnOpaque,true,3,3,bg);
   
   image.WritePng(tmpfile);
   string cmd = "display "+tmpfile;
