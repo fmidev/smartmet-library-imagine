@@ -68,6 +68,11 @@ namespace
 	return (!xoutside && !youtside);
   }
 
+  std::string numstring(double value, int precision)
+  {
+	return NFmiValueString::GetStringWithMaxDecimalsSmartWay(value,precision).CharPtr();
+  }
+
 }; // anonymous namespace
 
 namespace Imagine
@@ -542,11 +547,9 @@ namespace Imagine
 			  case kFmiMoveTo:
 			  case kFmiLineTo:
 			  case kFmiGhostLineTo:
-				box.Update((*iter).X(),(*iter).Y());
-				break;
 			  case kFmiConicTo:
-				break;
 			  case kFmiCubicTo:
+				box.Update((*iter).X(),(*iter).Y());
 				break;
 			  }
 		  }
@@ -736,48 +739,44 @@ namespace Imagine
 #endif
 		
 		
-		float x = (*iter).X();
-		float y = (*iter).Y();
+		const float x = (*iter).X();
+		const float y = (*iter).Y();
+		const NFmiPathOperation op = (*iter).Oper();
 		// Special code for first move
 		
-		if((*iter).Oper()==kFmiConicTo || (*iter).Oper()==kFmiCubicTo)
-		  throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::SVG()");
 		bool out_ok = true;
-		if(removeghostlines && (*iter).Oper() == kFmiGhostLineTo)
+		if(removeghostlines && op == kFmiGhostLineTo)
 		  {
 			out_ok = false;
 		  }
 		else
 		  {
 			// If ghostlines are being ignored, we must output a moveto
-			// when the ghostlines end and next operation is lineto.
+			// when the ghostlines end and next operation is not moveto
 			if( removeghostlines &&
 				(last_op == kFmiGhostLineTo) &&
-				((*iter).Oper() == kFmiLineTo) )
+				(op != kFmiGhostLineTo && op != kFmiMoveTo))
 			  {
 				if(relative_moves)
 				  {
 					if(last_out_x == kFloatMissing && last_out_y == kFloatMissing)
 					  {
 						os += 'm';
-						//					  os += ftoa(last_x) + "," + ftoa(last_y);
-						os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x, 3)) + string(",");
-						os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y, 3));
+						os += numstring(last_x, 3) + string(",");
+						os += numstring(last_y, 3);
 					  }
 					else
 					  {
 						os += " m";
-						//					  os += ftoa(last_x - last_out_x) + "," + ftoa(last_y - last_out_y);
-						os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x - last_out_x, 3)) + string(",");
-						os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y - last_out_y, 3));
+						os += numstring(last_x - last_out_x, 3) + string(",");
+						os += numstring(last_y - last_out_y, 3);
 					  }
 				  }
 				else
 				  {
 					os += " M";
-					//				  os += ftoa(last_x) + "," + ftoa(last_y);
-					os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x, 3)) + string(",");
-					os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y, 3));
+					os += numstring(last_x, 3) + string(",");
+					os += numstring(last_y, 3);
 				  }
 				last_op = kFmiMoveTo;
 				last_out_x = last_x;
@@ -787,53 +786,69 @@ namespace Imagine
 			if(iter==Elements().begin())
 			  {
 				os += (relative_moves ? "m" : "M");
-				//				+ ftoa(x) + "," + ftoa(y);
-				os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x, 3)) + string(",");
-				os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y, 3));
+				os += numstring(x, 3) + string(",");
+				os += numstring(y, 3);
 			  }
 			
-			// Relative moves are "m dx dy" and "l dx dy"
+			// Relative moves are "m dx dy" and "l dx dy" etc
 			else if(relative_moves)
 			  {
-				if((*iter).Oper() == kFmiMoveTo)
-				  os += (last_op==kFmiMoveTo ? " " : " m");
+				switch(op)
+				  {
+				  case kFmiMoveTo:
+					os += (last_op==kFmiMoveTo ? " " : " m");
+					break;
+				  case kFmiLineTo:
+					os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
+					break;
+				  case kFmiGhostLineTo:
+					if(!removeghostlines)
+					  os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
+					else
+					  os += ' ';
+					break;
+				  case kFmiConicTo:
+					os += (last_op==kFmiConicTo ? " " : " q");
+					break;
+				  case kFmiCubicTo:
+					os += (last_op==kFmiCubicTo ? " " : " c");
+					break;
+				  }
 				
-				else if((*iter).Oper() == kFmiLineTo)
-				  os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
-				
-				else if(!removeghostlines && (*iter).Oper() == kFmiGhostLineTo)
-				  os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
-				
-				else
-				  os += " ";
-				
-				//			  os += ftoa((x-last_out_x)) + "," + ftoa((y-last_out_y));
-				os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x-last_out_x, 3)) + string(",");
-				os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y-last_out_y, 3));
+				os += numstring(x-last_out_x, 3) + string(",");
+				os += numstring(y-last_out_y, 3);
 			  }
 			
-			// Absolute moves are "M x y" and "L x y"
+			// Absolute moves are "M x y" and "L x y" etc
 			else
 			  {
-				if((*iter).Oper() == kFmiMoveTo)
-				  os += (last_op==kFmiMoveTo ? " " : " M");
+				switch(op)
+				  {
+				  case kFmiMoveTo:
+					os += (last_op==kFmiMoveTo ? " " : " M");
+					break;
+				  case kFmiLineTo:
+					os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
+					break;
+				  case kFmiGhostLineTo:
+					if(!removeghostlines)
+					  os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
+					else
+					  os += ' ';
+				  case kFmiConicTo:
+					os += (last_op==kFmiConicTo ? " " : " Q");
+					break;
+				  case kFmiCubicTo:
+					os += (last_op==kFmiCubicTo ? " " : " C");
+					break;
+				  }
 				
-				else if((*iter).Oper() == kFmiLineTo)
-				  os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
-				
-				else if(!removeghostlines && (*iter).Oper() == kFmiGhostLineTo)
-				  os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
-				
-				else
-				  os += " ";
-				
-				//			  os += ftoa(x) + "," + ftoa(y);
-				os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x, 3)) + string(",");
-				os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y, 3));
+				os += numstring(x, 3) + string(",");
+				os += numstring(y, 3);
 			  }
 		  }
 		
-		last_op = (*iter).Oper();
+		last_op = op;
 		
 		last_x = x;
 		last_y = y;
