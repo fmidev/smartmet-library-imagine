@@ -76,6 +76,8 @@ public:
   const NFmiFillMapData & MapData(void) const		{ return itsData; }
   
   // Adding a line, conic or cubic segment
+
+  using NFmiDrawable::Add;
   
   void Add(float theX1, float theY1,
 		   float theX2, float theY2);
@@ -98,6 +100,8 @@ public:
   
   // Filling
   
+  using NFmiDrawable::Fill;
+
   void Fill(NFmiImage & theImage,
 			NFmiColorTools::Color theColor,
 			NFmiColorTools::NFmiBlendRule theRule);
