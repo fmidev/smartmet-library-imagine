@@ -139,8 +139,10 @@
 #include "NFmiEsriMultiPatch.h"
 #include "NFmiFileSystem.h"
 #include "NFmiSettings.h"
-#include <fstream>
+
 #include <cassert>
+#include <fstream>
+#include <iomanip>
 
 using namespace Imagine::NFmiEsriBuffer;	// Conversion tools
 using namespace std;
@@ -722,10 +724,34 @@ namespace Imagine
   
   bool NFmiEsriShape::WriteDBF(const string & theFilename) const
   {
+	const unsigned int HEADERSIZE = 57;
+	static int header[HEADERSIZE] = {
+	  65,0,7,0,0,0,0,0,
+	  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	  'I','N','D','E','X',0,0,0,0,0,0,
+	  78,0,0,0,0,6,0,0,0,0,0,0,0,
+	  0,0,0,0,0,0,0,0,13
+	};
+
 	// Open output file
 	
 	ofstream dbffile(theFilename.c_str(), ios::out|ios::binary);
 	if(!dbffile) return false;
+
+	// Handle the special case of no attributes by writing
+	// a dummy database.
+
+	if(itsAttributeNames.empty())
+	  {
+		dbffile << '\x03'				// signature
+				<< "\x5f\x07\x1a"		// date ?
+				<< LittleEndianInt(itsElements.size());
+		for(unsigned int b=0; b<HEADERSIZE; b++)
+		  dbffile << static_cast<unsigned char>(header[b]);
+
+		for(unsigned int i=1; i<=itsElements.size(); i++)
+		  dbffile << setw(7) << setfill(' ') << i;
+	  }
 	
 	// Missing
 	
