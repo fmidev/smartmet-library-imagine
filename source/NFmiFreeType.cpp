@@ -82,9 +82,10 @@ namespace
 						FT_Pointer theData,
 						FT_Face * theFace)
   {
-	FaceID * id = static_cast<FaceID *>(theFaceID);
+	FaceID * id = reinterpret_cast<FaceID *>(theFaceID);
 	return FT_New_Face(theLib,
-					   id->name.c_str(),id->index,
+					   id->name.c_str(),
+					   id->index,
 					   theFace);
   }
 
@@ -248,7 +249,7 @@ namespace Imagine
   {
 	Faces::const_iterator it = itsFaces.find(theFont);
 	if(it != itsFaces.end())
-	  return it->second;
+	  return reinterpret_cast<FTC_FaceID>(it->second);
 
 	itsFaces.insert(Faces::value_type(theFont,new FaceID(theFont,0)));
 
@@ -256,7 +257,7 @@ namespace Imagine
 
 	it = itsFaces.find(theFont);
 	if(it != itsFaces.end())
-	  return it->second;
+	  return reinterpret_cast<FTC_FaceID>(it->second);
 	
 	throw runtime_error("Insufficient memory in FreeType cache"); 
   }
@@ -535,16 +536,17 @@ namespace Imagine
 
 	// Create the face
 
-	FTC_FontRec fontrec;
-	fontrec.face_id = itsPimple->id(file);
-	fontrec.pix_width = theWidth;
-	fontrec.pix_height = theHeight;
+	FTC_ScalerRec scaler;
+	scaler.face_id = itsPimple->id(file);
+	scaler.width = theWidth;
+	scaler.height = theHeight;
+	scaler.pixel = 1;
 
-	FT_Face face;
-	FT_Error error = FTC_Manager_Lookup_Size(itsPimple->itsManager,
-											 &fontrec,
-											 &face,
-											 0);
+	FT_Size size;
+	FT_Error error = FTC_Manager_LookupSize(itsPimple->itsManager,
+											&scaler,
+											&size);
+	FT_Face face = size->face;
 
 	if(error == FT_Err_Unknown_File_Format)
 	  throw runtime_error("Unknown font format in '"+file+"'");
