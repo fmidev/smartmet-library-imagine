@@ -49,7 +49,7 @@ void NFmiImage::ReadJPEG(FILE *in)
   
   // Step 3: read file parameters with jpeg_read_header()
   
-  (void) jpeg_read_header(&cinfo, TRUE);
+  static_cast<void>(jpeg_read_header(&cinfo, TRUE));
   
   // This is the only NFmiImage method being used:
   
@@ -68,7 +68,7 @@ void NFmiImage::ReadJPEG(FILE *in)
   
   // Step 5: Start decompressor
   
-  (void) jpeg_start_decompress(&cinfo);
+  static_cast<void>(jpeg_start_decompress(&cinfo));
   
   // We can ignore the return value since suspension is not possible
   // with the stdio data source.
@@ -87,7 +87,7 @@ void NFmiImage::ReadJPEG(FILE *in)
   
   // Make a one-row-high sample array that will go away when done with image
   
-  JSAMPROW row = (JSAMPROW) calloc(cinfo.output_width*3,sizeof(JSAMPLE));
+  JSAMPROW row = static_cast<JSAMPROW>(calloc(cinfo.output_width*3,sizeof(JSAMPLE)));
   JSAMPROW rowptr[1];
   rowptr[0] = row;
   
@@ -103,7 +103,7 @@ void NFmiImage::ReadJPEG(FILE *in)
       // Here the array is only one element long, but you could ask for
       // more than one scanline at a time if that's more convenient.
 	  
-	  (void) jpeg_read_scanlines(&cinfo, rowptr, 1);
+	  static_cast<void>(jpeg_read_scanlines(&cinfo, rowptr, 1));
 	  
 	  // Save the data
 	  
@@ -118,7 +118,7 @@ void NFmiImage::ReadJPEG(FILE *in)
   
   // Step 7: Finish decompression
   
-  (void) jpeg_finish_decompress(&cinfo);
+  static_cast<void>(jpeg_finish_decompress(&cinfo));
   
   // Step 8: Release JPEG decompression object
   
@@ -208,7 +208,7 @@ void NFmiImage::WriteJPEG(FILE *out) const
   JSAMPROW row = 0;
   JSAMPROW rowptr[1];
   
-  row = (JSAMPROW) calloc(1,cinfo.image_width*cinfo.input_components*sizeof(JSAMPLE));
+  row = static_cast<JSAMPROW>(calloc(1,cinfo.image_width*cinfo.input_components*sizeof(JSAMPLE)));
   
   if(row==0)
     {
@@ -228,7 +228,7 @@ void NFmiImage::WriteJPEG(FILE *out) const
 		  row[offset++] = NFmiColorTools::GetGreen(c);
 		  row[offset++] = NFmiColorTools::GetBlue(c);
 		}
-      (void) jpeg_write_scanlines(&cinfo, rowptr, 1);
+      static_cast<void>(jpeg_write_scanlines(&cinfo, rowptr, 1));
     }
   
   // Step 6: Finish compression

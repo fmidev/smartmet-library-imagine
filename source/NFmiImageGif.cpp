@@ -45,9 +45,9 @@ void NFmiImage::ReadGIF(FILE *out)
 #define GIFOutputCode(code) \
 { \
   if (bitsnow > 0) \
-    datum|=((long) code << bitsnow); \
+    datum|=(static_cast<long>(code)<< bitsnow); \
   else \
-    datum=(long) code; \
+    datum=static_cast<long>(code); \
   bitsnow+=number_bits; \
   while (bitsnow >= 8) \
   { \
@@ -256,7 +256,7 @@ void NFmiImage::WriteGIF(FILE *out) const
 	  
 	  // Probe hash table
 	  
-	  int k = ((int) index << (MaxGIFBits-8))+waiting_code;
+	  int k = (static_cast<int>(index) << (MaxGIFBits-8))+waiting_code;
 	  
 	  if(k>=MaxHashTable)
 		k-=MaxHashTable;

@@ -112,11 +112,11 @@ void NFmiImage::ReadPNG(FILE *in)
   png_read_update_info(png_ptr, info_ptr);
   
   int rowbytes = png_get_rowbytes(png_ptr, info_ptr);
-  int channels = (int) png_get_channels(png_ptr, info_ptr);
+  int channels = static_cast<int>(png_get_channels(png_ptr, info_ptr));
   
   // Image data holder
   
-  unsigned char * row_data = (unsigned char *) malloc(rowbytes);
+  unsigned char * row_data = static_cast<unsigned char *>(malloc(rowbytes));
   
   if(row_data==NULL)
     {
@@ -300,7 +300,7 @@ void NFmiImage::WritePNG(FILE *out) const
 	  
 	  // Image data holder
 	  
-	  unsigned char * row_data = (unsigned char *) malloc(channels*itsWidth);
+	  unsigned char * row_data = static_cast<unsigned char *>(malloc(channels*itsWidth));
 	  if(row_data==NULL)
 		{
 		  png_destroy_write_struct(&png_ptr, &info_ptr);
@@ -323,9 +323,9 @@ void NFmiImage::WritePNG(FILE *out) const
 			  if(separate && a==NFmiColorTools::MaxAlpha)
 				c = transcolor;
 			  
-			  row_data[boxoffset++] = (png_byte) NFmiColorTools::GetRed(c);
-			  row_data[boxoffset++] = (png_byte) NFmiColorTools::GetGreen(c);
-			  row_data[boxoffset++] = (png_byte) NFmiColorTools::GetBlue(c);
+			  row_data[boxoffset++] = static_cast<png_byte>(NFmiColorTools::GetRed(c));
+			  row_data[boxoffset++] = static_cast<png_byte>(NFmiColorTools::GetGreen(c));
+			  row_data[boxoffset++] = static_cast<png_byte>(NFmiColorTools::GetBlue(c));
 			  if(channels==4)
 				row_data[boxoffset++] = 255 - ((a<<1)+(a>>7));
 			}
@@ -435,7 +435,7 @@ void NFmiImage::WritePNG(FILE *out) const
 	  
 	  // Image data holder
 	  
-	  unsigned char * row_data = (unsigned char *) malloc(itsWidth);
+	  unsigned char * row_data = static_cast<unsigned char *>(malloc(itsWidth));
 	  if(row_data==NULL)
 		{
 		  png_destroy_write_struct(&png_ptr, &info_ptr);
@@ -455,7 +455,7 @@ void NFmiImage::WritePNG(FILE *out) const
 			  
 			  c = NFmiColorTools::Simplify(c,opaquethreshold,ignorealpha);
 			  
-			  row_data[i] = (png_byte) colormap[c];
+			  row_data[i] = static_cast<png_byte>(colormap[c]);
 			  
 			}
 		  png_write_row(png_ptr,row_pointer);
