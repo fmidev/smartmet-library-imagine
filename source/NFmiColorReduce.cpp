@@ -116,12 +116,13 @@ namespace Imagine
 
 	  value_type nearest(value_type theColor);
 
+	  static float distance(value_type theColor1, value_type theColor2);
+
 	private:
 
 	  ColorTree(const ColorTree & theTree);
 	  ColorTree & operator=(const ColorTree & theTree);
 
-	  static float distance(value_type theColor1, value_type theColor2);
 	  bool nearest(value_type theColor, value_type & theNearest, float & theRadius) const;
 
 	  auto_ptr<value_type> itsLeftObject;
@@ -430,43 +431,45 @@ namespace Imagine
 	  // Build a pruned tree of colors. All colors popular enough
 	  // (more than 1%) are forced in, others have an error criterion
 
+	  typedef map<Color,Color> ColorMap;
+	  ColorMap colormap;
+
 	  ColorTree tree;
 
 	  {
 		const float limit = 0.01*theImage.Width()*theImage.Height();
 
-		list<NFmiColorTools::Color> colors;
+		list<NFmiColorTools::Color> todo_colors;
 
 		for(Histogram::const_iterator it = histogram.begin();
 			it != histogram.end();
 			++it)
 		  {
 			if(it->first >= limit)
-			  tree.insert(it->second);
-			else if(!tree.insert(it->second,2*theMaxError))
-			  colors.push_back(it->second);
+			  {
+				tree.insert(it->second);
+				colormap.insert(ColorMap::value_type(it->second,it->second));
+			  }
+			else if(tree.insert(it->second,2*theMaxError))
+			  {
+				colormap.insert(ColorMap::value_type(it->second,it->second));
+			  }
+			else
+			  todo_colors.push_back(it->second);
 		  }
 
-		for(list<NFmiColorTools::Color>::const_iterator jt = colors.begin();
-			jt != colors.end();
+		for(list<NFmiColorTools::Color>::const_iterator jt = todo_colors.begin();
+			jt != todo_colors.end();
 			++jt)
 		  {
-			tree.insert(*jt,theMaxError);
-		  }
-	  }
-
-	  // Then build the colormap transformation map
-
-	  typedef map<Color,Color> ColorMap;
-	  ColorMap colormap;
-
-	  {
-		for(Histogram::const_iterator it = histogram.begin();
-			it != histogram.end();
-			++it)
-		  {
-			Color color = tree.nearest(it->second);
-			colormap.insert(ColorMap::value_type(it->second,color));
+			NFmiColorTools::Color nearest = tree.nearest(*jt);
+			if(tree.distance(nearest,*jt) < theMaxError)
+			  colormap.insert(ColorMap::value_type(*jt,nearest));
+			else
+			  {
+				tree.insert(*jt);
+				colormap.insert(ColorMap::value_type(*jt,*jt));
+			  }
 		  }
 	  }
 
