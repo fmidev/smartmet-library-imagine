@@ -80,9 +80,7 @@ namespace Imagine
 	
 	// Adding a line, conic or cubic segment
 	
-#ifndef OLDGCC
 	using NFmiDrawable::Add;
-#endif
 	
 	void Add(float theX1, float theY1,
 			 float theX2, float theY2);
@@ -105,9 +103,7 @@ namespace Imagine
 	
 	// Filling
 	
-#ifndef OLDGCC
 	using NFmiDrawable::Fill;
-#endif
 	
 	void Fill(NFmiImage & theImage,
 			  NFmiColorTools::Color theColor,

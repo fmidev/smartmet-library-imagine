@@ -19,11 +19,7 @@
 #include <iostream>
 #include <algorithm>
 #include <stdexcept>
-#ifdef OLDGCC
-  #include <strstream>
-#else
-  #include <sstream>
-#endif
+#include <sstream>
 
 // ======================================================================
 //				HIDDEN INTERNAL FUNCTIONS
@@ -872,11 +868,7 @@ namespace Imagine
   
   string NFmiPath::ftoa(float theValue) const
   {
-#ifdef OLDGCC
-	ostrstream str;
-#else
 	ostringstream str;
-#endif
 	str << theValue;
 	return str.str();
   }

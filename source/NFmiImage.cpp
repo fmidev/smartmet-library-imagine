@@ -19,11 +19,7 @@
 #include <png.h>	// for pnglib
 #include <iostream> // 2.1.2002/Marko cerr vaatii t‰m‰n MSVC-k‰‰nt‰j‰ss‰.
 #include <algorithm>
-#ifdef OLDGCC
- #include <strstream>
-#else
- #include <sstream>
-#endif
+#include <sstream>
 
 using namespace std;
 
@@ -357,11 +353,7 @@ namespace Imagine
 	itsPixels = new int[theWidth*theHeight];		// Allocate
 	if(itsPixels==NULL)
 	  {
-#ifdef OLDGCC
-		ostrstream os;
-#else
 		ostringstream os;
-#endif
 		os << "Insufficient memory to allocate image of size "
 		   << theWidth
 		   << "x"
