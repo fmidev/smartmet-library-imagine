@@ -23,7 +23,6 @@
 #include "NFmiColorTools.h"
 #include "NFmiNearTree.h"
 
-#include <iostream>
 #include <list>
 #include <map>
 #include <vector>
@@ -45,6 +44,27 @@ namespace Imagine
 	//! Histogram information
 
 	typedef map<NFmiColorTools::Color,int> Counter;
+
+	//! Colormap transformation
+	typedef map<NFmiColorTools::Color,NFmiColorTools::Color> ColorMap;
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Initialize the given gamma correction table
+	 */
+	// ----------------------------------------------------------------------
+
+	void init_gamma_table(vector<float> & theTable, bool & theFlag)
+	{
+	  const float gamma = 2.2;
+	  const float coeff = 255/(pow(255,gamma));
+	  
+	  for(int i=0; i<256; i++)
+		theTable[i] = coeff*pow(i,gamma);
+	  
+	  theFlag = true;
+
+	}
 
 	// ----------------------------------------------------------------------
 	/*!
@@ -102,24 +122,6 @@ namespace Imagine
 		  }
 	  
 	  return counter;
-
-	}
-
-	// ----------------------------------------------------------------------
-	/*!
-	 * \brief Initialize the given gamma correction table
-	 */
-	// ----------------------------------------------------------------------
-
-	void init_gamma_table(vector<float> & theTable, bool & theFlag)
-	{
-	  const float gamma = 2.2;
-	  const float coeff = 255/(pow(255,gamma));
-	  
-	  for(int i=0; i<256; i++)
-		theTable[i] = coeff*pow(i,gamma);
-	  
-	  theFlag = true;
 
 	}
 
@@ -216,7 +218,7 @@ namespace Imagine
 
 	bool ColorTree::empty() const
 	{
-	  return (itsLeftObject.get() != 0);
+	  return (itsLeftObject.get() == 0);
 	}
 
 	// ----------------------------------------------------------------------
@@ -364,6 +366,76 @@ namespace Imagine
 	  
 	}
 
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Perform color replacement
+	 */
+	// ----------------------------------------------------------------------
+
+	void replace_colors(NFmiImage & theImage, const ColorMap & theMap)
+	{
+	  NFmiColorTools::Color last_color = NFmiColorTools::NoColor;
+	  NFmiColorTools::Color last_choice = NFmiColorTools::NoColor;
+	  
+	  for(int j=0; j<theImage.Height(); j++)
+		for(int i=0; i<theImage.Width(); i++)
+		  {
+			if(theImage(i,j) != last_color)
+			  {
+				last_color = theImage(i,j);
+				
+				ColorMap::const_iterator it = theMap.find(last_color);
+				if(it == theMap.end())
+				  throw runtime_error("Internal error in color reduction, failed to find color");
+				last_choice = it->second;
+			  }
+			theImage(i,j) = last_choice;
+		  }
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Build a color tree and a colormap
+	 */
+	// ----------------------------------------------------------------------
+
+	void build_tree(const NFmiImage & theImage,
+					const NFmiColorReduce::Histogram & theHistogram,
+					ColorTree & theTree,
+					ColorMap & theMap,
+					float theMaxError)
+	  {
+		// Build a pruned tree of colors. All colors popular enough
+		// (more than 1%) are forced in, others have an error criterion
+
+		const float limit = 0.01*theImage.Width()*theImage.Height();
+		
+		for(NFmiColorReduce::Histogram::const_iterator it = theHistogram.begin();
+			it != theHistogram.end();
+			++it)
+		  {
+			if(it->first >= limit || theTree.empty())
+			  {
+				theTree.insert(it->second);
+				theMap.insert(ColorMap::value_type(it->second,it->second));
+			  }
+			else
+			  {
+				NFmiColorTools::Color nearest = theTree.nearest(it->second);
+				float dist = theTree.distance(nearest,it->second);
+
+				if(dist < theMaxError)
+				  theMap.insert(ColorMap::value_type(it->second,nearest));
+				else
+				  {
+					theTree.insert(it->second);
+					theMap.insert(ColorMap::value_type(it->second,it->second));
+				  }
+			  }
+		  }
+	  }
+	
+
   } // namespace anonymous
 
 
@@ -452,62 +524,19 @@ namespace Imagine
 	  
 	  Histogram histogram = CalcHistogram(theImage);
 
-	  // Build a pruned tree of colors. All colors popular enough
-	  // (more than 1%) are forced in, others have an error criterion
-
-	  typedef map<Color,Color> ColorMap;
-	  ColorMap colormap;
+	  // Select the colors
 
 	  ColorTree tree;
+	  ColorMap colormap;
 
-	  {
-		const float limit = 0.01*theImage.Width()*theImage.Height();
-		
-		for(Histogram::const_iterator it = histogram.begin();
-			it != histogram.end();
-			++it)
-		  {
-			if(it->first >= limit || tree.empty())
-			  {
-				tree.insert(it->second);
-				colormap.insert(ColorMap::value_type(it->second,it->second));
-			  }
-			else
-			  {
-				NFmiColorTools::Color nearest = tree.nearest(it->second);
-				float dist = tree.distance(nearest,it->second);
-				if(dist < theMaxError)
-				  colormap.insert(ColorMap::value_type(it->second,nearest));
-				else
-				  {
-					tree.insert(it->second);
-					colormap.insert(ColorMap::value_type(it->second,it->second));
-				  }
-			  }
-		  }
-	  }
-	  
+	  build_tree(theImage,histogram,tree,colormap,theMaxError);
+
 	  // Now perform the replacements. Since we expect to encounter
 	  // sequences of color, we speed of the searches by caching
 	  // the last replacement.
 
-	  NFmiColorTools::Color last_color = NFmiColorTools::NoColor;
-	  NFmiColorTools::Color last_choice = NFmiColorTools::NoColor;
-	  
-	  for(int j=0; j<theImage.Height(); j++)
-		for(int i=0; i<theImage.Width(); i++)
-		  {
-			if(theImage(i,j) != last_color)
-			  {
-				last_color = theImage(i,j);
+	  replace_colors(theImage,colormap);
 
-				ColorMap::const_iterator it = colormap.find(last_color);
-				if(it == colormap.end())
-				  throw runtime_error("Internal error in color reduction, failed to find color");
-				last_choice = it->second;
-			  }
-			theImage(i,j) = last_choice;
-		  }
 	}
 	
   } // namespace NFmiColorReduce
