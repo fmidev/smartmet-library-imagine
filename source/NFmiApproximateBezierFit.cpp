@@ -658,7 +658,7 @@ namespace Imagine
 		  const double x3 = thePath[theLast].X();
 		  const double y3 = thePath[theLast].Y();
 		  
-		  const double dist = NFmiGeoTools::Distance(x0,y0,x3,y3);
+		  const double dist = NFmiGeoTools::Distance(x0,y0,x3,y3)/3;
 
 		  const NFmiPoint t1 = ScaleTangent(theTangent1,dist);
 		  const NFmiPoint t2 = ScaleTangent(theTangent2,dist);
@@ -692,7 +692,8 @@ namespace Imagine
 
 	  // if error not too large, try some reparameterization and iteration
 
-	  const double iterationerror = theError*theError;
+	  const double errorfactor = 4.0;
+	  const double iterationerror = errorfactor*theError;
 	  if(maxerror < iterationerror)
 		{
 		  vector<double> uprime;
