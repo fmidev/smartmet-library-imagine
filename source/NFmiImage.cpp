@@ -258,13 +258,15 @@ namespace Imagine
 	else
 	  {
 		NFmiColorTools::Color c;
+		const float beta = (1.0-theAlpha)*NFmiColorTools::MaxAlpha;
 		int a,aa;
+		
 		for(int j=j1; j<=j2; j++)
 		  for(int i=i1; i<=i2; i++)
 			{
 			  c = thePattern(i,j);
 			  a = NFmiColorTools::GetAlpha(c);
-			  aa = static_cast<int>(a + (1.0-theAlpha)*(NFmiColorTools::MaxAlpha-a));
+			  aa = static_cast<int>(theAlpha*a + beta);
 			  c = NFmiColorTools::ReplaceAlpha(c,aa);
 			  //	    (*this)(theX+i,theY+j) = T::Blend(c,(*this)(theX+i,theY+j));
 			  theThisImage(theX+i,theY+j) = theBlender.Blend(c, theThisImage(theX+i,theY+j)); // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
