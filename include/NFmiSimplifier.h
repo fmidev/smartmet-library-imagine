@@ -78,6 +78,17 @@ namespace Imagine
   template<class T>
   class _FMI_DLL NFmiSimplifier
   {
+
+  public:
+	
+	// Different smoothening methods
+	
+	enum NFmiSimplifierMethod { kFmiSimplifierNone,
+								kFmiSimplifierStraight,
+								kFmiSimplifierMinDistance,
+								kFmiSimplifierMaxDistance,
+								kFmiSimplifierMinTriangle,
+								kFmiSimplifierMaxTriangle };
 	
   protected:
 	
@@ -86,16 +97,6 @@ namespace Imagine
 	const NFmiCounter		itsCounter;
 	
   public:
-	
-	
-	// Different smoothening methods
-	
-	enum NFmiSimplifierMethod { kFmiSimplifierNone,
-								kFmiSimplifierStraight,
-								kFmiSimplifierMinDistance 
-								kFmiSimplifierMaxDistance,
-								kFmiSimplifierMinTriangle,
-								kFmiSimplifierMaxTriangle };
 	
 	// Constructors, destructors
 	
