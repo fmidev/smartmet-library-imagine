@@ -443,6 +443,8 @@ namespace Imagine
 	  WriteJpeg(theFileName);
 	else if(theType == "gif")
 	  WriteGif(theFileName);
+	else if(theType == "wbmp")
+	  WriteWbmp(theFileName);
 	else
 	  throw runtime_error("Image format '"+theType+"' is not supported");
   }
@@ -497,6 +499,30 @@ namespace Imagine
   }
 #endif // IMAGINE_IGNORE_FORMATS
   
+  // ----------------------------------------------------------------------
+  // Write image as WBMP into given file. The compression quality
+  // cannot be controlled.
+  // ----------------------------------------------------------------------
+  
+  void NFmiImage::WriteWbmp(const string & theFileName) const
+  {
+	const string dir = NFmiFileSystem::DirName(theFileName);
+	const string tmp = NFmiFileSystem::TemporaryFile(dir);
+
+	FILE *out;
+	out = fopen(tmp.c_str(),"wb");
+	if(out==NULL)
+	  throw runtime_error("Failed to open '"+theFileName+"' for writing a WBMP");
+	WriteWBMP(out);
+	fclose(out);
+
+	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
+	
+	if(!status)
+	  throw runtime_error("Failed to write '"+theFileName+"'");
+
+  }
+
   // ----------------------------------------------------------------------
   // Write image as GIF into given file.
   // ----------------------------------------------------------------------
