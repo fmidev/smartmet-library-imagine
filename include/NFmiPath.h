@@ -214,6 +214,8 @@ public:
   
   void Project(const NFmiArea * const theArea);
   
+  void InvProject(const NFmiArea * const theArea);
+  
   // Return a new path which is the widened version of this one
   
   NFmiPath StrokePath(float theWidth) const;

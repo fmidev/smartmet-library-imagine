@@ -473,6 +473,24 @@ void NFmiPath::Project(const NFmiArea * const theArea)
 }
 
 // ----------------------------------------------------------------------
+// Apply an inverse projection to a path
+// ----------------------------------------------------------------------
+
+void NFmiPath::InvProject(const NFmiArea * const theArea)
+{
+  if(theArea!=0)
+    {
+      NFmiPathData::iterator iter;
+      for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
+		{
+		  NFmiPoint pt = theArea->ToLatLon(NFmiPoint(iter->X(),iter->Y()));
+		  iter->X(pt.X());
+		  iter->Y(pt.Y());
+		}
+    }
+}
+
+// ----------------------------------------------------------------------
 // Return the bounding box of the path.
 // Note: Bezier curve bounding boxes not implemented yet
 // ----------------------------------------------------------------------
