@@ -202,6 +202,8 @@ public:
     , itsMissingValue(missing)
     , itHasDataLoLimit(false)
     , itHasDataHiLimit(false)
+	, itsDataLoLimit()
+	, itsDataHiLimit()
   { PrepareLimits(); }
   
   /// Returns the active (read-only) \em low limit of the contoured interval
@@ -311,7 +313,7 @@ private:
    * We always require atleast a contour interval in the constructor.
    */
   
-  NFmiContourTree(void) {};
+  NFmiContourTree(void);
   
   /// Possible locations of a value with respect to contour limits.
   

@@ -64,7 +64,8 @@ public:
   // Constructors, destructors:
   
   NFmiFillMap(float theLoLimit=kFloatMissing, float theHiLimit=kFloatMissing)
-	: itsLoLimit(theLoLimit)
+	: itsData()
+	, itsLoLimit(theLoLimit)
 	, itsHiLimit(theHiLimit)
   { }
   
@@ -99,13 +100,13 @@ public:
   
   void Fill(NFmiImage & theImage,
 			NFmiColorTools::Color theColor,
-			NFmiColorTools::NFmiBlendRule theRule) const;
+			NFmiColorTools::NFmiBlendRule theRule);
   
   void Fill(NFmiImage & theImage,
 			const NFmiImage & thePattern,
 			NFmiColorTools::NFmiBlendRule theRule,
 			float theAlpha=1.0,
-			int theX=0, int theY=0) const;
+			int theX=0, int theY=0);
   
 private:
   

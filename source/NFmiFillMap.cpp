@@ -32,13 +32,13 @@ using namespace std;
 template <class T>
 static void Fill2(T theBlender, NFmiImage & theImage,
 				  int red, int green, int blue, int alpha,
-				  const NFmiFillMapData &theData
+				  NFmiFillMapData &theData
 				  )
 {
   // The iterator for traversing the data is not const, because we
   // sort the x-coordinates
   
-  NFmiFillMapData::const_iterator iter = theData.begin();
+  NFmiFillMapData::iterator iter = theData.begin();
   
   // Iterate over all y-coordinates in the map
   
@@ -59,17 +59,22 @@ static void Fill2(T theBlender, NFmiImage & theImage,
       // with the even-odd rule. First we must sort the data.
       // I'm not sure how optimized sort() is for vectors, so
       // I'll handle the special case of 2 elements separately
-
-	  NFmiFillMapElement vec(iter->second);
-	  sort(vec.begin(),vec.end());
+	  
+      if(iter->second.size()==2)
+		{
+		  if(iter->second[0] > iter->second[1])
+			swap(iter->second[0],iter->second[1]);
+		}
+      else
+		sort(iter->second.begin(), iter->second.end());
 	  
       // We have no active x-coordinate yet
 	  
       float x1 = kFloatMissing;
 	  
-      NFmiFillMapElement::const_iterator dataiter = vec.begin();
+      NFmiFillMapElement::const_iterator dataiter = iter->second.begin();
 	  
-      for( ; dataiter!=vec.end() ; ++dataiter)
+      for( ; dataiter!=iter->second.end() ; ++dataiter)
 		{
 		  float x2 = *dataiter;
 		  
@@ -153,13 +158,13 @@ template <class T>
 static void Fill2(T theBlender,
 				  NFmiImage & theImage,
 				  NFmiColorTools::Color theColor,
-				  const NFmiFillMapData &theData
+				  NFmiFillMapData &theData
 				  )
 {
   // The iterator for traversing the data is not const, because we
   // sort the x-coordinates
   
-  NFmiFillMapData::const_iterator iter = theData.begin();
+  NFmiFillMapData::iterator iter = theData.begin();
   
   // Iterate over all y-coordinates in the map
   
@@ -179,16 +184,21 @@ static void Fill2(T theBlender,
       // I'm not sure how optimized sort() is for vectors, so
       // I'll handle the special case of 2 elements separately
 	  
-	  NFmiFillMapElement vec(iter->second);
-	  sort(vec.begin(), vec.end());
+      if(iter->second.size()==2)
+		{
+		  if(iter->second[0] > iter->second[1])
+			swap(iter->second[0],iter->second[1]);
+		}
+      else
+		sort(iter->second.begin(), iter->second.end());
 	  
       // We have no active x-coordinate yet
 	  
       float x1 = kFloatMissing;
 	  
-      NFmiFillMapElement::const_iterator dataiter = vec.begin();
+      NFmiFillMapElement::const_iterator dataiter = iter->second.begin();
 	  
-      for( ; dataiter!=vec.end() ; ++dataiter)
+      for( ; dataiter!=iter->second.end() ; ++dataiter)
 		{
 		  float x2 = *dataiter;
 		  
@@ -268,12 +278,12 @@ template <class T>
 static void Fill2(T theBlender, NFmiImage & theImage,
 				  const NFmiImage & thePattern,
 				  float theAlpha, int theX, int theY,
-				  const NFmiFillMapData &theData)
+				  NFmiFillMapData &theData)
 {
   // The iterator for traversing the data is not const, because we
   // sort the x-coordinates
   
-  NFmiFillMapData::const_iterator iter = theData.begin();
+  NFmiFillMapData::iterator iter = theData.begin();
   
   // Pattern related variables
   
@@ -301,17 +311,22 @@ static void Fill2(T theBlender, NFmiImage & theImage,
       // with the even-odd rule. First we must sort the data.
       // I'm not sure how optimized sort() is for vectors, so
       // I'll handle the special case of 2 elements separately
-
-	  NFmiFillMapElement vec(iter->second);
-	  sort(vec.begin(), vec.end());
+	  
+      if(iter->second.size()==2)
+		{
+		  if(iter->second[0] > iter->second[1])
+			swap(iter->second[0],iter->second[1]);
+		}
+      else
+		sort(iter->second.begin(), iter->second.end());
 	  
       // We have no active x-coordinate yet
 	  
       float x1 = kFloatMissing;
 	  
-      NFmiFillMapElement::const_iterator dataiter = vec.begin();
+      NFmiFillMapElement::const_iterator dataiter = iter->second.begin();
 	  
-      for( ; dataiter!=vec.end() ; ++dataiter)
+      for( ; dataiter!=iter->second.end() ; ++dataiter)
 		{
 		  float x2 = *dataiter;
 		  
@@ -656,7 +671,7 @@ void NFmiFillMap::And(const NFmiFillMap & theMap)
 void NFmiFillMap::Fill(NFmiImage & theImage,
 					   NFmiColorTools::Color theColor,
 					   NFmiColorTools::NFmiBlendRule theRule
-					   ) const
+					   )
 {
   // Quick exit if color is not real
   
@@ -811,7 +826,7 @@ void NFmiFillMap::Fill(NFmiImage & theImage,
 					   const NFmiImage & thePattern,
 					   NFmiColorTools::NFmiBlendRule theRule,
 					   float theAlpha, int theX, int theY
-					   ) const
+					   )
 {
   switch(theRule)
     {

@@ -36,7 +36,7 @@ public:
   
   // Constructors
   
-  NFmiEdgeTree(void) { }
+  NFmiEdgeTree(void) : itsEdges() { }
   
   // Destructors
   

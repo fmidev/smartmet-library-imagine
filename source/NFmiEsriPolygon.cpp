@@ -25,6 +25,9 @@ using namespace std;
 
 NFmiEsriPolygon::NFmiEsriPolygon(const string & theBuffer, int thePos, int theNumber)
   : NFmiEsriElement(kFmiEsriPolygon,theNumber)
+  , itsBox()
+  , itsParts()
+  , itsPoints()
 {
   
   int nparts = LittleEndianInt(theBuffer,thePos+36);

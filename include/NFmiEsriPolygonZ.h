@@ -41,6 +41,9 @@ public:
   
   NFmiEsriPolygonZ(int theNumber=0,NFmiEsriElementType theType=kFmiEsriPolygonZ)
     : NFmiEsriPolygonM(theNumber,kFmiEsriPolygonZ)
+	, itsBox()
+	, itsParts()
+	, itsPoints()
   {}
   
   NFmiEsriPolygonZ(const std::string & theBuffer, int thePos=0, int theNumber=0);

@@ -26,9 +26,15 @@ public:
   
   // Constructors, destructors
   
-  ~NFmiEsriBox(void) {}
+  virtual ~NFmiEsriBox(void) {}
   
-  NFmiEsriBox(void) { Init(); }
+  NFmiEsriBox(void)
+    : itsValidity(false)
+	, itsXmin(0.0)
+	, itsXmax(0.0)
+	, itsYmin(0.0)
+	, itsYmax(0.0)
+ { }
   
   void Init(void)
   {

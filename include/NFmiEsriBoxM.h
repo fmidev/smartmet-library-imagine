@@ -23,7 +23,12 @@ public:
   
   ~NFmiEsriBoxM(void) {}
   
-  NFmiEsriBoxM(void) { Init(); }
+  NFmiEsriBoxM(void)
+	: NFmiEsriBox()
+	, itsValidityM(false)
+	, itsMmin(0.0)
+	, itsMmax(0.0)
+ { }
   
   void Init(void)
   {

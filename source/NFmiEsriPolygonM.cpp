@@ -28,6 +28,9 @@ using namespace std;
 
 NFmiEsriPolygonM::NFmiEsriPolygonM(const string & theBuffer, int thePos, int theNumber)
   : NFmiEsriPolygon(theNumber,kFmiEsriPolygonM)
+  , itsBox()
+  , itsParts()
+  , itsPoints()
 {
   int nparts = LittleEndianInt(theBuffer,thePos+36);
   int npoints = LittleEndianInt(theBuffer,thePos+40);

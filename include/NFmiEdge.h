@@ -28,7 +28,11 @@ public:
   // The constructor will sort the vertices
   
   NFmiEdge(float theX1,float theY1, float theX2, float theY2, bool exact)
-    : itsX1(theX1), itsY1(theY1), itsX2(theX2), itsY2(theY2), fExact(exact)
+    : itsX1(theX1)
+	, itsY1(theY1)
+	, itsX2(theX2)
+	, itsY2(theY2)
+	, fExact(exact)
   {
     if(itsX2<itsX1 || (itsX2==itsX1 && itsY2<itsY1))
       {
@@ -82,7 +86,7 @@ private:
   
   // Protect from misuse
   
-  NFmiEdge(void) {};
+  NFmiEdge(void);
   
   // Data elements
   

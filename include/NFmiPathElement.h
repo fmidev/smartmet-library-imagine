@@ -67,7 +67,7 @@ private:
   
   // Protect from bad constructors
   
-  NFmiPathElement(void) {}
+  NFmiPathElement(void);
   
   // Data-members
   

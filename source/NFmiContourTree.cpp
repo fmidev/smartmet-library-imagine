@@ -334,46 +334,45 @@ void NFmiContourTree::ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 			Add(NFmiEdge(x1,y1,x2,y2,c1==c2 && c1!=kNeither));
 		  }
 	  
-      // Done
-	  
-      return;
-	  
     }
   
-  
-  // If min,max both inside, we could contour the entire matrix at once,
-  // except that we'd need to check whether the matrix contained missing
-  // values which are NOT to be included. For now we ignore this
-  // optimization and just contour the matrix as usual.
-  
-  for(unsigned int j=0; j<thePts.NY()-1; j++)
-    {
-      // Ignore fully missing rows
+
+  else
+
+	{
+	  // If min,max both inside, we could contour the entire matrix at once,
+	  // except that we'd need to check whether the matrix contained missing
+	  // values which are NOT to be included. For now we ignore this
+	  // optimization and just contour the matrix as usual.
 	  
-      if(theHelper.IsFullyMissing(j))
-		continue;
-	  
-      cmin = Insidedness(theHelper.Min(j));
-      cmax = Insidedness(theHelper.Max(j));
-	  
-      // If min,max both below or above, skip to next row
-	  
-      if(cmin==cmax && cmin!=kInside)
-		continue;
-	  
-      // If min,max both inside, we could contour the entire row at once,
-      // except that we'd need to check whether the row contained missing
-      // values which are NOT to be included. For now we ignore this
-      // optimization and just contour the row as usual.
-	  
-      for(unsigned int i=0; i<thePts.NX()-1; i++)
-		ContourLinear4(thePts[i][j].X(),thePts[i][j].Y(),theValues[i][j],
-					   thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
-					   thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
-					   thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1],
-					   theMaxDepth);
-      
-    }
+	  for(unsigned int j=0; j<thePts.NY()-1; j++)
+		{
+		  // Ignore fully missing rows
+		  
+		  if(theHelper.IsFullyMissing(j))
+			continue;
+		  
+		  cmin = Insidedness(theHelper.Min(j));
+		  cmax = Insidedness(theHelper.Max(j));
+		  
+		  // If min,max both below or above, skip to next row
+		  
+		  if(cmin==cmax && cmin!=kInside)
+			continue;
+		  
+		  // If min,max both inside, we could contour the entire row at once,
+		  // except that we'd need to check whether the row contained missing
+		  // values which are NOT to be included. For now we ignore this
+		  // optimization and just contour the row as usual.
+		  
+		  for(unsigned int i=0; i<thePts.NX()-1; i++)
+			ContourLinear4(thePts[i][j].X(),thePts[i][j].Y(),theValues[i][j],
+						   thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
+						   thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
+						   thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1],
+						   theMaxDepth);
+		}
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -405,7 +404,9 @@ void NFmiContourTree::ContourLinear4(float x1, float y1, float z1,
      y2==kFloatMissing ||
      y3==kFloatMissing ||
      y4==kFloatMissing)
-    return;
+	{
+	  return;
+	}
   
   // Handle missing values
   

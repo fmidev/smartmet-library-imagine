@@ -57,6 +57,10 @@ public:
   
   NFmiEsriMultiPatch(int theNumber=0)
     : NFmiEsriElement(kFmiEsriMultiPatch,theNumber)
+	, itsBox()
+	, itsParts()
+	, itsPartTypes()
+	, itsPoints()
   {}
   
   NFmiEsriMultiPatch(const std::string & theBuffer, int thePos=0, int theNumber=0);

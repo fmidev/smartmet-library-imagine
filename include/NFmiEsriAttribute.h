@@ -54,11 +54,13 @@ public:
   
   NFmiEsriAttribute(int theValue, NFmiEsriAttributeName * theName)
     : itsAttributeName(theName)
+	, itsString()
     , itsInteger(theValue)
   {}
   
   NFmiEsriAttribute(double theValue, NFmiEsriAttributeName * theName)
     : itsAttributeName(theName)
+	, itsString()
     , itsDouble(theValue)
   {}
   

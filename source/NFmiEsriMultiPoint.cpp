@@ -23,6 +23,8 @@ using namespace std;
 
 NFmiEsriMultiPoint::NFmiEsriMultiPoint(const string & theBuffer, int thePos, int theNumber)
   : NFmiEsriElement(kFmiEsriMultiPoint, theNumber)
+  , itsBox()
+  , itsPoints()
 {
   int npoints = LittleEndianInt(theBuffer,thePos+36);
   

@@ -30,6 +30,9 @@ using namespace std;
 
 NFmiEsriPolyLineM::NFmiEsriPolyLineM(const string & theBuffer, int thePos, int theNumber)
   : NFmiEsriPolyLine(theNumber,kFmiEsriPolyLineM)
+  , itsBox()
+  , itsParts()
+  , itsPoints()
 {
   int nparts = LittleEndianInt(theBuffer,thePos+36);
   int npoints = LittleEndianInt(theBuffer,thePos+40);

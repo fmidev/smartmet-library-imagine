@@ -37,6 +37,10 @@ using namespace std;
 
 NFmiEsriMultiPatch::NFmiEsriMultiPatch(const string & theBuffer, int thePos, int theNumber)
   : NFmiEsriElement(kFmiEsriMultiPatch,theNumber)
+  , itsBox()
+  , itsParts()
+  , itsPartTypes()
+  , itsPoints()
 {
   int nparts = LittleEndianInt(theBuffer,thePos+36);
   int npoints = LittleEndianInt(theBuffer,thePos+40);

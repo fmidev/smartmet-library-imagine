@@ -28,6 +28,9 @@ NFmiContourDataHelper::NFmiContourDataHelper(const NFmiDataMatrix<float> & theMa
   : itsLoLimit(kFloatMissing)
   , itsHiLimit(kFloatMissing)
   , itsMissingFlag(false)
+  , itsLoLimits()
+  , itsHiLimits()
+  , itsMissingFlags()
 {
   int n = theMatrix.NY();
   

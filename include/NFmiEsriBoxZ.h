@@ -22,8 +22,13 @@ public:
   // Constructors, destructors
   
   ~NFmiEsriBoxZ(void) {}
-  NFmiEsriBoxZ(void) { Init(); }
-  
+  NFmiEsriBoxZ(void)
+	: NFmiEsriBoxM()
+	, itsValidityZ(false)
+	, itsZmin(0.0)
+	, itsZmax(0.0)
+  { }
+
   void Init(void)
   {
 	NFmiEsriBoxM::Init();

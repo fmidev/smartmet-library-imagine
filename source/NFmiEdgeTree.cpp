@@ -29,22 +29,20 @@ void NFmiEdgeTree::Add(const NFmiEdge& theEdge)
   
   // If the edge is a 0-length line, ignore it
   
-  if(theEdge.GetX1() == theEdge.GetX2() && theEdge.GetY1() == theEdge.GetY2())
-    return;
+  if(theEdge.GetX1() != theEdge.GetX2() || theEdge.GetY1() != theEdge.GetY2())
+	{
+	  // Insert operator returns an iterator, bool pair
   
-  // Insert operator returns an iterator, bool pair
+	  pair<EdgeTreeType::iterator, bool> result = itsEdges.insert(theEdge);
   
-  pair<EdgeTreeType::iterator, bool> result = itsEdges.insert(theEdge);
-  
-  
-  // If insertion was unsuccessful, the element already existed,
-  // and we wish to delete it. We no longer need to find the element,
-  // it is pointed to by the earlier find iterator. Hence this is
-  // an optimally fast log(N) operation for balanced trees.
-  
-  if(!result.second)
-    itsEdges.erase(result.first);
-  
+	  // If insertion was unsuccessful, the element already existed,
+	  // and we wish to delete it. We no longer need to find the element,
+	  // it is pointed to by the earlier find iterator. Hence this is
+	  // an optimally fast log(N) operation for balanced trees.
+	  
+	  if(!result.second)
+		itsEdges.erase(result.first);
+	}  
 }
 
 // ----------------------------------------------------------------------

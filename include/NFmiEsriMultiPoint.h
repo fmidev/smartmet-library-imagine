@@ -31,6 +31,8 @@ public:
   NFmiEsriMultiPoint(int theNumber=0,
 					 NFmiEsriElementType theType=kFmiEsriMultiPoint)
     : NFmiEsriElement(theType,theNumber)
+	, itsBox()
+	, itsPoints()
   {}
   
   NFmiEsriMultiPoint(const std::string & theBuffer, int thePos=0, int theNumber=0);

@@ -46,7 +46,9 @@ public:
   virtual ~NFmiEsriElement(void) {}
   
   NFmiEsriElement(NFmiEsriElementType theType, int theNumber=0)
-    : itsType(theType), itsNumber(theNumber)
+    : itsType(theType)
+	, itsNumber(theNumber)
+	, itsAttributes()
   {}
   
   // Adding an attribute
@@ -93,13 +95,13 @@ public:
   
 protected:
   
-  NFmiEsriElement(void) {}
+  NFmiEsriElement(void);
   
   NFmiEsriElementType		itsType;
   
   int				itsNumber;
   std::list<NFmiEsriAttribute>	itsAttributes;
-  
+
 };
 
 #endif // _NFMIESRIELEMENT_H

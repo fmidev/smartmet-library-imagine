@@ -32,6 +32,9 @@ public:
   
   NFmiEsriPolygon(int theNumber=0,NFmiEsriElementType theType=kFmiEsriPolygon)
     : NFmiEsriElement(theType,theNumber)
+	, itsBox()
+	, itsParts()
+	, itsPoints()
   {}
   
   NFmiEsriPolygon(const std::string & theBuffer, int thePos=0, int theNumber=0);

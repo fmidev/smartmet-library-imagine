@@ -42,6 +42,9 @@ public:
   
   NFmiEsriPolyLineZ(int theNumber=0,NFmiEsriElementType theType=kFmiEsriPolyLineZ)
     : NFmiEsriPolyLineM(theNumber,theType)
+	, itsBox()
+	, itsParts()
+	, itsPoints()
   {}
   
   NFmiEsriPolyLineZ(const std::string & theBuffer, int thePos=0, int theNumber=0);
