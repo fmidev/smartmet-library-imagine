@@ -333,7 +333,7 @@ namespace Imagine
 	itsAlphaLimit = -1;			// do not force opaque/transparent
 	itsPngFilter = PNG_FILTER_TYPE_DEFAULT;	// usually fastest and often best
 	itsSaveAlphaFlag = true;		// yes, save alpha channel
-	itsWantPaletteFlag = false;		// no, do not try palette
+	itsWantPaletteFlag = true;		// yes, try palette
 	itsForcePaletteFlag = false;		// no, do not force palette
 	itsGamma = -1.0;			// negative means default gamma
 	itsIntent = string("");		// no intent
