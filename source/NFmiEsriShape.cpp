@@ -767,7 +767,9 @@ namespace Imagine
 		  dbffile << '\0';
 		dbffile << 'N'
 				<< LittleEndianInt(0)
-				<< '\x06';
+				<< '\x06'
+				<< '\x00';
+		dbffile << LittleEndianInt(0);
 		for(i=0; i<field_zeros; i++)
 		  dbffile << '\0';
 		dbffile << '\x0d';	// header record terminator
