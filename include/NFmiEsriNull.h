@@ -26,14 +26,32 @@ namespace Imagine
 	// Constructors, destructors
 	
 	~NFmiEsriNull(void) {}
+
+	NFmiEsriNull(const NFmiEsriNull & theNull)
+	  : NFmiEsriElement(theNull)
+	{ }
 	
 	NFmiEsriNull(int theNumber=0)
 	  : NFmiEsriElement(kFmiEsriNull,theNumber)
 	{}
 	
+	// Copying
+
+	NFmiEsriNull & operator=(const NFmiEsriNull & theNull)
+	{
+	  if(this != &theNull)
+		NFmiEsriElement::operator=(theNull);
+	  return *this;
+	}
+
+	virtual std::auto_ptr<NFmiEsriElement> Clone() const
+	{
+	  return std::auto_ptr<NFmiEsriElement>(new NFmiEsriNull(*this));
+	}
+
 	// Updating bounding boxes
 	
-	void Update(NFmiEsriBoxZ & theBox) const
+	void Update(NFmiEsriBox & theBox) const
 	{
 	}
 

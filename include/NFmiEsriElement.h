@@ -12,10 +12,11 @@
 #include "NFmiEsriAttribute.h"
 #include "NFmiEsriBuffer.h"
 
+#include <iostream>
+#include <list>
+#include <memory>
 #include <string>
 #include <vector>
-#include <list>
-#include <iostream>
 
 namespace Imagine
 {
@@ -38,7 +39,7 @@ namespace Imagine
 	  kFmiEsriMultiPatch	= 31
 	};
 
-  class NFmiEsriBoxZ;
+  class NFmiEsriBox;
 
   class _FMI_DLL NFmiEsriElement
   {
@@ -51,6 +52,10 @@ namespace Imagine
 	  , itsNumber(theNumber)
 	  , itsAttributes()
 	{}
+
+	// Copying
+
+	virtual std::auto_ptr<NFmiEsriElement> Clone() const = 0;
 	
 	// Adding an attribute
 	
@@ -67,7 +72,7 @@ namespace Imagine
 	
 	// Update given bounding box
 	
-	virtual void Update(NFmiEsriBoxZ & theBox) const = 0;
+	virtual void Update(NFmiEsriBox & theBox) const = 0;
 	
 	// Write element as character buffer
 	
@@ -97,11 +102,18 @@ namespace Imagine
   protected:
 	
 	NFmiEsriElement(void);
+	NFmiEsriElement(const NFmiEsriElement & theElement)
+	  : itsType(theElement.itsType)
+	  , itsNumber(theElement.itsNumber)
+	  , itsAttributes(theElement.itsAttributes)
+	{ }
+
+	NFmiEsriElement & operator=(const NFmiEsriElement & theElement);
 	
-	NFmiEsriElementType		itsType;
-	
-	int				itsNumber;
-	std::list<NFmiEsriAttribute>	itsAttributes;
+
+	NFmiEsriElementType itsType;
+	int itsNumber;
+	std::list<NFmiEsriAttribute> itsAttributes;
 	
   };
 

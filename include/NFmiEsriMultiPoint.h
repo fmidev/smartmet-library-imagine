@@ -30,6 +30,8 @@ namespace Imagine
 	
 	~NFmiEsriMultiPoint(void) {}
 	
+	NFmiEsriMultiPoint(const NFmiEsriMultiPoint & thePoints);
+
 	NFmiEsriMultiPoint(int theNumber=0,
 					   NFmiEsriElementType theType=kFmiEsriMultiPoint)
 	  : NFmiEsriElement(theType,theNumber)
@@ -37,7 +39,15 @@ namespace Imagine
 	  , itsPoints()
 	{}
 	
-	NFmiEsriMultiPoint(const std::string & theBuffer, int thePos=0, int theNumber=0);
+	NFmiEsriMultiPoint(const std::string & theBuffer,
+					   int thePos=0,
+					   int theNumber=0);
+
+	// Copying
+
+	NFmiEsriMultiPoint & operator=(const NFmiEsriMultiPoint & thePoints);
+
+	virtual std::auto_ptr<NFmiEsriElement> Clone() const;
 	
 	// Data access
 	
@@ -59,9 +69,9 @@ namespace Imagine
 	
 	// Updating bounding boxes
 	
-	void Update(NFmiEsriBoxZ & theBox) const
+	void Update(NFmiEsriBox & theBox) const
 	{
-	  static_cast<NFmiEsriBox &>(theBox).Update(itsBox);
+	  theBox.Update(itsBox);
 	}
 	
 	// String buffer size, write and string

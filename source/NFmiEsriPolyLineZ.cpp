@@ -33,6 +33,43 @@ namespace Imagine
 {
 
   // ----------------------------------------------------------------------
+  // Copy constructor
+  // ----------------------------------------------------------------------
+
+  NFmiEsriPolyLineZ::NFmiEsriPolyLineZ(const NFmiEsriPolyLineZ & theLine)
+	: NFmiEsriPolyLineM(theLine)
+	, itsBox(theLine.itsBox)
+	, itsParts(theLine.itsParts)
+	, itsPoints(theLine.itsPoints)
+  {
+  }
+
+  // ----------------------------------------------------------------------
+  // Assignment operator
+  // ----------------------------------------------------------------------
+
+  NFmiEsriPolyLineZ & NFmiEsriPolyLineZ::operator=(const NFmiEsriPolyLineZ & theLine)
+  {
+	if(this != &theLine)
+	  {
+		NFmiEsriPolyLineM::operator=(theLine);
+		itsBox = theLine.itsBox;
+		itsParts = theLine.itsParts;
+		itsPoints = theLine.itsPoints;
+	  }
+	return *this;
+  }
+
+  // ----------------------------------------------------------------------
+  // Cloning
+  // ----------------------------------------------------------------------
+
+  std::auto_ptr<NFmiEsriElement> NFmiEsriPolyLineZ::Clone() const
+  {
+	return auto_ptr<NFmiEsriElement>(new NFmiEsriPolyLineZ(*this));
+  }
+
+  // ----------------------------------------------------------------------
   // Constructor based on a character buffer
   // ----------------------------------------------------------------------
   

@@ -22,7 +22,7 @@
 #include <vector>
 
 #include "NFmiEsriPoint.h"
-#include "NFmiEsriBoxZ.h"
+#include "NFmiEsriBox.h"
 
 namespace Imagine
 {
@@ -34,15 +34,26 @@ namespace Imagine
 	// Constructors, destructors
 	
 	~NFmiEsriPolyLine(void) {}
+
+	NFmiEsriPolyLine(const NFmiEsriPolyLine & theLine);
 	
-	NFmiEsriPolyLine(int theNumber=0,NFmiEsriElementType theType=kFmiEsriPolyLine)
+	NFmiEsriPolyLine(int theNumber=0,
+					 NFmiEsriElementType theType=kFmiEsriPolyLine)
 	  : NFmiEsriElement(theType,theNumber)
 	  , itsBox()
 	  , itsParts()
 	  , itsPoints()
 	{ }
 	
-	NFmiEsriPolyLine(const std::string & theBuffer, int thePos=0, int theNumber=0);
+	NFmiEsriPolyLine(const std::string & theBuffer,
+					 int thePos=0,
+					 int theNumber=0);
+
+	// Copying
+
+	NFmiEsriPolyLine & operator=(const NFmiEsriPolyLine & theLine);
+
+	virtual std::auto_ptr<NFmiEsriElement> Clone() const;
 	
 	// Data access
 	
@@ -79,9 +90,9 @@ namespace Imagine
 	
 	// Updating bounding boxes
 	
-	void Update(NFmiEsriBoxZ & theBox) const
+	void Update(NFmiEsriBox & theBox) const
 	{
-	  static_cast<NFmiEsriBox &>(theBox).Update(itsBox);
+	  theBox.Update(itsBox);
 	}
 	
 	// String buffer size, write and string

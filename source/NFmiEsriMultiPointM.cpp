@@ -24,6 +24,43 @@ using namespace std;
 namespace Imagine
 {
 
+
+  // ----------------------------------------------------------------------
+  // Copy constructor
+  // ----------------------------------------------------------------------
+
+  NFmiEsriMultiPointM::NFmiEsriMultiPointM(const NFmiEsriMultiPointM & thePoints)
+	: NFmiEsriMultiPoint(thePoints)
+	, itsBox(thePoints.itsBox)
+	, itsPoints(thePoints.itsPoints)
+  {
+  }
+
+  // ----------------------------------------------------------------------
+  // Assignment operator
+  // ----------------------------------------------------------------------
+
+  NFmiEsriMultiPointM & NFmiEsriMultiPointM::operator=(const NFmiEsriMultiPointM & thePoints)
+  {
+	if(this != &thePoints)
+	  {
+		NFmiEsriMultiPoint::operator=(thePoints);
+		itsBox = thePoints.itsBox;
+		itsPoints = thePoints.itsPoints;
+	  }
+	return *this;
+  }
+
+  // ----------------------------------------------------------------------
+  // Cloning
+  // ----------------------------------------------------------------------
+
+  std::auto_ptr<NFmiEsriElement> NFmiEsriMultiPointM::Clone() const
+  {
+	return auto_ptr<NFmiEsriElement>(new NFmiEsriMultiPointM(*this));
+  }
+
+
   // ----------------------------------------------------------------------
   // Constructor based on a character buffer
   // ----------------------------------------------------------------------

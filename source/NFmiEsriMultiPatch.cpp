@@ -35,6 +35,27 @@ namespace Imagine
 {
 
   // ----------------------------------------------------------------------
+  // Copy constructor
+  // ----------------------------------------------------------------------
+
+  NFmiEsriMultiPatch::NFmiEsriMultiPatch(const NFmiEsriMultiPatch & theElement)
+	: NFmiEsriElement(theElement)
+	, itsBox(theElement.itsBox)
+	, itsParts(theElement.itsParts)
+	, itsPartTypes(theElement.itsPartTypes)
+  {
+  }
+
+  // ----------------------------------------------------------------------
+  // Cloning
+  // ----------------------------------------------------------------------
+
+  std::auto_ptr<NFmiEsriElement> NFmiEsriMultiPatch::Clone() const
+  {
+	return auto_ptr<NFmiEsriElement>(new NFmiEsriMultiPatch(*this));
+  }
+
+  // ----------------------------------------------------------------------
   // Constructor based on a character buffer
   // ----------------------------------------------------------------------
   
@@ -79,7 +100,7 @@ namespace Imagine
 						   LittleEndianDouble(theBuffer,mpos)));
 	  }
   }
-  
+
   // ----------------------------------------------------------------------
   // Calculating string buffer size
   // ----------------------------------------------------------------------

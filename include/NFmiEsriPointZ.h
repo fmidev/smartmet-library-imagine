@@ -17,7 +17,7 @@
 #define IMAGINE_NFMIESRIPOINTZ_H
 
 #include "NFmiEsriPointM.h"
-#include "NFmiEsriBoxZ.h"
+#include "NFmiEsriBox.h"
 
 namespace Imagine
 {
@@ -30,14 +30,28 @@ namespace Imagine
 	
 	~NFmiEsriPointZ(void) {}
 	
-	NFmiEsriPointZ(double theX, double theY, double theZ, double theM,
-				   int theNumber=0, NFmiEsriElementType theType=kFmiEsriPointZ)
+	NFmiEsriPointZ(const NFmiEsriPointZ & thePoint);
+
+	NFmiEsriPointZ(double theX,
+				   double theY,
+				   double theZ,
+				   double theM,
+				   int theNumber=0,
+				   NFmiEsriElementType theType=kFmiEsriPointZ)
 	  : NFmiEsriPointM(theX,theY,theM,theNumber,theType)
 	  , itsZ(theZ)
 	{ }
 	
-	NFmiEsriPointZ(const std::string & theBuffer, int thePos=0, int theNumber=0);
+	NFmiEsriPointZ(const std::string & theBuffer,
+				   int thePos=0,
+				   int theNumber=0);
 	
+	// Copying
+
+	NFmiEsriPointZ & operator=(const NFmiEsriPointZ & thePoint);
+
+	virtual std::auto_ptr<NFmiEsriElement> Clone() const;
+
 	// Data access
 	
 	double Z(void) const	{ return itsZ; }
@@ -45,7 +59,7 @@ namespace Imagine
 	
 	// Updating bounding boxes
 	
-	void Update(NFmiEsriBoxZ & theBox) const
+	void Update(NFmiEsriBox & theBox) const
 	{
 	  theBox.Update(X(),Y(),Z(),M());
 	}

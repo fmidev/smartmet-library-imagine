@@ -22,7 +22,7 @@
 
 #include "NFmiEsriPointM.h"
 #include "NFmiEsriPolygon.h"
-#include "NFmiEsriBoxM.h"
+#include "NFmiEsriBox.h"
 
 namespace Imagine
 {
@@ -34,18 +34,29 @@ namespace Imagine
 	
 	~NFmiEsriPolygonM(void) {}
 	
-	NFmiEsriPolygonM(int theNumber=0,NFmiEsriElementType theType=kFmiEsriPolygonM)
+	NFmiEsriPolygonM(const NFmiEsriPolygonM & thePolygon);
+
+	NFmiEsriPolygonM(int theNumber=0,
+					 NFmiEsriElementType theType=kFmiEsriPolygonM)
 	  : NFmiEsriPolygon(theNumber,kFmiEsriPolygonM)
 	  , itsBox()
 	  , itsParts()
 	  , itsPoints()
 	{}
 	
-	NFmiEsriPolygonM(const std::string & theBuffer, int thePos=0, int theNumber=0);
+	NFmiEsriPolygonM(const std::string & theBuffer,
+					 int thePos=0,
+					 int theNumber=0);
 	
+	// Copying
+
+	NFmiEsriPolygonM & operator=(const NFmiEsriPolygonM & thePolygon);
+
+	virtual std::auto_ptr<NFmiEsriElement> Clone() const;
+
 	// Data access
 	
-	const NFmiEsriBoxM & Box(void) const	{ return itsBox; }
+	const NFmiEsriBox & Box(void) const	{ return itsBox; }
 	
 	int NumPoints(void) const		{ return itsPoints.size(); }
 	int NumParts(void) const		{ return itsParts.size(); }
@@ -78,9 +89,9 @@ namespace Imagine
 	
 	// Updating bounding boxes
 	
-	void Update(NFmiEsriBoxZ & theBox) const
+	void Update(NFmiEsriBox & theBox) const
 	{
-	  static_cast<NFmiEsriBoxM &>(theBox).Update(itsBox);
+	  theBox.Update(itsBox);
 	}
 	
 	// String buffer size, write and string
@@ -90,7 +101,7 @@ namespace Imagine
 	
   private:
 	
-	NFmiEsriBoxM	itsBox;		// Bounding Box, xmin,ymin,xmax,ymax
+	NFmiEsriBox	itsBox;		// Bounding Box, xmin,ymin,xmax,ymax
 	// int	itsNumParts;	// Number of parts = size of itsParts
 	// int	itsNumPoints;	// Number of points = size of itsPoints
 	

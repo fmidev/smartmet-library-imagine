@@ -22,7 +22,7 @@
 
 #include "NFmiEsriPointM.h"
 #include "NFmiEsriMultiPoint.h"
-#include "NFmiEsriBoxM.h"
+#include "NFmiEsriBox.h"
 
 namespace Imagine
 {
@@ -34,6 +34,8 @@ namespace Imagine
 	
 	~NFmiEsriMultiPointM(void) {}
 	
+	NFmiEsriMultiPointM(const NFmiEsriMultiPointM & thePoints);
+
 	NFmiEsriMultiPointM(int theNumber=0,
 						NFmiEsriElementType theType=kFmiEsriMultiPointM)
 	  : NFmiEsriMultiPoint(theNumber,theType)
@@ -41,11 +43,19 @@ namespace Imagine
 	  , itsPoints()
 	{}
 	
-	NFmiEsriMultiPointM(const std::string & theBuffer, int thePos=0, int theNumber=0);
+	NFmiEsriMultiPointM(const std::string & theBuffer,
+						int thePos=0,
+						int theNumber=0);
 	
+	// Copying
+
+	NFmiEsriMultiPointM & operator=(const NFmiEsriMultiPointM & thePoints);
+
+	virtual std::auto_ptr<NFmiEsriElement> Clone() const;
+
 	// Data access
 	
-	const NFmiEsriBoxM & Box(void) const		{ return itsBox; }
+	const NFmiEsriBox & Box(void) const		{ return itsBox; }
 	int NumPoints(void) const			{ return itsPoints.size(); }
 	const std::vector<NFmiEsriPointM> & Points(void) const	{ return itsPoints; }
 	
@@ -63,9 +73,9 @@ namespace Imagine
 	
 	// Updating bounding boxes
 	
-	void Update(NFmiEsriBoxZ & theBox) const
+	void Update(NFmiEsriBox & theBox) const
 	{
-	  static_cast<NFmiEsriBoxM &>(theBox).Update(itsBox);
+	  theBox.Update(itsBox);
 	}
 	
 	// String buffer size, write and string
@@ -75,7 +85,7 @@ namespace Imagine
 	
   private:
 	
-	NFmiEsriBoxM	itsBox;		// Bounding box
+	NFmiEsriBox	itsBox;		// Bounding box
 	
 	// int	itsNumPoints;	// Number of points = size of itsPoints
 	

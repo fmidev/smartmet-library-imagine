@@ -13,6 +13,21 @@ namespace Imagine
 {
 
   // ----------------------------------------------------------------------
+  // Assignment operator
+  // ----------------------------------------------------------------------
+
+  NFmiEsriElement & NFmiEsriElement::operator=(const NFmiEsriElement & theElement)
+  {
+	if(this != &theElement)
+	  {
+		itsType = theElement.itsType;
+		itsNumber = theElement.itsNumber;
+		itsAttributes = theElement.itsAttributes;
+	  }
+	return *this;
+  }
+
+  // ----------------------------------------------------------------------
   // Return string value of attribute
   // ----------------------------------------------------------------------
   

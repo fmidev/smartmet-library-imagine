@@ -23,6 +23,43 @@ namespace Imagine
 {
 
   // ----------------------------------------------------------------------
+  // Copy constructor
+  // ----------------------------------------------------------------------
+
+  NFmiEsriPolygon::NFmiEsriPolygon(const NFmiEsriPolygon & thePolygon)
+	: NFmiEsriElement(thePolygon)
+	, itsBox(thePolygon.itsBox)
+	, itsParts(thePolygon.itsParts)
+	, itsPoints(thePolygon.itsPoints)
+  {
+  }
+
+  // ----------------------------------------------------------------------
+  // Assignment operator
+  // ----------------------------------------------------------------------
+
+  NFmiEsriPolygon & NFmiEsriPolygon::operator=(const NFmiEsriPolygon & thePolygon)
+  {
+	if(this != &thePolygon)
+	  {
+		NFmiEsriElement::operator=(thePolygon);
+		itsBox = thePolygon.itsBox;
+		itsParts = thePolygon.itsParts;
+		itsPoints = thePolygon.itsPoints;
+	  }
+	return *this;
+  }
+
+  // ----------------------------------------------------------------------
+  // Cloning
+  // ----------------------------------------------------------------------
+
+  std::auto_ptr<NFmiEsriElement> NFmiEsriPolygon::Clone() const
+  {
+	return auto_ptr<NFmiEsriElement>(new NFmiEsriPolygon(*this));
+  }
+
+  // ----------------------------------------------------------------------
   // Constructor based on a character buffer
   // ----------------------------------------------------------------------
   

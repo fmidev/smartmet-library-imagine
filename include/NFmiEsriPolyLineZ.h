@@ -28,7 +28,7 @@
 #define IMAGINE_NFMIESRIPOLYLINEZ_H
 
 #include "NFmiEsriPointZ.h"
-#include "NFmiEsriBoxZ.h"
+#include "NFmiEsriBox.h"
 #include "NFmiEsriPolyLineM.h"
 
 namespace Imagine
@@ -43,18 +43,29 @@ namespace Imagine
 	
 	~NFmiEsriPolyLineZ(void) {}
 	
-	NFmiEsriPolyLineZ(int theNumber=0,NFmiEsriElementType theType=kFmiEsriPolyLineZ)
+	NFmiEsriPolyLineZ(const NFmiEsriPolyLineZ & theLine);
+
+	NFmiEsriPolyLineZ(int theNumber=0,
+					  NFmiEsriElementType theType=kFmiEsriPolyLineZ)
 	  : NFmiEsriPolyLineM(theNumber,theType)
 	  , itsBox()
 	  , itsParts()
 	  , itsPoints()
 	{}
 	
-	NFmiEsriPolyLineZ(const std::string & theBuffer, int thePos=0, int theNumber=0);
+	NFmiEsriPolyLineZ(const std::string & theBuffer,
+					  int thePos=0,
+					  int theNumber=0);
 	
+	// Copying
+
+	NFmiEsriPolyLineZ & operator=(const NFmiEsriPolyLineZ & theLine);
+
+	virtual std::auto_ptr<NFmiEsriElement> Clone() const;
+
 	// Data access
 	
-	const NFmiEsriBoxZ & Box(void) const	{ return itsBox; }
+	const NFmiEsriBox & Box(void) const	{ return itsBox; }
 	
 	int NumPoints(void) const		{ return itsPoints.size(); }
 	int NumParts(void) const		{ return itsParts.size(); }
@@ -87,7 +98,7 @@ namespace Imagine
 	
 	// Updating bounding boxes
 	
-	void Update(NFmiEsriBoxZ & theBox) const
+	void Update(NFmiEsriBox & theBox) const
 	{
 	  theBox.Update(itsBox);
 	}
@@ -99,7 +110,7 @@ namespace Imagine
 	
   private:
 	
-	NFmiEsriBoxZ	itsBox;		// Bounding Box, xmin,ymin,xmax,ymax
+	NFmiEsriBox	itsBox;		// Bounding Box, xmin,ymin,xmax,ymax
 	// int	itsNumParts;	// Number of parts = size of itsParts
 	// int	itsNumPoints;	// Number of points = size of itsPoints
 	

@@ -22,6 +22,39 @@ namespace Imagine
 {
 
   // ----------------------------------------------------------------------
+  // Copy constructor
+  // ----------------------------------------------------------------------
+
+  NFmiEsriPointZ::NFmiEsriPointZ(const NFmiEsriPointZ & thePoint)
+	: NFmiEsriPointM(thePoint)
+	, itsZ(thePoint.itsZ)
+  {
+  }
+
+  // ----------------------------------------------------------------------
+  // Copying
+  // ----------------------------------------------------------------------
+
+  NFmiEsriPointZ & NFmiEsriPointZ::operator=(const NFmiEsriPointZ & thePoint)
+  {
+	if(this != &thePoint)
+	  {
+		NFmiEsriPointM::operator=(thePoint);
+		itsZ = thePoint.itsZ;
+	  }
+	return *this;
+  }
+
+  // ----------------------------------------------------------------------
+  // Cloning
+  // ----------------------------------------------------------------------
+
+  std::auto_ptr<NFmiEsriElement> NFmiEsriPointZ::Clone() const
+  {
+	return auto_ptr<NFmiEsriElement>(new NFmiEsriPointZ(*this));
+  }
+
+  // ----------------------------------------------------------------------
   // Constructor based on a character buffer
   // ----------------------------------------------------------------------
   

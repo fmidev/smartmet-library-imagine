@@ -16,7 +16,7 @@
 #define IMAGINE_NFMIESRIPOINTM_H
 
 #include "NFmiEsriPoint.h"
-#include "NFmiEsriBoxM.h"
+#include "NFmiEsriBox.h"
 
 namespace Imagine
 {
@@ -28,15 +28,28 @@ namespace Imagine
 	// Constructors, destructors
 	
 	~NFmiEsriPointM(void) {}
+
+	NFmiEsriPointM(const NFmiEsriPointM & thePoint);
 	
-	NFmiEsriPointM(double theX, double theY, double theM,
-				   int theNumber=0, NFmiEsriElementType theType=kFmiEsriPointM)
+	NFmiEsriPointM(double theX,
+				   double theY,
+				   double theM,
+				   int theNumber=0,
+				   NFmiEsriElementType theType=kFmiEsriPointM)
 	  : NFmiEsriPoint(theX,theY,theNumber,theType)
 	  , itsM(theM)
 	{ }
 	
-	NFmiEsriPointM(const std::string & theBuffer, int thePos=0, int theNumber=0);
+	NFmiEsriPointM(const std::string & theBuffer,
+				   int thePos=0,
+				   int theNumber=0);
 	
+	// Copying
+
+	NFmiEsriPointM & operator=(const NFmiEsriPointM & thePoint);
+
+	virtual std::auto_ptr<NFmiEsriElement> Clone() const;
+
 	// Data access
 	
 	double M(void) const	{ return itsM; }
@@ -44,9 +57,9 @@ namespace Imagine
 	
 	// Updating bounding boxes
 	
-	void Update(NFmiEsriBoxZ & theBox) const
+	void Update(NFmiEsriBox & theBox) const
 	{
-	  static_cast<NFmiEsriBoxM &>(theBox).Update(X(),Y(),M());
+	  theBox.Update(X(),Y(),M());
 	}
 	
 	// String buffer size, write and string
@@ -57,7 +70,7 @@ namespace Imagine
   private:
 	
 	NFmiEsriPointM(void);
-	
+
 	double itsM;	// measure
   };
 

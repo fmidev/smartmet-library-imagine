@@ -32,15 +32,26 @@ namespace Imagine
 	
 	~NFmiEsriPolygon(void) {}
 	
-	NFmiEsriPolygon(int theNumber=0,NFmiEsriElementType theType=kFmiEsriPolygon)
+	NFmiEsriPolygon(const NFmiEsriPolygon & thePolygon);
+
+	NFmiEsriPolygon(int theNumber=0,
+					NFmiEsriElementType theType=kFmiEsriPolygon)
 	  : NFmiEsriElement(theType,theNumber)
 	  , itsBox()
 	  , itsParts()
 	  , itsPoints()
 	{}
 	
-	NFmiEsriPolygon(const std::string & theBuffer, int thePos=0, int theNumber=0);
+	NFmiEsriPolygon(const std::string & theBuffer,
+					int thePos=0,
+					int theNumber=0);
 	
+	// Copying
+
+	NFmiEsriPolygon & operator=(const NFmiEsriPolygon & thePolygon);
+
+	virtual std::auto_ptr<NFmiEsriElement> Clone() const;
+
 	// Data access
 	
 	const NFmiEsriBox & Box(void) const	{ return itsBox; }
@@ -76,9 +87,9 @@ namespace Imagine
 	
 	// Updating bounding boxes
 	
-	void Update(NFmiEsriBoxZ & theBox) const
+	void Update(NFmiEsriBox & theBox) const
 	{
-	  static_cast<NFmiEsriBox &>(theBox).Update(itsBox);
+	  theBox.Update(itsBox);
 	}
 	
 	// String buffer size, write and string

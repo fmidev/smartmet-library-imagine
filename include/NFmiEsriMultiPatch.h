@@ -30,7 +30,7 @@
 #define IMAGINE_NFMIESRIMULTIPATCH_H
 
 #include "NFmiEsriPointZ.h"
-#include "NFmiEsriBoxZ.h"
+#include "NFmiEsriBox.h"
 
 #include <string>
 #include <vector>
@@ -68,12 +68,20 @@ namespace Imagine
 	  , itsPartTypes()
 	  , itsPoints()
 	{}
+
+	NFmiEsriMultiPatch(const NFmiEsriMultiPatch & theElement);
 	
-	NFmiEsriMultiPatch(const std::string & theBuffer, int thePos=0, int theNumber=0);
+	NFmiEsriMultiPatch(const std::string & theBuffer,
+					   int thePos=0,
+					   int theNumber=0);
+
+	// Copying
+
+	virtual std::auto_ptr<NFmiEsriElement> Clone() const;
 	
 	// Data access
 	
-	const NFmiEsriBoxZ & Box(void) const	{ return itsBox; }
+	const NFmiEsriBox & Box(void) const	{ return itsBox; }
 	
 	int NumPoints(void) const		{ return itsPoints.size(); }
 	int NumParts(void) const		{ return itsParts.size(); }
@@ -115,7 +123,7 @@ namespace Imagine
 	
 	// Updating bounding boxes
 	
-	void Update(NFmiEsriBoxZ & theBox) const
+	void Update(NFmiEsriBox & theBox) const
 	{
 	  theBox.Update(itsBox);
 	}
@@ -130,8 +138,10 @@ namespace Imagine
 	void Project(const NFmiEsriProjector & theProjector);
 	
   private:
+
+	NFmiEsriMultiPatch();
 	
-	NFmiEsriBoxZ	itsBox;		// Bounding box
+	NFmiEsriBox	itsBox;		// Bounding box
 	// int	itsNumParts;	// Number of parts = size of itsParts
 	// int	itsNumPoints;	// Number of points = size of itsPoints
 	
