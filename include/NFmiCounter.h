@@ -84,7 +84,7 @@ public:
 #ifdef __BORLAND_C
     std::pair<NFmiCounterData::iterator, bool> result = itsData.insert(make_pair(theElement,0));
 #else
-    std::pair<typename NFmiCounterData::iterator, bool> result = itsData.insert(typename NFmiCounterData::value_type(theElement,0));
+    std::pair<NFmiCounterData::iterator, bool> result = itsData.insert(NFmiCounterData::value_type(theElement,0));
 #endif
     if(result.second)
       return 1;
