@@ -149,7 +149,8 @@ namespace Imagine
 	void Read(const std::string & theFileName);
 	
 	// Writing the image
-	
+
+	void Write(const std::string & theFileName, const std::string & theType) const;
 #ifndef IMAGINE_IGNORE_FORMATS
 	void WriteJpeg(const std::string & theFileName) const;
 	void WritePng(const std::string & theFileName) const;

@@ -13,6 +13,7 @@
 // ======================================================================
 
 #include "NFmiImage.h"
+#include "NFmiImageTools.h"
 #include "NFmiColorBlend.h"
 #include <cassert>	// for assert
 #include <cstdlib>	// for rand, RAND_MAX
@@ -386,6 +387,8 @@ namespace Imagine
 	// Make sure old contents are destroyed
 	
 	Destroy();
+
+	string mime = NFmiImageTools::MimeType(theFileName);
 	
 	// Open the input file
 	
@@ -393,50 +396,19 @@ namespace Imagine
 	in = fopen(theFileName.c_str(), "rb");
 	if(in==NULL)
 	  throw NFmiImageOpenError(std::string("Failed to open image ") + theFileName);
+
+	itsType = mime;
 	
-	// Extract magic number from the stream
-	
-	unsigned long magic;
-	unsigned char strmagic[4];
-	size_t num = fread(strmagic,1,4,in);
-	if(num!=4)
-	  throw NFmiImageFormatError(std::string("Unrecognized image format in file")+theFileName);
-	rewind(in);
-	
-	magic = (static_cast<unsigned long>(strmagic[0]) << 24)
-	  +(static_cast<unsigned long>(strmagic[1]) << 16)
-	  +(static_cast<unsigned long>(strmagic[2]) << 8)
-	  +(static_cast<unsigned long>(strmagic[3]));
-	
-	// Magic numbers for /etc/magic and spec homepages
-	
-#define JPG_MAGIC 0xffd8ffe0
-#define PNG_MAGIC 0x89504e47
-#define GIF_MAGIC 0x47494638
-	
-	switch(magic)
-	  {
+	if(mime == "gif")
+	  ReadGIF(in);
 #ifndef IMAGINE_IGNORE_FORMATS
-	  case(PNG_MAGIC):
-		itsType = "png";
-		ReadPNG(in);
-		break;
-		
-	  case(JPG_MAGIC):
-		itsType = "jpeg";
-		ReadJPEG(in);
-		break;
+	else if(mime == "png")
+	  ReadPNG(in);
+	else if(mime == "jpeg")
+	  ReadJPEG(in);
 #endif // IMAGINE_IGNORE_FORMATS
-		
-	  case(GIF_MAGIC):
-		itsType = "gif";
-		ReadGIF(in);
-		break;
-		
-	  default:
-		throw NFmiImageFormatError("Unrecognized image format");
-	  }
-	
+	else
+	  throw NFmiImageFormatError("Unrecognized image format in '"+theFileName+"'");
 	// Assert we got an image
 	
 	if(itsPixels==NULL)
@@ -446,6 +418,23 @@ namespace Imagine
 	
 	fclose(in);
 	
+  }
+
+  // ----------------------------------------------------------------------
+  // Write image of desired type
+  // ----------------------------------------------------------------------
+
+  void NFmiImage::Write(const string & theFileName,
+						const string & theType) const
+  {
+	if(theType == "png")
+	  WritePng(theFileName);
+	else if(theType == "jpeg")
+	  WriteJpeg(theFileName);
+	else if(theType == "gif")
+	  WriteGif(theFileName);
+	else
+	  throw runtime_error("Image format '"+theType+"' is not supported");
   }
   
   // ----------------------------------------------------------------------
