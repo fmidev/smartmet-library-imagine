@@ -32,36 +32,6 @@ extern "C" {
 
 using namespace std;
 
-namespace
-{
-  // ----------------------------------------------------------------------
-  /*!
-   * \brief Create an mktemp template for the given file
-   */
-  // ----------------------------------------------------------------------
-
-  const string mytmpnam(const string & thePath)
-  {
-	const unsigned int maxlen = 512;
-	char nametemplate[maxlen+1];
-
-	string tmp = thePath + "_XXXXXX";
-	if(tmp.size() >= maxlen)
-	  throw runtime_error("Could not write image with too long pathname '"+thePath+"'");
-
-	string::size_type i;
-	for(i = 0; i<tmp.size(); i++)
-	  nametemplate[i] = tmp[i];
-	nametemplate[i] = 0;
-
-	if(mktemp(nametemplate) == NULL)
-	  throw runtime_error("Failed to generate temporary filename for writing an image safely");
-
-	return string(nametemplate);
-  }
-
-}
-
 namespace Imagine
 {
 
@@ -484,7 +454,8 @@ namespace Imagine
   
   void NFmiImage::WriteJpeg(const string & theFileName) const
   {
-	const string tmp = mytmpnam(theFileName);
+	const string dir = NFmiFileSystem::DirName(theFileName);
+	const string tmp = NFmiFileSystem::TemporaryFile(dir);
 
 	FILE *out;
 	out = fopen(tmp.c_str(),"wb");
@@ -505,7 +476,8 @@ namespace Imagine
   
   void NFmiImage::WritePng(const string & theFileName) const
   {
-	const string tmp = mytmpnam(theFileName);
+	const string dir = NFmiFileSystem::DirName(theFileName);
+	const string tmp = NFmiFileSystem::TemporaryFile(dir);
 
 	FILE *out;
 	out = fopen(tmp.c_str(),"wb");
@@ -527,7 +499,8 @@ namespace Imagine
   
   void NFmiImage::WriteGif(const string & theFileName) const
   {
-	const string tmp = mytmpnam(theFileName);
+	const string dir = NFmiFileSystem::DirName(theFileName);
+	const string tmp = NFmiFileSystem::TemporaryFile(dir);
 
 	FILE *out;
 	out = fopen(tmp.c_str(),"wb");
