@@ -308,7 +308,6 @@ namespace Imagine
 							  }
 							break;
 						  }
-						  break;
 						case kFmiEsriTriangleFan:
 						  {
 							float x0 = elem->Points()[i1].X();
@@ -449,7 +448,6 @@ namespace Imagine
 						  }
 						break;
 					  }
-					  break;
 					case kFmiEsriTriangleFan:
 					  {
 						float x0 = elem->Points()[i1].X();
