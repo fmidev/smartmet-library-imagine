@@ -854,7 +854,7 @@ void NFmiContourTree::ContourLinear4(float x1, float y1, float z1,
 
 	   // all ghostlines can be added as is
 	   {
-		 for(EdgeTreeType::const_iterator it=subpath.itsEdges.begin();
+		 for(EdgeTreeType::iterator it=subpath.itsEdges.begin();
 			 it != subpath.itsEdges.end();
 			 )
 		   {
@@ -901,7 +901,7 @@ void NFmiContourTree::ContourLinear4(float x1, float y1, float z1,
 			   throw runtime_error("NFmiContourTree encountered bad path element");
 			 }
 		 }
-	   cout << endl;
+//	   cout << endl;
 	   
 	 }
   
