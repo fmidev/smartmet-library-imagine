@@ -213,8 +213,7 @@ void NFmiImage::WriteJPEG(FILE *out) const
   if(row==0)
     {
       jpeg_destroy_compress(&cinfo);
-      cerr << "Error: Insufficient memory" << endl;
-      exit(1);
+	  throw NFmiImageMemoryError("Insufficient memory to allocate JPEG image");
     }
   rowptr[0] = row;
   

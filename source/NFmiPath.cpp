@@ -24,6 +24,7 @@
 #include <sstream>
 #endif
 #include <algorithm>
+#include <stdexcept>
 
 // ----------------------------------------------------------------------
 // Append a path using a line of desired type
@@ -616,10 +617,7 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
       // Special code for first move
 	  
       if(iter->Oper()==kFmiConicTo || iter->Oper()==kFmiCubicTo)
-		{
-		  cerr << "Error: Conic and Cubic control points not supported in NFmiPath::SVG() yet" << endl;
-		  exit(1);
-		}
+		throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::SVG()");
 
 	  // If ghostlines are being ignored, we must output a moveto
 	  // when the ghostlines end.
@@ -786,10 +784,7 @@ void NFmiPath::Stroke(NFmiImage & theImage,
       float nextY = iter->Y();
 	  
       if(iter->Oper()==kFmiConicTo || iter->Oper()==kFmiCubicTo)
-		{
-		  cerr << "Error: Conic/Cubic control points not supported in NFmiPath::Stroke()" << endl;
-		  exit(1);
-		}
+		throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::Stroke()");
 	  
       // Only LineTo operations get rendered
 	  

@@ -18,6 +18,8 @@
 #include "NFmiEsriShape.h"
 #include "NFmiPath.h"
 #include "NFmiFillMap.h"
+#include <string>
+#include <stdexcept>
 
 // Implemented shape types
 
@@ -27,6 +29,12 @@ enum NFmiGeoShapeType
 	kFmiGeoShapeShoreLine,	// GMT shoreline databases
 	kFmiGeoShapeGMT		// GMT type ASCII databases
   };
+
+//! Generic shape error
+struct NFmiGeoShapeError : public std::runtime_error
+{
+  NFmiGeoShapeError(const std::string & s) : std::runtime_error(s) { }
+};
 
 class NFmiGeoShape : public NFmiDrawable
 {
@@ -43,19 +51,12 @@ public:
       case kFmiGeoShapeEsri:
 		itsEsriShape = new NFmiEsriShape();
 		if(!itsEsriShape->Read(theFilename))
-		  {
-			std::cerr << "Error: Failed to read shape " << theFilename << std::endl; // 2.1.2002/Marko Windows ohjelmat eivät tykkää cerr:istä muistaakseni, pitää kokeilla.
-			exit(1); // 2.1.2002/Marko Tämä on ikävä tapa hoitaa virhetilanteet.
-		  }
+		  throw NFmiGeoShapeError(std::string("Failed to read shape ")+theFilename);
 		break;
       case kFmiGeoShapeShoreLine:
-		std::cerr << "Error: NFmiGeoShape kFmiGeoShapeShoreLine not implemented" << std::endl;
-		exit(1);
-		break;
+		throw NFmiGeoShapeError("kFmiGeoShapeShoreLine not implemented");
       case kFmiGeoShapeGMT:
-		std::cerr << "Error: NFmiGeoShape kFmiGeoShapeGMT not implemented" << std::endl;
-		exit(1);
-		break;
+		throw NFmiGeoShapeError("kFmiGeoShapeFMT not implemented");
       }
   }
   

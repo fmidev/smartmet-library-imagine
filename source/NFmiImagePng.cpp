@@ -38,10 +38,7 @@ void NFmiImage::ReadPNG(FILE *in)
   
   fread(sig,1,8,in);
   if(!(png_check_sig(sig,8)))
-    {
-      cerr << "Error: Incorrect signature in PNG file" << endl;
-      exit(1);
-    }
+	throw NFmiImageCorruptError("Incorrect signature in PNG image");
   
   // Initialize PNG struct
   
@@ -49,10 +46,7 @@ void NFmiImage::ReadPNG(FILE *in)
   
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,NULL,NULL,NULL);
   if(!png_ptr)
-    {
-      cerr << "Error: Insufficient memory" << endl;
-      exit(1);
-    }
+	throw NFmiImageMemoryError("Insufficient memory to allocate PNG structure");
   
   // Initialize info struct
   
@@ -68,8 +62,7 @@ void NFmiImage::ReadPNG(FILE *in)
   if(setjmp(png_jmpbuf(png_ptr)))
     {
       png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-      cerr << "Error: Invalid PNG header" << endl;
-      exit(1);
+	  throw NFmiImageCorruptError("Invalid PNG header");
     }
   
   // Preparations
@@ -121,8 +114,7 @@ void NFmiImage::ReadPNG(FILE *in)
   if(row_data==NULL)
     {
       png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-      cerr << "Error: Insufficient memory" << endl;
-      exit(1);
+	  throw NFmiImageMemoryError("Insufficient memory to allocate PNG row data");
     }
   
   // Read in the data one row at a time
@@ -177,17 +169,13 @@ void NFmiImage::WritePNG(FILE *out) const
   png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
   
   if(!png_ptr)
-    {
-      cerr << "Error: Insufficient memory" << endl;
-      exit(1);
-    }
+	throw NFmiImageMemoryError("Insufficient memory to allocate PNG write structure");
   
   png_infop info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
     {
       png_destroy_write_struct(&png_ptr, NULL);
-      cerr << "Error: Insufficient memory" << endl;
-      exit(1);
+	  throw NFmiImageMemoryError("Insufficient memory to allocate PNG info structure");
 	}
   
   // make sure outfile is (re)opened in BINARY mode
@@ -304,8 +292,7 @@ void NFmiImage::WritePNG(FILE *out) const
 	  if(row_data==NULL)
 		{
 		  png_destroy_write_struct(&png_ptr, &info_ptr);
-		  cerr << "Error: Insufficient memory" << endl;
-		  exit(1);
+		  throw NFmiImageMemoryError("Insufficient memory to allocate PNG write structure");
 		}
 	  
 	  // Write the data one row at a time
@@ -439,8 +426,7 @@ void NFmiImage::WritePNG(FILE *out) const
 	  if(row_data==NULL)
 		{
 		  png_destroy_write_struct(&png_ptr, &info_ptr);
-		  cerr << "Error: Insufficient memory" << endl;
-		  exit(1);
+		  throw NFmiImageMemoryError("Insufficient memory to allocate PNG write row data");
 		}
 	  
 	  // Write the data one row at a time

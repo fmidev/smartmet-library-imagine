@@ -52,14 +52,9 @@ void NFmiGeoShape::ProjectXY(const NFmiArea & theArea)
 		itsEsriShape->Project(ProjectXYEsriPoint(&theArea));
 	  break;
 	case kFmiGeoShapeShoreLine:
-	  cerr << "Error: NFmiGeoShape::Project() kFmiGeoShapeShoreLine not implemented" << endl;
-	  exit(1);
-	  break;
+	  throw NFmiGeoShapeError("NFmiGeoShape::Project() kFmiGeoShapeShoreLine not implemented");
 	case kFmiGeoShapeGMT:
-	  cerr << "Error: NFmiGeoShape::Project() kFmiGeoShapeGMT not implemented" << endl;
-	  exit(1);
-	  break;
-      
+	  throw NFmiGeoShapeError("NFmiGeoShape::Project() kFmiGeoShapeGMT not implemented");
     }
 }
 
@@ -77,11 +72,9 @@ NFmiPath NFmiGeoShape::Path(void) const
 	  out = PathEsri();
 	  break;
 	case kFmiGeoShapeShoreLine:
-	  cerr << "Error: NFmiGeoShape::Path() kFmiGeoShapeShoreLine not implemented" << endl;
-	  exit(1);
+	  throw NFmiGeoShapeError("NFmiGeoShape::Path() kFmiGeoShapeShoreLine not implemented");
 	case kFmiGeoShapeGMT:
-	  cerr << "Error: NFmiGeoShape::Path() kFmiGeoShapeGMT not implemented" << endl;
-	  exit(1);
+	  throw NFmiGeoShapeError("NFmiGeoShape::Path() kFmiGeoShapeGMT not implemented");
     }
   return out;
 }
@@ -95,19 +88,12 @@ void NFmiGeoShape::Add(NFmiFillMap & theMap) const
   switch(Type())
     {
 	case kFmiGeoShapeEsri:
-	  //	return AddEsri(theMap); // MSVC kääntäjä ei hyväksynyt return void tapausta.
 	  AddEsri(theMap);
-	  return ;
 	  break;
 	case kFmiGeoShapeShoreLine:
-	  cerr << "Error: NFmiGeoShape::Add() kFmiGeoShapeShoreLine not implemented" << endl;
-	  exit(1);
-	  break;
+	  throw NFmiGeoShapeError("NFmiGeoShape::Add() kFmiGeoShapeShoreLine not implemented");
 	case kFmiGeoShapeGMT:
-	  cerr << "Error: NFmiGeoShape::Add() kFmiGeoShapeGMT not implemented" << endl;
-	  exit(1);
-	  break;
-      
+	  throw NFmiGeoShapeError("NFmiGeoShape::Add() kFmiGeoShapeGMT not implemented");
     }
 }
 
@@ -127,19 +113,12 @@ void NFmiGeoShape::Stroke(NFmiImage & theImage,
   switch(Type())
     {
 	case kFmiGeoShapeEsri:
-	  //	return StrokeEsri(theImage,theColor,theRule);
 	  StrokeEsri(theImage,theColor,theRule);
-	  return ;
 	  break;
 	case kFmiGeoShapeShoreLine:
-	  cerr << "Error: NFmiGeoShape::Stroke() kFmiGeoShapeShoreLine not implemented" << endl;
-	  exit(1);
-	  break;
+	  throw NFmiGeoShapeError("NFmiGeoShape::Stroke() kFmiGeoShapeShoreLine not implemented");
 	case kFmiGeoShapeGMT:
-	  cerr << "Error: NFmiGeoShape::Stroke() kFmiGeoShapeGMT not implemented" << endl;
-	  exit(1);
-	  break;
-      
+	  throw NFmiGeoShapeError("NFmiGeoShape::Stroke() kFmiGeoShapeGMT not implemented");
     }
 }
 
@@ -156,20 +135,13 @@ void NFmiGeoShape::Mark(NFmiImage & theImage,
   switch(Type())
     {
 	case kFmiGeoShapeEsri:
-	  //	return MarkEsri(theImage,theMarker,theRule,theAlignment,theAlpha);
 	  MarkEsri(theImage,theMarker,theRule,theAlignment,theAlpha);
-	  return ;
 	  break;
 	case kFmiGeoShapeShoreLine:
-	  cerr << "Error: NFmiGeoShape::Mark() kFmiGeoShapeShoreLine not implemented" << endl;
-	  exit(1);
-	  break;
+	  throw NFmiGeoShapeError("NFmiGeoShape::Mark() kFmiGeoShapeShoreLine not implemented");
 	case kFmiGeoShapeGMT:
-	  cerr << "Error: NFmiGeoShape::Mark() kFmiGeoShapeGMT not implemented" << endl;
-	  exit(1);
-	  break;
-      
-    }
+	  throw NFmiGeoShapeError("NFmiGeoShape::Mark() kFmiGeoShapeGMT not implemented");
+   }
 }
 
 // ----------------------------------------------------------------------
@@ -182,19 +154,12 @@ void NFmiGeoShape::WriteImageMap(std::ostream & os,
   switch(Type())
     {
 	case kFmiGeoShapeEsri:
-	  //	return WriteImageMapEsri(os,theFieldName);
 	  WriteImageMapEsri(os,theFieldName);
-	  return ;
 	  break;
 	case kFmiGeoShapeShoreLine:
-	  cerr << "Error: NFmiGeoShape::WriteImageMap() kFmiGeoShapeShoreLine not implemented" << endl;
-	  exit(1);
-	  break;
+	  throw NFmiGeoShapeError("NFmiGeoShape::WriteImageMap() kFmiGeoShapeShoreLine not implemented");
 	case kFmiGeoShapeGMT:
-	  cerr << "Error: NFmiGeoShape::WriteImageMap() kFmiGeoShapeGMT not implemented" << endl;
-	  exit(1);
-	  break;
-      
+	  throw NFmiGeoShapeError("NFmiGeoShape::WriteImageMap() kFmiGeoShapeGMT not implemented");
     }
 }
 

@@ -22,6 +22,7 @@
 #include <png.h>	// for pnglib
 #include <iostream> // 2.1.2002/Marko cerr vaatii t‰m‰n MSVC-k‰‰nt‰j‰ss‰.
 #include <algorithm>
+#include <sstream>
 
 using namespace std;
 // ----------------------------------------------------------------------
@@ -350,15 +351,14 @@ void NFmiImage::Allocate(int theWidth, int theHeight)
   itsHeight = theHeight;
   itsPixels = new int[theWidth*theHeight];		// Allocate
   if(itsPixels==NULL)
-    {
-      cerr << "Error: Insufficient memory for ("
-		   << theWidth
-		   << ","
-		   << theHeight
-		   << ") size image"
-		   << endl;
-      exit(1);
-    }
+	{
+	  ostringstream os;
+	  os << "Insufficient memory to allocate image of size "
+		 << theWidth
+		 << "x"
+		 << theHeight;
+	  throw NFmiImageMemoryError(os.str());
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -388,10 +388,7 @@ void NFmiImage::Read(const string & theFileName)
   FILE *in;
   in = fopen(theFileName.c_str(), "rb");
   if(in==NULL)
-    {
-      cerr << "Error: Failed to open image " << theFileName << endl;
-      exit(1);
-    }
+	throw NFmiImageOpenError(std::string("Failed to open image ") + theFileName);
   
   // Extract magic number from the stream
   
@@ -399,10 +396,7 @@ void NFmiImage::Read(const string & theFileName)
   unsigned char strmagic[4];
   size_t num = fread(strmagic,1,4,in);
   if(num!=4)
-    {
-      cerr << "Error: Failed to read image " << theFileName << endl;
-      exit(1);
-    }
+	throw NFmiImageFormatError(std::string("Unrecognized image format in file")+theFileName);
   rewind(in);
   
   magic = (static_cast<unsigned long>(strmagic[0]) << 24)
@@ -417,31 +411,28 @@ void NFmiImage::Read(const string & theFileName)
 #define GIF_MAGIC 0x47494638
   
   switch(magic)
-    {
-    case(PNG_MAGIC):
-      ReadPNG(in);
-      break;
+	{
+	case(PNG_MAGIC):
+	  ReadPNG(in);
+	  break;
 	  
-    case(JPG_MAGIC):
-      ReadJPEG(in);
-      break;
+	case(JPG_MAGIC):
+	  ReadJPEG(in);
+	  break;
 	  
-    case(GIF_MAGIC):
-      ReadGIF(in);
-      break;
+	case(GIF_MAGIC):
+	  ReadGIF(in);
+	  break;
 	  
-    default:
-      assert(magic==PNG_MAGIC);		// Unknown image type
-      break;
-    }
+	default:
+	  throw NFmiImageFormatError("Unrecognized image format");
+	  break;
+	}
   
   // Assert we got an image
   
   if(itsPixels==NULL)
-    {
-      cerr << "Error: Failed to read image " << theFileName << endl;
-      exit(1);
-    }
+	throw NFmiImageCorruptError(std::string("Failed to read image ")+theFileName);
   
   // Close the input file
   

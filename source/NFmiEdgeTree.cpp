@@ -15,6 +15,7 @@
 #endif
 
 #include "NFmiEdgeTree.h"
+#include <stdexcept>
 
 using namespace std;
 
@@ -277,8 +278,7 @@ NFmiPath NFmiEdgeTree::Path(void) const
 		  break;
 		  
 		default:
-		  cerr << "Internal error in NFmiContourTree::Path()\n";
-		  exit(1);
+		  throw std::runtime_error("Internal error in NFmiContourTree::Path()");
 		}
 	  
     }

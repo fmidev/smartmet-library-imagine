@@ -23,12 +23,44 @@
 #include <cmath>	// for min,max,floor,ceil etc	
 #include <cassert>
 #include <cstdio>
+#include <stdexcept>
 
 #include "NFmiDrawable.h"
 #include "NFmiAlignment.h"
 
+//! Generic NFmiImage exception from which all others are derived
+struct NFmiImageError : public std::runtime_error
+{
+  NFmiImageError(const std::string & s) : std::runtime_error(s) { }
+};
+
+//! Insufficient memory error
+struct NFmiImageMemoryError : public NFmiImageError
+{
+  NFmiImageMemoryError(const std::string & s) : NFmiImageError(s) { }
+};
+
+//! Opening image file fails
+struct NFmiImageOpenError : public NFmiImageError
+{
+  NFmiImageOpenError(const std::string & s) : NFmiImageError(s) { }
+};
+
+//! Unrecognized image format
+struct NFmiImageFormatError : public NFmiImageError
+{
+  NFmiImageFormatError(const std::string & s) : NFmiImageError(s) { }
+};
+
+//! Corrupt image data
+struct NFmiImageCorruptError : public NFmiImageError
+{
+  NFmiImageCorruptError(const std::string & s) : NFmiImageError(s) { }
+};
+
 class NFmiImage : public NFmiDrawable
 {
+
 private:
   
   // Data elements
