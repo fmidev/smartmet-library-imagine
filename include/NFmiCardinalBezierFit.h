@@ -8,6 +8,8 @@
 #ifndef IMAGINE_NFMICARDINALBEZIERFIT_H
 #define IMAGINE_NFMICARDINALBEZIERFIT_H
 
+#include "NFmiBezierTools.h"
+
 namespace Imagine
 {
   class NFmiPath;
@@ -16,6 +18,9 @@ namespace Imagine
   {
 
 	NFmiPath Fit(const NFmiPath & thePath, double theSmoothness);
+
+	typedef NFmiBezierTools::NFmiPaths NFmiPaths;
+	NFmiPaths Fit(const NFmiPaths & thePaths, double theMaxError);
 
   } // namespace NFmiCardinalBezierFit
 } // namespace Imagine

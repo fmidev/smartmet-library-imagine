@@ -13,6 +13,7 @@
 // ======================================================================
 
 #include "NFmiCardinalBezierFit.h"
+#include "NFmiCounter.h"
 #include "NFmiBezierTools.h"
 #include "NFmiPath.h"
 
@@ -204,6 +205,62 @@ namespace Imagine
 
 	  return outpath;
 
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Calculate multiple Bezier approximations
+	 *
+	 * Note that the different paths may have common subsegments
+	 * which must be fitted identically, otherwise for example
+	 * contour plots may show gaps.
+	 *
+	 * This function works only for flattened paths, conic
+	 * or cubic elements are not allowed in the input.
+	 *
+	 * The algorithm is:
+	 *  -# Calculate how many times each point occurs, taking
+	 *     care not to calculate closed subpath joinpoints twice
+	 *  -# Split each path to subsegments based on where the
+	 *     count of each endpoint and adjacent points reveals
+	 *     a join point between another path.
+	 *  -# Establish unique order for all the subsegments. For
+	 *     closed subsegments we must establish a unique starting
+	 *     point.
+	 *  -# Fit each subsegment separately.
+	 *  -# Join the subsegments back
+	 *
+	 * \param thePaths Vector of paths to fit
+	 * \param theSmoothness The smoothness
+	 * \return The fitted paths
+	 */
+	// ----------------------------------------------------------------------
+
+	NFmiPaths Fit(const NFmiPaths & thePaths, double theSmoothness)
+	{
+	  using namespace NFmiBezierTools;
+
+	  // Calculate the points
+
+	  NFmiCounter<NFmiPoint> counts = VertexCounts(thePaths);
+
+	  NFmiPaths outpaths;
+	  for(NFmiPaths::const_iterator it = thePaths.begin();
+		  it != thePaths.end();
+		  ++it)
+		{
+		  PathList pathlist = SplitPath(*it,counts);
+		  NFmiPath outpath;
+		  for(PathList::const_iterator jt=pathlist.begin();
+			  jt != pathlist.end();
+			  ++jt)
+			{
+			  outpath.Add(Fit(*jt,theSmoothness));
+			}
+		  outpaths.push_back(outpath);
+		}
+
+	  return thePaths;
 	}
 
   } // namespace NFmiCardinalBezierFit
