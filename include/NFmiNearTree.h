@@ -105,8 +105,7 @@
 #ifndef IMAGINE_NFMINEARTREE_H
 #define IMAGINE_NFMINEARTREE_H
 
-// #include <float.h>
-// #include <cmath>
+#include "NFmiGlobals.h"
 #include <vector>
 
 namespace Imagine
