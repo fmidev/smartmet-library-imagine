@@ -17,6 +17,7 @@
 #include "NFmiCounter.h"
 #include "NFmiEsriBox.h"
 #include "NFmiGrid.h"
+#include "NFmiValueString.h"
 
 #include <iostream>
 #include <algorithm>
@@ -678,6 +679,8 @@ std::ostream& operator<< (std::ostream& os,const NFmiPath & thePath)
 // Return a SVG-string representation of the path
 // If relative_moves=true, relative movements are preferred over
 // absolute moves. This usually generates shorter SVG.
+// Tulostetaan polku vain kahden desimaalin tarkkuudella (yksi desimaali 
+// ei riittänyt, kun tuli pieni väli maiden välille?).
 // ----------------------------------------------------------------------
 
 string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
@@ -730,18 +733,24 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 				  if(last_out_x == kFloatMissing && last_out_y == kFloatMissing)
 					{
 					  os += 'm';
-					  os += ftoa(last_x) + "," + ftoa(last_y);
+//					  os += ftoa(last_x) + "," + ftoa(last_y);
+					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x, 2)) + string(",");
+					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y, 2));
 					}
 				  else
 					{
 					  os += " m";
-					  os += ftoa(last_x - last_out_x) + "," + ftoa(last_y - last_out_y);
+//					  os += ftoa(last_x - last_out_x) + "," + ftoa(last_y - last_out_y);
+					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x - last_out_x, 2)) + string(",");
+					  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y - last_out_y, 2));
 					}
 				}
 			  else
 				{
 				  os += " M";
-				  os += ftoa(last_x) + "," + ftoa(last_y);
+//				  os += ftoa(last_x) + "," + ftoa(last_y);
+				  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_x, 2)) + string(",");
+				  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(last_y, 2));
 				}
 			  last_op = kFmiMoveTo;
 			  last_out_x = last_x;
@@ -750,8 +759,10 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 		  
 		  if(iter==Elements().begin())
 			{
-			  os += (relative_moves ? "m" : "M")
-				+ ftoa(x) + "," + ftoa(y);
+			  os += (relative_moves ? "m" : "M");
+//				+ ftoa(x) + "," + ftoa(y);
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x, 2)) + string(",");
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y, 2));
 			}
 		  
 		  // Relative moves are "m dx dy" and "l dx dy"
@@ -769,7 +780,9 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 			  else
 				os += " ";
 			  
-			  os += ftoa((x-last_out_x)) + "," + ftoa((y-last_out_y));
+//			  os += ftoa((x-last_out_x)) + "," + ftoa((y-last_out_y));
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x-last_out_x, 2)) + string(",");
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y-last_out_y, 2));
 			}
 		  
 		  // Absolute moves are "M x y" and "L x y"
@@ -787,7 +800,9 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 			  else
 				os += " ";
 			  
-			  os += ftoa(x) + "," + ftoa(y);
+//			  os += ftoa(x) + "," + ftoa(y);
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(x, 2)) + string(",");
+			  os += static_cast<char*>(NFmiValueString::GetStringWithMaxDecimalsSmartWay(y, 2));
 			}
 		}
 	  
