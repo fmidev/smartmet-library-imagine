@@ -67,7 +67,7 @@ namespace Imagine
 	
 	// Update given bounding box
 	
-	virtual void Update(NFmiEsriBoxZ & theBox) const {}
+	virtual void Update(NFmiEsriBoxZ & theBox) const = 0;
 	
 	// Write element as character buffer
 	
@@ -92,7 +92,7 @@ namespace Imagine
 	
 	// Projection
 	
-	virtual void Project(const NFmiEsriProjector & theProjector) {}
+	virtual void Project(const NFmiEsriProjector & theProjector) = 0;
 	
   protected:
 	
