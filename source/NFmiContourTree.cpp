@@ -903,14 +903,6 @@ namespace Imagine
 		return;
 	  }
 	
-	// Now, if we want extra smoothness via recursion, we do it here
-	
-	if(maxdepth>0)
-	  {
-		ContourLinear4Recurse(x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,maxdepth-1);
-		return;
-	  }
-	
 	// Now we know the cell is to be painted only partially.
 	// In general we can simply go around the rectangle, enumerating
 	// all points of intersection (and those corner points inside the
@@ -1082,67 +1074,6 @@ namespace Imagine
 		AddEdges(X,Y,B);
 	  }
 	
-  }
-  
-  // ----------------------------------------------------------------------
-  /*!
-   * Handle contour recursion for rectangular polygons. The rectangle
-   * is subdivided into 4 parts by connecting opposite midpoints of
-   * the edges. The input is always valid, \c kFloatMissing never occurs
-   * since this is only called from ContourLinear4, where \c kFloatMissing
-   * has already been checked.
-   *
-   * \note
-   * The calculated values are independent of the order of
-   * the input vertices, since (a+b) is independent of the
-   * order of a and b. Hence the code is safe as far as
-   * coordinate equality comparisons from adjacent cells
-   * are concerned.
-   *
-   */
-  // ----------------------------------------------------------------------
-  
-  void NFmiContourTree::ContourLinear4Recurse(float x1, float y1, float z1,
-											  float x2, float y2, float z2,
-											  float x3, float y3, float z3,
-											  float x4, float y4, float z4,
-											  int depth)
-  {
-	// Edge center coordinates and function values
-	
-	float x12 = (x1+x2)/2;
-	float x23 = (x2+x3)/2;
-	float x34 = (x3+x4)/2;
-	float x41 = (x4+x1)/2;
-	
-	float y12 = (y1+y2)/2;
-	float y23 = (y2+y3)/2;
-	float y34 = (y3+y4)/2;
-	float y41 = (y4+y1)/2;
-	
-	float z12 = (z1+z2)/2;
-	float z23 = (z2+z3)/2;
-	float z34 = (z3+z4)/2;
-	float z41 = (z4+z1)/2;
-	
-	// Rectangle center coordinates and function values
-	
-	float x0 = (x12+x34)/2;
-	float y0 = (y12+y34)/2;
-	float z0 = (z12+z34)/2;
-	
-	// Recursion
-	//
-	//  1--+--2
-	//  |  |  |
-	//  +--+--+
-	//  |  |  |
-	//  4--+--3
-	
-	ContourLinear4(x1,y1,z1,x12,y12,z12,x0,y0,z0,x41,y41,z41,depth);
-	ContourLinear4(x12,y12,z12,x2,y2,z2,x23,y23,z23,x0,y0,z0,depth);
-	ContourLinear4(x41,y41,z41,x0,y0,z0,x34,y34,z34,x4,y4,z4,depth);
-	ContourLinear4(x0,y0,z0,x23,y23,z23,x3,y3,z3,x34,y34,z34,depth);
   }
   
   // ----------------------------------------------------------------------
