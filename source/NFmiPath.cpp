@@ -714,40 +714,40 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 		throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::SVG()");
 	  bool out_ok = true;
 	  if(removeghostlines && iter->Oper() == kFmiGhostLineTo)
-	  {
+		{
 		  out_ok = false;
-	  }
+		}
 	  else
-	  {
+		{
 		  // If ghostlines are being ignored, we must output a moveto
 		  // when the ghostlines end and next operation is lineto.
-			if( removeghostlines &&
+		  if( removeghostlines &&
 			  (last_op == kFmiGhostLineTo) &&
 			  (iter->Oper() == kFmiLineTo) )
 			{
 			  if(relative_moves)
-			  {
+				{
 				  if(last_out_x == kFloatMissing && last_out_y == kFloatMissing)
-				  {
+					{
 					  os += 'm';
 					  os += ftoa(last_x) + "," + ftoa(last_y);
-				  }
+					}
 				  else
-				  {
+					{
 					  os += " m";
 					  os += ftoa(last_x - last_out_x) + "," + ftoa(last_y - last_out_y);
-					  last_out_x = last_x;
-					  last_out_y = last_y;
-				  }
-			  }
+					}
+				}
 			  else
-			  {
+				{
 				  os += " M";
 				  os += ftoa(last_x) + "," + ftoa(last_y);
-			  }
+				}
+			  last_out_x = last_x;
+			  last_out_y = last_y;
 			}
 		  
-			if(iter==Elements().begin())
+		  if(iter==Elements().begin())
 			{
 			  os += (relative_moves ? "m" : "M")
 				+ ftoa(x) + "," + ftoa(y);
@@ -758,16 +758,16 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 			{
 			  if(iter->Oper() == kFmiMoveTo)
 				os += (last_op==kFmiMoveTo ? " " : " m");
-
+			  
 			  else if(iter->Oper() == kFmiLineTo)
 				os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
-
+			  
 			  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
 				os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
-
+			  
 			  else
 				os += " ";
-
+			  
 			  os += ftoa((x-last_x)) + "," + ftoa((y-last_y));
 			}
 		  
@@ -776,19 +776,19 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 			{
 			  if(iter->Oper() == kFmiMoveTo)
 				os += (last_op==kFmiMoveTo ? " " : " M");
-
+			  
 			  else if(iter->Oper() == kFmiLineTo)
 				os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
-
+			  
 			  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
 				os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
-
+			  
 			  else
 				os += " ";
-
+			  
 			  os += ftoa(x) + "," + ftoa(y);
 			}
-	  }
+		}
 	  
       last_op = iter->Oper();
 	  
