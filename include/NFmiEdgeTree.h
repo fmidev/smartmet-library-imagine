@@ -15,14 +15,14 @@
 
 // Essential includes:
 
+#include "NFmiEdge.h"		// Input edges
+#include "NFmiPath.h"		// Path generation
+#include "NFmiFillMap.h"	// Fill map generation and rendering
+
 #include <utility>	// pairs
 #include <set>		// sets
 #include <vector>	// vectors
 #include <algorithm>	// insert
-
-#include "NFmiEdge.h"		// Input edges
-#include "NFmiPath.h"		// Path generation
-#include "NFmiFillMap.h"	// Fill map generation and rendering
 
 namespace Imagine
 {

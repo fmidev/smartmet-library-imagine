@@ -139,11 +139,6 @@
 
 // Essential includes:
 
-#include <utility>	// pairs
-#include <set>		// sets
-#include <vector>	// vectors
-#include <algorithm>	// insert
-
 #include "NFmiEdgeTree.h"	// Input edges
 #include "NFmiFillMap.h"	// Fill map generation and rendering
 #include "NFmiContourDataHelper.h"
@@ -151,6 +146,11 @@
 #include "NFmiGlobals.h"	// for kFloatMissing
 #include "NFmiGrid.h"		// for grids
 #include "NFmiFastQueryInfo.h"	// for querydata
+
+#include <utility>	// pairs
+#include <set>		// sets
+#include <vector>	// vectors
+#include <algorithm>	// insert
 
 namespace Imagine
 {
