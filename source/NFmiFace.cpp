@@ -28,8 +28,12 @@
 #ifdef UNIX
 
 #include "NFmiFace.h"
+#include "NFmiFreeType.h"
 #include "NFmiImage.h"
 #include "NFmiText.h"
+
+#include "NFmiStringTools.h"
+
 #include <stdexcept>
 
 using namespace std;
@@ -57,6 +61,7 @@ namespace Imagine
 	string itsFile;
 	int itsWidth;
 	int itsHeight;
+	FT_Face itsFace;
 
   }; // class NFmiFace::Pimple
 
@@ -83,6 +88,29 @@ namespace Imagine
   {
 	if(itsWidth < 0 || itsHeight < 0)
 	  throw runtime_error("Face width and height cannot both be zero");
+
+	// Create the face
+
+	FT_Error error = FT_New_Face(NFmiFreeType::Instance().Library(),
+								 itsFile.c_str(),
+								 0,
+								 &itsFace);
+
+	if(error == FT_Err_Unknown_File_Format)
+	  throw runtime_error("Unknown font format in '"+itsFile+"'");
+
+	if(error)
+	  throw runtime_error("Failed while reading font '"+itsFile+"'");
+
+	error = FT_Set_Pixel_Sizes(itsFace,theWidth,theHeight);
+	if(error)
+	  throw runtime_error("Failed to set font size "+
+						  NFmiStringTools::Convert(theWidth) +
+						  'x' +
+						  NFmiStringTools::Convert(theHeight) +
+						  " in font '" +
+						  itsFile +
+						  "'");
   }
 
   // ----------------------------------------------------------------------
