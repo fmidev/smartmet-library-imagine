@@ -45,11 +45,6 @@ namespace Imagine
 	
 	virtual ~NFmiEdgeTree(void) {}
 	
-	// Access to edge-data for iterating through the data, not for
-	// modifying it.
-	
-	const EdgeTreeType & Edges(void) const { return itsEdges; };
-	
 	// Adding a single edge
 	
 	void Add(const NFmiEdge & theEdge);
@@ -68,9 +63,15 @@ namespace Imagine
 	void LinesOnly(bool theFlag){ itsLinesOnly = theFlag;}
 	
   protected:
-	  bool itsLinesOnly;
+
+	// Access to edge-data for iterating through the data, not for
+	// modifying it.
 	
+	const EdgeTreeType & Edges(void) const { return itsEdges; };
+
+	bool itsLinesOnly;
 	EdgeTreeType itsEdges;
+
   };
 
 } // namespace Imagine
