@@ -301,9 +301,10 @@ void NFmiContourTree::ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
   if(cmin==cmax && cmin==kInside && !theHelper.HasMissing())
     {
       // First and last columns
-	  
-      for(unsigned int j=0; j<thePts.NY()-1; j++)
-		for(unsigned int i=0; i<thePts.NX(); i+=thePts.NX()-1)
+	  unsigned int j=0;
+	  unsigned int i=0;
+      for(j=0; j<thePts.NY()-1; j++)
+		for(i=0; i<thePts.NX(); i+=thePts.NX()-1)
 		  {
 			float x1 = thePts[i][j].X();
 			float y1 = thePts[i][j].Y();
@@ -319,8 +320,8 @@ void NFmiContourTree::ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 	  
       // First and last rows
 	  
-      for(unsigned int j=0; j<thePts.NY(); j+=thePts.NY()-1)
-		for(unsigned int i=0; i<thePts.NX()-1; i++)
+      for(j=0; j<thePts.NY(); j+=thePts.NY()-1)
+		for(i=0; i<thePts.NX()-1; i++)
 		  {
 			float x1 = thePts[i][j].X();
 			float y1 = thePts[i][j].Y();
