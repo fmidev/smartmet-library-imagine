@@ -26,13 +26,43 @@
   #include <sstream>
 #endif
 
+// ======================================================================
+//				HIDDEN INTERNAL FUNCTIONS
+// ======================================================================
+
 namespace
 {
-inline float Round2Precision(float value, float precision)
-{
-	return precision <= 0 ? value : FmiRound(value/precision)*precision;
-}
-}
+  //! The number identifying the region within the rectangle
+  const int central_quadrant = 4;
+
+  //! Test the position of given point with respect to a rectangle.
+  int quadrant(double x, double y,
+			   double x1, double y1,
+			   double x2, double y2,
+			   double margin)
+  {
+	int value = central_quadrant;
+	if(x<x1-margin)
+	  value--;
+	else if(x>x2+margin)
+	  value++;
+	if(y<y1-margin)
+	  value -= 3;
+	else if(y>y2+margin)
+	  value += 3;
+	return value;
+  }
+  
+  //! Test whether two rectangles intersect
+  bool intersects(double x1, double y1, double x2, double y2,
+				  double X1, double Y1, double X2, double Y2)
+  {
+	bool xoutside = (x1>X2 || x2<X1);
+	bool youtside = (y1>Y2 || y2<Y1);
+	return (!xoutside && !youtside);
+  }
+
+}; // anonymous namespace
 
 // ----------------------------------------------------------------------
 // Append a path using a line of desired type
@@ -1010,6 +1040,77 @@ NFmiPath NFmiPath::StrokePath(float theWidth) const
     }
   
   return outpath;
+}
+
+// ======================================================================
+
+NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, double theMargin)
+{
+	if(itsElements.empty())
+		return *this;
+
+	NFmiPath outPath;
+	NFmiPath tmpPath;
+
+
+	const NFmiPathData::const_iterator begin = Elements().begin();
+	const NFmiPathData::const_iterator end = Elements().end();
+	int last_quadrant = 0;
+	int this_quadrant = 0;
+
+	// Initialize the new bounding box
+	double minx = 0;
+	double miny = 0;
+	double maxx = 0;
+	double maxy = 0;
+
+	double lastX, lastY;
+	NFmiPathOperation lastOp;
+
+	for(NFmiPathData::const_iterator iter=begin; iter!=end; )
+	{
+		double X = iter->X();
+		double Y = iter->Y();
+		NFmiPathOperation op = iter->Oper();
+		++iter;
+
+		if(op == kFmiMoveTo || iter == end)
+		{
+			if(iter == end)
+				tmpPath.Add(op, X, Y);
+			if(tmpPath.itsElements.size() >= 2)
+				if(intersects(minx, miny, maxx, maxy, theX1-theMargin, theY1-theMargin, theX2+theMargin, theY2+theMargin))
+					outPath.Add(tmpPath);
+			tmpPath.Clear();
+			if(op == kFmiMoveTo)
+			{
+				tmpPath.Add(op, X, Y);
+				minx = maxx = X;
+				miny = maxy = Y;
+			}
+		}
+		else
+		{
+			this_quadrant = quadrant(X, Y, theX1, theY1, theX2, theY2, theMargin);
+			if(this_quadrant == central_quadrant)
+				int xx = 0;
+			if(this_quadrant == central_quadrant || this_quadrant != last_quadrant)
+			{
+				if(this_quadrant != last_quadrant)
+					tmpPath.Add(lastOp, lastX, lastY);
+				tmpPath.Add(op, X, Y);
+				minx = min(minx, X);
+				miny = min(miny, Y);
+				maxx = max(maxx, X);
+				maxy = max(maxy, Y);
+			}
+			last_quadrant = this_quadrant;
+		}
+		lastX = X;
+		lastY = Y;
+		lastOp = op;
+	}
+	return outPath;
 }
 
 // ======================================================================

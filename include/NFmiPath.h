@@ -236,7 +236,9 @@ public:
   // Return the bounding box
   
   NFmiEsriBox BoundingBox(void) const;
-  
+
+  NFmiPath Clip(double theX1, double theY1, double theX2, double theY2, double theMargin = 0);
+ 
 private:
   
   // Close the last subpath with an invisible or visible line
