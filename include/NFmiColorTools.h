@@ -231,7 +231,7 @@ namespace Imagine
 	
 	Color Simplify(Color c, int opaquethreshold, bool ignorealpha);
 	
-  };
+  }
 
   // ----------------------------------------------------------------------
   /*!
