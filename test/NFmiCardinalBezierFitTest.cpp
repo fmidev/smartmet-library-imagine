@@ -49,20 +49,6 @@ namespace NFmiCardinalBezierFitTest
 
   // ----------------------------------------------------------------------
   /*!
-   * \brief Test NFmiCardinalBezierFit::ToleranceApproximation
-   */
-  // ----------------------------------------------------------------------
-
-  void ToleranceApproximation()
-  {
-	using namespace Imagine;
-
-	TEST_NOT_IMPLEMENTED();
-  }
-  
-
-  // ----------------------------------------------------------------------
-  /*!
    * The actual test suite
    */
   // ----------------------------------------------------------------------
@@ -88,7 +74,7 @@ int main(void)
   using namespace std;
   cout << endl
 	   << "NFmiCardinalBezierFit tester" << endl
-	   << "=====================" << endl;
+	   << "============================" << endl;
   NFmiCardinalBezierFitTest::tests t;
   return t.run();
 }
