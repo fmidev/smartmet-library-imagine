@@ -15,11 +15,11 @@
  * font object as an argument to the constructor. If the
  * filename is relative, the search paths defined by
  * \code
- * imagine::font_paths
+ * imagine::font_path
  * \endcode
  * are used. Normally the value is something like
  * \code
- * imagine::font_paths = /data/share/fonts:/usr/lib/X11/fonts
+ * imagine::font_path = /data/share/fonts:/usr/lib/X11/fonts
  * \endcode
  *
  */
@@ -32,6 +32,8 @@
 #include "NFmiFreeType.h"
 #include "NFmiImage.h"
 
+#include "NFmiFileSystem.h"
+#include "NFmiSettings.h"
 #include "NFmiStringTools.h"
 
 #include FT_GLYPH_H
@@ -126,18 +128,23 @@ namespace Imagine
 	if(itsWidth < 0 || itsHeight < 0)
 	  throw runtime_error("Face width and height cannot both be zero");
 
+	// Find the face
+
+	const string path = NFmiSettings::Optional<string>("imagine::font_path",".");
+	const string file = NFmiFileSystem::FileComplete(itsFile,path);
+
 	// Create the face
 
 	FT_Error error = FT_New_Face(theLibrary,
-								 itsFile.c_str(),
+								 file.c_str(),
 								 0,
 								 &itsFace);
 
 	if(error == FT_Err_Unknown_File_Format)
-	  throw runtime_error("Unknown font format in '"+itsFile+"'");
+	  throw runtime_error("Unknown font format in '"+file+"'");
 
 	if(error)
-	  throw runtime_error("Failed while reading font '"+itsFile+"'");
+	  throw runtime_error("Failed while reading font '"+file+"'");
 
 	error = FT_Set_Pixel_Sizes(itsFace,theWidth,theHeight);
 	if(error)
@@ -146,7 +153,7 @@ namespace Imagine
 						  'x' +
 						  NFmiStringTools::Convert(theHeight) +
 						  " in font '" +
-						  itsFile +
+						  file +
 						  "'");
   }
 

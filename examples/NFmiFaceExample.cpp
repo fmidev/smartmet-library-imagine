@@ -26,11 +26,11 @@ void demo()
   NFmiColorTools::Color white = NFmiColorTools::MakeColor(255,255,255);
   NFmiImage image(width,height,white);
 
-#if 0
-  const string font = "/data/share/fonts/ttf/ArialNarrow.ttf";
+#if 1
+  const string font = "ttf/ArialNarrow.ttf";
   NFmiFace face(NFmiFreeType::Instance().Face(font,0,20));
 #else  
-  const string font = "/usr/lib/X11/fonts/misc/6x13.pcf.gz";
+  const string font = "misc/6x13.pcf.gz";
   NFmiFace face(NFmiFreeType::Instance().Face(font,6,13));
 #endif
 
