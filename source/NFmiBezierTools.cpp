@@ -81,8 +81,8 @@ namespace Imagine
 		  // b) type changes from regular to nonregular
 
 		  bool flush = (!outpath.Empty() &&
-						(it->Oper() == kFmiMoveTo ||
-						(it->Oper() == kFmiLineTo && !isregular)));
+						((*it).Oper() == kFmiMoveTo ||
+						((*it).Oper() == kFmiLineTo && !isregular)));
 
 		  
 
@@ -96,7 +96,7 @@ namespace Imagine
 			}
 
 		  // add the element, but remove zero-length line segments
-		  switch(it->Oper())
+		  switch((*it).Oper())
 			{
 			case kFmiMoveTo:
 			case kFmiConicTo:
@@ -108,8 +108,8 @@ namespace Imagine
 			  {
 				if(outpath.Empty())
 				  outpath.Add(*it);
-				else if(outpath.Elements().back().X() != it->X() ||
-						outpath.Elements().back().Y() != it->Y())
+				else if(outpath.Elements().back().X() != (*it).X() ||
+						outpath.Elements().back().Y() != (*it).Y())
 				  outpath.Add(*it);
 				  
 			  }
@@ -117,7 +117,7 @@ namespace Imagine
 
 		  // lineto cannot start a new regular segment!
 		  if(outpath.Size() == 1)
-			isregular = (it->Oper() == kFmiMoveTo);
+			isregular = ((*it).Oper() == kFmiMoveTo);
 
 		}
 
