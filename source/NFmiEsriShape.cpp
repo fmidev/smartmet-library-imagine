@@ -760,7 +760,7 @@ namespace Imagine
 				<< '\x06';
 		for(i=0; i<field_zeros; i++)
 		  dbffile << '\0';
-		dbffile << '\x0d';
+		dbffile << '\x0d';	// header record terminator
 
 		for(int i=1; i<=element_count; i++)
 		  dbffile << setw(field_length) << setfill(' ') << i;
@@ -823,7 +823,7 @@ namespace Imagine
 			for(i=0; i<field_zeros; i++)
 			  dbffile << '\0';
 		  }
-		dbffile << '\x0d';
+		dbffile << '\x0d';	// header record terminator
 
 		for(const_iterator it = itsElements.begin();
 			it != itsElements.end();
