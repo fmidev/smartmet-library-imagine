@@ -288,6 +288,7 @@ NFmiImage::NFmiImage(int theWidth, int theHeight,NFmiColorTools::Color theColor)
 // ----------------------------------------------------------------------
 
 NFmiImage::NFmiImage(const NFmiImage & theImage)
+  : NFmiDrawable()
 {
   DefaultOptions();
   Allocate(theImage.Width(),theImage.Height());
