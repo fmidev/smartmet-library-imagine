@@ -16,6 +16,7 @@
 #ifndef IMAGINE_NFMIESRIATTRIBUTENAME_H
 #define IMAGINE_NFMIESRIATTRIBUTENAME_H
 
+#include "NFmiGlobals.h"
 #include <string>
 
 namespace Imagine
@@ -75,6 +76,10 @@ namespace Imagine
 	
 	const std::string & Name(void) const		{ return itsName; }
 	NFmiEsriAttributeType Type(void) const	{ return itsType; }
+
+	short FieldLength() const { return itsFieldLength; }
+	short DecimalCount() const { return itsDecimalCount; }
+	short Length() const { return itsLength; }
 	
   private:
 	
