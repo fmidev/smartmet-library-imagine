@@ -196,7 +196,9 @@ namespace Imagine
 	
 	void ReadGIF(FILE *in);
 	void WriteGIF(FILE *out) const;
-	
+
+	void ReduceColors();
+
 	// Test whether the image is opaque
 	
 	bool IsOpaque(int threshold = -1) const;

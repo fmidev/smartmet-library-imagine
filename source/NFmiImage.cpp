@@ -16,6 +16,7 @@
 #include "NFmiImage.h"
 #include "NFmiImageTools.h"
 #include "NFmiColorBlend.h"
+#include "NFmiColorReduce.h"
 #include "NFmiStringTools.h"
 #include <cstdlib>	// for rand, RAND_MAX
 #include <iostream>
@@ -536,6 +537,30 @@ namespace Imagine
 	  itsPixels[i] = theColor;
   }
   
+  // ----------------------------------------------------------------------
+  // Reduce colors in the image
+  // ----------------------------------------------------------------------
+
+  void NFmiImage::ReduceColors()
+  {
+	// First we must simplify the alpha channel as requested in the color save mode
+
+	bool savealpha = (itsSaveAlphaFlag && !IsOpaque(itsAlphaLimit));
+	bool ignorealpha = !savealpha;
+
+	for(int i=0; i<itsWidth*itsHeight; i++)
+	  {
+		itsPixels[i] = NFmiColorTools::Simplify(itsPixels[i],
+												itsAlphaLimit,
+												ignorealpha);
+	  }
+
+	// Then we simplify
+
+	NFmiColorReduce::AdaptiveReduce(*this);
+	
+  }
+
   // ----------------------------------------------------------------------
   // Test whether the image is fully opaque. This information is used
   // when saving images to save some space.
