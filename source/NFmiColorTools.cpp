@@ -19,6 +19,7 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include "NFmiGlobals.h"
 
 // 2.1.2002/Marko Piti siirt‰‰ n‰m‰ const static alustukset t‰nne cpp-tiedostoon, 
 // koska muuten MSVC-rupesi valittamaan linkkausvaiheessa.

@@ -17,6 +17,7 @@
 #include "NFmiHersheyData.h"
 
 #include <fstream>
+#include <cassert>
 // #include <cstdlib>
 // #include <cmath>
 
@@ -50,7 +51,7 @@ int NFmiHersheyData::Size(unsigned char theChar) const
 
 bool NFmiHersheyData::IsSkip(unsigned char theChar, unsigned int i) const
 {
-  assert(2*i<itsData[theChar-kFmiFirstHersheyChar].size());
+	assert(2*i<itsData[theChar-kFmiFirstHersheyChar].size());
   return( itsData[theChar-kFmiFirstHersheyChar][2*i] == ' ' );
 }
 
