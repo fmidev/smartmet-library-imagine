@@ -163,7 +163,7 @@ namespace Imagine
   {
 	// Destroy attributename pointees
 	
-	list<NFmiEsriAttributeName *>::iterator aiter = itsAttributeNames.begin();
+	attributes_type::iterator aiter = itsAttributeNames.begin();
 	for( ; aiter!=itsAttributeNames.end(); ++aiter)
 	  delete *aiter;
 	
@@ -362,11 +362,6 @@ namespace Imagine
 	
 	int numfields = (headerlength-kFmixBaseHeaderSize)/kFmixBaseFieldSize;
 	
-	//  cout << "numrecords=" << numrecords << endl
-	// << "headerlength=" << headerlength << endl
-	//        << "recordlength=" << recordlength << endl
-	// << "numfields=" << numfields << endl;
-	
 	// Read all the fields in
 	
 	string dbffields;
@@ -454,7 +449,7 @@ namespace Imagine
 		
 		int pos = 1+(rec-1)*recordlength;
 		
-		list<NFmiEsriAttributeName *>::iterator nameiter = itsAttributeNames.begin();
+		attributes_type::iterator nameiter = itsAttributeNames.begin();
 		for(int fieldnum=0; fieldnum<numfields; ++fieldnum, ++nameiter)
 		  {
 			// Position and size of the field
@@ -468,12 +463,10 @@ namespace Imagine
 			  {
 			  case kFmiEsriString:
 				{
-				  // Count trailing whitespace first for stripping purposes
-				  int i;
-				  for(i=size; i>0; i--)
-					if(!isspace(dbfrecord[offset+i-1]))
-					  break;
-				  (*elementiter)->Add(NFmiEsriAttribute(dbfrecord.substr(offset,i),*nameiter));
+				  string value = dbfrecord.substr(offset,size);
+				  NFmiStringTools::TrimL(value);
+				  NFmiStringTools::TrimR(value);
+				  (*elementiter)->Add(NFmiEsriAttribute(value,*nameiter));
 				  break;
 				}
 			  case kFmiEsriInteger:
@@ -727,7 +720,10 @@ namespace Imagine
 	const int header_size = 32;
 	const int field_size = 32;
 	const int header_zeros = 20;
-	const int field_zeros = 15;
+	const int field_zeros = 10;
+	const int name_size = 11;
+
+	const int element_count = static_cast<int>(itsElements.size());
 
 	// Open output file
 	
@@ -738,7 +734,7 @@ namespace Imagine
 	// a dummy database.
 
 	dbffile << "\x03\x5f\x07\x1a"	// signature + date?
-			<< LittleEndianInt(itsElements.size());
+			<< LittleEndianInt(element_count);
 
 	if(itsAttributeNames.empty())
 	  {
@@ -749,9 +745,8 @@ namespace Imagine
 		for(i=0; i<header_zeros; i++)
 		  dbffile << '\0';
 
-		const int namelength = 11;
 		dbffile << "INDEX";
-		for(i=0; i<namelength-5; i++)
+		for(i=0; i<name_size-5; i++)
 		  dbffile << '\0';
 		dbffile << 'N'
 				<< LittleEndianInt(0)
@@ -760,11 +755,114 @@ namespace Imagine
 		  dbffile << '\0';
 		dbffile << '\x0d';
 
-		for(int i=1; i<=static_cast<int>(itsElements.size()); i++)
+		for(int i=1; i<=element_count; i++)
 		  dbffile << setw(field_length) << setfill(' ') << i;
 	  }
 	else
 	  {
+		const int field_count = itsAttributeNames.size();
+
+		int field_length = 0;
+		for(int f=0; f<field_count; f++)
+		  {
+			const NFmiEsriAttributeName * attribute = itsAttributeNames[f];
+			switch(attribute->Type())
+			  {
+			  case kFmiEsriString:
+				field_length += attribute->Length();
+				break;
+			  case kFmiEsriInteger:
+			  case kFmiEsriDouble:
+				field_length += attribute->FieldLength();
+				break;
+			  }
+		  }
+
+		int i;
+		dbffile << LittleEndianShort(header_size+field_count*field_size+1)
+				<< LittleEndianShort(field_length);
+		for(i=0; i<header_zeros; i++)
+		  dbffile << '\0';
+
+		for(int f=0; f<field_count; f++)
+		  {
+			const NFmiEsriAttributeName * attribute = itsAttributeNames[f];
+			string name = attribute->Name();
+			dbffile << name;
+			for(i=0; i<name_size-static_cast<int>(name.size()); i++)
+			  dbffile << '\0';
+
+			switch(attribute->Type())
+			  {
+			  case kFmiEsriString:
+				dbffile << kFmixBaseFieldChar
+						<< LittleEndianInt(0)
+						<< LittleEndianShort(attribute->Length());
+				break;
+			  case kFmiEsriInteger:
+				dbffile << kFmixBaseFieldNumber
+						<< LittleEndianInt(0)
+						<< static_cast<unsigned char>(attribute->FieldLength())
+						<< static_cast<unsigned char>(attribute->DecimalCount());
+				break;
+			  case kFmiEsriDouble:
+				dbffile << kFmixBaseFieldFloat
+						<< LittleEndianInt(0)
+						<< static_cast<unsigned char>(attribute->FieldLength())
+						<< static_cast<unsigned char>(attribute->DecimalCount());
+				break;
+			  }
+			dbffile << LittleEndianInt(0);
+			for(i=0; i<field_zeros; i++)
+			  dbffile << '\0';
+		  }
+		dbffile << '\x0d';
+
+		for(const_iterator it = itsElements.begin();
+			it != itsElements.end();
+			++it)
+		  {
+			const elements_type::value_type element = *it;
+
+			for(attributes_type::const_iterator jt = itsAttributeNames.begin();
+				jt != itsAttributeNames.end();
+				++jt)
+			  {
+				const string name = (*jt)->Name();
+				switch((*jt)->Type())
+				  {
+				  case kFmiEsriString:
+					{
+					  const string value = element->GetString(name);
+					  const int length = (*jt)->Length();
+					  dbffile << value;
+					  for(i=0; i<length-static_cast<int>(value.size()); i++)
+						dbffile << ' ';
+					  break;
+					}
+				  case kFmiEsriInteger:
+					{
+					  const int value = element->GetInteger(name);
+					  const int length = (*jt)->FieldLength();
+					  dbffile << setw(length) << setfill(' ') << value;
+					  break;
+					}
+				  case kFmiEsriDouble:
+					{
+					  const double value = element->GetDouble(name);
+					  const int length = (*jt)->FieldLength();
+					  const int decimals = (*jt)->DecimalCount();
+					  dbffile << setw(length)
+							  << setfill(' ')
+							  << fixed
+							  << setprecision(decimals)
+							  << value;
+					  break;
+					}
+				  }
+			  }
+			
+		  }
 	  }
 	
 	// Missing
@@ -799,10 +897,10 @@ namespace Imagine
 	   << LittleEndianDouble(Box().IsValid() ? Box().Ymin() : 0.0)
 	   << LittleEndianDouble(Box().IsValid() ? Box().Xmax() : 0.0)
 	   << LittleEndianDouble(Box().IsValid() ? Box().Ymax() : 0.0)
-	   << LittleEndianDouble(Box().IsValidZ() ? Box().Zmin() : 0.0)
-	   << LittleEndianDouble(Box().IsValidZ() ? Box().Zmax() : 0.0)
-	   << LittleEndianDouble(Box().IsValidM() ? Box().Mmin() : 0.0)
-	   << LittleEndianDouble(Box().IsValidM() ? Box().Mmax() : 0.0);
+	   << LittleEndianDouble(Box().IsValid() ? Box().Zmin() : 0.0)
+	   << LittleEndianDouble(Box().IsValid() ? Box().Zmax() : 0.0)
+	   << LittleEndianDouble(Box().IsValid() ? Box().Mmin() : 0.0)
+	   << LittleEndianDouble(Box().IsValid() ? Box().Mmax() : 0.0);
 	
   }
   
@@ -836,9 +934,9 @@ namespace Imagine
   NFmiEsriAttributeName * NFmiEsriShape::AttributeName(const string & theFieldName) const
   {
 	
-	list<NFmiEsriAttributeName *>::const_iterator begin = itsAttributeNames.begin();
-	list<NFmiEsriAttributeName *>::const_iterator end   = itsAttributeNames.end();
-	list<NFmiEsriAttributeName *>::const_iterator iter;
+	attributes_type::const_iterator begin = itsAttributeNames.begin();
+	attributes_type::const_iterator end   = itsAttributeNames.end();
+	attributes_type::const_iterator iter;
 	
 	NFmiEsriAttributeName * out = NULL;
 	
