@@ -872,7 +872,7 @@ namespace Imagine
 		  }
 	  }
 	
-	// Missing
+	dbffile << '\x1a';
 	
 	dbffile.close();
 	
