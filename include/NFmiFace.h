@@ -10,6 +10,10 @@
 #define IMAGINE_NFMIFACE_H
 
 #include "NFmiColorTools.h"
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include "boost/shared_ptr.hpp"
 #include <string>
 
@@ -35,7 +39,10 @@ namespace Imagine
   private:
 
 	friend class NFmiFreeType;
-	NFmiFace(const std::string & theFile,int theWidth,int theHeight);
+	NFmiFace(FT_Library & theLibrary,
+			 const std::string & theFile,
+			 int theWidth,
+			 int theHeight);
 
 	NFmiFace();
 

@@ -107,20 +107,8 @@ namespace Imagine
 							  int theHeight)
   {
 	Init();
-	NFmiFace face(theFile,theWidth,theHeight);
+	NFmiFace face(itsLibrary,theFile,theWidth,theHeight);
 	return face;
-  }
-
-  // ----------------------------------------------------------------------
-  /*!
-   * \brief Return the FT_Library in use
-   */
-  // ----------------------------------------------------------------------
-
-  FT_Library & NFmiFreeType::Library()
-  {
-	Init();
-	return itsLibrary;
   }
 
 } // namespace Imagine

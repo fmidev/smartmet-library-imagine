@@ -50,7 +50,7 @@ namespace Imagine
   {
   public:
 	~Pimple();
-	Pimple(const string & theFile, int theWidth, int theHeight);
+	Pimple(FT_Library & theLibrary,const string & theFile, int theWidth, int theHeight);
 
   private:
 
@@ -81,7 +81,10 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
 
-  NFmiFace::Pimple::Pimple(const string & theFile, int theWidth, int theHeight)
+  NFmiFace::Pimple::Pimple(FT_Library & theLibrary,
+						   const string & theFile,
+						   int theWidth,
+						   int theHeight)
 	: itsFile(theFile)
 	, itsWidth(theWidth)
 	, itsHeight(theHeight)
@@ -91,7 +94,7 @@ namespace Imagine
 
 	// Create the face
 
-	FT_Error error = FT_New_Face(NFmiFreeType::Instance().Library(),
+	FT_Error error = FT_New_Face(theLibrary,
 								 itsFile.c_str(),
 								 0,
 								 &itsFace);
@@ -157,10 +160,11 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
 
-  NFmiFace::NFmiFace(const string & theFile,
+  NFmiFace::NFmiFace(FT_Library & theLibrary,
+					 const string & theFile,
 					 int theWidth,
 					 int theHeight)
-	: itsPimple(new Pimple(theFile,theWidth,theHeight))
+	: itsPimple(new Pimple(theLibrary,theFile,theWidth,theHeight))
   {
   }
 

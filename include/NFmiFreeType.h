@@ -12,6 +12,7 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+
 #include <string>
 
 namespace Imagine
@@ -24,8 +25,6 @@ namespace Imagine
 
 	static NFmiFreeType & Instance();
 	NFmiFace Face(const std::string & theFile, int theWidth, int theHeight);
-
-	FT_Library & Library();
 
   private:
 
