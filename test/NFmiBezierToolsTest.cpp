@@ -6,7 +6,9 @@
 // ======================================================================
 
 #include "NFmiBezierTools.h"
+#include "NFmiCounter.h"
 #include "NFmiPath.h"
+#include "NFmiStringTools.h"
 #include "tframe.h"
 #include <cmath>
 
@@ -58,7 +60,36 @@ namespace NFmiBezierToolsTest
 
   void vertexcounts()
   {
-	TEST_NOT_IMPLEMENTED();
+	using namespace Imagine;
+	using NFmiStringTools::Convert;
+
+	NFmiPath path1;
+	path1.MoveTo(1,0);	//  
+	path1.LineTo(1,1);	// +--+
+	path1.LineTo(0,1);	//  \ |
+	path1.LineTo(1,0);	//   \+
+
+	NFmiPath path2;
+	path2.MoveTo(0,0);
+	path2.LineTo(0,1);	// +--+
+
+	NFmiBezierTools::NFmiPaths paths;
+	paths.push_back(path1);
+	paths.push_back(path2);
+
+	NFmiCounter<NFmiPoint> counts = NFmiBezierTools::VertexCounts(paths);
+
+	int count;
+	if((count=counts.Count(NFmiPoint(1,0))) != 1)
+	  TEST_FAILED("Count of 1,0 is 1, not "+Convert(count));
+	if((count=counts.Count(NFmiPoint(1,1))) != 1)
+	  TEST_FAILED("Count of 1,1 is 1, not "+Convert(count));
+	if((count=counts.Count(NFmiPoint(0,1))) != 2)
+	  TEST_FAILED("Count of 0,1 is 2, not "+Convert(count));
+	if((count=counts.Count(NFmiPoint(0,0))) != 1)
+	  TEST_FAILED("Count of 0,0 is 1, not "+Convert(count));
+
+	TEST_PASSED();
   }
 
   // ----------------------------------------------------------------------
