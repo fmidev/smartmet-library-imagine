@@ -78,24 +78,24 @@ namespace Imagine
   template<class T>
   class _FMI_DLL NFmiSimplifier
   {
+  public:
+
+	// Different smoothing methods
+	
+	enum NFmiSimplifierMethod { kFmiSimplifierNone,
+								kFmiSimplifierStraight,
+								kFmiSimplifierMinDistance, 
+								kFmiSimplifierMaxDistance,
+								kFmiSimplifierMinTriangle,
+								kFmiSimplifierMaxTriangle };
 	
   protected:
 	
 	const NFmiSimplifierMethod	itsMethod;
 	const double			itsTolerance;
-	const NFmiCounter		itsCounter;
 	
   public:
 	
-	
-	// Different smoothening methods
-	
-	enum NFmiSimplifierMethod { kFmiSimplifierNone,
-								kFmiSimplifierStraight,
-								kFmiSimplifierMinDistance 
-								kFmiSimplifierMaxDistance,
-								kFmiSimplifierMinTriangle,
-								kFmiSimplifierMaxTriangle };
 	
 	// Constructors, destructors
 	
@@ -112,7 +112,6 @@ namespace Imagine
 				   const NFmiCounter<T> & theCounter)
 	  : itsMethod(theSimplifier)
 	  , itsTolerance(theTolerance)
-	  , itsCounter(theCounter)
 	{ }
 	
 	// Access to data members
@@ -122,7 +121,7 @@ namespace Imagine
 	
 	// Actual simplification methods
 	
-	vector<T> Simplify(const vector<T> & theData) const
+	std::vector<T> Simplify(const std::vector<T> & theData) const
 	{
 	  switch(itsMethod)
 		{
@@ -147,7 +146,7 @@ namespace Imagine
 	// Simplify straight line segments into one segment only
 	// ------------------------------------------------------------
 	
-	vector<T> SimplifyStraight(const vector<T> & theData)
+	std::vector<T> SimplifyStraight(const std::vector<T> & theData)
 	{
 	  return theData;
 	}
@@ -159,7 +158,7 @@ namespace Imagine
 	// the tolerance.
 	// ------------------------------------------------------------
 	
-	vector<T> SimplifyMinDistance(const vector<T> & theData)
+	std::vector<T> SimplifyMinDistance(const std::vector<T> & theData)
 	{
 	  return theData;
 	}
@@ -170,11 +169,11 @@ namespace Imagine
 	// This is the Douglas-Peucker algorithm.
 	// ------------------------------------------------------------
 	
-	vector<T> SimplifyMaxDistance(const vector<T> & theData)
+	std::vector<T> SimplifyMaxDistance(const std::vector<T> & theData)
 	{
 	  // The output data
 	  
-	  vector<T> out;
+	  std::vector<T> out;
 	  
 	  // Special case of no line:
 	  
@@ -188,7 +187,7 @@ namespace Imagine
 	  
 	  // Stack of vector indices for recursion, initialized with N-1
 	  
-	  stack<int> stk;
+	  std::stack<int> stk;
 	  stk.push(theData.size()-1);
 	  
 	  // Using squared distances in comparisons is faster
@@ -287,9 +286,9 @@ namespace Imagine
 	// 1/2*abs((x2y1-x1y2)+(x3y2-x2y3)+(x1y3-x3y1))
 	// ------------------------------------------------------------
 	
-	vector<T> SimplifyMinTriangle(const vector<T> & theData)
+	std::vector<T> SimplifyMinTriangle(const std::vector<T> & theData)
 	{
-	  vector<T> out;
+	  std::vector<T> out;
 	  
 	  out = theData;
 	  
@@ -307,7 +306,7 @@ namespace Imagine
 		{
 		  // Output from work to out
 		  
-		  vector<T> work = out;
+		  std::vector<T> work = out;
 		  out.clear();
 		  
 		  out.push_back(work[0]);
@@ -371,11 +370,11 @@ namespace Imagine
 	//
 	// ------------------------------------------------------------
 	
-	vector<T> SimplifyMaxTriangle(const vector<T> & theData)
+	std::vector<T> SimplifyMaxTriangle(const std::vector<T> & theData)
 	{
 	  // The output data
 	  
-	  vector<T> out;
+	  std::vector<T> out;
 	  
 	  // Special case of no line:
 	  
@@ -389,7 +388,7 @@ namespace Imagine
 	  
 	  // Stack of vector indices for recursion, initialized with N-1
 	  
-	  stack<int> stk;
+	  std::stack<int> stk;
 	  stk.push(theData.size()-1);
 	  
 	  int i=0;
