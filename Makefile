@@ -27,7 +27,7 @@ include ../../makefiles/makefile.lib
 
 CFLAGS0 = -DUNIX -O0 -g -Wall
 NFmiColorTools.o: NFmiColorTools.cpp
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o obj/$@ $<
+	$(CC) $(CFLAGS0) $(INCLUDES) -c -o obj/$@ $<
 
 # isspace uses an old style cast, cannot help it
 NFmiEsriShape.o: NFmiEsriShape.cpp
