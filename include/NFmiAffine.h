@@ -35,6 +35,9 @@
 #ifndef IMAGINE_NFMIAFFINE_H
 #define IMAGINE_NFMIAFFINE_H
 
+#include "NFmiGlobals.h"
+#include <cmath>
+
 #ifdef __BORLANDC__
      using std::sin;
      using std::cos;
