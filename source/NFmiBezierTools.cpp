@@ -121,8 +121,8 @@ namespace Imagine
 			  it != path.end();
 			  ++it)
 			{
-			  NFmiPoint p(it->X(),it->Y());
-			  switch(it->Oper())
+			  NFmiPoint p((*it).X(),(*it).Y());
+			  switch((*it).Oper())
 				{
 				case kFmiMoveTo:
 				  counts.Add(p);
@@ -241,7 +241,7 @@ namespace Imagine
 		  it != thePath.Elements().end();
 		  ++it)
 		{
-		  if(it->Oper() == kFmiMoveTo && !outpath.Empty())
+		  if((*it).Oper() == kFmiMoveTo && !outpath.Empty())
 			{
 			  out.push_back(outpath);
 			  outpath.Clear();
@@ -299,7 +299,7 @@ namespace Imagine
 			  jt != path.end();
 			  ++jt)
 			{
-			  const NFmiPoint point(jt->X(),jt->Y());
+			  const NFmiPoint point((*jt).X(),(*jt).Y());
 			  const long count = theCounts.Count(point);
 			  counts.push_back(count);
 			}

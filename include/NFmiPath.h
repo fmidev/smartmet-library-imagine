@@ -164,9 +164,9 @@ namespace Imagine
 	  NFmiPathData::const_iterator it = thePath.itsElements.begin();
 	  // strip leading moveto if the coordinate is the same as last end point
 	  if(!Empty() &&
-		 it->Oper() == kFmiMoveTo &&
-		 it->X() == itsElements.back().X() &&
-		 it->Y() == itsElements.back().Y())
+		 (*it).Oper() == kFmiMoveTo &&
+		 (*it).X() == itsElements.back().X() &&
+		 (*it).Y() == itsElements.back().Y())
 		++it;
 
 	  itsElements.insert(itsElements.end(), it, thePath.itsElements.end());
