@@ -65,6 +65,7 @@ namespace Imagine
 	virtual ~NFmiPath(void) {}
 	
 	NFmiPath() : itsInsideOut(false), itsElements() { }
+	NFmiPath(const NFmiPathData &thePathData, bool theInsideOut = false) : itsInsideOut(theInsideOut), itsElements(thePathData) { }
 	
 	// Tulostusoperaattorin ylikuormitus
 	
