@@ -58,19 +58,47 @@ namespace Imagine
 	const Counter calc_counts(const NFmiImage & theImage)
 	{
 	  Counter counter;
-	  Counter::iterator it = counter.end();
+
+	  // Safety check
+
+	  if(theImage.Height() * theImage.Width() == 0)
+		return counter;
+
+	  // Insert the first color so that we can initialize the iterator cache
+	  // Note that we insert count 0, but the first loop will fix the number
+
+	  counter.insert(Counter::value_type(theImage(0,0),0));
+
+	  Counter::iterator last1 = counter.begin();
+	  Counter::iterator last2 = counter.begin();
+	  Counter::iterator last3 = counter.begin();
 	  
 	  for(int j=0; j<theImage.Height(); j++)
 		for(int i=0; i<theImage.Width(); i++)
 		  {
 			NFmiColorTools::Color color = theImage(i,j);
 			
-			if(it == counter.end() || it->first != color)
+			if(last1->first == color)
+			  ++last1->second;
+			else if(last2->first == color)
+			  {
+				++last2->second;
+				swap(last1,last2);
+			  }
+			else if(last3->first == color)
+			  {
+				++last3->second;
+				swap(last2,last3);
+				swap(last1,last2);
+			  }
+			else
 			  {
 				pair<Counter::iterator,bool> result = counter.insert(Counter::value_type(color,0));
-				it = result.first;
+				last3 = last2;
+				last2 = last1;
+				last1 = result.first;
+				++last1->second;
 			  }
-			it->second++;
 		  }
 	  
 	  return counter;
