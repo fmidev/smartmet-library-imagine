@@ -78,14 +78,14 @@ namespace Imagine
 	
 	// Getting values - it is assumed that type has been checked
 	
-	const int GetInteger(void) const			{ return itsInteger; }
-	const double GetDouble(void) const			{ return itsDouble; }
-	const std::string & GetString(void) const			{ return itsString; }
+	int GetInteger(void) const					{ return itsInteger; }
+	double GetDouble(void) const				{ return itsDouble; }
+	const std::string & GetString(void) const	{ return itsString; }
 	
 	const std::string & GetName(void) const
 	{ return itsAttributeName->Name(); }
 	
-	const NFmiEsriAttributeType GetType(void) const
+	NFmiEsriAttributeType GetType(void) const
 	{ return itsAttributeName->Type(); }
 	
 	// Setting values - it is assumed that type has been checked
