@@ -324,12 +324,18 @@ bool NFmiEsriShape::Read(const string & theFilename, bool fDBF)
   
   if(!fDBF)
     return true;
+
+  //! If the file does not exist, or is of zero size, we're done
   
-  // Otherwise see if the file exists, if not we're done
+  if(FileEmpty(dbffilename))
+	return true;
+
+  // Otherwise open the file for reading
   
   ifstream dbffile(dbffilename.c_str(), ios::in|ios::binary);
-  if(!dbffile) return true;
-  
+  if(!dbffile)
+	return false;  // failed to open!!
+
   // Read the header
   
   string dbfheader;
