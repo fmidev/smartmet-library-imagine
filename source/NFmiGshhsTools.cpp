@@ -175,8 +175,11 @@ namespace NFmiGshhsTools
 
 		const double area = 0.1 * header.area;	// now in km^2
 
-		const bool outside = (w>theMaxLongitude ||
-							  e<theMinLongitude ||
+		const double ww = (w<-180 ? w+180 : w>180 ? w-180 : w);
+		const double ee = (e<-180 ? e+180 : e>180 ? e-180 : e);
+
+		const bool outside = (ww>theMaxLongitude ||
+							  ee<theMinLongitude ||
 							  s>theMaxLatitude ||
 							  n<theMinLatitude);
 		
