@@ -18,9 +18,11 @@
 // ======================================================================
 
 #include "NFmiBezierTools.h"
+#include "NFmiCounter.h"
 #include "NFmiPath.h"
 
 #include <utility>
+#include <vector>
 
 namespace Imagine
 {
@@ -84,8 +86,6 @@ namespace Imagine
 						((*it).Oper() == kFmiMoveTo ||
 						((*it).Oper() == kFmiLineTo && !isregular)));
 
-		  
-
 		  if(flush)
 			{
 			  // must have sufficiently many lineto cmds to be regular
@@ -127,6 +127,68 @@ namespace Imagine
 	  return out;
 
 	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Split the given regular path into unique use segments
+	 *
+	 * A regular line segment is considered to be one with
+	 * a leading moveto command followed by a number of lineto
+	 * commands, atleast two of them.
+	 *
+	 * The vertex counts indicate how many times a given point
+	 * is used in some collection of paths. This information
+	 * can then be used to split the paths into segments
+	 * which are common to at most two paths at a time.
+	 *
+	 * \param thePath The path to be splitted
+	 * \param theCounts The counts
+	 * \return List of subpaths
+	 */
+	// ----------------------------------------------------------------------
+
+	PathList SplitPath(const NFmiPath & thePath,
+					   const NFmiCounter<NFmiPoint> & theCounts)
+	{
+	  PathList out;
+
+	  const NFmiPathData & path = thePath.Elements();
+
+	  // establish the counts for each element
+
+	  std::vector<long> counts;
+	  counts.reserve(path.size());
+
+	  for(NFmiPathData::const_iterator it = path.begin();
+		  it != path.end();
+		  ++it)
+		{
+		  const NFmiPoint point(it->X(),it->Y());
+		  const long count = theCounts.Count(point);
+		  counts.push_back(count);
+		}
+
+	  // Split the path at points where count is greater than
+	  // the count at an adjacent point
+
+	  NFmiPath outpath;
+	  const unsigned long n = path.size();
+	  for(unsigned long i=0; i<n; i++)
+		{
+		  if(i>0 && i<n-1 &&
+			 (counts[i-1]<counts[i] || counts[i+1]<counts[i]))
+			{
+			  out.push_back(outpath);
+			  outpath.Clear();
+			}
+		  outpath.Add(path[i]);
+		}
+	  if(!outpath.Empty())
+		out.push_back(outpath);
+
+	  return out;
+	}
+
 
   } // namespace NFmiBezierTools
 

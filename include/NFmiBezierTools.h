@@ -13,8 +13,11 @@
 
 #include <list>
 
+class NFmiPoint;
+
 namespace Imagine
 {
+  template<class T> class NFmiCounter;
   class NFmiPath;
 
   namespace NFmiBezierTools
@@ -24,6 +27,10 @@ namespace Imagine
 
 	typedef std::list<std::pair<NFmiPath,bool> > Segments;
 	Segments SplitSegments(const NFmiPath & thePath);
+
+	typedef std::list<NFmiPath> PathList;
+	PathList SplitPath(const NFmiPath & thePath,
+					   const NFmiCounter<NFmiPoint> & theCounts);
 
   } // namespace NFmiBezierTools
 } // namespace Imagine
