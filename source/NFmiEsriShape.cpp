@@ -393,17 +393,17 @@ namespace Imagine
 	
 	for(int num=0; num<numfields; num++)
 	  {
-		int pos = num*kFmixBaseFieldSize;
-		string fname = string(dbffields.c_str()+pos+kFmixBaseFieldNamePos);
-		char ftype = dbffields[pos+kFmixBaseFieldTypePos];
+		int fieldpos = num*kFmixBaseFieldSize;
+		string fname = string(dbffields.c_str()+fieldpos+kFmixBaseFieldNamePos);
+		char ftype = dbffields[fieldpos+kFmixBaseFieldTypePos];
 		
 		// See the docs in the beginning, slen and flen,dlen are mutually
 		// exclusive fields, the one to be used depends in the field type
 		
-		int flen = dbffields[pos+kFmixBaseFieldLengthPos];
-		int dlen = dbffields[pos+kFmixBaseFieldDecimalPos];
+		int flen = dbffields[fieldpos+kFmixBaseFieldLengthPos];
+		int dlen = dbffields[fieldpos+kFmixBaseFieldDecimalPos];
 		
-		int slen = LittleEndianShort(dbffields,pos+kFmixBaseFieldLengthPos);
+		int slen = LittleEndianShort(dbffields,fieldpos+kFmixBaseFieldLengthPos);
 		
 		if(ftype!='N' && ftype!='F' && ftype!='C')
 		  throw runtime_error(string("Unrecognized shape value type '")+ftype+"'");
@@ -459,14 +459,14 @@ namespace Imagine
 	  {
 		// Offset to the record (including the leading 1 byte terminator)
 		
-		int pos = 1+(rec-1)*recordlength;
+		int recpos = 1+(rec-1)*recordlength;
 		
 		attributes_type::iterator nameiter = itsAttributeNames.begin();
 		for(int fieldnum=0; fieldnum<numfields; ++fieldnum, ++nameiter)
 		  {
 			// Position and size of the field
 			
-			int offset = pos + fieldoffsets[fieldnum];
+			int offset = recpos + fieldoffsets[fieldnum];
 			int size   = fieldsizes[fieldnum];
 			
 			// Extract the field data
