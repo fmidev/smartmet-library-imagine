@@ -85,7 +85,7 @@ namespace Imagine
 	long Add(T theElement)
 	{
 #ifndef UNIX
-	  std::pair<NFmiCounterData::iterator, bool> result = itsData.insert(make_pair(theElement,0));
+		std::pair<NFmiCounterData::iterator, bool> result = itsData.insert(std::make_pair(theElement,0));
 #else
 	  std::pair<typename NFmiCounterData::iterator, bool> result = itsData.insert(typename NFmiCounterData::value_type(theElement,0));
 #endif
