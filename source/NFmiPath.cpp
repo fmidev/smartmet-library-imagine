@@ -1111,8 +1111,9 @@ NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, 
 	double maxx = 0;
 	double maxy = 0;
 
-	double lastX, lastY;
-	NFmiPathOperation lastOp;
+	double lastX = 0;
+	double lastY = 0;
+	NFmiPathOperation lastOp = kFmiMoveTo;
 
 	for(NFmiPathData::const_iterator iter=begin; iter!=end; )
 	{
