@@ -112,7 +112,7 @@ namespace Imagine
 
 	  ColorTree();
 	  void insert(value_type theColor);
-	  void insert(value_type theColor, float theMaxError);
+	  bool insert(value_type theColor, float theMaxError);
 
 	  value_type nearest(value_type theColor);
 
@@ -237,22 +237,26 @@ namespace Imagine
 	 *
 	 * \param theColor The color to insert
 	 * \param theMaxError The allowed maximum error
+	 * \return True, if the color was inserted
 	 */
 	// ----------------------------------------------------------------------
 
-	void ColorTree::insert(ColorTree::value_type theColor,
+	bool ColorTree::insert(ColorTree::value_type theColor,
 						   float theMaxError)
 	{
 	  // Handle the trivial case quickly
 	  if(theMaxError <= 0)
-		insert(theColor);
-
-	  else
 		{
-		  value_type color = nearest(theColor);
-		  if(distance(color,theColor) >= theMaxError)
-			insert(theColor);
+		  insert(theColor);
+		  return true;
 		}
+
+	  value_type color = nearest(theColor);
+	  if(distance(color,theColor) < theMaxError)
+		return false;
+
+	  insert(theColor);
+	  return true;
 	}
 
 	// ----------------------------------------------------------------------
@@ -431,23 +435,23 @@ namespace Imagine
 	  {
 		const float limit = 0.01*theImage.Width()*theImage.Height();
 
+		list<NFmiColorTools::Color> colors;
+
 		for(Histogram::const_iterator it = histogram.begin();
 			it != histogram.end();
 			++it)
 		  {
 			if(it->first >= limit)
 			  tree.insert(it->second);
-			else
-			  tree.insert(it->second,2*theMaxError);
+			else if(!tree.insert(it->second,2*theMaxError))
+			  colors.push_back(it->second);
 		  }
-	  }
 
-	  {
-		for(Histogram::const_iterator it = histogram.begin();
-			it != histogram.end();
-			++it)
+		for(list<NFmiColorTools::Color>::const_iterator jt = colors.begin();
+			jt != colors.end();
+			++jt)
 		  {
-			tree.insert(it->second,theMaxError);
+			tree.insert(*jt,theMaxError);
 		  }
 	  }
 
