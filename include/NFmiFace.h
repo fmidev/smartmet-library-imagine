@@ -15,6 +15,7 @@
 
 namespace Imagine
 {
+  class NFmiFreeType;
   class NFmiText;
   class NFmiImage;
 
@@ -25,7 +26,6 @@ namespace Imagine
 	~NFmiFace();
 	NFmiFace(const NFmiFace & theFace);
 	NFmiFace & operator=(const NFmiFace & theFace);
-	NFmiFace(const std::string & theFile);
 	
 	void Draw(const NFmiText & theText,
 			  NFmiImage & theImage,
@@ -33,6 +33,9 @@ namespace Imagine
 			  NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const;
 
   private:
+
+	friend class NFmiFreeType;
+	NFmiFace(const std::string & theFile,int theWidth,int theHeight);
 
 	NFmiFace();
 

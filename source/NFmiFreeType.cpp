@@ -12,15 +12,12 @@
  * The class makes sure FreeType is always properly initialized
  * on entry and FreeType memory deallocated on exit.
  *
- * Any code using FreeType functions should always call
+ * Any code requiring a face must always use
  * \code
- * NFmiFreeType::Instance().Init();
+ * NFmiFreeType::Instance().Face(name,width,size)
  * \endcode
- * first. The class makes the FreeType initialization only once
- * regardless of how many times Init is called.
- *
- * The singleton may later on be used to access the FreeType
- * cache, which is now in a beta phase.
+ * The singleton makes sure the FreeType library is initialized
+ * when the first face is requested.
  *
  */
 // ======================================================================
@@ -28,6 +25,7 @@
 #ifdef UNIX
 
 #include "NFmiFreeType.h"
+#include "NFmiFace.h"
 #include <stdexcept>
 
 using namespace std;
@@ -91,6 +89,26 @@ namespace Imagine
 	  throw runtime_error("Initializing FreeType failed");
 
 	itsInitialized = true;
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Create a new face object
+   *
+   * \param theFile The file containing the face
+   * \param theWidth The desired width of the face (or zero)
+   * \param theHeight The desired height of the face (or zero)
+   * \return A face object
+   */
+  // ----------------------------------------------------------------------
+
+  NFmiFace NFmiFreeType::Face(const string & theFile,
+							  int theWidth,
+							  int theHeight)
+  {
+	Init();
+	NFmiFace face(theFile,theWidth,theHeight);
+	return face;
   }
 
 } // namespace Imagine

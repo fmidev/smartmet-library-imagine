@@ -12,25 +12,32 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include <string>
 
 namespace Imagine
 {
+  class NFmiFace;
+
   class NFmiFreeType
   {
   public:
 
 	static NFmiFreeType & Instance();
-	void Init();
+	NFmiFace Face(const std::string & theFile, int theWidth, int theHeight);
 
   private:
 
 	~NFmiFreeType();
 	NFmiFreeType();
+
+	void Init();
+	bool itsInitialized;
+	FT_Library itsLibrary;
+
+	// Not implemented:
 	NFmiFreeType(const NFmiFreeType & theOb);
 	NFmiFreeType & operator=(const NFmiFreeType & theOb);
 
-	bool itsInitialized;
-	FT_Library itsLibrary;
 
   }; // class NFmiFreeType
 } // namespace Imagine

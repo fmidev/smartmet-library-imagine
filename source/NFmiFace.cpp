@@ -26,7 +26,11 @@
 // ======================================================================
 
 #ifdef UNIX
+
 #include "NFmiFace.h"
+#include "NFmiImage.h"
+#include "NFmiText.h"
+#include <stdexcept>
 
 using namespace std;
 
@@ -42,7 +46,7 @@ namespace Imagine
   {
   public:
 	~Pimple();
-	Pimple(const string & theFile);
+	Pimple(const string & theFile, int theWidth, int theHeight);
 
   private:
 
@@ -51,6 +55,8 @@ namespace Imagine
 	Pimple & operator=(const Pimple & thePimple);
 
 	string itsFile;
+	int itsWidth;
+	int itsHeight;
 	bool itsInitialized;
 
   }; // class NFmiFace::Pimple
@@ -71,10 +77,14 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
 
-  NFmiFace::Pimple::Pimple(const string & theFile)
+  NFmiFace::Pimple::Pimple(const string & theFile, int theWidth, int theHeight)
 	: itsFile(theFile)
+	, itsWidth(theWidth)
+	, itsHeight(theHeight)
 	, itsInitialized(false)
   {
+	if(itsWidth < 0 || itsHeight < 0)
+	  throw runtime_error("Face width and height cannot both be zero");
   }
 
   // ----------------------------------------------------------------------
@@ -116,11 +126,15 @@ namespace Imagine
    * \brief Constructor
    *
    * \param theFile The file defining the font
+   * \param theWidth The font width in pixels
+   * \param theHeight The font height in pixels
    */
   // ----------------------------------------------------------------------
 
-  NFmiFace::NFmiFace(const string & theFile)
-	: itsPimple(new Pimple(theFile))
+  NFmiFace::NFmiFace(const string & theFile,
+					 int theWidth,
+					 int theHeight)
+	: itsPimple(new Pimple(theFile,theWidth,theHeight))
   {
   }
 
