@@ -152,7 +152,6 @@
  #include "NFmiValueString.h"
 #endif
 
-#include <cassert>
 #include <fstream>
 #include <iomanip>
 
@@ -406,7 +405,8 @@ namespace Imagine
 		
 		int slen = LittleEndianShort(dbffields,pos+kFmixBaseFieldLengthPos);
 		
-		assert(ftype=='N' || ftype=='F' || ftype=='C');
+		if(ftype!='N' && ftype!='F' && ftype!='C')
+		  throw runtime_error(string("Unrecognized shape value type '")+ftype+"'");
 		
 		if(ftype=='N' || ftype=='F')
 		  {

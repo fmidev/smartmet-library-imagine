@@ -874,7 +874,8 @@ namespace Imagine
 	
 	if(!removeghostlines && itsInsideOut)
 	  {
-		assert(inside_out_limit == 1e8);
+		if(inside_out_limit != 1e8)
+		  throw runtime_error("Internal error in NFmiPath inside_out_limit");
 		os += "M -1e8,-1e8 L -1e8,1e8 L 1e8,1e8 L 1e8,-1e8 Z";
 	  }
 	

@@ -89,7 +89,8 @@ namespace Imagine
 	
 	// int row_stride = cinfo.output_width * cinfo.output_components;
 	
-	assert(cinfo.output_components==3);
+	if(cinfo.output_components!=3)
+	  throw runtime_error("Failed to create 3 output channels in JPEG");
 	
 	// Make a one-row-high sample array that will go away when done with image
 	

@@ -84,7 +84,8 @@ namespace Imagine
 								const NFmiDataMatrix<float> & theValues,
 								const NFmiContourInterpolation & theInterpolation)
   {
-	assert(thePts.NX()==theValues.NX() && thePts.NY()==theValues.NY());
+	if(thePts.NX()!=theValues.NX() || thePts.NY()!=theValues.NY())
+	  throw runtime_error("Cannot contour values with coordinate matrix of different size");
 	
 	switch(theInterpolation)
 	  {
@@ -147,7 +148,8 @@ namespace Imagine
 								const NFmiContourDataHelper & theHelper,
 								const NFmiContourInterpolation & theInterpolation)
   {
-	assert(thePts.NX()==theValues.NX() && thePts.NY()==theValues.NY());
+	if(thePts.NX()!=theValues.NX() || thePts.NY()!=theValues.NY())
+	  throw runtime_error("Cannot contour values with coordinate matrix of different size");
 	
 	switch(theInterpolation)
 	  {

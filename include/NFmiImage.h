@@ -24,7 +24,6 @@
 #include <vector>	// for vectors
 #include <set>		// for sets
 #include <cmath>	// for min,max,floor,ceil etc	
-#include <cassert>
 #include <cstdio>
 #include <stdexcept>
 

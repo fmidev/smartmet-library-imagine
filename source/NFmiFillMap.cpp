@@ -266,9 +266,6 @@ namespace Imagine
 					i1 = std::max(i1,0);
 					i2 = std::min(i2,theImage.Width()-1);
 					
-					// assert(j>=0 && j<theImage.Height());
-					// assert(i1>=0 && i1<theImage.Width());
-					// assert(i2>=0 && i2<theImage.Width());
 					for(int i=i1; i<=i2; ++i)
 					  //		    theImage(i,j) = T::Blend(theColor,theImage(i,j));
 					  theImage(i,j) = theBlender.Blend(theColor,theImage(i,j)); // joudun käyttämään .operaattoria :: osoituksen sijaan MSVC vaatii jostain syystä.

@@ -17,7 +17,6 @@
 #include "NFmiImageTools.h"
 #include "NFmiColorBlend.h"
 #include "NFmiStringTools.h"
-#include <cassert>	// for assert
 #include <cstdlib>	// for rand, RAND_MAX
 #include <iostream>
 #include <algorithm>
@@ -360,7 +359,8 @@ namespace Imagine
   
   void NFmiImage::Allocate(int theWidth, int theHeight)
   {
-	assert(theWidth>=0 && theHeight>=0);			// Assert positive size
+	if(theWidth<0 || theHeight<0)
+	  throw runtime_error("Cannot allocate an image with negative dimensions");
 	itsWidth = theWidth;
 	itsHeight = theHeight;
 	itsPixels = new int[theWidth*theHeight];		// Allocate
@@ -460,7 +460,8 @@ namespace Imagine
 
 	FILE *out;
 	out = fopen(tmp.c_str(),"wb");
-	assert(out!=NULL);
+	if(out==NULL)
+	  throw runtime_error("Failed to open '"+theFileName+"' for writing a JPEG");
 	WriteJPEG(out);
 	fclose(out);
 
@@ -482,7 +483,8 @@ namespace Imagine
 
 	FILE *out;
 	out = fopen(tmp.c_str(),"wb");
-	assert(out!=NULL);
+	if(out==NULL)
+	  throw runtime_error("Failed to open '"+theFileName+"' for writing a PNG");
 	WritePNG(out);
 	fclose(out);
 
@@ -505,7 +507,8 @@ namespace Imagine
 
 	FILE *out;
 	out = fopen(tmp.c_str(),"wb");
-	assert(out!=NULL);
+	if(out==NULL)
+	  throw runtime_error("Failed to open '"+theFileName+"' for writing a GIF");
 	WriteGIF(out);
 	fclose(out);
 

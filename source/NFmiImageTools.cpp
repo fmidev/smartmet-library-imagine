@@ -8,7 +8,6 @@
 #include "NFmiImageTools.h"
 #include "NFmiImage.h"
 
-#include <cassert>
 #include <stdexcept>
 
 using namespace std;
@@ -38,7 +37,8 @@ namespace Imagine
 	inline
 	int compress_bits(int theValue, int theBits)
 	{
-	  assert(theBits>=0 && theBits<=8);
+	  if(theBits<0 || theBits>8)
+		throw runtime_error("Invalid number of bits in NFmiImageTools::compress_bits");
 	  if(theBits==8) return theValue;
 	  int round = (theValue >> (8-theBits-1)) & 1;
 	  int value = (theValue >> (8-theBits)) + round;
