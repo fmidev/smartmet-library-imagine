@@ -356,13 +356,13 @@ namespace Imagine
 	
 	VertexInsidedness Insidedness(float z) const
 	{
-	  if(itsLoLimit!=kFloatMissing && z<itsLoLimit)
+	  if(z<itsLoLimit && itsLoLimit!=kFloatMissing)
 		return kBelow;
-	  else if(itsHiLimit!=kFloatMissing && z>itsHiLimit)
+	  else if(z>itsHiLimit && itsHiLimit!=kFloatMissing)
 		return kAbove;
-	  else if(itsLoLimit!=kFloatMissing && z==itsLoLimit)
+	  else if(z==itsLoLimit && itsLoLimit!=kFloatMissing)
 		return (itsLoLimitExact ? kInside : kBelow);
-	  else if(itsHiLimit!=kFloatMissing && z==itsHiLimit)
+	  else if(z==itsHiLimit && itsHiLimit!=kFloatMissing)
 		return (itsHiLimitExact ? kInside : kAbove);
 	  else
 		return kInside;
