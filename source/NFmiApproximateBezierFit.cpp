@@ -280,6 +280,31 @@ namespace Imagine
 
 	// ----------------------------------------------------------------------
 	/*!
+	 * \brief Return true if vector contains valid parameterization
+	 */
+	// ----------------------------------------------------------------------
+
+	bool IsValidParameterization(const vector<double> & theU)
+	{
+	  if(theU.size()<2)
+		return true;
+
+	  for(unsigned int i=0; i<theU.size(); i++)
+		{
+		  if(theU[i] < 0 || theU[i] > 1)
+			return false;
+		}
+
+	  for(unsigned int i=1; i<theU.size(); i++)
+		{
+		  if(theU[i] <= theU[i-1])
+			return false;
+		}
+	  return true;
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
 	 * \brief Root finder
 	 *
 	 * Use Newton-Raphson iteration to find better root
@@ -326,11 +351,18 @@ namespace Imagine
 							  (Q_u.Y()-thePoint.Y())*Q2_u.Y()) );
 
 	  // u = u - f(u)/f'(u)
+	  // the safety check against division by zero was missing
+	  // from Graphics Gems code, and caused a few failures.
+	  // The original value is a good return value in such
+	  // cases.
 
-	  double uprime = theU - numerator/denominator;
+	  double uprime;
+	  if(denominator == 0)
+		uprime = theU;
+	  else
+		uprime = theU - numerator/denominator;
 
 	  return uprime;
-
 	}
 
 	// ----------------------------------------------------------------------
@@ -365,6 +397,25 @@ namespace Imagine
 											  thePath[i],
 											  theU[i-theFirst]));
 		}
+
+	  // Replace invalid parameterizations by linear interpolation
+	  for(unsigned int i=1; i<out.size()-1; i++)
+		{
+		  if(out[i]<0 || out[i]>1 ||
+			 out[i] < out[i-1] || out[i]>out[i+1])
+			{
+			  unsigned int j,k;
+			  for(j=i-1; j>0; j--)
+				if(out[j]>=0 && out[j]<=1)
+				  break;
+			  for(k=i+1; k<theLast; k++)
+				if(out[k]>=0 && out[k]<=1 && out[k]>out[j])
+				  break;
+			  if(k<theLast)
+				out[i] = (out[j]*(k-i)+out[k]*(i-j))/(k-j);
+			}
+		}
+
 	  return out;
 	}
 
@@ -600,6 +651,13 @@ namespace Imagine
 									  theFirst, theLast,
 									  u,
 									  outpath);
+			  // safety against bad roots - this was missing
+			  // from Graphics Gems
+			  if(!IsValidParameterization(uprime))
+				{
+				  break;
+				}
+
 			  outpath = GenerateBezier(thePath,
 									   theFirst, theLast,
 									   uprime,
