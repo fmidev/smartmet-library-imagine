@@ -28,6 +28,22 @@ namespace NFmiApproximateBezierFitTest
   {
 	using namespace Imagine;
 
+	// A difficult case before the Bezier length test was added
+	// to the Graphics Gems algorithm:
+	{
+	  NFmiPath p,s;
+	  p.MoveTo(60.2,95.8);
+	  p.LineTo(3.9,63.7);
+	  p.LineTo(12.2,59.5); // 1
+	  p.LineTo(15.9,56.9); // ->
+	  p.LineTo(27.8,50.2); // 2
+	  p.LineTo(39.8,43.5);
+	  p.LineTo(49.3,53.4);
+	  p.LineTo(60.2,95.8);
+	  s = NFmiApproximateBezierFit::Fit(p,1.0);
+	  EXPECT(s,"M60.2,95.8 C39.133,100.58 21.13,76.73 3.9,63.7 1.427,61.83 9.502,61.029 12.2,59.5 13.511,58.757 14.605,57.672 15.9,56.9 19.81,54.569 23.829,52.426 27.8,50.2 31.796,47.96 35.269,42.826 39.8,43.5 44.324,44.173 47.638,49.139 49.3,53.4 54.603,66.995 74.431,92.571 60.2,95.8");
+	}
+
 	{
 	  NFmiPath p,s;
 	  p.MoveTo(230.878189,135.041138);
@@ -151,6 +167,25 @@ namespace NFmiApproximateBezierFitTest
 	  s = NFmiApproximateBezierFit::Fit(p,5);
 	  EXPECT(s,"M86.442,192.916 C83.251,199.652 89.095,187.316 86.442,192.916");
 	}
+
+	// A self touching curve:
+	{
+	  NFmiPath p,s;
+	  p.MoveTo(-100,0);
+	  p.LineTo(-50,-50);
+	  p.LineTo(0,0);
+	  p.LineTo(50,-50);
+	  p.LineTo(100,0);
+	  p.LineTo(50,50);
+	  p.LineTo(0,0);
+	  p.LineTo(-50,50);
+	  p.LineTo(-100,0);
+
+	  s = NFmiApproximateBezierFit::Fit(p,1);
+	  EXPECT(s,"M-100,0 C-100,-23.57 -73.57,-50 -50,-50 -26.43,-50 -23.57,0 0,0 23.57,0 26.43,-50 50,-50 73.57,-50 100,-23.57 100,0 100,23.57 73.57,50 50,50 26.43,50 23.57,0 0,0 -23.57,0 -26.43,50 -50,50 -73.57,50 -100,23.57 -100,0");
+
+	}
+
 
 	TEST_PASSED();
   }

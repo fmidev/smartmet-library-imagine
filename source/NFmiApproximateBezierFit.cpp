@@ -530,6 +530,41 @@ namespace Imagine
 
 	// ----------------------------------------------------------------------
 	/*!
+	 * \brief Test if Bezier length is close match to polyline length
+	 *
+	 * We are tolerant here, since the purpose is only to prevent wild
+	 * control points. Hence we allow any Bezier length less than the
+	 * actual polyline, since then the control points are not wild,
+	 * and any Bezier at most twice as long as the polyline. The
+	 * latter condition then actually suffices.
+	 *
+	 * \param thePath The path
+	 * \param theFirst The start index of the segment
+	 * \param theLast The end index of the segment
+	 * \param theBezier The approximation
+	 * \return True if the fit is close enough
+	 */
+	// ----------------------------------------------------------------------
+
+	bool BezierLengthMatches(const NFmiPathData & thePath,
+							 unsigned int theFirst,
+							 unsigned int theLast,
+							 const NFmiPath & theBezier)
+	{
+	  const double bezlen = NFmiBezierTools::BezierLength(theBezier,0.01);
+	  
+	  double len = 0;
+	  for(unsigned int i=0; i<thePath.size()-1; i++)
+		len += NFmiGeoTools::Distance(thePath[i].X(),thePath[i].Y(),
+									  thePath[i+1].X(),thePath[i+1].Y());
+
+	  
+	  return (bezlen <= 2*len);
+
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
 	 * \brief Find least-squares Bezier fit
 	 *
 	 * Use least-squares method to find Bezier control points for region
@@ -704,7 +739,13 @@ namespace Imagine
 										splitpoint);
 
 	  if(maxerror < theError)
-		return outpath;
+		{
+		  // Make sure the curve lengths are roughly equal
+		  // to avoid Bezier fits with wild control points
+
+		  if(BezierLengthMatches(thePath,theFirst, theLast,outpath))
+			return outpath;
+		}
 
 	  // if error not too large, try some reparameterization and iteration
 
@@ -738,7 +779,8 @@ namespace Imagine
 										 uprime,
 										 splitpoint);
 			  if(maxerror < theError)
-				return outpath;
+				if(BezierLengthMatches(thePath,theFirst, theLast,outpath))
+				  return outpath;
 			  u = uprime;
 			}
 		}
