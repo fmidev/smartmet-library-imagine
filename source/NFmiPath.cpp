@@ -411,7 +411,7 @@ void NFmiPath::Align(NFmiAlignment theAlignment, float theX, float theY)
 // Apply a projection to a path
 // ----------------------------------------------------------------------
 
-void NFmiPath::Project(NFmiArea * theArea)
+void NFmiPath::Project(const NFmiArea * const theArea)
 {
   if(theArea!=0)
     {

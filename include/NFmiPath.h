@@ -208,7 +208,7 @@ public:
   
   // Project
   
-  void Project(NFmiArea * theArea);
+  void Project(const NFmiArea * const theArea);
   
   // Return a new path which is the widened version of this one
   
