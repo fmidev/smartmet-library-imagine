@@ -112,7 +112,6 @@ namespace Imagine
 
 	  ColorTree();
 	  void insert(value_type theColor);
-	  bool insert(value_type theColor, float theMaxError);
 
 	  value_type nearest(value_type theColor);
 
@@ -230,34 +229,6 @@ namespace Imagine
 
 			}
 		}
-	}
-
-	// ----------------------------------------------------------------------
-	/*!
-	 * \brief Insert into colortree unless there already is a closeby color
-	 *
-	 * \param theColor The color to insert
-	 * \param theMaxError The allowed maximum error
-	 * \return True, if the color was inserted
-	 */
-	// ----------------------------------------------------------------------
-
-	bool ColorTree::insert(ColorTree::value_type theColor,
-						   float theMaxError)
-	{
-	  // Handle the trivial case quickly
-	  if(theMaxError <= 0)
-		{
-		  insert(theColor);
-		  return true;
-		}
-
-	  value_type color = nearest(theColor);
-	  if(distance(color,theColor) < theMaxError)
-		return false;
-
-	  insert(theColor);
-	  return true;
 	}
 
 	// ----------------------------------------------------------------------
@@ -406,9 +377,9 @@ namespace Imagine
 	 *     with a normal error limit
 	 *  -# Continue by asking the nearest color for all colors
 	 *
-	 * However, it is not clear that doubling the error in phase 1
-	 * would be the ideal approach. The ideal multiplier may be
-	 * less than or more than 2.
+	 * However, we require best possible speed and thus do everything
+	 * in a single pass. What we could do is to find a way to quickly
+	 * reorder the histogram to produce more diversity in the colors.
 	 *
 	 * \param theImage The image to modify
 	 * \param theMaxError The allowed maximum error
@@ -438,9 +409,7 @@ namespace Imagine
 
 	  {
 		const float limit = 0.01*theImage.Width()*theImage.Height();
-
-		list<NFmiColorTools::Color> todo_colors;
-
+		
 		for(Histogram::const_iterator it = histogram.begin();
 			it != histogram.end();
 			++it)
@@ -450,29 +419,21 @@ namespace Imagine
 				tree.insert(it->second);
 				colormap.insert(ColorMap::value_type(it->second,it->second));
 			  }
-			else if(tree.insert(it->second,2*theMaxError))
-			  {
-				colormap.insert(ColorMap::value_type(it->second,it->second));
-			  }
-			else
-			  todo_colors.push_back(it->second);
-		  }
-
-		for(list<NFmiColorTools::Color>::const_iterator jt = todo_colors.begin();
-			jt != todo_colors.end();
-			++jt)
-		  {
-			NFmiColorTools::Color nearest = tree.nearest(*jt);
-			if(tree.distance(nearest,*jt) < theMaxError)
-			  colormap.insert(ColorMap::value_type(*jt,nearest));
 			else
 			  {
-				tree.insert(*jt);
-				colormap.insert(ColorMap::value_type(*jt,*jt));
+				NFmiColorTools::Color nearest = tree.nearest(it->second);
+				float dist = tree.distance(nearest,it->second);
+				if(dist < theMaxError)
+				  colormap.insert(ColorMap::value_type(it->second,nearest));
+				else
+				  {
+					tree.insert(it->second);
+					colormap.insert(ColorMap::value_type(it->second,it->second));
+				  }
 			  }
 		  }
 	  }
-
+	  
 	  // Now perform the replacements. Since we expect to encounter
 	  // sequences of color, we speed of the searches by caching
 	  // the last replacement.
