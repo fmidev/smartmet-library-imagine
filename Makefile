@@ -15,6 +15,7 @@ CFLAGS_RELEASE =  -DUNIX -O2 -DNDEBUG $(MAINFLAGS)
 LDFLAGS = -s
 ARFLAGS = -r
 INCLUDES = -I $(includedir)/newbase -I /usr/local/include/freetype2
+LIBS = -L ../../../../lib -lnewbase -ljpeg -lpng
 
 # INCLUDES = -I $(includedir)/newbase -I/usr/freeware/include -I/usr/local/include/freetype2
 
@@ -27,20 +28,20 @@ include ../../makefiles/makefile.lib
 
 CFLAGS0 = -DUNIX -O0 -g -Wall
 NFmiColorTools.o: NFmiColorTools.cpp
-	$(CC) $(CFLAGS0) $(INCLUDES) -c -o obj/$@ $<
+	$(CC) $(CFLAGS0) $(INCLUDES) -c -o $(objdir)/$@ $<
 
 # isspace uses an old style cast, cannot help it
 NFmiEsriShape.o: NFmiEsriShape.cpp
-	$(CC) $(CFLAGS) -Wno-error $(INCLUDES) -c -o obj/$@ $<
+	$(CC) $(CFLAGS) -Wno-error $(INCLUDES) -c -o $(objdir)/$@ $<
 
 # jpeglib calls cause warnings, cannot help it
 NFmiImageJpeg.o: NFmiImageJpeg.cpp
-	$(CC) $(CFLAGS) -Wno-error $(INCLUDES) -c -o obj/$@ $<
+	$(CC) $(CFLAGS) -Wno-error $(INCLUDES) -c -o $(objdir)/$@ $<
 
 # isspace causes warnings, cannot help it
 NFmiPath.o: NFmiPath.cpp
-	$(CC) $(CFLAGS) -Wno-error $(INCLUDES) -c -o obj/$@ $<
+	$(CC) $(CFLAGS) -Wno-error $(INCLUDES) -c -o $(objdir)/$@ $<
 
 # sstream causes warnings, cannot help it
 NFmiImage.o: NFmiImage.cpp
-	$(CC) $(CFLAGS) -Wno-error $(INCLUDES) -c -o obj/$@ $<
+	$(CC) $(CFLAGS) -Wno-error $(INCLUDES) -c -o $(objdir)/$@ $<
