@@ -46,8 +46,8 @@ namespace Imagine
 	
 	// Constructor
   NFmiGeoShape(void)
-	  :itsEsriShape(0)
-      ,itsType(kFmiGeoShapeEsri)
+	:itsType(kFmiGeoShapeEsri)
+	,itsEsriShape(0)
   {}
 
 	
