@@ -22,7 +22,7 @@ namespace Imagine
 	typedef std::multimap<int,NFmiColorTools::Color, std::greater<int> > Histogram;
 
 	const Histogram CalcHistogram(const NFmiImage & theImage);
-	void AdaptiveReduce(NFmiImage & theImage, float theMaxError = 30);
+	void AdaptiveReduce(NFmiImage & theImage, float theQuality = 13);
 
   } // namespace NFmiColorReduce
 

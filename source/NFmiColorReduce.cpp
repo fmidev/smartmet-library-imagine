@@ -403,18 +403,16 @@ namespace Imagine
 					const NFmiColorReduce::Histogram & theHistogram,
 					ColorTree & theTree,
 					ColorMap & theMap,
-					float theMaxError)
+					float theQuality)
 	  {
-		// Build a pruned tree of colors. All colors popular enough
-		// (more than 1%) are forced in, others have an error criterion
+		const float ratio = 1.0/(theImage.Width() * theImage.Height());
+		const float factor = -theQuality/log(10.0);
 
-		const float limit = 0.01*theImage.Width()*theImage.Height();
-		
 		for(NFmiColorReduce::Histogram::const_iterator it = theHistogram.begin();
 			it != theHistogram.end();
 			++it)
 		  {
-			if(it->first >= limit || theTree.empty())
+			if(theTree.empty())
 			  {
 				theTree.insert(it->second);
 				theMap.insert(ColorMap::value_type(it->second,it->second));
@@ -423,8 +421,9 @@ namespace Imagine
 			  {
 				NFmiColorTools::Color nearest = theTree.nearest(it->second);
 				float dist = theTree.distance(nearest,it->second);
-
-				if(dist < theMaxError)
+				
+				const float limit = factor*log(ratio*it->first);
+				if(dist < limit)
 				  theMap.insert(ColorMap::value_type(it->second,nearest));
 				else
 				  {
@@ -507,17 +506,17 @@ namespace Imagine
 	 * reorder the histogram to produce more diversity in the colors.
 	 *
 	 * \param theImage The image to modify
-	 * \param theMaxError The allowed maximum error
+	 * \param theQuality The quality ratio, 10 = good, 20 = poor and so on
 	 */
 	// ----------------------------------------------------------------------
 	
-	void AdaptiveReduce(NFmiImage & theImage, float theMaxError)
+	void AdaptiveReduce(NFmiImage & theImage, float theQuality)
 	{
 	  using namespace Imagine::NFmiColorTools;
 	  
 	  // A sanity check on the maximum error
 	  
-	  if(theMaxError < 1)
+	  if(theQuality < 1)
 		return;
 	  
 	  // Calculate the histogram
@@ -529,7 +528,7 @@ namespace Imagine
 	  ColorTree tree;
 	  ColorMap colormap;
 
-	  build_tree(theImage,histogram,tree,colormap,theMaxError);
+	  build_tree(theImage,histogram,tree,colormap,theQuality);
 
 	  // Now perform the replacements. Since we expect to encounter
 	  // sequences of color, we speed of the searches by caching
