@@ -386,22 +386,22 @@ namespace Imagine
 		for(int i=0; i<theImage.Width(); i++)
 		  {
 			if(theImage(i,j) == last_color1)
-			  theImage(i,j) = last_choise1;
+			  theImage(i,j) = last_choice1;
 			else if(theImage(i,j) == last_color2)
 			  {
-				theImage(i,j) = last_choise2;
+				theImage(i,j) = last_choice2;
 				swap(last_color1,last_color2);
-				swap(last_choise1,last_choise2);
+				swap(last_choice1,last_choice2);
 			  }
 			else if(theImage(i,j) == last_color3)
 			  {
-				theImage(i,j) = last_choise3;
+				theImage(i,j) = last_choice3;
 				swap(last_color3,last_color2);
-				swap(last_choise3,last_choise2);
+				swap(last_choice3,last_choice2);
 			  }
 			else
 			  {
-				ColorMap::const_iterator it = theMap.find(last_color);
+				ColorMap::const_iterator it = theMap.find(theImage(i,j));
 				if(it == theMap.end())
 				  throw runtime_error("Internal error in color reduction, failed to find color");
 
