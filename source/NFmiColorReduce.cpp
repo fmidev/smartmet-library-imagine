@@ -21,6 +21,7 @@
 #include "NFmiColorReduce.h"
 #include "NFmiImage.h"
 #include "NFmiColorTools.h"
+#include "NFmiNearTree.h"
 
 #include <list>
 #include <map>
@@ -248,10 +249,11 @@ namespace Imagine
 	  // Start choosing
 	  
 	  typedef vector<ColorInfo> ChosenColors;
-	  typedef list<ColorInfo> TodoColors;
+	  typedef list<ColorInfo> ColorList;
 	  
 	  ChosenColors chosen_colors;
-	  TodoColors todo_colors;
+	  ColorList todo_colors;
+	  ColorList close_colors;
 	  
 	  // Populate the todo-colors
 	  
@@ -278,13 +280,13 @@ namespace Imagine
 		  int blue  = GetBlue(color.color);
 		  int alpha = GetAlpha(color.color);
 		  
-		  TodoColors::iterator chosen = todo_colors.end();
+		  ColorList::iterator chosen = todo_colors.end();
 		  float maxerror = 0;		// maximum true error remaining
 		  
 		  // Recalculate the errors, and simultaneously find
 		  // the most errorneous color
 		  
-		  for(TodoColors::iterator it = todo_colors.begin();
+		  for(ColorList::iterator it = todo_colors.begin();
 			  it != todo_colors.end();
 			  ++it)
 			{
@@ -329,13 +331,13 @@ namespace Imagine
 			  // which are closer to a selected color than to the diverse color.
 			  // This aids in getting diverse colors representation in the colormap
 			  
-			  TodoColors::iterator best = chosen;
+			  ColorList::iterator best = chosen;
 			  red   = GetRed(chosen->color);
 			  green = GetGreen(chosen->color);
 			  blue  = GetBlue(chosen->color);
 			  alpha = GetAlpha(chosen->color);
 			  
-			  for(TodoColors::iterator jt = todo_colors.begin();
+			  for(ColorList::iterator jt = todo_colors.begin();
 				  jt != todo_colors.end();
 				  ++jt)
 				{
@@ -358,6 +360,23 @@ namespace Imagine
 		  color.nearest = chosen_colors.size();
 		  chosen_colors.push_back(color);
 		  todo_colors.erase(chosen);
+
+		  // Move all colors with small error from the todo-list
+
+		  for(ColorList::iterator dt = todo_colors.begin();
+			  dt != todo_colors.end();
+			  )
+			{
+			  if(dt->error < theMaxError)
+				{
+				  close_colors.push_back(*dt);
+				  ColorList::iterator tmp = dt;
+				  ++dt;
+				  todo_colors.erase(tmp);
+				}
+			  else
+				++dt;
+			}
 		  
 		}
 	  
@@ -374,8 +393,15 @@ namespace Imagine
 		{
 		  colormap.insert(ColorMap::value_type(jt->color,jt->nearest));
 		}
+
+	  for(ColorList::const_iterator lt = close_colors.begin();
+		  lt != close_colors.end();
+		  ++lt)
+		{
+		  colormap.insert(ColorMap::value_type(lt->color,lt->nearest));
+		}
 	  
-	  for(TodoColors::const_iterator kt = todo_colors.begin();
+	  for(ColorList::const_iterator kt = todo_colors.begin();
 		  kt != todo_colors.end();
 		  ++kt)
 		{
@@ -384,14 +410,22 @@ namespace Imagine
 	  
 	  // Now for each image pixel, find the associated colormap index
 	  // and replace the original color with chosen color
+
+	  NFmiColorTools::Color last_color = NFmiColorTools::NoColor;
+	  NFmiColorTools::Color last_choice = NFmiColorTools::NoColor;
 	  
 	  for(int j=0; j<theImage.Height(); j++)
 		for(int i=0; i<theImage.Width(); i++)
 		  {
-			ColorMap::const_iterator cit = colormap.find(theImage(i,j));
-			if(cit == colormap.end())
-			  throw runtime_error("Internal error in color reduction, failed to find color");
-			theImage(i,j) = chosen_colors[cit->second].color;
+			if(theImage(i,j) != last_color)
+			  {
+				ColorMap::const_iterator cit = colormap.find(theImage(i,j));
+				if(cit == colormap.end())
+				  throw runtime_error("Internal error in color reduction, failed to find color");
+				last_color = theImage(i,j);
+				last_choice = chosen_colors[cit->second].color;
+			  }
+			theImage(i,j) = last_choice;
 		  }
 	  
 	}
