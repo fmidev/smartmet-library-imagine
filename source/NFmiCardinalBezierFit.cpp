@@ -1,18 +1,19 @@
 // ======================================================================
 /*!
  * \file
- * \brief Implementation of namespace Imagine::NFmiBezier
+ * \brief Implementation of namespace Imagine::NFmiCardinalBezierFit
  */
 // ======================================================================
 /*!
- * \namespace Imagine::NFmiBezier
+ * \namespace Imagine::NFmiCardinalBezierFit
  *
- * \brief Tools to calculate Bezier curve approximations
+ * \brief Calculating a cardinal Bezier curve fit
  *
  */
 // ======================================================================
 
-#include "NFmiBezier.h"
+#include "NFmiCardinalBezierFit.h"
+#include "NFmiBezierTools.h"
 #include "NFmiPath.h"
 
 #include <list>
@@ -98,87 +99,6 @@ namespace Imagine
 
 	// ----------------------------------------------------------------------
 	/*!
-	 * \brief Test if the given regular segment is closed
-	 *
-	 * \param thePath The path to test
-	 * \return True if the segment is closed
-	 */
-	// ----------------------------------------------------------------------
-
-	bool IsClosed(const NFmiPath & thePath)
-	{
-	  if(thePath.Size() < 2)
-		return false;
-
-	  const NFmiPathElement & first = thePath.Elements().front();
-	  const NFmiPathElement & last = thePath.Elements().back();
-
-	  return (first.X() == last.X() && first.Y() == last.Y());
-			  
-	}
-
-	// ----------------------------------------------------------------------
-	/*!
-	 * \brief Split the given path into regular line and other segments
-	 *
-	 * A regular line segment is considered to be one with
-	 * a leading moveto command followed by a number of lineto
-	 * commands, atleast two of them.
-	 *
-	 * \param thePath The path to be splitted
-	 * \return List of subpaths
-	 */
-	// ----------------------------------------------------------------------
-
-	typedef list<pair<NFmiPath,bool> > PathSegments;
-
-	PathSegments SplitPath(const NFmiPath & thePath)
-	{
-	  PathSegments out;
-
-	  bool isregular = false;
-	  NFmiPath outpath;
-
-	  for(NFmiPathData::const_iterator it = thePath.Elements().begin();
-		  it != thePath.Elements().end();
-		  ++it)
-		{
-		  // current outpath must be flushed if
-		  // a) operator is moveto
-		  // b) type changes from regular to nonregular
-
-		  bool flush = (!outpath.Empty() &&
-						(it->Oper() == kFmiMoveTo ||
-						(it->Oper() == kFmiLineTo && !isregular)));
-
-		  
-
-		  if(flush)
-			{
-			  // must have sufficiently many lineto cmds to be regular
-			  if(outpath.Size() <= 3) isregular = false;
-			  // flush
-			  out.push_back(make_pair(outpath,isregular));
-			  outpath.Clear();
-			}
-
-		  outpath.Add(*it);
-
-		  // lineto cannot start a new regular segment!
-		  if(outpath.Size() == 1)
-			isregular = (it->Oper() == kFmiMoveTo);
-
-		}
-
-	  if(!outpath.Empty())
-		out.push_back(make_pair(outpath,isregular));
-
-	  return out;
-
-	}
-
-	// ----------------------------------------------------------------------
-	/*!
 	 * \brief Generate cardinal bezier for regular path segment
 	 *
 	 * A regular path segment starts with a moveto, is followed by
@@ -197,14 +117,15 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	NFmiPath SimpleCardinalApproximation(const NFmiPath & thePath,
-										 double theSmoothness)
+	NFmiPath SimpleFit(const NFmiPath & thePath, double theSmoothness)
 	{
+	  using namespace NFmiBezierTools;
+
 	  if(thePath.Empty())
 		return thePath;
 
 	  const NFmiPathData & path = thePath.Elements();
-	  bool isclosed = IsClosed(thePath);
+	  const bool isclosed = IsClosed(thePath);
 
 	  NFmiPath outpath;
 	  outpath.Add(path.front());
@@ -236,29 +157,10 @@ namespace Imagine
 	  return outpath;
 	}
 
-	// ----------------------------------------------------------------------
-	/*!
-	 * \brief Generate tolerance bezier approximation for regular path segment
-	 *
-	 * A regular path segment starts with a moveto, is followed by
-	 * several lineto commands and may or may not be closed.
-	 *
-	 * \param thePath The path to cardinalize
-	 * \param theMaxError The maximum allowed error
-	 * \return The approximated path
-	 */
-	// ----------------------------------------------------------------------
-
-	NFmiPath SimpleToleranceApproximation(const NFmiPath & thePath,
-										  double theMaxError)
-	{
-	  return thePath;
-	}
-
   } // namespace anonymous
 
 
-  namespace NFmiBezier
+  namespace NFmiCardinalBezierFit
   {
 
 	// ----------------------------------------------------------------------
@@ -284,17 +186,18 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	NFmiPath CardinalApproximation(const NFmiPath & thePath,
-								   double theSmoothness)
+	NFmiPath Fit(const NFmiPath & thePath, double theSmoothness)
 	{
+	  using namespace NFmiBezierTools;
+
 	  NFmiPath outpath;
-	  PathSegments segments = SplitPath(thePath);
-	  for(PathSegments::const_iterator it = segments.begin();
+	  Segments segments = SplitSegments(thePath);
+	  for(Segments::const_iterator it = segments.begin();
 		  it != segments.end();
 		  ++it)
 		{
 		  if(it->second)
-			outpath.Add(SimpleCardinalApproximation(it->first,theSmoothness));
+			outpath.Add(SimpleFit(it->first,theSmoothness));
 		  else
 			outpath.Add(it->first);
 		}
@@ -303,41 +206,7 @@ namespace Imagine
 
 	}
 
-	// ----------------------------------------------------------------------
-	/*!
-	 * \brief Calculate a Bezier approximation
-	 *
-	 * The given tolerance determines how closely the approximation
-	 * must follow the original points. The larger the tolerance,
-	 * the smoother the approximation is likely to be (with less
-	 * control points in the path).
-	 *
-	 * \param thePath The path to approximate
-	 * \param theMaxError The maximum Euclidian distance error
-	 * \return The converted path
-	 */
-	// ----------------------------------------------------------------------
-
-	NFmiPath ToleranceApproximation(const NFmiPath & thePath,
-									double theMaxError)
-	{
-	  NFmiPath outpath;
-	  PathSegments segments = SplitPath(thePath);
-	  for(PathSegments::const_iterator it = segments.begin();
-		  it != segments.end();
-		  ++it)
-		{
-		  if(it->second)
-			outpath.Add(SimpleToleranceApproximation(it->first,theMaxError));
-		  else
-			outpath.Add(it->first);
-		}
-
-	  return outpath;
-	}
-
-
-  } // namespace NFmiBezier
+  } // namespace NFmiCardinalBezierFit
 
 } // namespace Imagine
 
