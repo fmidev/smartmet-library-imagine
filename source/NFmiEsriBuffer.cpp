@@ -31,7 +31,7 @@ int NFmiEsriBuffer::BigEndianInt(const string & theBuffer, int thePos)
 {
   if(IsCpuLittleEndian())
     {
-      char tmp[4];
+      unsigned char tmp[4];
       tmp[0] = theBuffer[thePos+3];
       tmp[1] = theBuffer[thePos+2];
       tmp[2] = theBuffer[thePos+1];
@@ -52,7 +52,7 @@ int NFmiEsriBuffer::LittleEndianInt(const string & theBuffer, int thePos)
     return *reinterpret_cast<const int *>(theBuffer.data()+thePos);
   else
     {
-      char tmp[4];
+      unsigned char tmp[4];
       tmp[0] = theBuffer[thePos+3];
       tmp[1] = theBuffer[thePos+2];
       tmp[2] = theBuffer[thePos+1];
@@ -69,7 +69,9 @@ int NFmiEsriBuffer::LittleEndianInt(const string & theBuffer, int thePos)
 
 int NFmiEsriBuffer::LittleEndianShort(const string & theBuffer, int thePos)
 {
-  return (theBuffer[thePos] + theBuffer[thePos+1]*256);
+  // The casts are necessary to get unsigned
+  return (static_cast<unsigned char>(theBuffer[thePos]) +
+		  static_cast<unsigned char>(theBuffer[thePos+1])*256);
 }
 
 // ----------------------------------------------------------------------
@@ -80,7 +82,9 @@ int NFmiEsriBuffer::LittleEndianShort(const string & theBuffer, int thePos)
 
 int NFmiEsriBuffer::BigEndianShort(const string & theBuffer, int thePos)
 {
-  return (theBuffer[thePos]*256 + theBuffer[thePos+1]);
+  // The casts are necessary to get unsigned
+  return (static_cast<unsigned char>(theBuffer[thePos])*256 +
+		  static_cast<unsigned char>(theBuffer[thePos+1]));
 }
 
 // ----------------------------------------------------------------------
@@ -93,7 +97,7 @@ double NFmiEsriBuffer::LittleEndianDouble(const string & theBuffer, int thePos)
     return *reinterpret_cast<const double *>(theBuffer.data()+thePos);
   else
     {
-      char tmp[8];
+      unsigned char tmp[8];
       tmp[0] = theBuffer[thePos+7];
       tmp[1] = theBuffer[thePos+6];
       tmp[2] = theBuffer[thePos+5];
