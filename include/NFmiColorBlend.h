@@ -105,11 +105,29 @@ namespace Imagine
 	static inline NFmiColorTools::Color Blend
 	(NFmiColorTools::Color src, NFmiColorTools::Color dst)
 	{
-	  return Blend(NFmiColorTools::GetRed(src),
-				   NFmiColorTools::GetGreen(src),
-				   NFmiColorTools::GetBlue(src),
-				   NFmiColorTools::GetAlpha(src),
-				   dst);
+	  // This optimization is for banging partly opaque/transparent images onto an image
+	  int srca = NFmiColorTools::GetAlpha(src);
+	  if(srca == NFmiColorTools::Opaque)
+		return src;
+	  if(srca == NFmiColorTools::Transparent)
+		return dst;
+	  
+	  // We inlined this from the other Blend function for best possible speed.
+	  // The decision is based on profiling a time critical contouring application.
+	  // We also got rid of a couple local variables.
+
+	  int srcp = NFmiColorTools::MaxAlpha-srca;
+	  int dsta = NFmiColorTools::GetAlpha(dst);
+	  int dstp = (NFmiColorTools::MaxAlpha-dsta)*srca/NFmiColorTools::MaxAlpha;
+	  
+	  return NFmiColorTools::MakeColor
+		(
+		 (srcp*NFmiColorTools::GetRed(src)   + dstp*NFmiColorTools::GetRed  (dst))/NFmiColorTools::MaxAlpha,
+		 (srcp*NFmiColorTools::GetGreen(src) + dstp*NFmiColorTools::GetGreen(dst))/NFmiColorTools::MaxAlpha,
+		 (srcp*NFmiColorTools::GetBlue(src)  + dstp*NFmiColorTools::GetBlue (dst))/NFmiColorTools::MaxAlpha,
+		 (srcp*srca + dstp*dsta)/NFmiColorTools::MaxAlpha
+		 );
+
 	}
 	
 	static inline NFmiColorTools::Color Blend
