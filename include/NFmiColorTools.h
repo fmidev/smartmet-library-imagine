@@ -412,6 +412,12 @@ namespace Imagine
    * arithmetic version here is taken from ImageMagick.
    */
   // ----------------------------------------------------------------------
+
+  inline
+  int NFmiColorTools::Intensity(int r, int g, int b)
+  {
+	return ((9798*r+19235*g+3735*b)/32768L);
+  }
   
   inline
   int NFmiColorTools::Intensity(NFmiColorTools::Color c)
@@ -421,12 +427,6 @@ namespace Imagine
 									 NFmiColorTools::GetBlue(c));
   }
   
-  inline
-  int NFmiColorTools::Intensity(int r, int g, int b)
-  {
-	return ((9798*r+19235*g+3735*b)/32768L);
-  }
-
   // ----------------------------------------------------------------------
   /*!
    * \brief Add contrast to given color
