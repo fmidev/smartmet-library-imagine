@@ -40,11 +40,11 @@ namespace Imagine
 	
 	// Then, try loading the file. First current directory, then default path
 	
-	string filename = FileComplete(theName + kFmiSuffixHershey, hershey_path);
+	string filename = NFmiFileSystem::FileComplete(theName + kFmiSuffixHershey, hershey_path);
 	
 	// If we found a correct filename - see if it is readable
 	
-	if(!FileReadable(filename))
+	if(!NFmiFileSystem::FileReadable(filename))
 	  throw std::runtime_error("Hershey font " + filename + " is not readable");
 	
 	// Now, if we found an invalid font name, we would return

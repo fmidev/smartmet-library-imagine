@@ -222,8 +222,8 @@ namespace Imagine
 	
 	// Derived file names
 	
-	const string shpfilename = FileComplete(theFilename + ".shp",shapes_path);
-	const string dbffilename = FileComplete(theFilename + ".dbf",shapes_path);
+	const string shpfilename = NFmiFileSystem::FileComplete(theFilename + ".shp",shapes_path);
+	const string dbffilename = NFmiFileSystem::FileComplete(theFilename + ".dbf",shapes_path);
 	
 	// Delete old contents if there are any
 	
@@ -326,7 +326,7 @@ namespace Imagine
 	
 	//! If the file does not exist, or is of zero size, we're done
 	
-	if(FileEmpty(dbffilename))
+	if(NFmiFileSystem::FileEmpty(dbffilename))
 	  return true;
 	
 	// Otherwise open the file for reading

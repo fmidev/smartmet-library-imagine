@@ -132,7 +132,7 @@ namespace Imagine
 	  
 	  const string gshhs_path = NFmiSettings::Require<string>("imagine::gshhs_path");
 	  
-	  const string filename = FileComplete(theFilename,gshhs_path);
+	  const string filename = NFmiFileSystem::FileComplete(theFilename,gshhs_path);
 	  
 	  FILE * fp = fopen(filename.c_str(), "rb");
 	  
