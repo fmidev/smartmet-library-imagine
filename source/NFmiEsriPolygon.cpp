@@ -13,8 +13,9 @@
 // Byte X	Points	Points	point	NPoints	little
 //
 // ======================================================================
-#if (defined _MSC_VER) && (_MSC_VER < 1310) // uusi MSVC 7.1 (1310 eli ver 13.1 eli MSVC++ 7.1) hoitaa homman ilman pragmoja
-#pragma warning(disable : 4786) // poistaa n kpl VC++ kääntäjän varoitusta (liian pitkä nimi >255 merkkiä joka johtuu 'puretuista' STL-template nimistä)
+
+#ifdef OLD_MSC
+#pragma warning(disable : 4786)
 #endif
 
 #include "NFmiEsriPolygon.h"
