@@ -19,10 +19,16 @@
 #include "NFmiStringTools.h"
 #include <cassert>	// for assert
 #include <cstdlib>	// for rand, RAND_MAX
-#include <png.h>	// for pnglib
-#include <iostream> // 2.1.2002/Marko cerr vaatii t‰m‰n MSVC-k‰‰nt‰j‰ss‰.
+#include <iostream>
 #include <algorithm>
 #include <sstream>
+
+extern "C" {
+#ifndef UNIX
+ #include <io.h>		// Windows _mktemp
+#endif
+#include <png.h>	// for pnglib
+}
 
 using namespace std;
 
@@ -30,14 +36,28 @@ namespace
 {
   // ----------------------------------------------------------------------
   /*!
-   * \brief Create an unique temporary file name
+   * \brief Create an mktemp template for the given file
    */
   // ----------------------------------------------------------------------
 
-  const string mytmpnam()
+  const string mytmpnam(const string & thePath)
   {
-	string tmp = tmpnam(NULL);
-	return tmp;
+	const unsigned int maxlen = 512;
+	char nametemplate[maxlen+1];
+
+	string tmp = thePath + "_XXXXXX";
+	if(tmp.size() >= maxlen)
+	  throw runtime_error("Could not write image with too long pathname '"+thePath+"'");
+
+	string::size_type i;
+	for(i = 0; i<tmp.size(); i++)
+	  nametemplate[i] = tmp[i];
+	nametemplate[i] = 0;
+
+	if(mktemp(nametemplate) == NULL)
+	  throw runtime_error("Failed to generate temporary filename for writing an image safely");
+
+	return string(nametemplate);
   }
 
 }
@@ -464,7 +484,7 @@ namespace Imagine
   
   void NFmiImage::WriteJpeg(const string & theFileName) const
   {
-	const string tmp = mytmpnam();
+	const string tmp = mytmpnam(theFileName);
 
 	FILE *out;
 	out = fopen(tmp.c_str(),"wb");
@@ -472,8 +492,7 @@ namespace Imagine
 	WriteJPEG(out);
 	fclose(out);
 
-	bool status = NFmiFileSystem::CopyFile(tmp,theFileName);
-	NFmiFileSystem::RemoveFile(tmp);
+	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
 	
 	if(!status)
 	  throw runtime_error("Failed to write '"+theFileName+"'");
@@ -486,7 +505,7 @@ namespace Imagine
   
   void NFmiImage::WritePng(const string & theFileName) const
   {
-	const string tmp = mytmpnam();
+	const string tmp = mytmpnam(theFileName);
 
 	FILE *out;
 	out = fopen(tmp.c_str(),"wb");
@@ -494,8 +513,7 @@ namespace Imagine
 	WritePNG(out);
 	fclose(out);
 
-	bool status = NFmiFileSystem::CopyFile(tmp,theFileName);
-	NFmiFileSystem::RemoveFile(tmp);
+	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
 	
 	if(!status)
 	  throw runtime_error("Failed to write '"+theFileName+"'");
@@ -509,7 +527,7 @@ namespace Imagine
   
   void NFmiImage::WriteGif(const string & theFileName) const
   {
-	const string tmp = mytmpnam();
+	const string tmp = mytmpnam(theFileName);
 
 	FILE *out;
 	out = fopen(tmp.c_str(),"wb");
@@ -517,8 +535,7 @@ namespace Imagine
 	WriteGIF(out);
 	fclose(out);
 
-	bool status = NFmiFileSystem::CopyFile(tmp,theFileName);
-	NFmiFileSystem::RemoveFile(tmp);
+	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
 	
 	if(!status)
 	  throw runtime_error("Failed to write '"+theFileName+"'");
