@@ -73,7 +73,7 @@ namespace
 	return NFmiValueString::GetStringWithMaxDecimalsSmartWay(value,precision).CharPtr();
   }
 
-}; // anonymous namespace
+} // anonymous namespace
 
 namespace Imagine
 {
