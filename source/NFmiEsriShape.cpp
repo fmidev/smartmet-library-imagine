@@ -747,7 +747,7 @@ namespace Imagine
 	  {
 		int i;
 		const int field_length = 7;
-		dbffile << LittleEndianShort(header_size+1*field_size+1)
+		dbffile << LittleEndianShort(header_size+1*field_size+2)
 				<< LittleEndianShort(field_length);
 		for(i=0; i<header_zeros; i++)
 		  dbffile << '\0';
@@ -789,7 +789,7 @@ namespace Imagine
 		  }
 
 		int i;
-		dbffile << LittleEndianShort(header_size+field_count*field_size+1)
+		dbffile << LittleEndianShort(header_size+field_count*field_size+2)
 				<< LittleEndianShort(field_length);
 		for(i=0; i<header_zeros; i++)
 		  dbffile << '\0';
