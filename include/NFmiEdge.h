@@ -41,18 +41,18 @@ public:
   
   // Getting data values
   
-  float X1(void) const		{ return itsX1; }
-  float Y1(void) const		{ return itsY1; }
-  float X2(void) const		{ return itsX2; }
-  float Y2(void) const		{ return itsY2; }
+  float GetX1(void) const		{ return itsX1; }
+  float GetY1(void) const		{ return itsY1; }
+  float GetX2(void) const		{ return itsX2; }
+  float GetY2(void) const		{ return itsY2; }
   bool Exact(void) const	{ return fExact; }
   
   // Setting data values
   
-  void X1(float theX)	{ itsX1 = theX; }
-  void Y1(float theY)	{ itsY1 = theY; }
-  void X2(float theX)	{ itsX2 = theX; }
-  void Y2(float theY)	{ itsY2 = theY; }
+  void SetX1(float theX)	{ itsX1 = theX; }
+  void SetY1(float theY)	{ itsY1 = theY; }
+  void SetX2(float theX)	{ itsX2 = theX; }
+  void SetY2(float theY)	{ itsY2 = theY; }
   
   // Equality comparison for our own purposes and for set find methods.
   
@@ -99,10 +99,10 @@ struct NFmiEdgeHasher
 {
   size_t operator()(const NFmiEdge & theEdge) const
   {
-    return ((static_cast<size_t>(theEdge.X1()*134631) << 0 )^
-			(static_cast<size_t>(theEdge.Y1()*13123) << 3) ^
-			(static_cast<size_t>(theEdge.X2()*124132) << 7) ^
-			(static_cast<size_t>(theEdge.Y2()*439216) << 9) ^
+    return ((static_cast<size_t>(theEdge.GetX1()*134631) << 0 )^
+			(static_cast<size_t>(theEdge.GetY1()*13123) << 3) ^
+			(static_cast<size_t>(theEdge.GetX2()*124132) << 7) ^
+			(static_cast<size_t>(theEdge.GetY2()*439216) << 9) ^
 			theEdge.Exact() << 20);
   }
 };

@@ -28,7 +28,7 @@ void NFmiEdgeTree::Add(const NFmiEdge& theEdge)
   
   // If the edge is a 0-length line, ignore it
   
-  if(theEdge.X1() == theEdge.X2() && theEdge.Y1() == theEdge.Y2())
+  if(theEdge.GetX1() == theEdge.GetX2() && theEdge.GetY1() == theEdge.GetY2())
     return;
   
   // Insert operator returns an iterator, bool pair
@@ -133,25 +133,25 @@ NFmiPath NFmiEdgeTree::Path(void) const
 		  float lastx  = pathiter->Elements().back().X();
 		  float lasty  = pathiter->Elements().back().Y();
 		  
-		  if(firstx==edge.X1() && firsty==edge.Y1())
+		  if(firstx==edge.GetX1() && firsty==edge.GetY1())
 			{
 			  fMatchedFirst = true;
 			  fMatchedFirstToFirst = true;
 			  bestFirstIter = pathiter;
 			}
-		  if(lastx==edge.X1() && lasty==edge.Y1())
+		  if(lastx==edge.GetX1() && lasty==edge.GetY1())
 			{
 			  fMatchedFirst = true;
 			  fMatchedFirstToFirst = false;
 			  bestFirstIter = pathiter;
 			}
-		  if(firstx==edge.X2() && firsty==edge.Y2())
+		  if(firstx==edge.GetX2() && firsty==edge.GetY2())
 			{
 			  fMatchedLast = true;
 			  fMatchedLastToFirst = true;
 			  bestLastIter = pathiter;
 			}
-		  if(lastx==edge.X2() && lasty==edge.Y2())
+		  if(lastx==edge.GetX2() && lasty==edge.GetY2())
 			{
 			  fMatchedLast = true;
 			  fMatchedLastToFirst = false;
@@ -182,11 +182,11 @@ NFmiPath NFmiEdgeTree::Path(void) const
 			// Block required for tmp cleanup!
 			NFmiPath tmp;
 			paths.push_back(tmp);
-			paths.back().MoveTo(edge.X1(),edge.Y1());
+			paths.back().MoveTo(edge.GetX1(),edge.GetY1());
 			if(edge.Exact())
-			  paths.back().LineTo(edge.X2(),edge.Y2());
+			  paths.back().LineTo(edge.GetX2(),edge.GetY2());
 			else
-			  paths.back().GhostLineTo(edge.X2(),edge.Y2());
+			  paths.back().GhostLineTo(edge.GetX2(),edge.GetY2());
 			break;
 		  }
 		  
@@ -194,36 +194,36 @@ NFmiPath NFmiEdgeTree::Path(void) const
 		  
 		case(PathCase(true,false,false,false)):
 		  if(edge.Exact())
-			bestFirstIter->LineTo(edge.X2(),edge.Y2());
+			bestFirstIter->LineTo(edge.GetX2(),edge.GetY2());
 		  else
-			bestFirstIter->GhostLineTo(edge.X2(),edge.Y2());
+			bestFirstIter->GhostLineTo(edge.GetX2(),edge.GetY2());
 		  break;
 		  
 		  // Only first point matches, and it matches first point of path
 		  
 		case(PathCase(true,false,true,false)):
 		  if(edge.Exact())
-			bestFirstIter->InsertLineTo(edge.X2(),edge.Y2());
+			bestFirstIter->InsertLineTo(edge.GetX2(),edge.GetY2());
 		  else
-			bestFirstIter->InsertGhostLineTo(edge.X2(),edge.Y2());
+			bestFirstIter->InsertGhostLineTo(edge.GetX2(),edge.GetY2());
 		  break;
 		  
 		  // Only second point matches, and it matches last point of path
 		  
 		case(PathCase(false,true,false,false)):
 		  if(edge.Exact())
-			bestLastIter->LineTo(edge.X1(),edge.Y1());
+			bestLastIter->LineTo(edge.GetX1(),edge.GetY1());
 		  else
-			bestLastIter->GhostLineTo(edge.X1(),edge.Y1());
+			bestLastIter->GhostLineTo(edge.GetX1(),edge.GetY1());
 		  break;
 		  
 		  // Only second point matches, and it matches first point of path
 		  
 		case(PathCase(false,true,false,true)):
 		  if(edge.Exact())
-			bestLastIter->InsertLineTo(edge.X1(),edge.Y1());
+			bestLastIter->InsertLineTo(edge.GetX1(),edge.GetY1());
 		  else
-			bestLastIter->InsertGhostLineTo(edge.X1(),edge.Y1());
+			bestLastIter->InsertGhostLineTo(edge.GetX1(),edge.GetY1());
 		  break;
 		  
 		  // Both points match, both match the endpoints or startpoints
@@ -303,7 +303,7 @@ void NFmiEdgeTree::Add(NFmiFillMap & theMap) const
   EdgeTreeType::const_iterator iter = Edges().begin();
   
   for( ; iter!=Edges().end(); ++iter)
-    theMap.Add(iter->X1(),iter->Y1(),iter->X2(),iter->Y2());  
+    theMap.Add(iter->GetX1(),iter->GetY1(),iter->GetX2(),iter->GetY2());
 }
 
 // ----------------------------------------------------------------------
