@@ -33,7 +33,11 @@ namespace Imagine
 	
 	// Updating bounding boxes
 	
-	void Update(NFmiEsriBox & theBox) const
+	void Update(NFmiEsriBoxZ & theBox) const
+	{
+	}
+
+	void Project(const NFmiEsriProjector & theProjector)
 	{
 	}
 	
