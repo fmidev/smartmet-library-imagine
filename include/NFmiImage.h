@@ -75,6 +75,7 @@ namespace Imagine
 	
 	int			itsWidth;
 	int			itsHeight;
+	std::string	itsType;				// when read from a file
 	NFmiColorTools::Color	*itsPixels;
 	
 	// Various options
@@ -103,7 +104,8 @@ namespace Imagine
 	
 	int Width(void) const { return itsWidth; }
 	int Height(void) const { return itsHeight; }
-	
+	const std::string & Type() const { return itsType; }
+
 	// All constructors call this to set the default options
 	
 	void DefaultOptions(void);

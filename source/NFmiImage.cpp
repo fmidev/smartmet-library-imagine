@@ -294,6 +294,7 @@ namespace Imagine
 	: NFmiDrawable()
   {
 	DefaultOptions();
+	itsType = theImage.itsType;
 	Allocate(theImage.Width(),theImage.Height());
 	for (int j = 0; j < itsHeight ; j++)
 	  for (int i = 0; i < itsWidth; i++)
@@ -317,6 +318,7 @@ namespace Imagine
   
   void NFmiImage::DefaultOptions(void)
   {
+	itsType = "";
 	itsJpegQuality = 75;			// 0-100
 	itsPngQuality = 6;			// 0=none, 1=fast,9=slow
 	itsAlphaLimit = -1;			// do not force opaque/transparent
@@ -335,6 +337,7 @@ namespace Imagine
   NFmiImage & NFmiImage::operator=(const NFmiImage & theImage)
   {
 	Reallocate(theImage.Width(),theImage.Height());
+	itsType = theImage.itsType;
 	for (int j = 0; j < itsHeight ; j++)
 	  for (int i = 0; i < itsWidth; i++)
 		(*this)(i,j) = theImage(i,j);
@@ -415,15 +418,18 @@ namespace Imagine
 	  {
 #ifndef IMAGINE_IGNORE_FORMATS
 	  case(PNG_MAGIC):
+		itsType = "png";
 		ReadPNG(in);
 		break;
 		
 	  case(JPG_MAGIC):
+		itsType = "jpeg";
 		ReadJPEG(in);
 		break;
 #endif // IMAGINE_IGNORE_FORMATS
 		
 	  case(GIF_MAGIC):
+		itsType = "gif";
 		ReadGIF(in);
 		break;
 		
