@@ -26,20 +26,25 @@
 #define NFMIGSHHSTOOLS_H
 
 #include <string>
-class NFmiPath;
 
-namespace NFmiGshhsTools
+namespace Imagine
 {
-  NFmiPath ReadPath(const std::string & theFilename,
-					double theMinLongitude,
-					double theMinLatitude,
-					double theMaxLongitude,
-					double theMaxLatitude,
-					double theMinArea=-1);
 
-} // namespace NFmiGshhsTools
+  class NFmiPath;
+  
+  namespace NFmiGshhsTools
+  {
+	NFmiPath ReadPath(const std::string & theFilename,
+					  double theMinLongitude,
+					  double theMinLatitude,
+					  double theMaxLongitude,
+					  double theMaxLatitude,
+					  double theMinArea=-1);
+	
+  } // namespace NFmiGshhsTools
 
+} // namespace Imagine
+  
 #endif // NFMIGSHHSTOOLS_H
-
+  
 // ======================================================================
-

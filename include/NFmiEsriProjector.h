@@ -10,20 +10,25 @@
 //
 // ======================================================================
 
-#ifndef _NFMIESRIPROJECTOR_H
-#define _NFMIESRIPROJECTOR_H
+#ifndef IMAGINE_NFMIESRIPROJECTOR_H
+#define IMAGINE_NFMIESRIPROJECTOR_H
 
 #include "NFmiDef.h"
 
-class NFmiEsriPoint;	// introduce projector argument type
-
-class _FMI_DLL NFmiEsriProjector
+namespace Imagine
 {
-public:
-  virtual ~NFmiEsriProjector(void) {};
-  virtual NFmiEsriPoint operator()(const NFmiEsriPoint & thePoint) const = 0;
-};
+  class NFmiEsriPoint;	// introduce projector argument type
+  
+  class _FMI_DLL NFmiEsriProjector
+  {
+  public:
+	virtual ~NFmiEsriProjector(void) {};
+	virtual NFmiEsriPoint operator()(const NFmiEsriPoint & thePoint) const = 0;
+  };
 
+} // namespace Imagine
+  
 #endif // NFMIESRIPROJECTOR_H
-
+  
 // ======================================================================
+  

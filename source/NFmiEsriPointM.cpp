@@ -14,40 +14,45 @@
 
 #include "NFmiEsriPointM.h"
 
-using namespace NFmiEsriBuffer;	// Conversion tools
+using namespace Imagine::NFmiEsriBuffer;	// Conversion tools
 using namespace std;
 
-// ----------------------------------------------------------------------
-// Constructor based on a character buffer
-// ----------------------------------------------------------------------
-
-NFmiEsriPointM::NFmiEsriPointM(const string & theBuffer, int thePos, int theNumber)
-  : NFmiEsriPoint(LittleEndianDouble(theBuffer,thePos+4),
-				  LittleEndianDouble(theBuffer,thePos+12),
-				  theNumber,kFmiEsriPointM)
-  , itsM(LittleEndianDouble(theBuffer,thePos+20))
+namespace Imagine
 {
-}
 
-// ----------------------------------------------------------------------
-// Calculating string buffer size
-// ----------------------------------------------------------------------
+  // ----------------------------------------------------------------------
+  // Constructor based on a character buffer
+  // ----------------------------------------------------------------------
+  
+  NFmiEsriPointM::NFmiEsriPointM(const string & theBuffer, int thePos, int theNumber)
+	: NFmiEsriPoint(LittleEndianDouble(theBuffer,thePos+4),
+					LittleEndianDouble(theBuffer,thePos+12),
+					theNumber,kFmiEsriPointM)
+	, itsM(LittleEndianDouble(theBuffer,thePos+20))
+  {
+  }
+  
+  // ----------------------------------------------------------------------
+  // Calculating string buffer size
+  // ----------------------------------------------------------------------
+  
+  int NFmiEsriPointM::StringSize(void) const
+  {
+	return (4+3*8);	// int + 3 doubles
+  }
+  
+  // ----------------------------------------------------------------------
+  // Writing element
+  // ----------------------------------------------------------------------
+  
+  void NFmiEsriPointM::Write(ostream & os) const
+  {
+	os << LittleEndianInt(Type())
+	   << LittleEndianDouble(X())
+	   << LittleEndianDouble(Y())
+	   << LittleEndianDouble(M());
+  }
 
-int NFmiEsriPointM::StringSize(void) const
-{
-  return (4+3*8);	// int + 3 doubles
-}
-
-// ----------------------------------------------------------------------
-// Writing element
-// ----------------------------------------------------------------------
-
-void NFmiEsriPointM::Write(ostream & os) const
-{
-  os << LittleEndianInt(Type())
-     << LittleEndianDouble(X())
-     << LittleEndianDouble(Y())
-     << LittleEndianDouble(M());
-}
-
+} // namespace Imagine
+  
 // ======================================================================

@@ -19,30 +19,36 @@
 //
 // ----------------------------------------------------------------------
 
-#ifndef _NFMIFONTHERSHEYCACHE_H
-#define _NFMIFONTHERSHEYCACHE_H
+#ifndef IMAGINE_NFMIFONTHERSHEYCACHE_H
+#define IMAGINE_NFMIFONTHERSHEYCACHE_H
 
 #include <string>
 #include <map>
 
 #include "NFmiHersheyData.h"
 
-class _FMI_DLL NFmiFontHersheyCache
+namespace Imagine
 {
-public:
-  NFmiFontHersheyCache(void) {}
-  ~NFmiFontHersheyCache(void) {}
-  
-  const NFmiHersheyData & Data(const std::string & theName);
-  
-private:
-  
-  typedef std::map<std::string,NFmiHersheyData> HersheyCache;
-  
-  HersheyCache itsData;
-  
-};
 
-#endif // _NFMIFONTHERSHEYCACHE_H
+  class _FMI_DLL NFmiFontHersheyCache
+  {
+  public:
+	NFmiFontHersheyCache(void) {}
+	~NFmiFontHersheyCache(void) {}
+	
+	const NFmiHersheyData & Data(const std::string & theName);
+	
+  private:
+	
+	typedef std::map<std::string,NFmiHersheyData> HersheyCache;
+	
+	HersheyCache itsData;
+	
+  };
 
+} // namespace Imagine
+  
+#endif // IMAGINE_NFMIFONTHERSHEYCACHE_H
+  
 // ======================================================================
+  

@@ -12,52 +12,58 @@
 //
 // ======================================================================
 
-#ifndef _NFMIESRIPOINTM_H
-#define _NFMIESRIPOINTM_H
+#ifndef IMAGINE_NFMIESRIPOINTM_H
+#define IMAGINE_NFMIESRIPOINTM_H
 
 #include "NFmiEsriPoint.h"
 #include "NFmiEsriBoxM.h"
 
-class _FMI_DLL NFmiEsriPointM : public NFmiEsriPoint
+namespace Imagine
 {
-public:
-  
-  // Constructors, destructors
-  
-  ~NFmiEsriPointM(void) {}
-  
-  NFmiEsriPointM(double theX, double theY, double theM,
-				 int theNumber=0, NFmiEsriElementType theType=kFmiEsriPointM)
-    : NFmiEsriPoint(theX,theY,theNumber,theType)
-    , itsM(theM)
-  { }
-  
-  NFmiEsriPointM(const std::string & theBuffer, int thePos=0, int theNumber=0);
-  
-  // Data access
-  
-  double M(void) const	{ return itsM; }
-  void M(double theM)	{ itsM = theM; }
-  
-  // Updating bounding boxes
-  
-  void Update(NFmiEsriBoxZ & theBox) const
+
+  class _FMI_DLL NFmiEsriPointM : public NFmiEsriPoint
   {
-    static_cast<NFmiEsriBoxM &>(theBox).Update(X(),Y(),M());
-  }
-  
-  // String buffer size, write and string
-  
-  int StringSize(void) const;
-  void Write(std::ostream & os) const;
-  
-private:
-  
-  NFmiEsriPointM(void);
-  
-  double itsM;	// measure
-};
+  public:
+	
+	// Constructors, destructors
+	
+	~NFmiEsriPointM(void) {}
+	
+	NFmiEsriPointM(double theX, double theY, double theM,
+				   int theNumber=0, NFmiEsriElementType theType=kFmiEsriPointM)
+	  : NFmiEsriPoint(theX,theY,theNumber,theType)
+	  , itsM(theM)
+	{ }
+	
+	NFmiEsriPointM(const std::string & theBuffer, int thePos=0, int theNumber=0);
+	
+	// Data access
+	
+	double M(void) const	{ return itsM; }
+	void M(double theM)	{ itsM = theM; }
+	
+	// Updating bounding boxes
+	
+	void Update(NFmiEsriBoxZ & theBox) const
+	{
+	  static_cast<NFmiEsriBoxM &>(theBox).Update(X(),Y(),M());
+	}
+	
+	// String buffer size, write and string
+	
+	int StringSize(void) const;
+	void Write(std::ostream & os) const;
+	
+  private:
+	
+	NFmiEsriPointM(void);
+	
+	double itsM;	// measure
+  };
 
-#endif // _NFMIESRIPOINTM_H
-
+} // namespace Imagine
+  
+#endif // IMAGINE_NFMIESRIPOINTM_H
+  
 // ======================================================================
+  

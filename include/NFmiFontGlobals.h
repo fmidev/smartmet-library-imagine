@@ -17,26 +17,32 @@
 //
 // ======================================================================
 
-#ifndef _NFMIFONTGLOBALS_H
-#define _NFMIFONTGLOBALS_H
+#ifndef IMAGINE_NFMIFONTGLOBALS_H
+#define IMAGINE_NFMIFONTGLOBALS_H
 
 #include <string>
 
-// We hardcode the DPI resolution to 96, since
-//
-//   a) We want the output to be independent of the drawing platform,
-//      hence the system is not queried for the proper value.
-//
-//   b) Some TrueType fonts are apparently optimized for 96 DPI, since
-//      its is the default resolution of Windows. Hence we may get
-//      better looking fonts.
+namespace Imagine
+{
 
-const int kFmiDisplayResolution = 96;
+  // We hardcode the DPI resolution to 96, since
+  //
+  //   a) We want the output to be independent of the drawing platform,
+  //      hence the system is not queried for the proper value.
+  //
+  //   b) Some TrueType fonts are apparently optimized for 96 DPI, since
+  //      its is the default resolution of Windows. Hence we may get
+  //      better looking fonts.
+  
+  const int kFmiDisplayResolution = 96;
+  
+  const std::string kFmiSuffixHershey(".jhf");
+  const std::string kFmiSuffixTrueType(".ttf");
+  const std::string kFmiSuffixType1(".pfb");
 
-const std::string kFmiSuffixHershey(".jhf");
-const std::string kFmiSuffixTrueType(".ttf");
-const std::string kFmiSuffixType1(".pfb");
-
-#endif // _NFMIFONTFLOBALS_H
-
+} // namespace Imagine
+  
+#endif // IMAGINE_NFMIFONTFLOBALS_H
+  
 // ======================================================================
+  

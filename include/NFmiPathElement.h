@@ -13,69 +13,78 @@
 //
 // ======================================================================
 
-#ifndef _NFMIPATHELEMENT_H
-#define _NFMIPATHELEMENT_H
+#ifndef IMAGINE_NFMIPATHELEMENT_H
+#define IMAGINE_NFMIPATHELEMENT_H
 
 #include "NFmiDef.h"
 
-// ----------------------------------------------------------------------
-// Path operations
-// ----------------------------------------------------------------------
-
-enum NFmiPathOperation { kFmiMoveTo,
-						 kFmiLineTo,
-						 kFmiGhostLineTo,
-						 kFmiConicTo,
-						 kFmiCubicTo };
-
-// ----------------------------------------------------------------------
-// A class defining a path element
-// ----------------------------------------------------------------------
-
-class _FMI_DLL NFmiPathElement
+namespace Imagine
 {
-public:
+
+  // ----------------------------------------------------------------------
+  // Path operations
+  // ----------------------------------------------------------------------
   
-  // Constructor
+  enum NFmiPathOperation
+	{
+	  kFmiMoveTo,
+	  kFmiLineTo,
+	  kFmiGhostLineTo,
+	  kFmiConicTo,
+	  kFmiCubicTo
+	};
+
+  // ----------------------------------------------------------------------
+  // A class defining a path element
+  // ----------------------------------------------------------------------
   
-  NFmiPathElement(NFmiPathOperation operation, float x, float y)
-    : itsOperation(operation), itsX(x), itsY(y)
-  {}
-  
-  // Data-access
-  
-  NFmiPathOperation Oper(void) const	{ return itsOperation; }
-  float X(void) const			{ return itsX; }
-  float Y(void) const			{ return itsY; }
-  
-  // Setting data
-  
-  void Oper(NFmiPathOperation theOp)	{ itsOperation = theOp; }
-  void X(float theX)			{ itsX = theX; }
-  void Y(float theY)			{ itsY = theY; }
-  
-  // Equality comparison
-  
-  bool operator==(const NFmiPathElement & theElement) const
+  class _FMI_DLL NFmiPathElement
   {
-    return (itsOperation == theElement.itsOperation &&
-			itsX == theElement.itsX &&
-			itsY == theElement.itsY);
-  }
-  
-private:
-  
-  // Protect from bad constructors
-  
-  NFmiPathElement(void);
-  
-  // Data-members
-  
-  NFmiPathOperation	itsOperation;
-  float			itsX;
-  float			itsY;
-};
+  public:
+	
+	// Constructor
+	
+	NFmiPathElement(NFmiPathOperation operation, float x, float y)
+	  : itsOperation(operation), itsX(x), itsY(y)
+	{}
+	
+	// Data-access
+	
+	NFmiPathOperation Oper(void) const	{ return itsOperation; }
+	float X(void) const			{ return itsX; }
+	float Y(void) const			{ return itsY; }
+	
+	// Setting data
+	
+	void Oper(NFmiPathOperation theOp)	{ itsOperation = theOp; }
+	void X(float theX)			{ itsX = theX; }
+	void Y(float theY)			{ itsY = theY; }
+	
+	// Equality comparison
+	
+	bool operator==(const NFmiPathElement & theElement) const
+	{
+	  return (itsOperation == theElement.itsOperation &&
+			  itsX == theElement.itsX &&
+			  itsY == theElement.itsY);
+	}
+	
+  private:
+	
+	// Protect from bad constructors
+	
+	NFmiPathElement(void);
+	
+	// Data-members
+	
+	NFmiPathOperation	itsOperation;
+	float			itsX;
+	float			itsY;
+  };
 
-#endif	// _NFMIPATHELEMENT_H
-
+} // namespace Imagine
+  
+#endif	// IMAGINE_NFMIPATHELEMENT_H
+  
 // ======================================================================
+  

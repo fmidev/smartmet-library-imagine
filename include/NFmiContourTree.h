@@ -134,8 +134,8 @@
 // ======================================================================
 
 
-#ifndef _NFMICONTOURTREE_H
-#define _NFMICONTOURTREE_H
+#ifndef IMAGINE_NFMICONTOURTREE_H
+#define IMAGINE_NFMICONTOURTREE_H
 
 // Essential includes:
 
@@ -152,366 +152,369 @@
 #include "NFmiGrid.h"		// for grids
 #include "NFmiFastQueryInfo.h"	// for querydata
 
-/// Class to calculating 2D contour polygons given a data interval.
-
-class _FMI_DLL NFmiContourTree : public NFmiEdgeTree
+namespace Imagine
 {
-public:
-  
-  /// Different contouring methods.
-  
-  enum NFmiContourInterpolation
-    {
-      kFmiContourMissingInterpolation,	///< No interpolation defined
-      kFmiContourNearest,		///< Nearest neighbour interpolation
-      kFmiContourLinear			///< Linear interpolation
-    };
-  
-  /// Convert a name of interpolation method to enumerated type.
-  
-  static const NFmiContourInterpolation ContourInterpolationValue(const std::string & theName);
-  
-  /// Convert interpolation method enum to a name
-  
-  static const std::string ContourInterpolationName(NFmiContourInterpolation theInterpolation);
-  
-  /// Destructor
-  
-  ~NFmiContourTree(void) {}
-  
-  /// Constructor.
-  
-  /*!
-   * The constructor enforces the condition lolimit<hilimit.
-   * Equality is not allowed since the resulting contour area
-   * would be empty.
-   */
-  
-  NFmiContourTree(float lolimit,
-				  float hilimit,
-				  bool loexact=true,
-				  bool hiexact=false,
-				  bool hasmissing=true,
-				  float missing=kFloatMissing
-				  )
-    : itsLoLimit(lolimit)
-    , itsHiLimit(hilimit)
-    , itsLoLimitExact(loexact)
-    , itsHiLimitExact(hiexact)
-    , itHasMissingValue(hasmissing)
-    , itsMissingValue(missing)
-    , itHasDataLoLimit(false)
-    , itHasDataHiLimit(false)
-	, itsDataLoLimit()
-	, itsDataHiLimit()
-	, itsSubTrianglesOn(true)
-  { }
-  
-  /// Returns the active (read-only) \em low limit of the contoured interval
-  
-  float LoLimit(void) const	{ return itsLoLimit; }
-  
-  /// Returns the active (read-only) \em high limit of the contoured interval
-  
-  float HiLimit(void) const	{ return itsHiLimit; }
-  
-  /// Returns \c true, if \c itsLoLimit is included in the contoured interval.
-  
-  bool LoLimitExact(void) const { return itsLoLimitExact; }
-  
-  /// Returns \c true, if \c itsHiLimit is included in the contoured interval.
-  
-  bool HiLimitExact(void) const { return itsHiLimitExact; }
-  
-  /// Returns \c true, if a \em missing value has been specified.
-  
-  bool HasMissingValue(void) const	{ return itHasMissingValue; }
-  
-  /// Returns the missing value used in contouring data.
-  
-  float MissingValue(void) const	{ return itsMissingValue; }
-  
-  /// Returns \c true, if the data has a \em low limit for valid data
-  
-  bool HasDataLoLimit(void) const 	{ return itHasDataLoLimit; }
-  
-  /// Returns \c true, if the data has a \em high limit for valid data
-  
-  bool HasDataHiLimit(void) const 	{ return itHasDataHiLimit; }
-  
-  /// Returns the \em low limit of valid data, if one has been set.
-  
-  float DataLoLimit(void) const		{ return itsDataLoLimit; }
-  
-  /// Returns the \em high limit of valid data, if one has been set.
-  
-  float DataHiLimit(void) const		{ return itsDataHiLimit; }
-  
-  /// Sets the value which indicates a \em missing value in contour data.
-  
-  void MissingValue(float value)
+  /// Class to calculating 2D contour polygons given a data interval.
+
+  class _FMI_DLL NFmiContourTree : public NFmiEdgeTree
   {
-    itHasMissingValue = true;
-    itsMissingValue = value;
-  }
-  
-  /// Sets the \em low limit for valid data.
-  
-  void DataLoLimit(float value)
-  {
-    itHasDataLoLimit = true;
-    itsDataLoLimit = value;
-  }
-  
-  /// Sets the \em high limit for valid data.
-  
-  void DataHiLimit(float value)
-  {
-    itHasDataHiLimit = true;
-    itsDataHiLimit = value;
-  }
-
-  /// Sets the subtriangle mode flag
-  void SubTriangleMode(bool flag) { itsSubTrianglesOn = flag; }
-
-  // Returns the subtriangle-mode flag
-  bool SubTriangleMode() const { return itsSubTrianglesOn; }
-
-  /// Test if a value is valid for contouring
-  /*!
-   * A value is considered invalid if
-   *
-   *  -# A missing value has been set, and the value is identical to it.
-   *  -# A low limit has been set, and the value is less than the limit.
-   *  -# A high limit has been set, and the value is greater than the limit.
-   *
-   * Otherwise the value is considered valid for contouring.
-   */
-  
-  bool IsValid(float value)
-  {
-    if(itHasMissingValue && value==itsMissingValue)
-      return false;
-    if(itHasDataLoLimit && value<itsDataLoLimit)
-      return false;
-    if(itHasDataHiLimit && value>itsDataHiLimit)
-      return false;
-    return true;
-  }
-  
-  /// Contour a data-matrix using the desired method.
-  
-  void Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
-			   const NFmiDataMatrix<float> & theValues,
-			   const NFmiContourInterpolation & theInterpolation,
-			   int theMaxDepth=0);
-  
-  void Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
-			   const NFmiDataMatrix<float> & theValues,
-			   const NFmiContourDataHelper & theHelper,
-			   const NFmiContourInterpolation & theInterpolation,
-			   int theMaxDepth=0);
-  
-  // These assume the coordinates run from 0 to size-1
-
-  void Contour(const NFmiDataMatrix<float> & theValues,
-			   const NFmiContourInterpolation & theInterpolation,
-			   int theMaxDepth=0);
-  
-  void Contour(const NFmiDataMatrix<float> & theValues,
-			   const NFmiContourDataHelper & theHelper,
-			   const NFmiContourInterpolation & theInterpolation,
-			   int theMaxDepth=0);
-
-  NFmiPath Path(void) const;
-
-private:
-  
-  /// Disabled default constructor.
-  
-  /*!
-   * We always require atleast a contour interval in the constructor.
-   */
-  
-  NFmiContourTree(void);
-  
-  /// Possible locations of a value with respect to contour limits.
-  
-  enum VertexInsidedness { kBelow, kInside, kAbove };
-  
-  /// Possible equality conditions of a value with respect to contour limits.
-  
-  enum VertexExactness   { kLoLimit, kHiLimit, kNeither };
-  
-  /// A help function definition for vertex insidedness combinations
-  
+  public:
+	
+	/// Different contouring methods.
+	
+	enum NFmiContourInterpolation
+	  {
+		kFmiContourMissingInterpolation,	///< No interpolation defined
+		kFmiContourNearest,		///< Nearest neighbour interpolation
+		kFmiContourLinear			///< Linear interpolation
+	  };
+	
+	/// Convert a name of interpolation method to enumerated type.
+	
+	static const NFmiContourInterpolation ContourInterpolationValue(const std::string & theName);
+	
+	/// Convert interpolation method enum to a name
+	
+	static const std::string ContourInterpolationName(NFmiContourInterpolation theInterpolation);
+	
+	/// Destructor
+	
+	~NFmiContourTree(void) {}
+	
+	/// Constructor.
+	
+	/*!
+	 * The constructor enforces the condition lolimit<hilimit.
+	 * Equality is not allowed since the resulting contour area
+	 * would be empty.
+	 */
+	
+	NFmiContourTree(float lolimit,
+					float hilimit,
+					bool loexact=true,
+					bool hiexact=false,
+					bool hasmissing=true,
+					float missing=kFloatMissing
+					)
+	  : itsLoLimit(lolimit)
+	  , itsHiLimit(hilimit)
+	  , itsLoLimitExact(loexact)
+	  , itsHiLimitExact(hiexact)
+	  , itHasMissingValue(hasmissing)
+	  , itsMissingValue(missing)
+	  , itHasDataLoLimit(false)
+	  , itHasDataHiLimit(false)
+	  , itsDataLoLimit()
+	  , itsDataHiLimit()
+	  , itsSubTrianglesOn(true)
+	{ }
+	
+	/// Returns the active (read-only) \em low limit of the contoured interval
+	
+	float LoLimit(void) const	{ return itsLoLimit; }
+	
+	/// Returns the active (read-only) \em high limit of the contoured interval
+	
+	float HiLimit(void) const	{ return itsHiLimit; }
+	
+	/// Returns \c true, if \c itsLoLimit is included in the contoured interval.
+	
+	bool LoLimitExact(void) const { return itsLoLimitExact; }
+	
+	/// Returns \c true, if \c itsHiLimit is included in the contoured interval.
+	
+	bool HiLimitExact(void) const { return itsHiLimitExact; }
+	
+	/// Returns \c true, if a \em missing value has been specified.
+	
+	bool HasMissingValue(void) const	{ return itHasMissingValue; }
+	
+	/// Returns the missing value used in contouring data.
+	
+	float MissingValue(void) const	{ return itsMissingValue; }
+	
+	/// Returns \c true, if the data has a \em low limit for valid data
+	
+	bool HasDataLoLimit(void) const 	{ return itHasDataLoLimit; }
+	
+	/// Returns \c true, if the data has a \em high limit for valid data
+	
+	bool HasDataHiLimit(void) const 	{ return itHasDataHiLimit; }
+	
+	/// Returns the \em low limit of valid data, if one has been set.
+	
+	float DataLoLimit(void) const		{ return itsDataLoLimit; }
+	
+	/// Returns the \em high limit of valid data, if one has been set.
+	
+	float DataHiLimit(void) const		{ return itsDataHiLimit; }
+	
+	/// Sets the value which indicates a \em missing value in contour data.
+	
+	void MissingValue(float value)
+	{
+	  itHasMissingValue = true;
+	  itsMissingValue = value;
+	}
+	
+	/// Sets the \em low limit for valid data.
+	
+	void DataLoLimit(float value)
+	{
+	  itHasDataLoLimit = true;
+	  itsDataLoLimit = value;
+	}
+	
+	/// Sets the \em high limit for valid data.
+	
+	void DataHiLimit(float value)
+	{
+	  itHasDataHiLimit = true;
+	  itsDataHiLimit = value;
+	}
+	
+	/// Sets the subtriangle mode flag
+	void SubTriangleMode(bool flag) { itsSubTrianglesOn = flag; }
+	
+	// Returns the subtriangle-mode flag
+	bool SubTriangleMode() const { return itsSubTrianglesOn; }
+	
+	/// Test if a value is valid for contouring
+	/*!
+	 * A value is considered invalid if
+	 *
+	 *  -# A missing value has been set, and the value is identical to it.
+	 *  -# A low limit has been set, and the value is less than the limit.
+	 *  -# A high limit has been set, and the value is greater than the limit.
+	 *
+	 * Otherwise the value is considered valid for contouring.
+	 */
+	
+	bool IsValid(float value)
+	{
+	  if(itHasMissingValue && value==itsMissingValue)
+		return false;
+	  if(itHasDataLoLimit && value<itsDataLoLimit)
+		return false;
+	  if(itHasDataHiLimit && value>itsDataHiLimit)
+		return false;
+	  return true;
+	}
+	
+	/// Contour a data-matrix using the desired method.
+	
+	void Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
+				 const NFmiDataMatrix<float> & theValues,
+				 const NFmiContourInterpolation & theInterpolation,
+				 int theMaxDepth=0);
+	
+	void Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
+				 const NFmiDataMatrix<float> & theValues,
+				 const NFmiContourDataHelper & theHelper,
+				 const NFmiContourInterpolation & theInterpolation,
+				 int theMaxDepth=0);
+	
+	// These assume the coordinates run from 0 to size-1
+	
+	void Contour(const NFmiDataMatrix<float> & theValues,
+				 const NFmiContourInterpolation & theInterpolation,
+				 int theMaxDepth=0);
+	
+	void Contour(const NFmiDataMatrix<float> & theValues,
+				 const NFmiContourDataHelper & theHelper,
+				 const NFmiContourInterpolation & theInterpolation,
+				 int theMaxDepth=0);
+	
+	NFmiPath Path(void) const;
+	
+  private:
+	
+	/// Disabled default constructor.
+	
+	/*!
+	 * We always require atleast a contour interval in the constructor.
+	 */
+	
+	NFmiContourTree(void);
+	
+	/// Possible locations of a value with respect to contour limits.
+	
+	enum VertexInsidedness { kBelow, kInside, kAbove };
+	
+	/// Possible equality conditions of a value with respect to contour limits.
+	
+	enum VertexExactness   { kLoLimit, kHiLimit, kNeither };
+	
+	/// A help function definition for vertex insidedness combinations
+	
 #define VertexCombo(a,b) (3*(a)+b)
-  
-  /// VertexInsidedness of a value
-  
-  /*!
-   * Note that whether the value is missing or not is ignored on purpose,
-   * it is expected that the validity has been checked before this
-   * method is called.
-   */
-  
-  VertexInsidedness Insidedness(float z) const
-  {
-    if(itsLoLimit!=kFloatMissing && z<itsLoLimit)
-      return kBelow;
-    else if(itsHiLimit!=kFloatMissing && z>itsHiLimit)
-      return kAbove;
-    else if(itsLoLimit!=kFloatMissing && z==itsLoLimit)
-      return (itsLoLimitExact ? kInside : kBelow);
-    else if(itsHiLimit!=kFloatMissing && z==itsHiLimit)
-      return (itsHiLimitExact ? kInside : kAbove);
-    else
-      return kInside;
-  }
-  
-  /// VertexExactness of a value with respect to contour limits.
-  
-  /*!
-   * Note that whether the value is missing or not is ignored on purpose,
-   * it is expected that the validity has been checked before this
-   * method is called.
-   */
-  
-  VertexExactness Exactness(float z) const
-  {
-    if(itsLoLimit!=kFloatMissing && z==itsLoLimit && itsLoLimitExact)
-      return kLoLimit;
-    else if(itsHiLimit!=kFloatMissing && z==itsHiLimit && itsHiLimitExact)
-      return kHiLimit;
-    else
-      return kNeither;
-  }
-  
-  //! Test whether we're contouring missing values
-  
-  bool ContouringMissing(void) const
-  { return (LoLimit()==kFloatMissing && HiLimit()==kFloatMissing); }
-  
-  /// Contour a data-matrix using linear interpolation.
-  
-  void ContourLinear(const NFmiDataMatrix<float> & theValues,
-					 int theMaxDepth=0);
+	
+	/// VertexInsidedness of a value
+	
+	/*!
+	 * Note that whether the value is missing or not is ignored on purpose,
+	 * it is expected that the validity has been checked before this
+	 * method is called.
+	 */
+	
+	VertexInsidedness Insidedness(float z) const
+	{
+	  if(itsLoLimit!=kFloatMissing && z<itsLoLimit)
+		return kBelow;
+	  else if(itsHiLimit!=kFloatMissing && z>itsHiLimit)
+		return kAbove;
+	  else if(itsLoLimit!=kFloatMissing && z==itsLoLimit)
+		return (itsLoLimitExact ? kInside : kBelow);
+	  else if(itsHiLimit!=kFloatMissing && z==itsHiLimit)
+		return (itsHiLimitExact ? kInside : kAbove);
+	  else
+		return kInside;
+	}
+	
+	/// VertexExactness of a value with respect to contour limits.
+	
+	/*!
+	 * Note that whether the value is missing or not is ignored on purpose,
+	 * it is expected that the validity has been checked before this
+	 * method is called.
+	 */
+	
+	VertexExactness Exactness(float z) const
+	{
+	  if(itsLoLimit!=kFloatMissing && z==itsLoLimit && itsLoLimitExact)
+		return kLoLimit;
+	  else if(itsHiLimit!=kFloatMissing && z==itsHiLimit && itsHiLimitExact)
+		return kHiLimit;
+	  else
+		return kNeither;
+	}
+	
+	//! Test whether we're contouring missing values
+	
+	bool ContouringMissing(void) const
+	{ return (LoLimit()==kFloatMissing && HiLimit()==kFloatMissing); }
+	
+	/// Contour a data-matrix using linear interpolation.
+	
+	void ContourLinear(const NFmiDataMatrix<float> & theValues,
+					   int theMaxDepth=0);
+	
+	void ContourLinear(const NFmiDataMatrix<float> & theValues,
+					   const NFmiContourDataHelper & theHelper,
+					   int theMaxDepth=0);
+	
+	void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
+					   const NFmiDataMatrix<float> & theValues,
+					   int theMaxDepth=0);
+	
+	void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
+					   const NFmiDataMatrix<float> & theValues,
+					   const NFmiContourDataHelper & theHelper,
+					   int theMaxDepth=0);
+	
+	/// Contour a data-matrix using nearest neighbour interpolation
+	
+	void ContourNearest(const NFmiDataMatrix<float> & theValues);
+	
+	void ContourNearest(const NFmiDataMatrix<float> & theValues,
+						const NFmiContourDataHelper & theHelper);
+	
+	void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
+						const NFmiDataMatrix<float> & theValues);
+	
+	void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
+						const NFmiDataMatrix<float> & theValues,
+						const NFmiContourDataHelper & theHelper);
+	
+	/// Contour a triangular element using linear interpolation
+	
+	void ContourLinear3(float x1, float y1, float z1,
+						float x2, float y2, float z2,
+						float x3, float y3, float z3,
+						int maxdepth=0);
+	
+	/// Contour a rectangular element using linear interpolation
+	
+	void ContourLinear4(float x1, float y1, float z1,
+						float x2, float y2, float z2,
+						float x3, float y3, float z3,
+						float x4, float y4, float z4,
+						int maxdepth=0);
+	
+	/// Contour a triangular element using nearest neighbour interpolation
+	
+	void ContourNearest3(float x1, float y1, float z1,
+						 float x2, float y2, float z2,
+						 float x3, float y3, float z3);
+	
+	/// Contour a triangular element using nearest neighbour interpolation
+	
+	void ContourNearest4(float x1, float y1, float z1,
+						 float x2, float y2, float z2,
+						 float x3, float y3, float z3,
+						 float x4, float y4, float z4);
+	
+	/// A utility function used by the constructor to check the limits.
+	
+	void PrepareLimits(void);
+	
+	/// Contour recursion for triangles.
+	
+	void ContourLinear3Recurse(float x1, float y1, float z1,
+							   float x2, float y2, float z2,
+							   float x3, float y3, float z3,
+							   int depth);
+	
+	/// Contour recursion for rectangles.
+	
+	void ContourLinear4Recurse(float x1, float y1, float z1,
+							   float x2, float y2, float z2,
+							   float x3, float y3, float z3,
+							   float x4, float y4, float z4,
+							   int depth);
+	
+	/// Contour recursion of line segments
+	
+	void Contour2Recurse(float x1, float y1, float x2, float y2,
+						 bool exact, int depth);
+	
+	/// Calculate contour intersections at an edge.
+	
+	void IntersectEdge(std::vector<float> & X,
+					   std::vector<float> & Y,
+					   std::vector<VertexExactness> & B,
+					   float x1, float y1, float z1, VertexInsidedness c1,
+					   float x2, float y2, float z2, VertexInsidedness c2
+					   );
+	
+	/// Add polygon formed by given points into the contour polygon.
+	
+	void AddEdges(const std::vector<float> & X,
+				  const std::vector<float> & Y,
+				  const std::vector<VertexExactness> & B
+				  );
+	
+	// Data members
+	
+	float	itsLoLimit;		//!< Low limit of contoured data interval.
+	float	itsHiLimit;		//!< High limit of contoured data interval.
+	bool	itsLoLimitExact;	//!< Is low limit included in the interval?
+	bool	itsHiLimitExact;	//!< Is high limit included in the interval?
+	
+	bool	itHasMissingValue;	//!< Is there a missing data value?
+	float	itsMissingValue;	//!< The missing data value.
+	
+	bool	itHasDataLoLimit;	//!< Is there a low limit to data validity?
+	bool	itHasDataHiLimit;	//!< Is there a high limit to data validity?
+	float itsDataLoLimit;		//!< Low limit to data validity.
+	float itsDataHiLimit;		//!< Low limit to data validity.
+	
+	bool itsSubTrianglesOn;	//!< True if rectangles subdivide into triangles
+	
+  };
 
-  void ContourLinear(const NFmiDataMatrix<float> & theValues,
-					 const NFmiContourDataHelper & theHelper,
-					 int theMaxDepth=0);
-
-  void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
-					 const NFmiDataMatrix<float> & theValues,
-					 int theMaxDepth=0);
-
-  void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
-					 const NFmiDataMatrix<float> & theValues,
-					 const NFmiContourDataHelper & theHelper,
-					 int theMaxDepth=0);
-  
-  /// Contour a data-matrix using nearest neighbour interpolation
-  
-  void ContourNearest(const NFmiDataMatrix<float> & theValues);
-
-  void ContourNearest(const NFmiDataMatrix<float> & theValues,
-					  const NFmiContourDataHelper & theHelper);
-
-  void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
-					  const NFmiDataMatrix<float> & theValues);
-  
-  void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
-					  const NFmiDataMatrix<float> & theValues,
-					  const NFmiContourDataHelper & theHelper);
-  
-  /// Contour a triangular element using linear interpolation
-  
-  void ContourLinear3(float x1, float y1, float z1,
-					  float x2, float y2, float z2,
-					  float x3, float y3, float z3,
-					  int maxdepth=0);
-  
-  /// Contour a rectangular element using linear interpolation
-  
-  void ContourLinear4(float x1, float y1, float z1,
-					  float x2, float y2, float z2,
-					  float x3, float y3, float z3,
-					  float x4, float y4, float z4,
-					  int maxdepth=0);
-  
-  /// Contour a triangular element using nearest neighbour interpolation
-  
-  void ContourNearest3(float x1, float y1, float z1,
-					   float x2, float y2, float z2,
-					   float x3, float y3, float z3);
-  
-  /// Contour a triangular element using nearest neighbour interpolation
-  
-  void ContourNearest4(float x1, float y1, float z1,
-					   float x2, float y2, float z2,
-					   float x3, float y3, float z3,
-					   float x4, float y4, float z4);
-  
-  /// A utility function used by the constructor to check the limits.
-  
-  void PrepareLimits(void);
-  
-  /// Contour recursion for triangles.
-  
-  void ContourLinear3Recurse(float x1, float y1, float z1,
-							 float x2, float y2, float z2,
-							 float x3, float y3, float z3,
-							 int depth);
-  
-  /// Contour recursion for rectangles.
-  
-  void ContourLinear4Recurse(float x1, float y1, float z1,
-							 float x2, float y2, float z2,
-							 float x3, float y3, float z3,
-							 float x4, float y4, float z4,
-							 int depth);
-  
-  /// Contour recursion of line segments
-  
-  void Contour2Recurse(float x1, float y1, float x2, float y2,
-					   bool exact, int depth);
-  
-  /// Calculate contour intersections at an edge.
-  
-  void IntersectEdge(std::vector<float> & X,
-					 std::vector<float> & Y,
-					 std::vector<VertexExactness> & B,
-					 float x1, float y1, float z1, VertexInsidedness c1,
-					 float x2, float y2, float z2, VertexInsidedness c2
-					 );
-  
-  /// Add polygon formed by given points into the contour polygon.
-  
-  void AddEdges(const std::vector<float> & X,
-				const std::vector<float> & Y,
-				const std::vector<VertexExactness> & B
-				);
-  
-  // Data members
-  
-  float	itsLoLimit;		//!< Low limit of contoured data interval.
-  float	itsHiLimit;		//!< High limit of contoured data interval.
-  bool	itsLoLimitExact;	//!< Is low limit included in the interval?
-  bool	itsHiLimitExact;	//!< Is high limit included in the interval?
-  
-  bool	itHasMissingValue;	//!< Is there a missing data value?
-  float	itsMissingValue;	//!< The missing data value.
-  
-  bool	itHasDataLoLimit;	//!< Is there a low limit to data validity?
-  bool	itHasDataHiLimit;	//!< Is there a high limit to data validity?
-  float itsDataLoLimit;		//!< Low limit to data validity.
-  float itsDataHiLimit;		//!< Low limit to data validity.
-
-  bool itsSubTrianglesOn;	//!< True if rectangles subdivide into triangles
-
-};
+} // namespace Imagine  
 
 // ----------------------------------------------------------------------
-
-#endif	// _NFMICONTOURTREE_H
-
+  
+#endif	// IMAGINE_NFMICONTOURTREE_H

@@ -13,8 +13,8 @@
 //
 // ======================================================================
 
-#ifndef _NFMIIMAGE_H
-#define _NFMIIMAGE_H
+#ifndef IMAGINE_NFMIIMAGE_H
+#define IMAGINE_NFMIIMAGE_H
 
 #include <string>	// for filenames, drawing text etc
 #include <utility>	// for pairs
@@ -32,213 +32,218 @@
      using std::FILE;
 #endif
 
-//! Generic NFmiImage exception from which all others are derived
-struct NFmiImageError : public std::runtime_error
-{
-  NFmiImageError(const std::string & s) : std::runtime_error(s) { }
-};
-
-//! Insufficient memory error
-struct NFmiImageMemoryError : public NFmiImageError
-{
-  NFmiImageMemoryError(const std::string & s) : NFmiImageError(s) { }
-};
-
-//! Opening image file fails
-struct NFmiImageOpenError : public NFmiImageError
-{
-  NFmiImageOpenError(const std::string & s) : NFmiImageError(s) { }
-};
-
-//! Unrecognized image format
-struct NFmiImageFormatError : public NFmiImageError
-{
-  NFmiImageFormatError(const std::string & s) : NFmiImageError(s) { }
-};
-
-//! Corrupt image data
-struct NFmiImageCorruptError : public NFmiImageError
-{
-  NFmiImageCorruptError(const std::string & s) : NFmiImageError(s) { }
-};
-
-class _FMI_DLL NFmiImage : public NFmiDrawable
-
+namespace Imagine
 {
 
-private:
-  
-  // Data elements
-  
-  int			itsWidth;
-  int			itsHeight;
-  NFmiColorTools::Color	*itsPixels;
-  
-  // Various options
-  
-  int	itsJpegQuality;		// JPEG compression quality, 0-100
-  int	itsPngQuality;		// PNG compression level, 0-9
-  int	itsPngFilter;		// PNG filter
-  int	itsAlphaLimit;		// alpha<=limit is considered opaque
-  float itsGamma;		// Gamma, 1-3 is reasonable
-  std::string itsIntent;	// Rendering intent (PNG)
-  
-  bool	itsSaveAlphaFlag;	// true if alpha is to be saved
-  bool  itsWantPaletteFlag;	// true if palette is desired when possible
-  bool	itsForcePaletteFlag;	// true if palette is to be forced
-  
-public:
-  
-  // Constructors, destructors
-  
-  NFmiImage(int theWidth=0, int theHeight=0, NFmiColorTools::Color theColor=0);
-  NFmiImage(const NFmiImage & theImg);
-  NFmiImage(const std::string & theFileName);
-  virtual ~NFmiImage(void) { Destroy(); }
-  
-  // Data access
-  
-  int Width(void) const { return itsWidth; }
-  int Height(void) const { return itsHeight; }
-  
-  // All constructors call this to set the default options
-  
-  void DefaultOptions(void);
-  
-  // Access to individual options
-  
-#ifndef IMAGINE_IGNORE_FORMATS
-  int JpegQuality(void) const		{ return itsJpegQuality; }
-  int PngQuality(void) const		{ return itsPngQuality; }
-  int AlphaLimit(void) const		{ return itsAlphaLimit; }
-  bool SaveAlpha(void) const		{ return itsSaveAlphaFlag; }
-  bool WantPalette(void) const		{ return itsWantPaletteFlag; }
-  bool ForcePalette(void) const		{ return itsForcePaletteFlag; }
-  float Gamma(void) const		{ return itsGamma; }
-  std::string Intent(void) const	{ return itsIntent; }
-  
-  void JpegQuality(int quality)		{ itsJpegQuality = quality; }
-  void PngQuality(int quality)		{ itsPngQuality = quality; }
-  void AlphaLimit(int limit)		{ itsAlphaLimit = limit; }
-  void SaveAlpha(bool flag)		{ itsSaveAlphaFlag = flag; }
-  void WantPalette(bool flag)		{ itsWantPaletteFlag = flag; }
-  void ForcePalette(bool flag)		{ itsForcePaletteFlag = flag; }
-  void Gamma(float value)		{ itsGamma = value; }
-  void Intent(const std::string & value){ itsIntent = value; }
-#endif  // IMAGINE_IGNORE_FORMATS
-  
-  // This makes  A(i,j) = B(x,y) work
-  
-  NFmiColorTools::Color & operator()(int i, int j) const
+  //! Generic NFmiImage exception from which all others are derived
+  struct NFmiImageError : public std::runtime_error
   {
-    return itsPixels[j*itsWidth+i];
-  }
+	NFmiImageError(const std::string & s) : std::runtime_error(s) { }
+  };
   
-  // Assignment operator
+  //! Insufficient memory error
+  struct NFmiImageMemoryError : public NFmiImageError
+  {
+	NFmiImageMemoryError(const std::string & s) : NFmiImageError(s) { }
+  };
   
-  NFmiImage & operator= (const NFmiImage & theImage);
-  NFmiImage & operator= (const NFmiColorTools::Color theColor);
+  //! Opening image file fails
+  struct NFmiImageOpenError : public NFmiImageError
+  {
+	NFmiImageOpenError(const std::string & s) : NFmiImageError(s) { }
+  };
   
-  // Reading an image
+  //! Unrecognized image format
+  struct NFmiImageFormatError : public NFmiImageError
+  {
+	NFmiImageFormatError(const std::string & s) : NFmiImageError(s) { }
+  };
   
-  void Read(const std::string & theFileName);
+  //! Corrupt image data
+  struct NFmiImageCorruptError : public NFmiImageError
+  {
+	NFmiImageCorruptError(const std::string & s) : NFmiImageError(s) { }
+  };
   
-  // Writing the image
+  class _FMI_DLL NFmiImage : public NFmiDrawable
   
+  {
+	
+  private:
+	
+	// Data elements
+	
+	int			itsWidth;
+	int			itsHeight;
+	NFmiColorTools::Color	*itsPixels;
+	
+	// Various options
+	
+	int	itsJpegQuality;		// JPEG compression quality, 0-100
+	int	itsPngQuality;		// PNG compression level, 0-9
+	int	itsPngFilter;		// PNG filter
+	int	itsAlphaLimit;		// alpha<=limit is considered opaque
+	float itsGamma;		// Gamma, 1-3 is reasonable
+	std::string itsIntent;	// Rendering intent (PNG)
+	
+	bool	itsSaveAlphaFlag;	// true if alpha is to be saved
+	bool  itsWantPaletteFlag;	// true if palette is desired when possible
+	bool	itsForcePaletteFlag;	// true if palette is to be forced
+	
+  public:
+	
+	// Constructors, destructors
+	
+	NFmiImage(int theWidth=0, int theHeight=0, NFmiColorTools::Color theColor=0);
+	NFmiImage(const NFmiImage & theImg);
+	NFmiImage(const std::string & theFileName);
+	virtual ~NFmiImage(void) { Destroy(); }
+	
+	// Data access
+	
+	int Width(void) const { return itsWidth; }
+	int Height(void) const { return itsHeight; }
+	
+	// All constructors call this to set the default options
+	
+	void DefaultOptions(void);
+	
+	// Access to individual options
+	
 #ifndef IMAGINE_IGNORE_FORMATS
-  void WriteJpeg(const std::string & theFileName) const;
-  void WritePng(const std::string & theFileName) const;
-#endif // IMAGINE_IGNORE_FORMATS
-  void WriteGif(const std::string & theFileName) const;
-  
-  // Erasing image with desired colour
-  
-  void Erase(NFmiColorTools::Color theColor);
-  
-  // Reducing the number of colors in an image
-  
-  void Quantize(int maxcolors,
-				int opaquethreshold=-1,
-				bool ignoreAlpha=false) const;
-  
-  // A simple non-antialiased line of width 1 pixel
-  
-  void StrokeBasic(float theX1, float theY1,
-				   float theX2, float theY2,
-				   NFmiColorTools::Color theColor,
-				   NFmiColorTools::NFmiBlendRule theRule);
-  
-  // Composite image over another
-  
-  void Composite(const NFmiImage & theImage,
-				 NFmiColorTools::NFmiBlendRule theRule,
-				 NFmiAlignment theAlignment = kFmiAlignNorthWest,
-				 int theX=0,
-				 int theY=0,
-				 float theAlpha=1.0);
-  
-private:
-  
-  // Constructor, destructor utilities
-  
-  void Destroy(void);
-  void Allocate(int width, int height);
-  void Reallocate(int width, int height);
-  
-  // Reading and writing various image formats
-  
+	int JpegQuality(void) const		{ return itsJpegQuality; }
+	int PngQuality(void) const		{ return itsPngQuality; }
+	int AlphaLimit(void) const		{ return itsAlphaLimit; }
+	bool SaveAlpha(void) const		{ return itsSaveAlphaFlag; }
+	bool WantPalette(void) const		{ return itsWantPaletteFlag; }
+	bool ForcePalette(void) const		{ return itsForcePaletteFlag; }
+	float Gamma(void) const		{ return itsGamma; }
+	std::string Intent(void) const	{ return itsIntent; }
+	
+	void JpegQuality(int quality)		{ itsJpegQuality = quality; }
+	void PngQuality(int quality)		{ itsPngQuality = quality; }
+	void AlphaLimit(int limit)		{ itsAlphaLimit = limit; }
+	void SaveAlpha(bool flag)		{ itsSaveAlphaFlag = flag; }
+	void WantPalette(bool flag)		{ itsWantPaletteFlag = flag; }
+	void ForcePalette(bool flag)		{ itsForcePaletteFlag = flag; }
+	void Gamma(float value)		{ itsGamma = value; }
+	void Intent(const std::string & value){ itsIntent = value; }
+#endif  // IMAGINE_IGNORE_FORMATS
+	
+	// This makes  A(i,j) = B(x,y) work
+	
+	NFmiColorTools::Color & operator()(int i, int j) const
+	{
+	  return itsPixels[j*itsWidth+i];
+	}
+	
+	// Assignment operator
+	
+	NFmiImage & operator= (const NFmiImage & theImage);
+	NFmiImage & operator= (const NFmiColorTools::Color theColor);
+	
+	// Reading an image
+	
+	void Read(const std::string & theFileName);
+	
+	// Writing the image
+	
 #ifndef IMAGINE_IGNORE_FORMATS
-  void ReadPNG(FILE *in);
-  void WritePNG(FILE *out) const;
-  
-  void ReadJPEG(FILE *in);
-  void WriteJPEG(FILE *out) const;
+	void WriteJpeg(const std::string & theFileName) const;
+	void WritePng(const std::string & theFileName) const;
 #endif // IMAGINE_IGNORE_FORMATS
-  
-  void ReadGIF(FILE *in);
-  void WriteGIF(FILE *out) const;
+	void WriteGif(const std::string & theFileName) const;
+	
+	// Erasing image with desired colour
+	
+	void Erase(NFmiColorTools::Color theColor);
+	
+	// Reducing the number of colors in an image
+	
+	void Quantize(int maxcolors,
+				  int opaquethreshold=-1,
+				  bool ignoreAlpha=false) const;
+	
+	// A simple non-antialiased line of width 1 pixel
+	
+	void StrokeBasic(float theX1, float theY1,
+					 float theX2, float theY2,
+					 NFmiColorTools::Color theColor,
+					 NFmiColorTools::NFmiBlendRule theRule);
+	
+	// Composite image over another
+	
+	void Composite(const NFmiImage & theImage,
+				   NFmiColorTools::NFmiBlendRule theRule,
+				   NFmiAlignment theAlignment = kFmiAlignNorthWest,
+				   int theX=0,
+				   int theY=0,
+				   float theAlpha=1.0);
+	
+  private:
+	
+	// Constructor, destructor utilities
+	
+	void Destroy(void);
+	void Allocate(int width, int height);
+	void Reallocate(int width, int height);
+	
+	// Reading and writing various image formats
+	
+#ifndef IMAGINE_IGNORE_FORMATS
+	void ReadPNG(FILE *in);
+	void WritePNG(FILE *out) const;
+	
+	void ReadJPEG(FILE *in);
+	void WriteJPEG(FILE *out) const;
+#endif // IMAGINE_IGNORE_FORMATS
+	
+	void ReadGIF(FILE *in);
+	void WriteGIF(FILE *out) const;
+	
+	// Test whether the image is opaque
+	
+	bool IsOpaque(int threshold = -1) const;
+	
+	// Test whether the image is fully opaque/transparent
+	
+	bool IsFullyOpaqueOrTransparent(int threshold = -1) const;
+	
+	// Returns an RGB value which does NOT occur in the image
+	
+	NFmiColorTools::Color UnusedColor(void) const;
+	
+	// Put image colors into the given set
+	
+	bool AddColors(std::set<NFmiColorTools::Color> & theSet,
+				   int maxcolors=-1,
+				   int opaquethreshold=-1,
+				   bool ignoreAlpha=false) const;
+	
+	// Strokebasic low level drivers for each blending rule
+	// By default we use the generally faster RGBA version below
+	// Specializations later on in the code may overload the latter
+	// interface below for defining possible optimized versions.
+	
+	//  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
+	//  void StrokeBasic(float theX1, float theY1, float theX2, float theY2,
+	//		   int r, int g, int b, int a);
+	
+	//  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
+	//  void StrokeBasic(float theX1, float theY1,
+	//		   float theX2, float theY2,
+	//		   NFmiColorTools::Color theColor);
+	
+	// Composite low level drivers for each blending rule
+	
+	//  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
+	//  void Composite(const NFmiImage & theImage,
+	//		 int theX, int theY, float theAlpha);
+	
+  };
 
-  // Test whether the image is opaque
+} // namespace Imagine
   
-  bool IsOpaque(int threshold = -1) const;
+#endif // IMAGINE_NFMIIMAGE_H
   
-  // Test whether the image is fully opaque/transparent
-  
-  bool IsFullyOpaqueOrTransparent(int threshold = -1) const;
-  
-  // Returns an RGB value which does NOT occur in the image
-  
-  NFmiColorTools::Color UnusedColor(void) const;
-  
-  // Put image colors into the given set
-  
-  bool AddColors(std::set<NFmiColorTools::Color> & theSet,
-				 int maxcolors=-1,
-				 int opaquethreshold=-1,
-				 bool ignoreAlpha=false) const;
-  
-  // Strokebasic low level drivers for each blending rule
-  // By default we use the generally faster RGBA version below
-  // Specializations later on in the code may overload the latter
-  // interface below for defining possible optimized versions.
-  
-  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
-  //  void StrokeBasic(float theX1, float theY1, float theX2, float theY2,
-  //		   int r, int g, int b, int a);
-  
-  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
-  //  void StrokeBasic(float theX1, float theY1,
-  //		   float theX2, float theY2,
-  //		   NFmiColorTools::Color theColor);
-  
-  // Composite low level drivers for each blending rule
-  
-  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
-  //  void Composite(const NFmiImage & theImage,
-  //		 int theX, int theY, float theAlpha);
-  
-};
-
-#endif // _NFMIIMAGE_H
-
 // ----------------------------------------------------------------------

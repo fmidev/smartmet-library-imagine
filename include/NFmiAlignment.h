@@ -1,3 +1,4 @@
+// ======================================================================
 /*!
  * \file NFmiAlignment.h
  * \brief Graphical alignment information.
@@ -14,39 +15,44 @@
  * Implemented
  *
  */
+// ======================================================================
 
-
-#ifndef _NFMIALIGNMENT_H
-#define _NFMIALIGNMENT_H
+#ifndef IMAGINE_NFMIALIGNMENT_H
+#define IMAGINE_NFMIALIGNMENT_H
 
 #include <string>
 
-//! Enumeration of possible alignments.
+namespace Imagine
+{
 
-enum NFmiAlignment { kFmiAlignMissing,
-					 kFmiAlignCenter,
+  //! Enumeration of possible alignments.
+  
+  enum NFmiAlignment { kFmiAlignMissing,
+					   kFmiAlignCenter,
 					 kFmiAlignNorthWest,
-					 kFmiAlignNorth,
-					 kFmiAlignNorthEast,
-					 kFmiAlignEast,
-					 kFmiAlignSouthEast,
-					 kFmiAlignSouth,
-					 kFmiAlignSouthWest,
-					 kFmiAlignWest };
+					   kFmiAlignNorth,
+					   kFmiAlignNorthEast,
+					   kFmiAlignEast,
+					   kFmiAlignSouthEast,
+					   kFmiAlignSouth,
+					   kFmiAlignSouthWest,
+					   kFmiAlignWest };
+  
+  //! Convert string to enumerated value
+  
+  const NFmiAlignment AlignmentValue(const std::string & theName);
+  
+  //! Convert enumerated value to string
+  const std::string AlignmentName(const NFmiAlignment theAlignment);
+  
+  //! The linear interpolation coefficient for X-direction in range 0-1.
+  double XAlignmentFactor(NFmiAlignment theAlignment);
+  
+  //! The linear interpolation coefficient for Y-direction in range 0-1.
+  double YAlignmentFactor(NFmiAlignment theAlignment);
 
-//! Convert string to enumerated value
+} // namespace Imagine
 
-const NFmiAlignment AlignmentValue(const std::string & theName);
-
-//! Convert enumerated value to string
-const std::string AlignmentName(const NFmiAlignment theAlignment);
-
-//! The linear interpolation coefficient for X-direction in range 0-1.
-double XAlignmentFactor(NFmiAlignment theAlignment);
-
-//! The linear interpolation coefficient for Y-direction in range 0-1.
-double YAlignmentFactor(NFmiAlignment theAlignment);
-
-#endif // _NFMIALIGNMENT_H
+#endif // IMAGINE_NFMIALIGNMENT_H
 
 // ======================================================================

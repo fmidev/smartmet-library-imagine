@@ -9,52 +9,57 @@
 //
 // ======================================================================
 
-#ifndef _NFMIESRINULL_H
-#define _NFMIESRINULL_H
+#ifndef IMAGINE_NFMIESRINULL_H
+#define IMAGINE_NFMIESRINULL_H
 
 #include "NFmiEsriElement.h"
 #include "NFmiEsriBox.h"
 
-using namespace NFmiEsriBuffer;	// Conversion tools
-
-class _FMI_DLL NFmiEsriNull : public NFmiEsriElement
+namespace Imagine
 {
-public:
-  
-  // Constructors, destructors
-  
-  ~NFmiEsriNull(void) {}
-  
-  NFmiEsriNull(int theNumber=0)
-    : NFmiEsriElement(kFmiEsriNull,theNumber)
-  {}
-  
-  // Updating bounding boxes
-  
-  void Update(NFmiEsriBox & theBox) const
-  {
-  }
-  
-  // Writing string buffer
-  
-  void Write(std::ostream & os) const
-  {
-    os << LittleEndianInt(kFmiEsriNull);
-  }
-  
-  // Conversion to string buffer
-  
-  std::string ToString(void) const
-  {
-    return LittleEndianInt(kFmiEsriNull);
-  }
-  
-  // Calculating string buffer size
-  
-  int StringSize(void) const	{ return 4; }	// the type takes 4
-  
-};
+  using namespace NFmiEsriBuffer;	// Conversion tools
 
-#endif // _NFMIESRINULL_H
+  class _FMI_DLL NFmiEsriNull : public NFmiEsriElement
+  {
+  public:
+	
+	// Constructors, destructors
+	
+	~NFmiEsriNull(void) {}
+	
+	NFmiEsriNull(int theNumber=0)
+	  : NFmiEsriElement(kFmiEsriNull,theNumber)
+	{}
+	
+	// Updating bounding boxes
+	
+	void Update(NFmiEsriBox & theBox) const
+	{
+	}
+	
+	// Writing string buffer
+	
+	void Write(std::ostream & os) const
+	{
+	  os << LittleEndianInt(kFmiEsriNull);
+	}
+	
+	// Conversion to string buffer
+	
+	std::string ToString(void) const
+	{
+	  return LittleEndianInt(kFmiEsriNull);
+	}
+	
+	// Calculating string buffer size
+	
+	int StringSize(void) const	{ return 4; }	// the type takes 4
+	
+  };
 
+} // namespace Imagine
+  
+#endif // IMAGINE_NFMIESRINULL_H
+  
 // ======================================================================
+  

@@ -15,42 +15,47 @@
 
 #include "NFmiEsriPointZ.h"
 
-using namespace NFmiEsriBuffer;	// Conversion tools
+using namespace Imagine::NFmiEsriBuffer;	// Conversion tools
 using namespace std;
 
-// ----------------------------------------------------------------------
-// Constructor based on a character buffer
-// ----------------------------------------------------------------------
-
-NFmiEsriPointZ::NFmiEsriPointZ(const string & theBuffer, int thePos, int theNumber)
-  : NFmiEsriPointM(LittleEndianDouble(theBuffer,thePos+4),
-				   LittleEndianDouble(theBuffer,thePos+12),
-				   LittleEndianDouble(theBuffer,thePos+28),
-				   theNumber,kFmiEsriPointZ)
-  , itsZ(LittleEndianDouble(theBuffer,thePos+20))
+namespace Imagine
 {
-}
 
-// ----------------------------------------------------------------------
-// Calculating string buffer size
-// ----------------------------------------------------------------------
+  // ----------------------------------------------------------------------
+  // Constructor based on a character buffer
+  // ----------------------------------------------------------------------
+  
+  NFmiEsriPointZ::NFmiEsriPointZ(const string & theBuffer, int thePos, int theNumber)
+	: NFmiEsriPointM(LittleEndianDouble(theBuffer,thePos+4),
+					 LittleEndianDouble(theBuffer,thePos+12),
+					 LittleEndianDouble(theBuffer,thePos+28),
+					 theNumber,kFmiEsriPointZ)
+	, itsZ(LittleEndianDouble(theBuffer,thePos+20))
+  {
+  }
+  
+  // ----------------------------------------------------------------------
+  // Calculating string buffer size
+  // ----------------------------------------------------------------------
+  
+  int NFmiEsriPointZ::StringSize(void) const
+  {
+	return (4+4*8);	// int + 4 doubles
+  }
+  
+  // ----------------------------------------------------------------------
+  // Writing element
+  // ----------------------------------------------------------------------
+  
+  void NFmiEsriPointZ::Write(ostream & os) const
+  {
+	os << LittleEndianInt(Type())
+	   << LittleEndianDouble(X())
+	   << LittleEndianDouble(Y())
+	   << LittleEndianDouble(Z())
+	   << LittleEndianDouble(M());
+  }
 
-int NFmiEsriPointZ::StringSize(void) const
-{
-  return (4+4*8);	// int + 4 doubles
-}
-
-// ----------------------------------------------------------------------
-// Writing element
-// ----------------------------------------------------------------------
-
-void NFmiEsriPointZ::Write(ostream & os) const
-{
-  os << LittleEndianInt(Type())
-     << LittleEndianDouble(X())
-     << LittleEndianDouble(Y())
-     << LittleEndianDouble(Z())
-     << LittleEndianDouble(M());
-}
-
+} // namespace Imagine
+  
 // ======================================================================

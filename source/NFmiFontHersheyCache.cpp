@@ -20,43 +20,50 @@
 #include <stdexcept>
 
 using namespace std;
-// ----------------------------------------------------------------------
-// Given a Hershey font name - return respective NFmiHersheyData
-// ----------------------------------------------------------------------
 
-const NFmiHersheyData & NFmiFontHersheyCache::Data(const string & theName)
+namespace Imagine
 {
-  const string hershey_path = NFmiSettings::instance().value("imagine::hershey_path",".");
 
-  // First try to find the font from the cache
+  // ----------------------------------------------------------------------
+  // Given a Hershey font name - return respective NFmiHersheyData
+  // ----------------------------------------------------------------------
   
-  HersheyCache::const_iterator find_iter;
-  
-  find_iter = itsData.find(theName);
-  
-  if(find_iter != itsData.end())
-    return find_iter->second;
-  
-  // Then, try loading the file. First current directory, then default path
-  
-  string filename = FileComplete(theName + kFmiSuffixHershey, hershey_path);
-  
-  // If we found a correct filename - see if it is readable
-  
-  if(!FileReadable(filename))
-	throw std::runtime_error("Hershey font " + filename + " is not readable");
-  
-  // Now, if we found an invalid font name, we would return
-  // a dummy font name. However, constructing a dummy is
-  // exactly equal to constructing the actual font, hence
-  // there is no distinction here. Simply the fact that
-  // opening the file fails is enough to make the font
-  // created an empty one.
-  
-  // insert returns pair<iterator,flag>, from which we return iterator->second
-  
-  return itsData.insert(std::make_pair(theName,NFmiHersheyData(filename))).first->second;
-  
-}
+  const NFmiHersheyData & NFmiFontHersheyCache::Data(const string & theName)
+  {
+	const string hershey_path = NFmiSettings::instance().value("imagine::hershey_path",".");
+	
+	// First try to find the font from the cache
+	
+	HersheyCache::const_iterator find_iter;
+	
+	find_iter = itsData.find(theName);
+	
+	if(find_iter != itsData.end())
+	  return find_iter->second;
+	
+	// Then, try loading the file. First current directory, then default path
+	
+	string filename = FileComplete(theName + kFmiSuffixHershey, hershey_path);
+	
+	// If we found a correct filename - see if it is readable
+	
+	if(!FileReadable(filename))
+	  throw std::runtime_error("Hershey font " + filename + " is not readable");
+	
+	// Now, if we found an invalid font name, we would return
+	// a dummy font name. However, constructing a dummy is
+	// exactly equal to constructing the actual font, hence
+	// there is no distinction here. Simply the fact that
+	// opening the file fails is enough to make the font
+	// created an empty one.
+	
+	// insert returns pair<iterator,flag>, from which we return iterator->second
+	
+	return itsData.insert(std::make_pair(theName,NFmiHersheyData(filename))).first->second;
+	
+  }
 
+} // namespace Imagine
+  
 // ======================================================================
+  

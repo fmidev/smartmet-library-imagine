@@ -28,8 +28,8 @@
 //
 // ======================================================================
 
-#ifndef _NFMIPATH_H
-#define _NFMIPATH_H
+#ifndef IMAGINE_NFMIPATH_H
+#define IMAGINE_NFMIPATH_H
 
 // Essential includes
 
@@ -47,233 +47,237 @@
 #include "NFmiArea.h"
 
 class NFmiGrid;
-class NFmiEsriBox;
 
-typedef std::deque<NFmiPathElement> NFmiPathData;
-
-// ----------------------------------------------------------------------
-// A class defining a path
-// ----------------------------------------------------------------------
-
-class _FMI_DLL NFmiPath : public NFmiDrawable
+namespace Imagine
 {
-public:
+  class NFmiEsriBox;
   
-  virtual ~NFmiPath(void) {}
-
-  NFmiPath() : itsInsideOut(false), itsElements() { }
+  typedef std::deque<NFmiPathElement> NFmiPathData;
   
-  // Tulostusoperaattorin ylikuormitus
+  // ----------------------------------------------------------------------
+  // A class defining a path
+  // ----------------------------------------------------------------------
   
-  friend std::ostream& operator<<(std::ostream& os, const NFmiPath & thePath);
-  
-  // Data-access
-  
-  const NFmiPathData & Elements(void) const { return itsElements; }
-  
-  int Size(void) const { return itsElements.size(); }
-  
-  // Clear contents
-  
-  void Clear(void)
-  { itsElements.clear(); itsInsideOut=false; }
-  
-  // Add the given path element
-  
-  void Add(const NFmiPathElement & theElement)
-  { itsElements.push_back(theElement); }
-  
-  // Add the given path element via its components
-  
-  void Add(NFmiPathOperation theOper, float theX, float theY)
-  { itsElements.push_back(NFmiPathElement(theOper,theX,theY)); }
-  
-  // Move to a new point
-  
-  void MoveTo(float theX, float theY)
-  { itsElements.push_back(NFmiPathElement(kFmiMoveTo,theX,theY)); }
-  
-  // Draw a line from current point to new point
-  
-  void LineTo(float theX, float theY)
-  { itsElements.push_back(NFmiPathElement(kFmiLineTo,theX,theY)); }
-  
-  // Draw an invisible line from current point to new point
-  
-  void GhostLineTo(float theX, float theY)
-  { itsElements.push_back(NFmiPathElement(kFmiGhostLineTo,theX,theY)); }
-  
-  // Draw a line from the given point to the first point
-  
-  void InsertLineTo(float theX, float theY)
+  class _FMI_DLL NFmiPath : public NFmiDrawable
   {
-    itsElements.front().Oper(kFmiLineTo);
-    itsElements.push_front(NFmiPathElement(kFmiMoveTo,theX,theY));
-  }
-  
-  // Draw a line from the given point to the first point
-  
-  void InsertGhostLineTo(float theX, float theY)
-  {
-    itsElements.front().Oper(kFmiGhostLineTo);
-    itsElements.push_front(NFmiPathElement(kFmiMoveTo,theX,theY));
-  }
-  
-  // Add a conic control point
-  
-  void ConicTo(float theX, float theY)
-  {
-    itsElements.push_back(NFmiPathElement(kFmiConicTo,theX,theY));
-  }
-  
-  // Add a cubic control point
-  
-  void CubicTo(float theX, float theY)
-  {
-    itsElements.push_back(NFmiPathElement(kFmiCubicTo,theX,theY));
-  }
-  
-  // Close the last subpath with a line
-  
-  void CloseLineTo(void)
-  {
-    DoCloseLineTo(kFmiLineTo);
-  }
-  
-  // Close the path with an invisible line
-  
-  void CloseGhostLineTo(void)
-  {
-    DoCloseLineTo(kFmiGhostLineTo);
-  }
-  
-  // Append a path without a joining line
-  
-  void Add(const NFmiPath & thePath)
-  {
-    itsElements.insert(itsElements.end(),
-					   thePath.itsElements.begin(),
-					   thePath.itsElements.end());
-  }
-  
-  // Append a path using a line of desired type
-  
-  void Add(const NFmiPath & thePath, bool fExact);
-  
-  // Insert a path using a line of desired type
-  
-  void Insert(const NFmiPath & thePath, bool fExact);
-  
-  // Append a reversed path using a line of desired type
-  
-  void AddReverse(const NFmiPath & thePath, bool fExact);
-  
-  // Simplify using Douglas-Peucker algorithm. The input is the
-  // maximum allowed error for any line segment.
-  
-  void Simplify(float epsilon=0.0);
-  
-  // Simplify long straight line segments
-  
-  void SimplifyLines(float offset=0.0);
-  
-  // Return SVG-string description
-  
-  std::string SVG(bool relative_moves=false, bool removeghostlines=true) const;
-  
-  // Add the path to a fill map
-  
-  void Add(NFmiFillMap & theMap) const;
-  
-  // Add a string representation of a path to the path
-  
-  void Add(const std::string & theString);
-  
-  // Rotate the path by the given decimal degrees
-  
-  void Rotate(float theAngle);
-  
-  // Translate the path by the given amount
-  
-  void Translate(float theX, float theY);
-  
-  // Scale the path by the given amount
-  
-  void Scale(float theScale);
-  
-  // Scale the path by the given amounts in x- and y-directions
-  
-  void Scale(float theXScale, float theYScale);
+  public:
+	
+	virtual ~NFmiPath(void) {}
+	
+	NFmiPath() : itsInsideOut(false), itsElements() { }
+	
+	// Tulostusoperaattorin ylikuormitus
+	
+	friend std::ostream& operator<<(std::ostream& os, const NFmiPath & thePath);
+	
+	// Data-access
+	
+	const NFmiPathData & Elements(void) const { return itsElements; }
+	
+	int Size(void) const { return itsElements.size(); }
+	
+	// Clear contents
+	
+	void Clear(void)
+	{ itsElements.clear(); itsInsideOut=false; }
+	
+	// Add the given path element
+	
+	void Add(const NFmiPathElement & theElement)
+	{ itsElements.push_back(theElement); }
+	
+	// Add the given path element via its components
+	
+	void Add(NFmiPathOperation theOper, float theX, float theY)
+	{ itsElements.push_back(NFmiPathElement(theOper,theX,theY)); }
+	
+	// Move to a new point
+	
+	void MoveTo(float theX, float theY)
+	{ itsElements.push_back(NFmiPathElement(kFmiMoveTo,theX,theY)); }
+	
+	// Draw a line from current point to new point
+	
+	void LineTo(float theX, float theY)
+	{ itsElements.push_back(NFmiPathElement(kFmiLineTo,theX,theY)); }
+	
+	// Draw an invisible line from current point to new point
+	
+	void GhostLineTo(float theX, float theY)
+	{ itsElements.push_back(NFmiPathElement(kFmiGhostLineTo,theX,theY)); }
+	
+	// Draw a line from the given point to the first point
+	
+	void InsertLineTo(float theX, float theY)
+	{
+	  itsElements.front().Oper(kFmiLineTo);
+	  itsElements.push_front(NFmiPathElement(kFmiMoveTo,theX,theY));
+	}
+	
+	// Draw a line from the given point to the first point
+	
+	void InsertGhostLineTo(float theX, float theY)
+	{
+	  itsElements.front().Oper(kFmiGhostLineTo);
+	  itsElements.push_front(NFmiPathElement(kFmiMoveTo,theX,theY));
+	}
+	
+	// Add a conic control point
+	
+	void ConicTo(float theX, float theY)
+	{
+	  itsElements.push_back(NFmiPathElement(kFmiConicTo,theX,theY));
+	}
+	
+	// Add a cubic control point
+	
+	void CubicTo(float theX, float theY)
+	{
+	  itsElements.push_back(NFmiPathElement(kFmiCubicTo,theX,theY));
+	}
+	
+	// Close the last subpath with a line
+	
+	void CloseLineTo(void)
+	{
+	  DoCloseLineTo(kFmiLineTo);
+	}
+	
+	// Close the path with an invisible line
+	
+	void CloseGhostLineTo(void)
+	{
+	  DoCloseLineTo(kFmiGhostLineTo);
+	}
+	
+	// Append a path without a joining line
+	
+	void Add(const NFmiPath & thePath)
+	{
+	  itsElements.insert(itsElements.end(),
+						 thePath.itsElements.begin(),
+						 thePath.itsElements.end());
+	}
+	
+	// Append a path using a line of desired type
+	
+	void Add(const NFmiPath & thePath, bool fExact);
+	
+	// Insert a path using a line of desired type
+	
+	void Insert(const NFmiPath & thePath, bool fExact);
+	
+	// Append a reversed path using a line of desired type
+	
+	void AddReverse(const NFmiPath & thePath, bool fExact);
+	
+	// Simplify using Douglas-Peucker algorithm. The input is the
+	// maximum allowed error for any line segment.
+	
+	void Simplify(float epsilon=0.0);
+	
+	// Simplify long straight line segments
+	
+	void SimplifyLines(float offset=0.0);
+	
+	// Return SVG-string description
+	
+	std::string SVG(bool relative_moves=false, bool removeghostlines=true) const;
+	
+	// Add the path to a fill map
+	
+	void Add(NFmiFillMap & theMap) const;
+	
+	// Add a string representation of a path to the path
+	
+	void Add(const std::string & theString);
+	
+	// Rotate the path by the given decimal degrees
+	
+	void Rotate(float theAngle);
+	
+	// Translate the path by the given amount
+	
+	void Translate(float theX, float theY);
+	
+	// Scale the path by the given amount
+	
+	void Scale(float theScale);
+	
+	// Scale the path by the given amounts in x- and y-directions
+	
+	void Scale(float theXScale, float theYScale);
+	
+	// Apply a general affine transformation
+	
+	void Transform(NFmiAffine & theAffine);
+	
+	// Align path to desired corner
+	
+	void Align(NFmiAlignment theAlignment, float theX=0.0, float theY=0.0);
+	
+	// Project
+	
+	void Project(const NFmiArea * const theArea);
+	
+	void InvProject(const NFmiArea * const theArea);
+	
+	void InvGrid(const NFmiGrid * const theGrid);
+	
+	// Return a new path which is the widened version of this one
+	
+	NFmiPath StrokePath(float theWidth) const;
+	
+	// Return a new path which is a patterned version of this one
+	
+	// NFmiPath StrokePath(const vector<float> & thePattern) const;
+	
+	// Return a new path which is the widened and stroke patterned version
+	// of this one
+	
+	// NFmiPath StrokePath(float theWidth, const vector & thePattern) const;
+	
+	// Stroke onto given image using various Porter-Duff rules
+	
+	void Stroke(NFmiImage & theImage,
+				NFmiColorTools::Color theColor,
+				NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
+	
+	// Return the bounding box
+	
+	NFmiEsriBox BoundingBox(void) const;
+	
+	NFmiPath Clip(double theX1, double theY1, double theX2, double theY2, double theMargin = 0);
+	
+	void InsideOut(void) { itsInsideOut = !itsInsideOut; }
+	bool IsInsideOut() const { return itsInsideOut; }
+	
+  private:
+	
+	// Close the last subpath with an invisible or visible line
+	
+	void DoCloseLineTo(NFmiPathOperation theOper);
+	
+	// Floating point number to string
+	// This is needed because stringstream version of SVG() does not
+	// work using g++ v2.95, instead we must format the numbers by
+	// ourselves for string concatenation operations
+	
+	std::string ftoa(float theValue) const;
+	
+	// Simplification subroutines
+	
+	void SimplifyTrivial(void);
+	
+	// Data-members
+	
+	bool itsInsideOut;
+	NFmiPathData itsElements;
+	
+  };
 
-  // Apply a general affine transformation
+} // namespace Imagine
   
-  void Transform(NFmiAffine & theAffine);
+#endif	// IMAGINE_NFMIPATH_H
   
-  // Align path to desired corner
-  
-  void Align(NFmiAlignment theAlignment, float theX=0.0, float theY=0.0);
-  
-  // Project
-  
-  void Project(const NFmiArea * const theArea);
-  
-  void InvProject(const NFmiArea * const theArea);
-
-  void InvGrid(const NFmiGrid * const theGrid);
-  
-  // Return a new path which is the widened version of this one
-  
-  NFmiPath StrokePath(float theWidth) const;
-  
-  // Return a new path which is a patterned version of this one
-  
-  // NFmiPath StrokePath(const vector<float> & thePattern) const;
-  
-  // Return a new path which is the widened and stroke patterned version
-  // of this one
-  
-  // NFmiPath StrokePath(float theWidth, const vector & thePattern) const;
-  
-  // Stroke onto given image using various Porter-Duff rules
-  
-  void Stroke(NFmiImage & theImage,
-			  NFmiColorTools::Color theColor,
-			  NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
-  
-  // Return the bounding box
-  
-  NFmiEsriBox BoundingBox(void) const;
-
-  NFmiPath Clip(double theX1, double theY1, double theX2, double theY2, double theMargin = 0);
-
-  void InsideOut(void) { itsInsideOut = !itsInsideOut; }
-  bool IsInsideOut() const { return itsInsideOut; }
-
-private:
-  
-  // Close the last subpath with an invisible or visible line
-  
-  void DoCloseLineTo(NFmiPathOperation theOper);
-  
-  // Floating point number to string
-  // This is needed because stringstream version of SVG() does not
-  // work using g++ v2.95, instead we must format the numbers by
-  // ourselves for string concatenation operations
-  
-  std::string ftoa(float theValue) const;
-  
-  // Simplification subroutines
-  
-  void SimplifyTrivial(void);
-  
-  // Data-members
-  
-  bool itsInsideOut;
-  NFmiPathData itsElements;
-  
-};
-
-#endif	// _NFMIPATH_H
-
 // ----------------------------------------------------------------------
-
