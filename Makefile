@@ -40,3 +40,7 @@ NFmiImageJpeg.o: NFmiImageJpeg.cpp
 # isspace causes warnings, cannot help it
 NFmiPath.o: NFmiPath.cpp
 	$(CC) $(CFLAGS) -Wno-error $(INCLUDES) -c -o obj/$@ $<
+
+# sstream causes warnings, cannot help it
+NFmiImage.o: NFmiImage.cpp
+	$(CC) $(CFLAGS) -Wno-error $(INCLUDES) -c -o obj/$@ $<
