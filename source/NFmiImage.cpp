@@ -307,14 +307,7 @@ namespace Imagine
 	DefaultOptions();
 	itsType = theImage.itsType;
 	Allocate(theImage.Width(),theImage.Height());
-
-#if 0
-	for (int j = 0; j < itsHeight ; j++)
-	  for (int i = 0; i < itsWidth; i++)
-		(*this)(i,j) = theImage(i,j);
-#else
 	memcpy(itsPixels,theImage.itsPixels,itsWidth*itsHeight*sizeof(NFmiColorTools::Color));
-#endif
   }
   
   // ----------------------------------------------------------------------
@@ -352,11 +345,12 @@ namespace Imagine
   
   NFmiImage & NFmiImage::operator=(const NFmiImage & theImage)
   {
-	Reallocate(theImage.Width(),theImage.Height());
-	itsType = theImage.itsType;
-	for (int j = 0; j < itsHeight ; j++)
-	  for (int i = 0; i < itsWidth; i++)
-		(*this)(i,j) = theImage(i,j);
+	if(this != &theImage)
+	  {
+		Reallocate(theImage.Width(),theImage.Height());
+		itsType = theImage.itsType;
+		memcpy(itsPixels,theImage.itsPixels,itsWidth*itsHeight*sizeof(NFmiColorTools::Color));
+	  }
 	return *this;
   }
   
