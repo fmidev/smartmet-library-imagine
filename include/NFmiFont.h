@@ -32,9 +32,7 @@ namespace Imagine
   enum NFmiFontType
 	{
 	  kFmiFontMissing,
-	  kFmiFontHershey,
-	  kFmiFontTrueType,
-	  kFmiFontType1
+	  kFmiFontHershey
 	};
 
   class _FMI_DLL NFmiFont
