@@ -30,7 +30,8 @@ namespace Imagine
   
   void NFmiEdgeTree::Add(const NFmiEdge& theEdge)
   {
-	
+	if(itsLinesOnly && !theEdge.Exact())
+		return ;
 	// If the edge is a 0-length line, ignore it
 	
 	if(theEdge.GetX1() != theEdge.GetX2() || theEdge.GetY1() != theEdge.GetY2())

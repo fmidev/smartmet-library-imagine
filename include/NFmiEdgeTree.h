@@ -39,7 +39,7 @@ namespace Imagine
 	
 	// Constructors
 	
-	NFmiEdgeTree(void) : itsEdges() { }
+	NFmiEdgeTree(void) : itsLinesOnly(false), itsEdges() { }
 	
 	// Destructors
 	
@@ -64,8 +64,11 @@ namespace Imagine
 	// Add the tree to a fill map
 	
 	void Add(NFmiFillMap & theMap) const;
+
+	void  LinesOnly(bool theFlag){ itsLinesOnly = theFlag;}
 	
   protected:
+	  bool itsLinesOnly;
 	
 	EdgeTreeType itsEdges;
   };
