@@ -8,7 +8,6 @@ INCLUDES = -I $(includedir)/newbase -I/usr/local/include/freetype2
 
 # INCLUDES = -I $(includedir)/newbase -I/usr/freeware/include -I/usr/local/include/freetype2
 
-
 # Common library compiling template
 
 include ../../makefiles/makefile.lib
