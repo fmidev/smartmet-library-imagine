@@ -595,7 +595,7 @@ std::ostream& operator<< (std::ostream& os,const NFmiPath & thePath)
 // absolute moves. This usually generates shorter SVG.
 // ----------------------------------------------------------------------
 
-string NFmiPath::SVG(bool relative_moves) const
+string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 {
   // Note: Do NOT use output string streams, atleast not with
   //       g++ v2.92. The implementation is broken, and will
@@ -620,6 +620,16 @@ string NFmiPath::SVG(bool relative_moves) const
 		  cerr << "Error: Conic and Cubic control points not supported in NFmiPath::SVG() yet" << endl;
 		  exit(1);
 		}
+
+	  // If ghostlines are being ignored, we must output a moveto
+	  // when the ghostlines end.
+	  if( removeghostlines &&
+		  (last_op == kFmiGhostLineTo) &&
+		  (iter->Oper() != kFmiGhostLineTo) )
+		{
+		  os += " M";
+		  os += ftoa(iter->X()) + "," + ftoa(iter->Y());
+		}
 	  
       if(iter==Elements().begin())
 		{
@@ -632,8 +642,13 @@ string NFmiPath::SVG(bool relative_moves) const
 		{
 		  if(iter->Oper() == kFmiMoveTo)
 			os += (last_op==kFmiMoveTo ? " " : " m");
+
 		  else if(iter->Oper() == kFmiLineTo)
 			os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
+
+		  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
+			os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
+
 		  os += ftoa((iter->X()-last_x)) + "," + ftoa((iter->Y()-last_y));
 		}
 	  
@@ -642,18 +657,20 @@ string NFmiPath::SVG(bool relative_moves) const
 		{
 		  if(iter->Oper() == kFmiMoveTo)
 			os += (last_op==kFmiMoveTo ? " " : " M");
-		  else
+
+		  else if(iter->Oper() == kFmiLineTo)
 			os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
+
+		  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
+			os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
+
 		  os += ftoa(iter->X()) + "," + ftoa(iter->Y());
 		}
 	  
       last_op = iter->Oper();
 	  
-      if(relative_moves)
-		{
-		  last_x = iter->X();
-		  last_y = iter->Y();
-		}
+	  last_x = iter->X();
+	  last_y = iter->Y();
 	  
     }
   return os;

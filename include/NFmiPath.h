@@ -176,7 +176,7 @@ public:
   
   // Return SVG-string description
   
-  std::string SVG(bool relative_moves=false) const;
+  std::string SVG(bool relative_moves=false, bool removeghostlines=true) const;
   
   // Add the path to a fill map
   
