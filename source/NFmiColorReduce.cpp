@@ -405,9 +405,9 @@ namespace Imagine
 				if(it == theMap.end())
 				  throw runtime_error("Internal error in color reduction, failed to find color");
 
-				last_color3 = theImage(i,j);
+				theImage(i,j) = it->second;
+				last_color3 = it->first;
 				last_choice3 = it->second;
-				
 			  }
 		  }
 	}
