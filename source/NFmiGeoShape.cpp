@@ -686,6 +686,8 @@ namespace Imagine
 			  const NFmiEsriPolygon * elem = static_cast<const NFmiEsriPolygon *>(*iter);
 			  for(int part=0; part<elem->NumParts(); part++)
 				{
+				  vector<pair<int,int> > points;
+
 				  int i1,i2;
 				  i1 = elem->Parts()[part];		// start of part
 				  if(part+1 == elem->NumParts())
@@ -698,7 +700,6 @@ namespace Imagine
 					  int lastx = 0;
 					  int lasty = 0;
 					  
-					  os << '"' << fieldvalue << '"' << " => " << '"';
 					  for(int i=i1; i<=i2; i++)
 						{
 						  int x = static_cast<int>(elem->Points()[i].X());
@@ -710,7 +711,20 @@ namespace Imagine
 							continue;
 						  lastx = x;
 						  lasty = y;
-						  os << " " << x << "," << y;
+						  points.push_back(make_pair(x,y));
+						}
+					}
+
+				  if(points.size() > 3)
+					{
+					  os << '"' << fieldvalue << '"' << " => " << '"';
+					  for(vector<pair<int,int> >::const_iterator it = points.begin();
+						  it != points.end();
+						  ++it)
+						{
+						  if(it != points.begin())
+							os << ' ';
+						  os << it->first << "," << it->second;
 						}
 					  os << '"' << endl;
 					}
