@@ -16,6 +16,7 @@
 #include "NFmiPath.h"
 #include "NFmiCounter.h"
 #include "NFmiEsriBox.h"
+#include "NFmiGrid.h"
 
 #include <iostream>
 #include <algorithm>
@@ -484,6 +485,24 @@ void NFmiPath::InvProject(const NFmiArea * const theArea)
       for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 		{
 		  NFmiPoint pt = theArea->ToLatLon(NFmiPoint(iter->X(),iter->Y()));
+		  iter->X(pt.X());
+		  iter->Y(pt.Y());
+		}
+    }
+}
+
+// ----------------------------------------------------------------------
+// Apply an grid projection to a path
+// ----------------------------------------------------------------------
+
+void NFmiPath::InvGrid(const NFmiGrid * const theGrid)
+{
+  if(theGrid!=0)
+    {
+      NFmiPathData::iterator iter;
+      for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
+		{
+		  NFmiPoint pt = theGrid->GridToLatLon(iter->X(), iter->Y());
 		  iter->X(pt.X());
 		  iter->Y(pt.Y());
 		}
