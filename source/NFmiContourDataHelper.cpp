@@ -36,6 +36,8 @@ namespace Imagine
 	, itsMissingFlags()
   {
 	int n = theMatrix.NY();
+	if(n <= 0)
+		return ; // turha tehda mitaan jos 0-kokoinen matriisi (virhe tilanne?)
 	
 	// Temporary information holders for matrix rows
 	
