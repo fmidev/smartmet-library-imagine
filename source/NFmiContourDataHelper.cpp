@@ -36,8 +36,10 @@ namespace Imagine
 	, itsMissingFlags()
   {
 	int n = theMatrix.NY();
-	if(n <= 0)
-		return ; // turha tehda mitaan jos 0-kokoinen matriisi (virhe tilanne?)
+
+	// Safety check against zero size (should throw?)
+	if(n <= 0 || theMatrix.NX() <= 0)
+		return;
 	
 	// Temporary information holders for matrix rows
 	
