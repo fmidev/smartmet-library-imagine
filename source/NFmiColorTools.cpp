@@ -10,6 +10,176 @@
  */
 // ======================================================================
 
+// ======================================================================
+/*!
+ * \namespace Imagine::NFmiColorTools
+ *
+ * This provides methods to operator on RGBA colors by providing static
+ * member functions. Hence the members can be and are intended to be used
+ * as in
+ *
+ * \code
+ * NFmiColorTools::Color color = NFmiColorTools::MakeColor(red,green,blue,alpha);
+ * \endcode
+ *
+ * The better alternative would be to use a \c namespace, but they do not
+ * work properly with the GNU C++ compiler.
+ *
+ * <b>Notes about colour blending with Porter-Duff rules:</b>
+ *
+ * A general Porter-Duff rule is expressed with formulas
+ *
+ * \f$C_d = C_s F_s + C_d F_d\f$
+ *
+ * \f$A_d = A_s F_s + A_d F_d\f$
+ *
+ * where \f$C_s\f$, \f$C_d\f$ stand for source and destination colour
+ * components, \f$A_s\f$, \f$A_d\f$ source and destination alphas.
+ * \f$F_s\f$ ans \f$F_d\f$ denote the fractions used in the blending as
+ * defined by each compositing rule.
+ *
+ * Note that here having alpha value 1 implies an opaque colour and
+ * zero a transparent colour, while in code we actuall prefer to use 0 for
+ * opaque and 127 for transparent.
+ *
+ * Hence in all formulas we must substitute
+ *
+ * \f$ A_s = (\alpha_{max} - \alpha)/\alpha_{max}\f$
+ *
+ * \f$ 1-A_s = \alpha/\alpha_{max}\f$
+ *
+ * Also, the rules apply in premultiplied RGBA space, where each component
+ * value has already been premultiplied by the alpha. We do this explicitly
+ * when applying the rules.
+ *
+ * The rules as found from for example Java2D documentation are described
+ * below. The name on the left corresponds to the chosen name, the name
+ * below it the logical description of the operation.
+ *
+ * \li \b Clear\par
+ * Both the color and the alpha of destination are cleared. Neither the
+ * source nor the destination is used as input.
+ *
+ * \li \b Copy\par
+ * The source is copied to the destination. The destination is not used
+ * as input.
+ *
+ * \li \b Keep\par
+ * The destination is kept. Useless operation for us.
+ *
+ * \li \b Over\par
+ * The source is composited over the destination. 
+ *
+ * \li \b Under\par
+ * The destination is composited over the source and the result replaces the
+ * destination. This is \b Over with the operands reversed.
+ *
+ * \li \b In\par
+ * The part of the source lying inside of the destination replaces
+ * the destination.
+ *
+ * \li \b KeepIn\par
+ * The part of the destination lying inside of the source replaces the
+ * destination. This is \b In with the operands reversed.
+ *
+ * \li \b Out\par
+ * The part of the source lying outside of the destination replaces
+ * the destination.
+ *
+ * \li \b KeepOut\par
+ * The part of the destination lying outside of the source replaces
+ * the destination. This is \b Out with the operands reversed.
+ *
+ * \li \b Atop\par
+ * The part of the source inside the destination replaces the part inside
+ * the destination.
+ *
+ * \li \b KeepAtop\par
+ * The part of the destination inside the source replaces the part inside
+ * the source in the destination. This is \b Atop reversed.
+ *
+ * \li \b Xor\par
+ * Only non-overlapping areas of source and destination are kept.
+ *
+ * <b>Additional blending rules</b>
+ *
+ * In addition to Ported-Duff rules, we define miscellaneous blending-rule
+ * type functions. Many of these are found for example from Imagemagick.
+ *
+ * \li \b Plus\par
+ * Add RGBA values using Porter-Duff type rules.
+ *
+ * \li \b Minus\par
+ * Substract RGBA values using Porter-Duff type rules.
+ *
+ * \li \b Add\par
+ * Add RGBA values.
+ *
+ * \li \b Substract\par
+ * Substract RGBA values.
+ *
+ * \li \b Multiply\par
+ * Multiply RGBA values
+ *
+ * \li \b Difference\par
+ * Absolute difference of RGBA values.
+ *
+ * \li \b Bumpmap\par
+ * Adjust by intensity of source color.
+ *
+ * \li \b Dentmap\par
+ * Adjust by intensity of destination color.
+ *
+ * \li \b CopyRed\par
+ * Copy red component only.
+ *
+ * \li \b CopyGreen\par
+ * Copy green component only.
+ *
+ * \li \b CopyBlue\par
+ * Copy blue component only.
+ *
+ * \li \b CopyMatte\par
+ * Copy opacity only.
+ *
+ * \li \b CopyHue\par
+ * Copy hue component only.
+ *
+ * \li \b CopyLightness\par
+ * Copy light component only.
+ *
+ * \li \b CopySaturation\par
+ * Copy saturation component only.
+ *
+ * \li \b KeepMatte\par
+ * Keep target matte only.
+ *
+ * \li \b KeepHue\par
+ * Keep target hue only.
+ *
+ * \li \b KeepLightness\par
+ * Keep target lightness only.
+ *
+ * \li \b KeepSaturation\par
+ * Keep target saturation only.
+ *
+ * \li \b AddContrast\par
+ * Enhance the contrast of target pixel.
+ *
+ * \li \b ReduceContrast\par
+ * Reduce the contrast of target pixel.
+ *
+ * \li \b OnOpaque\par
+ * Draw on opaque parts only.
+ *
+ * \li \b OnTransparent\par
+ * Draw on transparent parts only.
+ *
+ * Note that ImageMagick Dissolve and Plus are equivalent.
+ *
+ */
+// ======================================================================
+
 #include "NFmiColorTools.h"
 
 #include <string>
@@ -21,16 +191,6 @@
 namespace Imagine
 {
 
-  const NFmiColorTools::Color NFmiColorTools::MissingColor = -1;
-  const NFmiColorTools::Color NFmiColorTools::NoColor = -2;
-  const NFmiColorTools::Color NFmiColorTools::TransparentColor = 0x7F000000;
-  const NFmiColorTools::Color NFmiColorTools::Black = 0;
-  const int NFmiColorTools::MaxRGB	= 255;
-  const int NFmiColorTools::MaxAlpha	= 127;
-  const int NFmiColorTools::Opaque	= 0;
-  const int NFmiColorTools::Transparent	= 127;
-  const int NFmiColorTools::MaxIntensity = 255;
-  
   using namespace std;
   
   //! Map of recognized colour names.
