@@ -186,7 +186,7 @@ namespace Imagine
 		const double len = (2*chordlength + (n-1)*arclength)/(n+1);
 		const double err = arclength - chordlength;
 
-		if(err/len <= theRelativeAccuracy)
+		if(len==0 || err/len <= theRelativeAccuracy)
 		  {
 			return len;
 		  }
