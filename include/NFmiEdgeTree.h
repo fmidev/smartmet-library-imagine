@@ -35,8 +35,6 @@ namespace Imagine
   {
   public:
 	
-	typedef std::set<NFmiEdge> EdgeTreeType;
-	
 	// Constructors
 	
 	NFmiEdgeTree(void) : itsLinesOnly(false), itsEdges() { }
@@ -64,6 +62,8 @@ namespace Imagine
 	
   protected:
 
+	typedef std::set<NFmiEdge> EdgeTreeType;
+	
 	// Access to edge-data for iterating through the data, not for
 	// modifying it.
 	
