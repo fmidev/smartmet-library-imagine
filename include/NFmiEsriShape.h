@@ -134,6 +134,9 @@ public:
   
   typedef std::vector<NFmiEsriElement *>::const_iterator const_iterator;
   typedef std::vector<NFmiEsriElement *>::iterator iterator;
+
+  typedef std::list<NFmiEsriAttributeName *> attributes_type;
+  const attributes_type & Attributes(void) const { return itsAttributeNames; }
   
 private:
   
