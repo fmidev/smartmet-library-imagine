@@ -189,8 +189,8 @@ namespace Imagine
 		  // Correct test for Eurasia
 		  if(ee < ww)
 			{
-			  outside = (ww<theMinLongitude ||
-						 ee>theMaxLongitude ||
+			  outside = ((theMinLongitude > ee && theMinLongitude < ww) ||
+						 (theMaxLongitude > ee && theMaxLongitude < ww) ||
 						 s>theMaxLatitude ||
 						 n<theMinLatitude);
 			}
