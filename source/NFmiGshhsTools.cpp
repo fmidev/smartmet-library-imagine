@@ -130,7 +130,7 @@ namespace Imagine
 	  
 	  // Open file for reading
 	  
-	  const string gshhs_path = NFmiSettings::instance().value("imagine::gshhs_path");
+	  const string gshhs_path = NFmiSettings::Require<string>("imagine::gshhs_path");
 	  
 	  const string filename = FileComplete(theFilename,gshhs_path);
 	  
