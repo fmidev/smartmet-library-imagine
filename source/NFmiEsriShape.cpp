@@ -777,7 +777,7 @@ namespace Imagine
 		// Note: We assume the field width is wide enough
 		// so that the first character is always a space
 		// character indicating a "not-deleted" field
-		for(int i=1; i<=element_count; i++)
+		for(i=1; i<=element_count; i++)
 		  dbffile << setw(field_length) << setfill(' ') << i;
 	  }
 	else
@@ -785,7 +785,8 @@ namespace Imagine
 		const int field_count = itsAttributeNames.size();
 
 		int field_length = 1;	// 1 for the delete marker
-		for(int f=0; f<field_count; f++)
+		int f=0;
+		for(f=0; f<field_count; f++)
 		  {
 			const NFmiEsriAttributeName * attribute = itsAttributeNames[f];
 			switch(attribute->Type())
@@ -806,7 +807,7 @@ namespace Imagine
 		for(i=0; i<header_zeros; i++)
 		  dbffile << '\0';
 
-		for(int f=0; f<field_count; f++)
+		for(f=0; f<field_count; f++)
 		  {
 			const NFmiEsriAttributeName * attribute = itsAttributeNames[f];
 			string name = attribute->Name();
