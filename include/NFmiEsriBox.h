@@ -20,7 +20,7 @@
 #define MAX(a,b) ((a)>(b) ? (a) : (b))
 #endif
 
-class NFmiEsriBox
+class _FMI_DLL NFmiEsriBox
 {
 public:
   

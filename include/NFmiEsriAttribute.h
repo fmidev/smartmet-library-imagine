@@ -46,7 +46,7 @@
 
 #include "NFmiEsriAttributeName.h"
 
-class NFmiEsriAttribute
+class _FMI_DLL NFmiEsriAttribute
 {
 public:
   

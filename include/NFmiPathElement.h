@@ -16,6 +16,8 @@
 #ifndef _NFMIPATHELEMENT_H
 #define _NFMIPATHELEMENT_H
 
+#include "NFmiDef.h"
+
 // ----------------------------------------------------------------------
 // Path operations
 // ----------------------------------------------------------------------
@@ -30,7 +32,7 @@ enum NFmiPathOperation { kFmiMoveTo,
 // A class defining a path element
 // ----------------------------------------------------------------------
 
-class NFmiPathElement
+class _FMI_DLL NFmiPathElement
 {
 public:
   

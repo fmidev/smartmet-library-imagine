@@ -28,7 +28,7 @@
 // A working class, holding a tree of unique edges
 // ----------------------------------------------------------------------
 
-class NFmiEdgeTree : public NFmiDrawable
+class _FMI_DLL NFmiEdgeTree : public NFmiDrawable
 {
 public:
   

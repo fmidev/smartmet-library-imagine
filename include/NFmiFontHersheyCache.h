@@ -27,7 +27,7 @@
 
 #include "NFmiHersheyData.h"
 
-class NFmiFontHersheyCache
+class _FMI_DLL NFmiFontHersheyCache
 {
 public:
   NFmiFontHersheyCache(void) {}

@@ -21,7 +21,7 @@
 // A working class, holding an unique edge
 // ----------------------------------------------------------------------
 
-class NFmiEdge
+class _FMI_DLL NFmiEdge
 {
 public:
   

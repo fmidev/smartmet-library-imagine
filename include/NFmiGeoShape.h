@@ -36,7 +36,8 @@ struct NFmiGeoShapeError : public std::runtime_error
   NFmiGeoShapeError(const std::string & s) : std::runtime_error(s) { }
 };
 
-class NFmiGeoShape : public NFmiDrawable
+class _FMI_DLL NFmiGeoShape : public NFmiDrawable
+
 {
 public:
   

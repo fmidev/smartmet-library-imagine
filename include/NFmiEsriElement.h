@@ -34,7 +34,7 @@ enum NFmiEsriElementType { kFmiEsriNull		= 0,
 
 class NFmiEsriBoxZ;
 
-class NFmiEsriElement
+class _FMI_DLL NFmiEsriElement
 {
 public:
   

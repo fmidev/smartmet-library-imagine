@@ -19,7 +19,7 @@
 #include "NFmiEsriElement.h"
 #include "NFmiEsriBoxZ.h"
 
-class NFmiEsriPoint : public NFmiEsriElement
+class _FMI_DLL NFmiEsriPoint : public NFmiEsriElement
 {
 public:
   

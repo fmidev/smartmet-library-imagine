@@ -22,7 +22,7 @@
 #include "NFmiEsriPoint.h"
 #include "NFmiEsriBox.h"
 
-class NFmiEsriPolygon : public NFmiEsriElement
+class _FMI_DLL NFmiEsriPolygon : public NFmiEsriElement
 {
 public:
   

@@ -39,7 +39,7 @@
 
 //! Class for analyzing a NFmiDataMatrix for contouring speedups.
 
-class NFmiContourDataHelper
+class _FMI_DLL NFmiContourDataHelper
 {
 public:
   

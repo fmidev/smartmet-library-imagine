@@ -110,7 +110,7 @@
 #include <vector>
 
 template <typename T, class Distance>
-class NFmiNearTree
+class _FMI_DLL NFmiNearTree
 {
   // Insert copies the input objects into a binary NEAR tree. When a
   // node has two entries, a descending node is used or created. The current

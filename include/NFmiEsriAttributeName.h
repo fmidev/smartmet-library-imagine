@@ -22,7 +22,7 @@ enum NFmiEsriAttributeType { kFmiEsriString,
 							 kFmiEsriInteger,
 							 kFmiEsriDouble };
 
-class NFmiEsriAttributeName
+class _FMI_DLL NFmiEsriAttributeName
 {
 public:
   

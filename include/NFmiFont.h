@@ -31,7 +31,7 @@ enum NFmiFontType { kFmiFontMissing,
 					kFmiFontTrueType,
 					kFmiFontType1 };
 
-class NFmiFont
+class _FMI_DLL NFmiFont
 {
 public:
   

@@ -58,7 +58,8 @@ struct NFmiImageCorruptError : public NFmiImageError
   NFmiImageCorruptError(const std::string & s) : NFmiImageError(s) { }
 };
 
-class NFmiImage : public NFmiDrawable
+class _FMI_DLL NFmiImage : public NFmiDrawable
+
 {
 
 private:

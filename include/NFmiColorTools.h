@@ -192,6 +192,7 @@
 #ifndef _NFMICOLORTOOLS_H
 #define _NFMICOLORTOOLS_H
 
+#include "NFmiDef.h"
 #include <cmath>	// max,abs etc
 #include <string>	// for color name definitions
 
@@ -202,7 +203,7 @@ struct Blend2Type
 
 //! Utilities for dealing with RGBA colours.
 
-class NFmiColorTools
+class _FMI_DLL NFmiColorTools
 {
 public:
   

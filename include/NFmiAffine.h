@@ -35,7 +35,7 @@
 #define _NFMIAFFINE_H
 
 //! A class to perform affine transformations
-class NFmiAffine
+class _FMI_DLL NFmiAffine
 {
 public:
 

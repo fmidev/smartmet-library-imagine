@@ -13,9 +13,11 @@
 #ifndef _NFMIESRIPROJECTOR_H
 #define _NFMIESRIPROJECTOR_H
 
+#include "NFmiDef.h"
+
 class NFmiEsriPoint;	// introduce projector argument type
 
-class NFmiEsriProjector
+class _FMI_DLL NFmiEsriProjector
 {
 public:
   virtual ~NFmiEsriProjector(void) {};

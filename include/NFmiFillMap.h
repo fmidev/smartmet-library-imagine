@@ -56,7 +56,7 @@
 typedef std::vector<float>			NFmiFillMapElement;
 typedef std::map<float,NFmiFillMapElement>	NFmiFillMapData;
 
-class NFmiFillMap : public NFmiDrawable
+class _FMI_DLL NFmiFillMap : public NFmiDrawable
 {
   
 public:

@@ -25,7 +25,7 @@
 #include "NFmiAlignment.h"	// text alignment
 #include "NFmiFont.h"
 
-class NFmiText : public NFmiDrawable
+class _FMI_DLL NFmiText : public NFmiDrawable
 {
 public:
   

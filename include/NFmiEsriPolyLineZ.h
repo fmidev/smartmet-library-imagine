@@ -31,7 +31,7 @@
 #include "NFmiEsriBoxZ.h"
 #include "NFmiEsriPolyLineM.h"
 
-class NFmiEsriPolyLineZ : public NFmiEsriPolyLineM
+class _FMI_DLL NFmiEsriPolyLineZ : public NFmiEsriPolyLineM
 {
   
 public:

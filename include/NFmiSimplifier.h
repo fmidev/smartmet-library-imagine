@@ -73,7 +73,7 @@
 #include <stack>
 
 template<class T>
-class NFmiSimplifier
+class _FMI_DLL NFmiSimplifier
 {
   
 protected:

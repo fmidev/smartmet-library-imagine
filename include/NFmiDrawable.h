@@ -33,7 +33,7 @@ class NFmiFillMap;	// Derived class, ...
 
 //! Abstract base class for objects that can render themselves.
 
-class NFmiDrawable
+class _FMI_DLL NFmiDrawable
 {
 public:
   

@@ -47,7 +47,7 @@ enum NFmiEsriMultiPatchType { kFmiEsriTriangleStrip	= 0,
 							  kFmiEsriRing		= 5 };
 
 
-class NFmiEsriMultiPatch : public NFmiEsriElement
+class _FMI_DLL NFmiEsriMultiPatch : public NFmiEsriElement
 {
 public:
   

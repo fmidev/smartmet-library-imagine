@@ -54,7 +54,7 @@ typedef std::list<NFmiPathElement> NFmiPathData;
 // A class defining a path
 // ----------------------------------------------------------------------
 
-class NFmiPath : public NFmiDrawable
+class _FMI_DLL NFmiPath : public NFmiDrawable
 {
 public:
   

@@ -28,7 +28,7 @@
 #include "NFmiEsriMultiPointM.h"
 #include "NFmiEsriBoxZ.h"
 
-class NFmiEsriMultiPointZ : public NFmiEsriMultiPointM
+class _FMI_DLL NFmiEsriMultiPointZ : public NFmiEsriMultiPointM
 {
 public:
   

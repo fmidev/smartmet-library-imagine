@@ -24,7 +24,7 @@
 #include "NFmiEsriPolygon.h"
 #include "NFmiEsriBoxM.h"
 
-class NFmiEsriPolygonM : public NFmiEsriPolygon
+class _FMI_DLL NFmiEsriPolygonM : public NFmiEsriPolygon
 {
 public:
   

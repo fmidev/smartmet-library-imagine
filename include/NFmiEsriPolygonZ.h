@@ -31,7 +31,7 @@
 #include "NFmiEsriPolygonM.h"
 #include "NFmiEsriBoxZ.h"
 
-class NFmiEsriPolygonZ : public NFmiEsriPolygonM
+class _FMI_DLL NFmiEsriPolygonZ : public NFmiEsriPolygonM
 {
 public:
   

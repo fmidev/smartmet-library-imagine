@@ -17,7 +17,7 @@
 
 using namespace NFmiEsriBuffer;	// Conversion tools
 
-class NFmiEsriNull : public NFmiEsriElement
+class _FMI_DLL NFmiEsriNull : public NFmiEsriElement
 {
 public:
   

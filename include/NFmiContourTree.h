@@ -154,7 +154,7 @@
 
 /// Class to calculating 2D contour polygons given a data interval.
 
-class NFmiContourTree : public NFmiEdgeTree
+class _FMI_DLL NFmiContourTree : public NFmiEdgeTree
 {
 public:
   

@@ -15,7 +15,7 @@
 
 #include "NFmiFont.h"
 
-class NFmiFontHershey : public NFmiFont
+class _FMI_DLL NFmiFontHershey : public NFmiFont
 {
 public:
   

@@ -15,7 +15,7 @@
 
 #include "NFmiFont.h"
 
-class NFmiFontTrueType : public NFmiFont
+class _FMI_DLL NFmiFontTrueType : public NFmiFont
 {
 public:
   

@@ -15,7 +15,7 @@
 
 #include "NFmiEsriBox.h"
 
-class NFmiEsriBoxM : public NFmiEsriBox
+class _FMI_DLL NFmiEsriBoxM : public NFmiEsriBox
 {
 public:
   

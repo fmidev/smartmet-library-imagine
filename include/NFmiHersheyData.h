@@ -24,13 +24,14 @@
 #ifndef _NFMIHERSHEYDATA_H
 #define _NFMIHERSHEYDATA_H
 
+#include "NFmiDef.h"
 #include <string>
 #include <vector>
 
 const int kFmiFirstHersheyChar = 32;
 const int kFmiHersheyZero = 'R';
 
-class NFmiHersheyData
+class _FMI_DLL NFmiHersheyData
 {
 public:
   
