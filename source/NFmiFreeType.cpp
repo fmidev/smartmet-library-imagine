@@ -56,41 +56,6 @@ namespace
 
   // ----------------------------------------------------------------------
   /*!
-   * \brief Local FreeType face ID representation
-   */
-  // ----------------------------------------------------------------------
-
-  struct FaceID
-  {
-	string name;
-	int index;
-
-	FaceID(const string & theName, int theIndex=0)
-	  : name(theName), index(theIndex)
-	{ }
-
-  };
-
-  // ----------------------------------------------------------------------
-  /*!
-   * \brief Freetype font face request callback
-   */
-  // ----------------------------------------------------------------------
-
-  FT_Error face_request(FTC_FaceID theFaceID,
-						FT_Library theLib,
-						FT_Pointer theData,
-						FT_Face * theFace)
-  {
-	FaceID * id = reinterpret_cast<FaceID *>(theFaceID);
-	return FT_New_Face(theLib,
-					   id->name.c_str(),
-					   id->index,
-					   theFace);
-  }
-
-  // ----------------------------------------------------------------------
-  /*!
    * \brief Compute glyph sequence bounding box
    */
   // ----------------------------------------------------------------------
@@ -153,11 +118,10 @@ namespace Imagine
   {
   public:
 
-	typedef map<string,FaceID *> Faces;
+	typedef map<string,FT_Face> Faces;
 
 	bool itsInitialized;
 	FT_Library itsLibrary;			//!< Freetype library reference
-	FTC_Manager itsManager;			//!< Face cache manager
 	Faces itsFaces;					//!< Face name to Face ID mapping
 
   public:
@@ -165,7 +129,7 @@ namespace Imagine
 	~Pimple();
 	Pimple();
 
-	FTC_FaceID id(const string & theFont);
+	FT_Face getFont(const string & theFont);
 	
 	template <class T>
 	void Draw(T theBlender,
@@ -202,10 +166,8 @@ namespace Imagine
 	  delete it->second;
 
 	if(itsInitialized)
-	  {
-		FTC_Manager_Done(itsManager);
-		FT_Done_FreeType(itsLibrary);
-	  }
+	  FT_Done_FreeType(itsLibrary);
+
   }
 
   // ----------------------------------------------------------------------
@@ -232,34 +194,37 @@ namespace Imagine
 	if(error)
 	  throw runtime_error("Initializing FreeType failed");
 
-	error = FTC_Manager_New(itsLibrary,0,0,0,&face_request,0,&itsManager);
-	if(error)
-	  throw runtime_error("Initializing FreeType cache manager failed"); 
-
 	itsInitialized = true;
   }
 
   // ----------------------------------------------------------------------
   /*!
-   * \brief Get a FreeType font face ID for the given font
+   * \brief Get a FreeType font face
    */
   // ----------------------------------------------------------------------
 
-  FTC_FaceID NFmiFreeType::Pimple::id(const string & theFont)
+  FT_Face NFmiFreeType::Pimple::getFont(const string & theFont)
   {
 	Faces::const_iterator it = itsFaces.find(theFont);
 	if(it != itsFaces.end())
-	  return reinterpret_cast<FTC_FaceID>(it->second);
+	  return it->second;
 
-	itsFaces.insert(Faces::value_type(theFont,new FaceID(theFont,0)));
+	FT_Face face;
 
-	// Should optimize..
+    FT_Error error = FT_New_Face(itsLibrary,
+                                 theFont.c_str(),
+                                 0,
+                                 &face);
 
-	it = itsFaces.find(theFont);
-	if(it != itsFaces.end())
-	  return reinterpret_cast<FTC_FaceID>(it->second);
-	
-	throw runtime_error("Insufficient memory in FreeType cache"); 
+    if(error == FT_Err_Unknown_File_Format)
+      throw runtime_error("Unknown font format in '"+theFont+"'");
+
+    if(error)
+      throw runtime_error("Failed while reading font '"+theFont+"'");
+
+	itsFaces.insert(Faces::value_type(theFont,face));
+
+	return face;
   }
 
   // ----------------------------------------------------------------------
@@ -540,26 +505,18 @@ namespace Imagine
 
 	// Create the face
 
-	FTC_ScalerRec scaler;
-	scaler.face_id = itsPimple->id(file);
-	scaler.width = theWidth;
-	scaler.height = theHeight;
-	scaler.pixel = 1;
+	FT_Face face = itsPimple->getFont(file);
 
-	FT_Size size;
-	FT_Error error = FTC_Manager_LookupSize(itsPimple->itsManager,
-											&scaler,
-											&size);
+	FT_Error error = FT_Set_Pixel_Sizes(face,theWidth,theHeight);
 
-
-	FT_Face face = size->face;
-	
-	if(error == FT_Err_Unknown_File_Format)
-	  throw runtime_error("Unknown font format in '"+file+"'");
-
-	if(error)
-	  throw runtime_error("Could not load font '"+theFont+"' with desired size");
-
+    if(error)
+      throw runtime_error("Failed to set font size "+
+                          NFmiStringTools::Convert(theWidth) +
+                          'x' +
+                          NFmiStringTools::Convert(theHeight) +
+                          " in font '" +
+                          file +
+                          "'");
 	// And render
 
 	switch(rule)
