@@ -34,7 +34,6 @@
 // Essential includes
 
 #include <string>
-//#include <list>
 #include <deque>
 #include <algorithm>
 #include <cmath>		// for sqrt
@@ -50,7 +49,6 @@
 class NFmiGrid;
 class NFmiEsriBox;
 
-//typedef std::list<NFmiPathElement> NFmiPathData;
 typedef std::deque<NFmiPathElement> NFmiPathData;
 
 // ----------------------------------------------------------------------
