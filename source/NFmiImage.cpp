@@ -429,7 +429,7 @@ namespace Imagine
   {
 	if(theType == "png")
 	  WritePng(theFileName);
-	else if(theType == "jpeg")
+	else if(theType == "jpeg" || theType == "jpg")
 	  WriteJpeg(theFileName);
 	else if(theType == "gif")
 	  WriteGif(theFileName);
