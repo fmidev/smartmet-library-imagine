@@ -570,7 +570,6 @@ namespace Imagine
 		int g = rand()*NFmiColorTools::MaxRGB/RAND_MAX;
 		int b = rand()*NFmiColorTools::MaxRGB/RAND_MAX;
 		
-		cout << "Serching for " << r << "," << g << "," << b << endl;
 		NFmiColorTools::Color rgb = NFmiColorTools::MakeColor(r,g,b);
 		
 		// See if it is unused
