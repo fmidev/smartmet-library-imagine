@@ -40,7 +40,7 @@ namespace Imagine
   
   //! Convert string to enumerated value
   
-  const NFmiAlignment AlignmentValue(const std::string & theName);
+  NFmiAlignment AlignmentValue(const std::string & theName);
   
   //! Convert enumerated value to string
   const std::string AlignmentName(const NFmiAlignment theAlignment);

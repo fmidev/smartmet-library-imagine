@@ -21,7 +21,7 @@ namespace Imagine
    * Returns kFmiAlignmentMissing for an unrecognized name.
    */
   
-  const NFmiAlignment AlignmentValue(const string & theName)
+  NFmiAlignment AlignmentValue(const string & theName)
   {
 	if(theName == "Center")
 	  return kFmiAlignCenter;
