@@ -9,6 +9,9 @@
 //	Implemented
 //
 // ======================================================================
+#ifdef _MSC_VER
+#pragma warning(disable : 4786) // poistaa n kpl VC++ kääntäjän varoitusta (liian pitkä nimi >255 merkkiä joka johtuu 'puretuista' STL-template nimistä)
+#endif
 
 #include "NFmiFontHershey.h"
 #include "NFmiFontHersheyCache.h"
