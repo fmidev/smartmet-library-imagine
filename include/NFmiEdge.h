@@ -27,16 +27,15 @@ public:
   
   // The constructor will sort the vertices
   
-  NFmiEdge(float x1,float y1, float x2, float y2,bool exact)
-    : itsX1(x1), itsY1(y1), itsX2(x2), itsY2(y2), fExact(exact)
+  NFmiEdge(float theX1,float theY1, float theX2, float theY2, bool exact)
+    : itsX1(theX1), itsY1(theY1), itsX2(theX2), itsY2(theY2), fExact(exact)
   {
     if(itsX2<itsX1 || (itsX2==itsX1 && itsY2<itsY1))
       {
-		
-		itsX1 = x2;
-		itsX2 = x1;
-		itsY1 = y2;
-		itsY2 = y1;
+		itsX1 = theX2;
+		itsX2 = theX1;
+		itsY1 = theY2;
+		itsY2 = theY1;
       }
   };
   
