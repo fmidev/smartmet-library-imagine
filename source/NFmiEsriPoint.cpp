@@ -11,10 +11,6 @@
 //
 // ======================================================================
 
-#ifdef OLD_MSC
-#pragma warning(disable : 4786)
-#endif
-
 #include "NFmiEsriPoint.h"
 
 using namespace Imagine::NFmiEsriBuffer;	// Conversion tools

@@ -17,10 +17,6 @@
 //
 // ======================================================================
 
-#ifdef OLD_MSC
-#pragma warning(disable : 4786)
-#endif
-
 #include "NFmiEsriPolygonM.h"
 
 using namespace Imagine::NFmiEsriBuffer;	// Conversion tools

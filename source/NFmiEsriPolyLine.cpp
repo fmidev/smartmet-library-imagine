@@ -16,10 +16,6 @@
 //
 // ======================================================================
 
-#ifdef OLD_MSC
-#pragma warning(disable : 4786)
-#endif
-
 #include "NFmiEsriPolyLine.h"
 
 using namespace Imagine::NFmiEsriBuffer;	// Conversion tools

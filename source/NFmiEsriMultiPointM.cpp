@@ -16,10 +16,6 @@
 // Note: X = 40 + 16 * NumPoints
 // ======================================================================
 
-#ifdef OLD_MSC
-#pragma warning(disable : 4786)
-#endif
-
 #include "NFmiEsriMultiPointM.h"
 
 using namespace Imagine::NFmiEsriBuffer;	// Conversion tools

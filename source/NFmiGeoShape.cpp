@@ -10,9 +10,6 @@
 //	Implemented ESRI mapdata renderer based on libesri
 //
 // ======================================================================
-#ifdef WIN32
-#pragma warning(disable : 4786) // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
-#endif
 
 #include "NFmiGeoShape.h"
 #include "NFmiEsriMultiPointZ.h"

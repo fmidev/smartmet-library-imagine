@@ -24,10 +24,6 @@
 //
 // ======================================================================
 
-#ifdef OLD_MSC
-#pragma warning(disable : 4786)
-#endif
-
 #include "NFmiEsriPolygonZ.h"
 
 using namespace Imagine::NFmiEsriBuffer;	// Conversion tools

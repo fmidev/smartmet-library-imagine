@@ -11,9 +11,6 @@
 //	Implemented
 //
 // ======================================================================
-#ifdef WIN32
-#pragma warning(disable : 4786) // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
-#endif
 
 #include "NFmiImage.h"
 #include "NFmiColorBlend.h"

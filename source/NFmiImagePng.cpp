@@ -10,10 +10,6 @@
 //
 // ======================================================================
 
-#ifdef WIN32
-#pragma warning(disable : 4786) // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
-#endif
-
 #ifndef IMAGINE_IGNORE_FORMATS
 
 #include <png.h>

@@ -9,9 +9,6 @@
 //	Implemented
 //
 // ----------------------------------------------------------------------
-#ifdef WIN32
-#pragma warning(disable : 4786) // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
-#endif
 
 #include "NFmiFileSystem.h"
 #include "NFmiSettings.h"

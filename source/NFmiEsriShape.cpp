@@ -130,10 +130,6 @@
 //
 // ======================================================================
 
-#ifndef UNIX
-#pragma warning(disable : 4786) // poistaa n. 100 VC varoitusta
-#endif
-
 #include "NFmiEsriShape.h"
 #include "NFmiEsriNull.h"
 #include "NFmiEsriPointZ.h"

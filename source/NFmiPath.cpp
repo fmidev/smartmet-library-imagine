@@ -10,10 +10,6 @@
 //
 // ======================================================================
 
-#ifdef OLD_MSC
-#pragma warning(disable : 4786)
-#endif
-
 #include "NFmiPath.h"
 #include "NFmiCounter.h"
 #include "NFmiEsriBox.h"

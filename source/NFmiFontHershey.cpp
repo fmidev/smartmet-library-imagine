@@ -10,10 +10,6 @@
 //
 // ======================================================================
 
-#ifdef OLD_MSC
-#pragma warning(disable : 4786)
-#endif
-
 #include "NFmiFontHershey.h"
 #include "NFmiFontHersheyCache.h"
 #include "NFmiHersheyData.h"
