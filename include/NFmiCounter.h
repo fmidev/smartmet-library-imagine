@@ -81,7 +81,7 @@ public:
   
   long Add(T theElement)
   {
-    std::pair<NFmiCounterData::iterator, bool> result = itsData.insert(make_pair(theElement,0));
+    std::pair<typename NFmiCounterData::iterator, bool> result = itsData.insert(make_pair(theElement,0));
     if(result.second)
       return 1;
     else
@@ -97,7 +97,7 @@ public:
   
   long Count(T theElement) const
   {
-    NFmiCounterData::iterator iter = itsData.find(theElement);
+    typename NFmiCounterData::iterator iter = itsData.find(theElement);
     if(iter==itsData.end())
       return 0L;
     else
