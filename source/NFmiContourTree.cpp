@@ -1445,14 +1445,6 @@ namespace Imagine
 		return;
 	  }
 	
-	// Now, if we want extra smoothness via recursion, we do it here
-	
-	if(maxdepth>0)
-	  {
-		ContourLinear3Recurse(x1,y1,z1,x2,y2,z2,x3,y3,z3,maxdepth-1);
-		return;
-	  }
-	
 	// Here we know for certain that there are no ambiguous areas when
 	// deciding what areas to 'fill'. Due to the nature of the algorithm
 	// it is sufficient to simply enumerate all the edges surrounding
@@ -1479,49 +1471,6 @@ namespace Imagine
 	
 	AddEdges(X,Y,B);
 	
-  }
-  
-  // ----------------------------------------------------------------------
-  /*!
-   * Handle contour recursion for triangular polygons. The triangle
-   * is subdivided into 4 parts by connecting adjacent midpoints of
-   * the edges. The input is always valid, \c kFloatMissing never occurs
-   * since this is only called from ContourLinear3, where \c kFloatMissing
-   * has already been checked.
-   *
-   * \note
-   *	The calculated values are independent of the order of
-   *	the input vertices, since (a+b) is independent of the
-   *	order of a and b. Hence the code is safe as far as
-   *	coordinate equality comparisons from adjacent cells
-   *	are concerned.
-   *
-   */
-  // ----------------------------------------------------------------------
-  
-  void NFmiContourTree::ContourLinear3Recurse(float x1, float y1, float z1,
-											  float x2, float y2, float z2,
-											  float x3, float y3, float z3,
-											  int depth)
-  {
-	// Edge center coordinates and function values
-	
-	float x12 = (x1+x2)/2;
-	float x23 = (x2+x3)/2;
-	float x31 = (x3+x1)/2;
-	
-	float y12 = (y1+y2)/2;
-	float y23 = (y2+y3)/2;
-	float y31 = (y3+y1)/2;
-	
-	float z12 = (z1+z2)/2;
-	float z23 = (z2+z3)/2;
-	float z31 = (z3+z1)/2;
-	
-	ContourLinear3(x1,y1,z1,x12,y12,z12,x31,y31,z31,depth);
-	ContourLinear3(x31,y31,z31,x23,y23,z23,x3,y3,z3,depth);
-	ContourLinear3(x12,y12,z12,x2,y2,z2,x23,y23,z23,depth);
-	ContourLinear3(x31,y31,z31,x12,y12,z12,x23,y23,z23,depth);
   }
   
   // ----------------------------------------------------------------------
