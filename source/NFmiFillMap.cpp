@@ -15,8 +15,25 @@
 #include "NFmiFillMap.h"
 #include "NFmiColorBlend.h"
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
+
+// A help utility to avoid eps-size errors in filling due to
+// for example small rounding errors in projections
+
+namespace
+{
+  float myround(float theValue)
+  {
+	if(abs(theValue-round(theValue)) < 0.001) // 0.001 pixels is meaningless
+	  return round(theValue);
+	else
+	  return theValue;
+  }
+}
+
+
 // ----------------------------------------------------------------------
 // Low level driver for filling when having source RGBA separated
 // is faster than having a composite Color
@@ -51,8 +68,6 @@ static void Fill2(T theBlender, NFmiImage & theImage,
       if(y < 0 || y>=theImage.Height())
 		continue;
 	  
-      // cout << "Fill: " << y << " :";
-	  
       int j = static_cast<int>(y);
 	  
       // Otherwise iterate over all the x-coordinates, and fill
@@ -77,8 +92,6 @@ static void Fill2(T theBlender, NFmiImage & theImage,
       for( ; dataiter!=iter->second.end() ; ++dataiter)
 		{
 		  float x2 = *dataiter;
-		  
-		  // cout << " --> " << x2;
 		  
 		  // If last x was invalid, set new beginning of line
 		  
@@ -135,7 +148,6 @@ static void Fill2(T theBlender, NFmiImage & theImage,
 			  x1 = kFloatMissing;
 			}
 		}
-      // cout << endl;
     }
 }
 
@@ -420,11 +432,6 @@ void NFmiFillMap::Add(float theX1, float theY1, float theX2, float theY2)
   if(itsHiLimit!=kFloatMissing && std::min(theY1,theY2)>itsHiLimit)
     return;
   
-  // First, we ignore horizontal lines, they are meaningless
-  // when filling with horizontal lines.
-  
-  if(theY1==theY2)
-    return;
   
   // The parametric equation of the line is:
   //
@@ -442,10 +449,16 @@ void NFmiFillMap::Add(float theX1, float theY1, float theX2, float theY2)
   // The equation is always valid, since the case y1=y2 has already been
   // handled.
   
-  float x1 = theX1;
-  float y1 = theY1;
-  float x2 = theX2;
-  float y2 = theY2;
+  float x1 = myround(theX1);
+  float y1 = myround(theY1);
+  float x2 = myround(theX2);
+  float y2 = myround(theY2);
+
+  // First, we ignore horizontal lines, they are meaningless
+  // when filling with horizontal lines.
+  
+  if(y1==y2)
+	return;
   
   if(y1>y2)
     {
@@ -464,16 +477,21 @@ void NFmiFillMap::Add(float theX1, float theY1, float theX2, float theY2)
   if(itsHiLimit!=kFloatMissing && hi>itsHiLimit)
     hi = static_cast<int>(floor(itsHiLimit));
   
-  // We don't want to intersect ymin
+  // We don't want to intersect ymin, it is handled
+  // by the line connected to this one, except at
+  // the bottom!
   
-  if(static_cast<float>(lo) == y1)
+  if(y2<=0)
+	return;
+
+  if(static_cast<float>(lo) == y1 && y1>0)
     lo++;
   
   // We precalculate k and x1+k*y1 for speed
   // Should in principle remove the multiplication too,
   // but realistically speaking this cost quite small,
   // and a decent compiler will make fast code anyway.
-  
+
   float k = (x2-x1)/(y2-y1);
   float tmp = x1 - k*y1;
   
