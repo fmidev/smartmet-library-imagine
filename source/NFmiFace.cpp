@@ -34,7 +34,10 @@
 
 #include "NFmiStringTools.h"
 
+#include FT_GLYPH_H
+
 #include <stdexcept>
+#include <vector>
 
 // Required on Mandrake 9.0 (freetype 9.0.3, freetype 9.3.3 is fine)
 
@@ -75,11 +78,14 @@ namespace Imagine
 	Pimple(const Pimple & thePimple);
 	Pimple & operator=(const Pimple & thePimple);
 
+	FT_BBox compute_bbox(const vector<FT_Glyph> & theGlyphs,
+						 const vector<FT_Vector> & thePositions);
+
 	template <class T>
 	void Draw(T theBlender,
 			  NFmiImage & theImage,
 			  NFmiColorTools::Color theColor,
-			  FT_Bitmap * theBitmap,
+			  const FT_Bitmap & theBitmap,
 			  FT_Int theX,
 			  FT_Int theY);
 
@@ -144,6 +150,55 @@ namespace Imagine
 
   // ----------------------------------------------------------------------
   /*!
+   * \brief Compute glyph sequence bounding box
+   */
+  // ----------------------------------------------------------------------
+
+  FT_BBox NFmiFace::Pimple::compute_bbox(const vector<FT_Glyph> & theGlyphs,
+										 const vector<FT_Vector> & thePositions)
+  {
+	FT_BBox bbox;
+
+	// initialize string bbox to "empty" values
+	bbox.xMin = bbox.yMin = 32000;
+	bbox.xMax = bbox.yMax = -32000;
+
+	// for each glyph image, compute its bounding box,
+	// translate it, and grow the string bbox
+
+	for(string::size_type i = 0; i < theGlyphs.size(); i++)
+	  {
+		FT_BBox glyph_bbox;
+		FT_Glyph_Get_CBox(theGlyphs[i], ft_glyph_bbox_pixels, &glyph_bbox );
+
+		glyph_bbox.xMin += thePositions[i].x;
+		glyph_bbox.xMax += thePositions[i].x;
+		glyph_bbox.yMin += thePositions[i].y;
+		glyph_bbox.yMax += thePositions[i].y;
+
+		if ( glyph_bbox.xMin < bbox.xMin ) bbox.xMin = glyph_bbox.xMin;
+		if ( glyph_bbox.yMin < bbox.yMin ) bbox.yMin = glyph_bbox.yMin;
+		if ( glyph_bbox.xMax > bbox.xMax ) bbox.xMax = glyph_bbox.xMax;
+		if ( glyph_bbox.yMax > bbox.yMax ) bbox.yMax = glyph_bbox.yMax;
+	  }
+
+	// check that we really grew the string bbox
+
+	if ( bbox.xMin > bbox.xMax )
+	  {
+		bbox.xMin = 0;
+		bbox.yMin = 0;
+		bbox.xMax = 0;
+		bbox.yMax = 0;
+	  }
+
+	// return string bbox
+
+	return bbox;
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
    * \brief Render the given text
    */
   // ----------------------------------------------------------------------
@@ -158,21 +213,94 @@ namespace Imagine
   {
 	FT_Error error;
 	FT_GlyphSlot slot = itsFace->glyph;
+	FT_UInt glyph_index;
 	FT_Vector pen;
-	pen.x = 64*theX;
-	pen.y = 64*theY;
 
-	for(string::size_type i = 0; i<theText.size(); i++)
+	vector<FT_Glyph> glyphs(theText.size());
+	vector<FT_Vector> pos(theText.size());
+
+	// start at (0,0)
+	pen.x = 0;
+	pen.y = 0;
+
+	FT_Bool use_kerning = FT_HAS_KERNING(itsFace);
+	FT_UInt previous = 0;
+
+	string::size_type i;
+	for(i = 0; i<theText.size(); i++)
 	  {
-		error = FT_Load_Char(itsFace,theText[i], FT_LOAD_RENDER);
-		if(error) continue;
-		this->Draw(theBlender,theImage,theColor,
-				   &slot->bitmap,
-				   (pen.x >> 6) + slot->bitmap_left,
-				   (pen.y >> 6) + slot->bitmap_top);
+		glyph_index = FT_Get_Char_Index(itsFace,theText[i]);
 
-		pen.x += slot->advance.x;
-		pen.y += slot->advance.y;
+		// Retrieve kerning distance and move pen accordingly
+		if(use_kerning && previous!=0 && glyph_index!=0)
+		  {
+			FT_Vector delta;
+			FT_Get_Kerning(itsFace,previous,glyph_index,
+						   FT_KERNING_DEFAULT,&delta);
+			pen.x += (delta.x >> 6);
+		  }
+
+		// store current pen position
+		pos[i] = pen;
+
+		// load glyph image into the slow without rendering
+
+		error = FT_Load_Glyph(itsFace, glyph_index, FT_LOAD_DEFAULT);
+		if(error)
+		  continue;
+
+		// Extract glyph image and store it in our table
+
+		error = FT_Get_Glyph(itsFace->glyph,&glyphs[i]);
+		if(error)
+		  continue;
+
+		// Increment pen position
+		pen.x += (slot->advance.x >> 6);
+
+		// Record current glyph index
+		previous = glyph_index;
+
+	  }
+
+	// Compute bounding box
+	const FT_BBox bbox = compute_bbox(glyphs,pos);
+
+	// string pixel size
+
+	const int width  = bbox.xMax - bbox.xMin;
+	const int height = bbox.yMax - bbox.yMin;
+
+	// Compute start position in 26.6 cartesian pixels
+
+	const double xfactor = XAlignmentFactor(theAlignment);
+	const double yfactor = YAlignmentFactor(theAlignment);
+
+	const int start_x = static_cast<int>(64*(theX - xfactor*width));
+	const int start_y = static_cast<int>(64*(theY + (1- yfactor)*height));
+
+	// And render the glyphs
+
+	for(i = 0; i<glyphs.size(); i++)
+	  {
+		FT_Glyph image = glyphs[i];
+
+		pen.x = start_x + 64*pos[i].x;
+		pen.y = start_y + 64*pos[i].y;
+
+		error = FT_Glyph_To_Bitmap(&image, FT_RENDER_MODE_NORMAL, &pen, 0);
+
+		if(!error)
+		  {
+			FT_BitmapGlyph bit = reinterpret_cast<FT_BitmapGlyph>(image);
+			this->Draw(theBlender, theImage, theColor,
+					   bit->bitmap,
+					   (pen.x >> 6) + bit->left,
+					   (pen.y >> 6) - bit->top);
+
+			FT_Done_Glyph(image);
+		  }
+
 	  }
 
   }
@@ -187,13 +315,13 @@ namespace Imagine
   void NFmiFace::Pimple::Draw(T theBlender,
 							  NFmiImage & theImage,
 							  NFmiColorTools::Color theColor,
-							  FT_Bitmap * theBitmap,
+							  const FT_Bitmap & theBitmap,
 							  FT_Int theX,
 							  FT_Int theY)
   {
 	FT_Int i, j, p, q;
-	FT_Int x_max = theX + theBitmap->width;
-	FT_Int y_max = theY + theBitmap->rows;
+	FT_Int x_max = theX + theBitmap.width;
+	FT_Int y_max = theY + theBitmap.rows;
 	
 	for ( i = theX, p = 0; i < x_max; i++, p++ )
 	  {
@@ -203,14 +331,15 @@ namespace Imagine
 			  continue;
 
 			int alpha = 0;
-			if(theBitmap->pixel_mode == FT_PIXEL_MODE_GRAY)
-			  alpha = theBitmap->buffer[q * theBitmap->width + p];
+			if(theBitmap.pixel_mode == FT_PIXEL_MODE_GRAY)
+			  alpha = theBitmap.buffer[q * theBitmap.width + p];
 			else
 			  {
-				int value = theBitmap->buffer[q * (theBitmap->pitch) + (p>>3)];
+				int value = theBitmap.buffer[q * (theBitmap.pitch) + (p>>3)];
 				int bit = (value << (p&7)) & 128;
 				alpha = (bit!=0 ? 255 : 0);
 			  }
+
 			if(alpha == 255)
 			  theImage(i,j) = theBlender.Blend(theColor,theImage(i,j));
 			else

@@ -38,7 +38,7 @@ namespace Imagine
 			  const std::string & theText,
 			  NFmiAlignment theAlignment = kFmiAlignNorthWest,
 			  NFmiColorTools::Color theColor = NFmiColorTools::Black,
-			  NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorOver) const;
+			  NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorAtop) const;
 
   private:
 
