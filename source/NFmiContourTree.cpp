@@ -881,19 +881,19 @@ void NFmiContourTree::ContourLinear4(float x1, float y1, float z1,
 		   it!=elements.end();
 		   ++it)
 		 {
-		   switch(it->Oper())
+		   switch((*it).Oper())
 			 {
 			 case kFmiMoveTo:
 			   if(it!=elements.begin())
 				 Add(NFmiEdge(firstx,firsty,lastx,lasty,true));
-			   firstx = it->X();
-			   firsty = it->Y();
+			   firstx = (*it).X();
+			   firsty = (*it).Y();
 			   lastx = firstx;
 			   lasty = firsty;
 			   break;
 			 case kFmiLineTo:
-			   lastx = it->X();
-			   lasty = it->Y();
+			   lastx = (*it).X();
+			   lasty = (*it).Y();
 			   if(it == --elements.end())
 				 Add(NFmiEdge(firstx,firsty,lastx,lasty,true));
 			   break;

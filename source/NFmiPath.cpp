@@ -80,7 +80,7 @@ void NFmiPath::Add(const NFmiPath & thePath, bool fExact)
   for( ; iter!= thePath.itsElements.end() ; ++iter)
     {
       if(iter == thePath.itsElements.begin())
-		Add(fExact ? kFmiLineTo : kFmiGhostLineTo, iter->X(), iter->Y());
+		Add(fExact ? kFmiLineTo : kFmiGhostLineTo, (*iter).X(), (*iter).Y());
       else
 		Add(*iter);
     }
@@ -102,10 +102,10 @@ void NFmiPath::Insert(const NFmiPath & thePath, bool fExact)
   bool first = true;
   for( ; iter!=thePath.itsElements.end(); ++iter)
     {
-      if( (first&&fExact) || (!first && iter->Oper()==kFmiLineTo) )
-		InsertLineTo(iter->X(),iter->Y());
+      if( (first&&fExact) || (!first && (*iter).Oper()==kFmiLineTo) )
+		InsertLineTo((*iter).X(),(*iter).Y());
       else
-		InsertGhostLineTo(iter->X(),iter->Y());
+		InsertGhostLineTo((*iter).X(),(*iter).Y());
       first = false;
     }
 }
@@ -133,8 +133,8 @@ void NFmiPath::AddReverse(const NFmiPath & thePath, bool fExact)
   NFmiPathData::const_reverse_iterator iter = thePath.itsElements.rbegin();
   for( ; iter!=thePath.itsElements.rend(); ++iter)
     {
-      Add(op, iter->X(), iter->Y());
-      op = iter->Oper();
+      Add(op, (*iter).X(), (*iter).Y());
+      op = (*iter).Oper();
     }
 }
 
@@ -149,11 +149,11 @@ void NFmiPath::DoCloseLineTo(NFmiPathOperation theOper)
   NFmiPathData::reverse_iterator iter;
   for(iter=itsElements.rbegin(); iter!=itsElements.rend(); ++iter)
     {
-      if(iter->Oper()==kFmiMoveTo)
+      if((*iter).Oper()==kFmiMoveTo)
 		{
 		  // The element to be added
 		  
-		  NFmiPathElement tmp(theOper,iter->X(),iter->Y());
+		  NFmiPathElement tmp(theOper,(*iter).X(),(*iter).Y());
 		  
 		  // Don't add if the last element is exactly the same
 		  
@@ -340,12 +340,12 @@ void NFmiPath::Simplify(float epsilon)
   NFmiPathData::const_iterator iter;
   for(iter=Elements().begin() ; iter!=Elements().end(); ++iter)
     {
-      switch(iter->Oper())
+      switch((*iter).Oper())
 		{
 		case kFmiMoveTo:
 		case kFmiLineTo:
 		case kFmiGhostLineTo:
-		  counter.Add(make_pair(iter->X(),iter->Y()));
+		  counter.Add(make_pair((*iter).X(),(*iter).Y()));
 		  break;
 		default:
 		  break;
@@ -372,8 +372,8 @@ void NFmiPath::Translate(float theX, float theY)
   
   for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
     {
-      iter->X(iter->X()+theX);	// X += theX
-      iter->Y(iter->Y()+theY);	// Y += theY
+      (*iter).X((*iter).X()+theX);	// X += theX
+      (*iter).Y((*iter).Y()+theY);	// Y += theY
     }
 }
 
@@ -396,8 +396,8 @@ void NFmiPath::Scale(float theXScale, float theYScale)
   
   for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
     {
-      iter->X(iter->X()*theXScale);
-      iter->Y(iter->Y()*theYScale);
+      (*iter).X((*iter).X()*theXScale);
+      (*iter).Y((*iter).Y()*theYScale);
     }
 }
 
@@ -416,10 +416,10 @@ void NFmiPath::Rotate(float theAngle)
   
   for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
     {
-      float x = iter->X();
-      float y = iter->Y();
-      iter->X(x*cosa+y*sina);
-      iter->Y(-x*sina+y*cosa);
+      float x = (*iter).X();
+      float y = (*iter).Y();
+      (*iter).X(x*cosa+y*sina);
+      (*iter).Y(-x*sina+y*cosa);
     }
 }
 
@@ -433,10 +433,10 @@ void NFmiPath::Transform(NFmiAffine & theAffine)
   
   for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
     {
-      float x = iter->X();
-      float y = iter->Y();
-      iter->X(theAffine.X(x,y));
-      iter->Y(theAffine.Y(x,y));
+      float x = (*iter).X();
+      float y = (*iter).Y();
+      (*iter).X(theAffine.X(x,y));
+      (*iter).Y(theAffine.Y(x,y));
     }
 }
 
@@ -466,9 +466,9 @@ void NFmiPath::Project(const NFmiArea * const theArea)
       NFmiPathData::iterator iter;
       for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 		{
-		  NFmiPoint pt = theArea->ToXY(NFmiPoint(iter->X(),iter->Y()));
-		  iter->X(pt.X());
-		  iter->Y(pt.Y());
+		  NFmiPoint pt = theArea->ToXY(NFmiPoint((*iter).X(),(*iter).Y()));
+		  (*iter).X(pt.X());
+		  (*iter).Y(pt.Y());
 		}
     }
 }
@@ -484,9 +484,9 @@ void NFmiPath::InvProject(const NFmiArea * const theArea)
       NFmiPathData::iterator iter;
       for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 		{
-		  NFmiPoint pt = theArea->ToLatLon(NFmiPoint(iter->X(),iter->Y()));
-		  iter->X(pt.X());
-		  iter->Y(pt.Y());
+		  NFmiPoint pt = theArea->ToLatLon(NFmiPoint((*iter).X(),(*iter).Y()));
+		  (*iter).X(pt.X());
+		  (*iter).Y(pt.Y());
 		}
     }
 }
@@ -502,9 +502,9 @@ void NFmiPath::InvGrid(const NFmiGrid * const theGrid)
       NFmiPathData::iterator iter;
       for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 		{
-		  NFmiPoint pt = theGrid->GridToLatLon(iter->X(), iter->Y());
-		  iter->X(pt.X());
-		  iter->Y(pt.Y());
+		  NFmiPoint pt = theGrid->GridToLatLon((*iter).X(), (*iter).Y());
+		  (*iter).X(pt.X());
+		  (*iter).Y(pt.Y());
 		}
     }
 }
@@ -522,12 +522,12 @@ NFmiEsriBox NFmiPath::BoundingBox(void) const
   
   for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
     {
-      switch(iter->Oper())
+      switch((*iter).Oper())
 		{
 		case kFmiMoveTo:
 		case kFmiLineTo:
 		case kFmiGhostLineTo:
-		  box.Update(iter->X(),iter->Y());
+		  box.Update((*iter).X(),(*iter).Y());
 		  break;
 		case kFmiConicTo:
 		  break;
@@ -583,9 +583,9 @@ void NFmiPath::SimplifyLines(float theOffset)
 	  
       // Establish new data
 	  
-      oper3 = iter->Oper();
-      x3 = theOffset+iter->X();
-      y3 = theOffset+iter->Y();
+      oper3 = (*iter).Oper();
+      x3 = theOffset+(*iter).X();
+      y3 = theOffset+(*iter).Y();
 	  
       // Delete-iterator is current element, 
 	  
@@ -655,20 +655,20 @@ std::ostream& operator<< (std::ostream& os,const NFmiPath & thePath)
       if(iter != thePath.Elements().begin())
 		os << " ";
 	  
-      if(iter->Oper() == kFmiMoveTo)
+      if((*iter).Oper() == kFmiMoveTo)
 		os << 'M';
-      else if(iter->Oper() == kFmiLineTo)
+      else if((*iter).Oper() == kFmiLineTo)
 		os << 'L';
-      else if(iter->Oper() == kFmiGhostLineTo)
+      else if((*iter).Oper() == kFmiGhostLineTo)
 		os << 'G';
-      else if(iter->Oper() == kFmiConicTo)
+      else if((*iter).Oper() == kFmiConicTo)
 		os << 'Q';
-      else if(iter->Oper() == kFmiCubicTo)
+      else if((*iter).Oper() == kFmiCubicTo)
 		os << 'C';
       else
 		os << '?';
 	  
-      os << iter->X() << "," << iter->Y();
+      os << (*iter).X() << "," << (*iter).Y();
 	  
     }
   return os;
@@ -706,14 +706,14 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 #endif
 
 
-	  float x = iter->X();
-	  float y = iter->Y();
+	  float x = (*iter).X();
+	  float y = (*iter).Y();
       // Special code for first move
 	  
-      if(iter->Oper()==kFmiConicTo || iter->Oper()==kFmiCubicTo)
+      if((*iter).Oper()==kFmiConicTo || (*iter).Oper()==kFmiCubicTo)
 		throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::SVG()");
 	  bool out_ok = true;
-	  if(removeghostlines && iter->Oper() == kFmiGhostLineTo)
+	  if(removeghostlines && (*iter).Oper() == kFmiGhostLineTo)
 		{
 		  out_ok = false;
 		}
@@ -723,7 +723,7 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 		  // when the ghostlines end and next operation is lineto.
 		  if( removeghostlines &&
 			  (last_op == kFmiGhostLineTo) &&
-			  (iter->Oper() == kFmiLineTo) )
+			  ((*iter).Oper() == kFmiLineTo) )
 			{
 			  if(relative_moves)
 				{
@@ -757,13 +757,13 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 		  // Relative moves are "m dx dy" and "l dx dy"
 		  else if(relative_moves)
 			{
-			  if(iter->Oper() == kFmiMoveTo)
+			  if((*iter).Oper() == kFmiMoveTo)
 				os += (last_op==kFmiMoveTo ? " " : " m");
 			  
-			  else if(iter->Oper() == kFmiLineTo)
+			  else if((*iter).Oper() == kFmiLineTo)
 				os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
 			  
-			  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
+			  else if(!removeghostlines && (*iter).Oper() == kFmiGhostLineTo)
 				os += ( (last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " l");
 			  
 			  else
@@ -775,13 +775,13 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 		  // Absolute moves are "M x y" and "L x y"
 		  else
 			{
-			  if(iter->Oper() == kFmiMoveTo)
+			  if((*iter).Oper() == kFmiMoveTo)
 				os += (last_op==kFmiMoveTo ? " " : " M");
 			  
-			  else if(iter->Oper() == kFmiLineTo)
+			  else if((*iter).Oper() == kFmiLineTo)
 				os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
 			  
-			  else if(!removeghostlines && iter->Oper() == kFmiGhostLineTo)
+			  else if(!removeghostlines && (*iter).Oper() == kFmiGhostLineTo)
 				os += ((last_op==kFmiLineTo||last_op==kFmiGhostLineTo) ? " " : " L");
 			  
 			  else
@@ -791,7 +791,7 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 			}
 		}
 	  
-      last_op = iter->Oper();
+      last_op = (*iter).Oper();
 	  
 	  last_x = x;
 	  last_y = y;
@@ -847,11 +847,11 @@ void NFmiPath::Add(NFmiFillMap & theMap) const
   
   for( ; iter!=Elements().end(); ++iter)
     {
-      x1 = iter->X();
-      y1 = iter->Y();
-      op1 = iter->Oper();
+      x1 = (*iter).X();
+      y1 = (*iter).Y();
+      op1 = (*iter).Oper();
       
-      switch(iter->Oper())
+      switch((*iter).Oper())
 		{
 		case kFmiMoveTo:
 		  break;
@@ -913,15 +913,15 @@ void NFmiPath::Stroke(NFmiImage & theImage,
     {
       // Next point
 	  
-      float nextX = iter->X();
-      float nextY = iter->Y();
+      float nextX = (*iter).X();
+      float nextY = (*iter).Y();
 	  
-      if(iter->Oper()==kFmiConicTo || iter->Oper()==kFmiCubicTo)
+      if((*iter).Oper()==kFmiConicTo || (*iter).Oper()==kFmiCubicTo)
 		throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::Stroke()");
 	  
       // Only LineTo operations get rendered
 	  
-      if(iter->Oper() == kFmiLineTo)
+      if((*iter).Oper() == kFmiLineTo)
 		if(lastX!=kFloatMissing && lastY!=kFloatMissing &&
 		   nextX!=kFloatMissing && nextY!=kFloatMissing)
 		  {
@@ -998,9 +998,9 @@ NFmiPath NFmiPath::StrokePath(float theWidth) const
   
   for(iter=Elements().begin(); iter!=Elements().end(); ++iter)
     {
-      float x = iter->X();
-      float y = iter->Y();
-      NFmiPathOperation op = iter->Oper();
+      float x = (*iter).X();
+      float y = (*iter).Y();
+      NFmiPathOperation op = (*iter).Oper();
 	  
       switch(op)
 		{
@@ -1101,9 +1101,9 @@ NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, 
 
 	for(NFmiPathData::const_iterator iter=begin; iter!=end; )
 	{
-		double X = iter->X();
-		double Y = iter->Y();
-		NFmiPathOperation op = iter->Oper();
+		double X = (*iter).X();
+		double Y = (*iter).Y();
+		NFmiPathOperation op = (*iter).Oper();
 		++iter;
 
 		this_quadrant = quadrant(X, Y, theX1, theY1, theX2, theY2, theMargin);
