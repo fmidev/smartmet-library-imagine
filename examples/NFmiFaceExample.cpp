@@ -26,9 +26,13 @@ void demo()
   NFmiColorTools::Color white = NFmiColorTools::MakeColor(255,255,255);
   NFmiImage image(width,height,white);
 
-  // const string font = "/data/share/fonts/ttf/ArialNarrow.ttf";
+#if 0
+  const string font = "/data/share/fonts/ttf/ArialNarrow.ttf";
+  NFmiFace face(NFmiFreeType::Instance().Face(font,0,20));
+#else  
   const string font = "/usr/lib/X11/fonts/misc/6x13.pcf.gz";
   NFmiFace face(NFmiFreeType::Instance().Face(font,6,13));
+#endif
 
   face.Draw(image,0,0,"NorthWest",kFmiAlignNorthWest);
   face.Draw(image,width/2,0,"North",kFmiAlignNorth);
