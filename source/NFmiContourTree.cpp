@@ -948,10 +948,11 @@ namespace Imagine
 		float x0 = (x1+x2+x3+x4)/4;
 		float y0 = (y1+y2+y3+y4)/4;
 		float z0 = (z1+z2+z3+z4)/4;
-		subpath.ContourLinear3(x1,y1,z1,x2,y2,z2,x0,y0,z0);
-		subpath.ContourLinear3(x2,y2,z2,x3,y3,z3,x0,y0,z0);
-		subpath.ContourLinear3(x3,y3,z3,x4,y4,z4,x0,y0,z0);
-		subpath.ContourLinear3(x4,y4,z4,x1,y1,z1,x0,y0,z0);
+		VertexInsidedness c0 = Insidedness(z0);
+		subpath.ContourLinear3(x1,y1,z1,c1,x2,y2,z2,c2,x0,y0,z0,c0);
+		subpath.ContourLinear3(x2,y2,z2,c2,x3,y3,z3,c3,x0,y0,z0,c0);
+		subpath.ContourLinear3(x3,y3,z3,c3,x4,y4,z4,c4,x0,y0,z0,c0);
+		subpath.ContourLinear3(x4,y4,z4,c4,x1,y1,z1,c1,x0,y0,z0,c0);
 		
 		// all ghostlines can be added as is
 		{
