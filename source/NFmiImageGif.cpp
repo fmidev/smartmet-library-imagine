@@ -336,13 +336,8 @@ namespace Imagine
 			  return -2;
 
 			unsigned char buf[260];
-			int count;
-			while((count = getdatablock(theInput,buf)) > 0)
+			while(getdatablock(theInput,buf) > 0)
 			  ;
-
-			// This is apparently common:
-			// if(count != 0)
-			// throw runtime_error("Missing EOD in GIF stream");
 			
 			return -2;
 
