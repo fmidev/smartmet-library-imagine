@@ -762,6 +762,9 @@ namespace Imagine
 		  dbffile << '\0';
 		dbffile << '\x0d';	// header record terminator
 
+		// Note: We assume the field width is wide enough
+		// so that the first character is always a space
+		// character indicating a "not-deleted" field
 		for(int i=1; i<=element_count; i++)
 		  dbffile << setw(field_length) << setfill(' ') << i;
 	  }
@@ -830,6 +833,8 @@ namespace Imagine
 			++it)
 		  {
 			const elements_type::value_type element = *it;
+
+			dbffile << ' ';		// not deleted, "*" would indicate deleted
 
 			for(attributes_type::const_iterator jt = itsAttributeNames.begin();
 				jt != itsAttributeNames.end();
