@@ -310,13 +310,25 @@ namespace Imagine
 	  // Now we test to see if the branches below might hold an object
 	  // nearer than the best so far found. The triangle rule is used
 	  // to test whether it's even necessary to descend. We may be
-	  // able to skip skanning both branches if we can guess
+	  // able to skip skanning both branches if we can guess which
+	  // branch is most likely to contain the nearest match. We simply
+	  // guess, that it is the branch which is nearer. Note that
+	  // the first and third if-clauses are mutually exclusive,
+	  // hence only parts 1-2 or 2-3 will be executed.
+
+	  const bool left_closer = (left_dist < right_dist);
+
+	  if(!left_closer &&
+		 (itsRightBranch.get() != 0) &&
+		 ((theRadius + itsMaxRight) >= right_dist))
+		found |= itsRightBranch->nearest(theColor,theNearest,theRadius);
 
 	  if((itsLeftBranch.get() != 0) &&
 		 ((theRadius + itsMaxLeft) >= left_dist))
 		found |= itsLeftBranch->nearest(theColor,theNearest,theRadius);
 
-	  if((itsRightBranch.get() != 0) &&
+	  if(left_closer &&
+		 (itsRightBranch.get() != 0) &&
 		 ((theRadius + itsMaxRight) >= right_dist))
 		found |= itsRightBranch->nearest(theColor,theNearest,theRadius);
 
