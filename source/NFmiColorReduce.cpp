@@ -375,22 +375,40 @@ namespace Imagine
 
 	void replace_colors(NFmiImage & theImage, const ColorMap & theMap)
 	{
-	  NFmiColorTools::Color last_color = NFmiColorTools::NoColor;
-	  NFmiColorTools::Color last_choice = NFmiColorTools::NoColor;
+	  NFmiColorTools::Color last_color1 = NFmiColorTools::NoColor;
+	  NFmiColorTools::Color last_color2 = NFmiColorTools::NoColor;
+	  NFmiColorTools::Color last_color3 = NFmiColorTools::NoColor;
+	  NFmiColorTools::Color last_choice1 = NFmiColorTools::NoColor;
+	  NFmiColorTools::Color last_choice2 = NFmiColorTools::NoColor;
+	  NFmiColorTools::Color last_choice3 = NFmiColorTools::NoColor;
 	  
 	  for(int j=0; j<theImage.Height(); j++)
 		for(int i=0; i<theImage.Width(); i++)
 		  {
-			if(theImage(i,j) != last_color)
+			if(theImage(i,j) == last_color1)
+			  theImage(i,j) = last_choise1;
+			else if(theImage(i,j) == last_color2)
 			  {
-				last_color = theImage(i,j);
-				
+				theImage(i,j) = last_choise2;
+				swap(last_color1,last_color2);
+				swap(last_choise1,last_choise2);
+			  }
+			else if(theImage(i,j) == last_color3)
+			  {
+				theImage(i,j) = last_choise3;
+				swap(last_color3,last_color2);
+				swap(last_choise3,last_choise2);
+			  }
+			else
+			  {
 				ColorMap::const_iterator it = theMap.find(last_color);
 				if(it == theMap.end())
 				  throw runtime_error("Internal error in color reduction, failed to find color");
-				last_choice = it->second;
+
+				last_color3 = theImage(i,j);
+				last_choice3 = it->second;
+				
 			  }
-			theImage(i,j) = last_choice;
 		  }
 	}
 
