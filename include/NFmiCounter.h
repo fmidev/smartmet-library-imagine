@@ -81,7 +81,11 @@ public:
   
   long Add(T theElement)
   {
+#ifdef __BORLAND_C
     std::pair<NFmiCounterData::iterator, bool> result = itsData.insert(make_pair(theElement,0));
+#else
+    std::pair<typename NFmiCounterData::iterator, bool> result = itsData.insert(make_pair(theElement,0));
+#endif
     if(result.second)
       return 1;
     else
