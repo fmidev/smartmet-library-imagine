@@ -260,7 +260,7 @@ namespace Imagine
 	
 	NFmiEsriBox BoundingBox(void) const;
 	
-	NFmiPath Clip(double theX1, double theY1, double theX2, double theY2, double theMargin = 0);
+	NFmiPath Clip(double theX1, double theY1, double theX2, double theY2, double theMargin = 0) const;
 	
 	void InsideOut(void) { itsInsideOut = !itsInsideOut; }
 	bool IsInsideOut() const { return itsInsideOut; }

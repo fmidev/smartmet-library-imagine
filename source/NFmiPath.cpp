@@ -1149,7 +1149,7 @@ namespace Imagine
   
   // ======================================================================
   
-  NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, double theMargin)
+  NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, double theMargin) const
   {
 	if(itsElements.empty())
 	  return *this;
@@ -1172,6 +1172,8 @@ namespace Imagine
 	double lastX = 0;
 	double lastY = 0;
 	NFmiPathOperation lastOp = kFmiMoveTo;
+
+	bool last_ignored = false;
 	
 	for(NFmiPathData::const_iterator iter=begin; iter!=end; )
 	  {
@@ -1181,37 +1183,128 @@ namespace Imagine
 		++iter;
 		
 		this_quadrant = quadrant(X, Y, theX1, theY1, theX2, theY2, theMargin);
-		
-		if(op == kFmiMoveTo || iter == end)
+
+		switch(op)
 		  {
-			if(iter == end)
-			  tmpPath.Add(op, X, Y);
-			if(tmpPath.itsElements.size() >= 2)
-			  if(intersects(minx, miny, maxx, maxy, theX1-theMargin, theY1-theMargin, theX2+theMargin, theY2+theMargin))
-				outPath.Add(tmpPath);
-			tmpPath.Clear();
-			if(op == kFmiMoveTo)
-			  {
-				tmpPath.Add(op, X, Y);
-				minx = maxx = X;
-				miny = maxy = Y;
-			  }
+		  case kFmiMoveTo:
+			{
+			  if(tmpPath.Size() > 0 &&
+				 intersects(minx, miny, maxx, maxy,
+							theX1-theMargin, theY1-theMargin, theX2+theMargin, theY2+theMargin))
+				{
+				  outPath.Add(tmpPath);
+				}
+			  tmpPath.Clear();
+			  tmpPath.Add(op,X,Y);
+			  minx = maxx = X;
+			  miny = maxy = Y;
+			  lastOp = op;
+			  lastX = X;
+			  lastY = Y;
+			  last_quadrant = this_quadrant;
+			  last_ignored = false;
+			  break;
+			}
+		  case kFmiLineTo:
+		  case kFmiGhostLineTo:
+			{
+			  if(this_quadrant == central_quadrant || this_quadrant != last_quadrant)
+				{
+				  if(last_ignored)
+					tmpPath.Add(lastOp, lastX, lastY);
+				  tmpPath.Add(op,X,Y);
+				  last_ignored = false;
+				}
+			  else
+				last_ignored = true;
+
+			  minx = min(minx,X);
+			  miny = min(miny,Y);
+			  maxx = max(maxx,X);
+			  maxy = max(maxy,Y);
+			  lastOp = op;
+			  lastX = X;
+			  lastY = Y;
+			  last_quadrant = this_quadrant;
+			  break;
+			}
+		  case kFmiConicTo:
+			{
+			  double X2 = (*iter).X();
+			  double Y2 = (*iter).Y();
+			  ++iter;
+			  
+			  int end_quadrant = quadrant(X2,Y2,theX1,theY1,theX2,theY2,theMargin);
+			  if(end_quadrant == central_quadrant ||
+				 end_quadrant != this_quadrant ||
+				 end_quadrant != last_quadrant)
+				{
+				  if(last_ignored)
+					tmpPath.Add(lastOp,lastX,lastY);
+				  tmpPath.Add(op,X,Y);
+				  tmpPath.Add(op,X2,Y2);
+				  last_ignored = false;
+				}
+			  else
+				last_ignored = true;
+			  lastOp = kFmiLineTo;
+			  lastX = X2;
+			  lastY = Y2;
+			  last_quadrant = end_quadrant;
+			  minx = min(minx,X); minx = min(minx,X2);
+			  miny = min(miny,Y); miny = min(miny,Y2);
+			  maxx = max(maxx,X); maxx = max(maxx,X2);
+			  maxy = max(maxy,Y); maxy = max(maxy,Y2);
+
+			  break;
+			}
+		  case kFmiCubicTo:
+			{
+			  double X2 = (*iter).X();
+			  double Y2 = (*iter).Y();
+			  ++iter;
+
+			  double X3 = (*iter).X();
+			  double Y3 = (*iter).Y();
+			  ++iter;
+			  
+			  int middle_quadrant = quadrant(X2,Y2,theX1,theY1,theX2,theY2,theMargin);
+			  int end_quadrant = quadrant(X3,Y3,theX1,theY1,theX2,theY2,theMargin);
+			  if(end_quadrant == central_quadrant ||
+				 end_quadrant != this_quadrant ||
+				 end_quadrant != middle_quadrant ||
+				 end_quadrant != last_quadrant)
+				{
+				  if(last_ignored)
+					tmpPath.Add(lastOp,lastX,lastY);
+				  tmpPath.Add(op,X,Y);
+				  tmpPath.Add(op,X2,Y2);
+				  tmpPath.Add(op,X3,Y3);
+				  last_ignored = false;
+				}
+			  else
+				last_ignored = true;
+			  lastOp = kFmiLineTo;
+			  lastX = X3;
+			  lastY = Y3;
+			  last_quadrant = end_quadrant;
+			  minx = min(minx,X); minx = min(minx,X2); minx = min(minx,X3);
+			  miny = min(miny,Y); miny = min(miny,Y2); miny = min(miny,Y3);
+			  maxx = max(maxx,X); maxx = max(maxx,X2); maxx = max(maxx,X3);
+			  maxy = max(maxy,Y); maxy = max(maxy,Y2); maxy = max(maxy,Y3);
+			  break;
+			}
 		  }
-		else if(this_quadrant == central_quadrant || this_quadrant != last_quadrant)
-		  {
-			if(this_quadrant != last_quadrant)
-			  tmpPath.Add(lastOp, lastX, lastY);
-			tmpPath.Add(op, X, Y);
-			minx = min(minx, X);
-			miny = min(miny, Y);
-			maxx = max(maxx, X);
-			maxy = max(maxy, Y);
-		  }
-		lastX = X;
-		lastY = Y;
-		lastOp = op;
-		last_quadrant = this_quadrant;
+
 	  }
+
+	if(tmpPath.Size() > 0 &&
+	   intersects(minx, miny, maxx, maxy,
+				  theX1-theMargin, theY1-theMargin, theX2+theMargin, theY2+theMargin))
+	  {
+		outPath.Add(tmpPath);
+	  }
+
 	return outPath;
   }
 
