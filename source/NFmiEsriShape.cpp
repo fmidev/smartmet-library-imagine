@@ -724,14 +724,10 @@ namespace Imagine
   
   bool NFmiEsriShape::WriteDBF(const string & theFilename) const
   {
-	const unsigned int HEADERSIZE = 57;
-	static int header[HEADERSIZE] = {
-	  65,0,7,0,0,0,0,0,
-	  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-	  'I','N','D','E','X',0,0,0,0,0,0,
-	  78,0,0,0,0,6,0,0,0,0,0,0,0,
-	  0,0,0,0,0,0,0,0,13
-	};
+	const int header_size = 32;
+	const int field_size = 32;
+	const int header_zeros = 20;
+	const int field_zeros = 15;
 
 	// Open output file
 	
@@ -746,20 +742,29 @@ namespace Imagine
 
 	if(itsAttributeNames.empty())
 	  {
-		for(unsigned int b=0; b<HEADERSIZE; b++)
-		  dbffile << static_cast<unsigned char>(header[b]);
+		int i;
+		const int field_length = 7;
+		dbffile << LittleEndianShort(header_size+1*field_size+1)
+				<< LittleEndianShort(field_length);
+		for(i=0; i<header_zeros; i++)
+		  dbffile << '\0';
 
-		for(unsigned int i=1; i<=itsElements.size(); i++)
-		  dbffile << setw(7) << setfill(' ') << i;
+		const int namelength = 11;
+		dbffile << "INDEX";
+		for(i=0; i<namelength-5; i++)
+		  dbffile << '\0';
+		dbffile << 'N'
+				<< LittleEndianInt(0)
+				<< '\x06';
+		for(i=0; i<field_zeros; i++)
+		  dbffile << '\0';
+		dbffile << '\x0d';
+
+		for(int i=1; i<=static_cast<int>(itsElements.size()); i++)
+		  dbffile << setw(field_length) << setfill(' ') << i;
 	  }
 	else
 	  {
-		// THIS IS WRONG - SHOULD OUTPUT STORED DATA!
-		for(unsigned int b=0; b<HEADERSIZE; b++)
-		  dbffile << static_cast<unsigned char>(header[b]);
-
-		for(unsigned int i=1; i<=itsElements.size(); i++)
-		  dbffile << setw(7) << setfill(' ') << i;
 	  }
 	
 	// Missing
