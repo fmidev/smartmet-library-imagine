@@ -156,6 +156,8 @@ namespace Imagine
 #endif // IMAGINE_IGNORE_FORMATS
 	void WriteGif(const std::string & theFileName) const;
 	
+	void ReduceColors();
+
 	// Erasing image with desired colour
 	
 	void Erase(NFmiColorTools::Color theColor);
@@ -196,8 +198,6 @@ namespace Imagine
 	
 	void ReadGIF(FILE *in);
 	void WriteGIF(FILE *out) const;
-
-	void ReduceColors();
 
 	// Test whether the image is opaque
 	
