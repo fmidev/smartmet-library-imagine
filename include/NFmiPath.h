@@ -34,7 +34,8 @@
 // Essential includes
 
 #include <string>
-#include <list>
+//#include <list>
+#include <deque>
 #include <algorithm>
 #include <cmath>		// for sqrt
 #include <cstdio>		// for sprintf in ftoa
@@ -49,7 +50,8 @@
 class NFmiGrid;
 class NFmiEsriBox;
 
-typedef std::list<NFmiPathElement> NFmiPathData;
+//typedef std::list<NFmiPathElement> NFmiPathData;
+typedef std::deque<NFmiPathElement> NFmiPathData;
 
 // ----------------------------------------------------------------------
 // A class defining a path
