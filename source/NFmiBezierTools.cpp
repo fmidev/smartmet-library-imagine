@@ -21,6 +21,7 @@
 #include "NFmiCounter.h"
 #include "NFmiPath.h"
 
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -50,6 +51,57 @@ namespace Imagine
 	  
 	  return (first.X() == last.X() && first.Y() == last.Y());
 			  
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Count the occurrances of each point in paths
+	 *
+	 * Throws if any path contains conic or cubic elements.
+	 *
+	 * \param thePaths The paths
+	 * \return The counts
+	 */
+	// ----------------------------------------------------------------------
+
+	NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths & thePaths)
+	{
+	  NFmiCounter<NFmiPoint> counts;
+	  
+	  for(NFmiPaths::const_iterator pt = thePaths.begin();
+		  pt != thePaths.end();
+		  ++pt)
+		{
+		  const NFmiPathData & path = pt->Elements();
+		  
+		  // end coordinate of previous moveto
+		  NFmiPoint previous_moveto(kFloatMissing,kFloatMissing);
+		  
+		  for(NFmiPathData::const_iterator it = path.begin();
+			  it != path.end();
+			  ++it)
+			{
+			  NFmiPoint p(it->X(),it->Y());
+			  switch(it->Oper())
+				{
+				case kFmiMoveTo:
+				  counts.Add(p);
+				  previous_moveto = p;
+				  break;
+				case kFmiLineTo:
+				case kFmiGhostLineTo:
+				  // ignore moves which close a subpath
+				  if(p != previous_moveto)
+					counts.Add(p);
+				  break;
+				case kFmiCubicTo:
+				case kFmiConicTo:
+				  throw std::runtime_error("Cubic and conic elements not supported in multiple path Bezier fitting");
+				}
+			}
+		}
+	  
+	  return counts;
 	}
 
 	// ----------------------------------------------------------------------
@@ -181,6 +233,10 @@ namespace Imagine
 			  out.push_back(outpath);
 			  outpath.Clear();
 			}
+		  // prepend a leading moveto to all new path segments
+		  if(i>0 && outpath.Empty() && path[i].Oper()!=Imagine::kFmiMoveTo)
+			outpath.MoveTo(path[i-1].X(),path[i-1].Y());
+
 		  outpath.Add(path[i]);
 		}
 	  if(!outpath.Empty())

@@ -12,6 +12,7 @@
 #define IMAGINE_NFMIBEZIERTOOLS_H
 
 #include <list>
+#include <vector>
 
 class NFmiPoint;
 
@@ -22,8 +23,11 @@ namespace Imagine
 
   namespace NFmiBezierTools
   {
-	
+
 	bool IsClosed(const NFmiPath & thePath);
+
+	typedef std::vector<NFmiPath> NFmiPaths;
+	NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths & thePaths);
 
 	typedef std::list<std::pair<NFmiPath,bool> > Segments;
 	Segments SplitSegments(const NFmiPath & thePath);
