@@ -721,6 +721,9 @@ namespace Imagine
 	
 	last_x = last_y = kFloatMissing;
 	last_out_x = last_out_y = kFloatMissing;
+
+	int count_conic = 0;
+	int count_cubic = 0;
 	
 	NFmiPathData::const_iterator iter = Elements().begin();
 	
@@ -730,11 +733,25 @@ namespace Imagine
 		if(os.size() > 0.9 * os.capacity())
 		  os.reserve(os.size() * 2);
 #endif
-		
-		
 		const float x = (*iter).X();
 		const float y = (*iter).Y();
 		const NFmiPathOperation op = (*iter).Oper();
+
+		switch(op)
+		  {
+		  case kFmiConicTo:
+			count_cubic = 0 ;
+			count_conic++;
+			break;
+		  case kFmiCubicTo:
+			count_conic = 0;
+			count_cubic++;
+			break;
+		  default:
+			count_conic = 0;
+			count_cubic = 0;
+		  }
+
 		// Special code for first move
 		
 		bool out_ok = true;
@@ -802,9 +819,11 @@ namespace Imagine
 					break;
 				  case kFmiConicTo:
 					os += (last_op==kFmiConicTo ? " " : " q");
+					out_ok = (count_conic > 1);
 					break;
 				  case kFmiCubicTo:
 					os += (last_op==kFmiCubicTo ? " " : " c");
+					out_ok = (count_conic > 2);
 					break;
 				  }
 				
