@@ -185,7 +185,7 @@ namespace Imagine
 	
 	unsigned int pos1 = 0;
 	
-	while(true)
+	do
 	  {
 		// Find position last character to be inserted
 		
@@ -206,9 +206,8 @@ namespace Imagine
 		
 		// Done when reached end of text
 		
-		if(pos1>=hershey.size())
-		  break;
 	  }
+	while(pos1<hershey.size());
 	
 	// Next we calculate character and font bounding boxes
 	
