@@ -307,9 +307,14 @@ namespace Imagine
 	DefaultOptions();
 	itsType = theImage.itsType;
 	Allocate(theImage.Width(),theImage.Height());
+
+#if 0
 	for (int j = 0; j < itsHeight ; j++)
 	  for (int i = 0; i < itsWidth; i++)
 		(*this)(i,j) = theImage(i,j);
+#else
+	memcpy(itsPixels,theImage.itsPixels,itsWidth*itsHeight*sizeof(NFmiColorTools::Color));
+#endif
   }
   
   // ----------------------------------------------------------------------
