@@ -151,13 +151,25 @@ namespace Imagine
 	  DoCloseLineTo(kFmiGhostLineTo);
 	}
 	
-	// Append a path without a joining line
+	// Append a path without a joining line. The first moveto
+	// may be omitted if the coordinate is the same as the
+	// endpoint of the current path. This is a required feature
+	// for some path simplification algorithms.
 	
 	void Add(const NFmiPath & thePath)
 	{
-	  itsElements.insert(itsElements.end(),
-						 thePath.itsElements.begin(),
-						 thePath.itsElements.end());
+	  if(thePath.Empty())
+		return;
+
+	  NFmiPathData::const_iterator it = thePath.itsElements.begin();
+	  // strip leading moveto if the coordinate is the same as last end point
+	  if(!Empty() &&
+		 it->Oper() == kFmiMoveTo &&
+		 it->X() == itsElements.back().X() &&
+		 it->Y() == itsElements.back().Y())
+		++it;
+
+	  itsElements.insert(itsElements.end(), it, thePath.itsElements.end());
 	}
 	
 	// Append a path using a line of desired type
