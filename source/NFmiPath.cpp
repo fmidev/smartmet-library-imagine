@@ -18,11 +18,6 @@
 #include "NFmiEsriBox.h"
 
 #include <iostream>
-#ifdef UNIX
-#include <strstream>
-#else
-#include <sstream>
-#endif
 #include <algorithm>
 #include <stdexcept>
 
