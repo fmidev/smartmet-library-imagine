@@ -171,7 +171,7 @@ namespace Imagine
 	
 	/// Convert a name of interpolation method to enumerated type.
 	
-	static const NFmiContourInterpolation ContourInterpolationValue(const std::string & theName);
+	static NFmiContourInterpolation ContourInterpolationValue(const std::string & theName);
 	
 	/// Convert interpolation method enum to a name
 	

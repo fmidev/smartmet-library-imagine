@@ -1560,7 +1560,7 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
   
-  const NFmiContourTree::NFmiContourInterpolation NFmiContourTree::ContourInterpolationValue(const string & theName)
+  NFmiContourTree::NFmiContourInterpolation NFmiContourTree::ContourInterpolationValue(const string & theName)
   {
 	if(theName=="Nearest")
 	  return kFmiContourNearest;
