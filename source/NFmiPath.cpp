@@ -1074,6 +1074,8 @@ NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, 
 		NFmiPathOperation op = iter->Oper();
 		++iter;
 
+		this_quadrant = quadrant(X, Y, theX1, theY1, theX2, theY2, theMargin);
+
 		if(op == kFmiMoveTo || iter == end)
 		{
 			if(iter == end)
@@ -1089,26 +1091,20 @@ NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, 
 				miny = maxy = Y;
 			}
 		}
-		else
-		{
-			this_quadrant = quadrant(X, Y, theX1, theY1, theX2, theY2, theMargin);
-			if(this_quadrant == central_quadrant)
-				int xx = 0;
-			if(this_quadrant == central_quadrant || this_quadrant != last_quadrant)
-			{
-				if(this_quadrant != last_quadrant)
-					tmpPath.Add(lastOp, lastX, lastY);
-				tmpPath.Add(op, X, Y);
-				minx = min(minx, X);
-				miny = min(miny, Y);
-				maxx = max(maxx, X);
-				maxy = max(maxy, Y);
-			}
-			last_quadrant = this_quadrant;
-		}
+		else if(this_quadrant == central_quadrant || this_quadrant != last_quadrant)
+		  {
+			if(this_quadrant != last_quadrant)
+			  tmpPath.Add(lastOp, lastX, lastY);
+			tmpPath.Add(op, X, Y);
+			minx = min(minx, X);
+			miny = min(miny, Y);
+			maxx = max(maxx, X);
+			maxy = max(maxy, Y);
+		  }
 		lastX = X;
 		lastY = Y;
 		lastOp = op;
+		last_quadrant = this_quadrant;
 	}
 	return outPath;
 }
