@@ -105,7 +105,7 @@ namespace Imagine
 	
 	long Count(T theElement) const
 	{
-	  typename NFmiCounterData::iterator iter = itsData.find(theElement);
+	  typename NFmiCounterData::const_iterator iter = itsData.find(theElement);
 	  if(iter==itsData.end())
 		return 0L;
 	  else
