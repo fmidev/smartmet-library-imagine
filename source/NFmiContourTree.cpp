@@ -41,6 +41,8 @@
 #endif
 
 #include "NFmiContourTree.h"
+#include <stdexcept>
+
 
 #ifndef square
 /// Utility macro to calculate number squared.
@@ -799,7 +801,6 @@ void NFmiContourTree::ContourLinear4(float x1, float y1, float z1,
   // the solutions of the 4 triangles effectively then solves the
   // saddle point problem.
   
-  // Mika 19.09.2001:
   // It is possible that two adjacent ranges consider the rectangle
   // differently - one sees it as a saddle point, one doesn't. This
   // will result in pixel-size gaps between the contours, since
@@ -807,9 +808,8 @@ void NFmiContourTree::ContourLinear4(float x1, float y1, float z1,
   // The simple fix is to always triangulate all rectangles, which
   // are only partially covered (and hence contain atleast two
   // different contour ranges)
-  
-  // if( ( (c1==c3 || c2==c4) && (c1!=c2 && c3!=c4) ) )
-  if(true)
+
+   if(itsSubTrianglesOn)
     {
       float x0 = (x1+x2+x3+x4)/4;
       float y0 = (y1+y2+y3+y4)/4;
@@ -818,7 +818,92 @@ void NFmiContourTree::ContourLinear4(float x1, float y1, float z1,
       ContourLinear3(x2,y2,z2,x3,y3,z3,x0,y0,z0,maxdepth-1);
       ContourLinear3(x3,y3,z3,x4,y4,z4,x0,y0,z0,maxdepth-1);
       ContourLinear3(x4,y4,z4,x1,y1,z1,x0,y0,z0,maxdepth-1);
+	  return;
     }
+
+   // Now, if there is a saddle point, we utilize triangles
+   // to get the path correct, then collapse the small
+   // line segments back into straight lines. Often one may
+   // wish to avoid the subtriangles since using them may
+   // make the contour a bit spiky.
+
+   bool saddlepoint = ((c1==c3 || c2==c4) && (c1!=c2 && c3!=c4));
+
+   if(saddlepoint)
+	 {
+	   // Make new subcontourer
+	   NFmiContourTree subpath(itsLoLimit,
+							   itsHiLimit,
+							   itsLoLimitExact,
+							   itsHiLimitExact,
+							   itHasMissingValue,
+							   itsMissingValue);
+	   subpath.itHasDataLoLimit = itHasDataLoLimit;
+	   subpath.itHasDataHiLimit = itHasDataHiLimit;
+	   subpath.itsDataLoLimit = itsDataLoLimit;
+	   subpath.itsDataHiLimit = itsDataHiLimit;
+	   subpath.itsSubTrianglesOn = true;
+
+	   float x0 = (x1+x2+x3+x4)/4;
+	   float y0 = (y1+y2+y3+y4)/4;
+	   float z0 = (z1+z2+z3+z4)/4;
+	   subpath.ContourLinear3(x1,y1,z1,x2,y2,z2,x0,y0,z0,maxdepth-1);
+	   subpath.ContourLinear3(x2,y2,z2,x3,y3,z3,x0,y0,z0,maxdepth-1);
+	   subpath.ContourLinear3(x3,y3,z3,x4,y4,z4,x0,y0,z0,maxdepth-1);
+	   subpath.ContourLinear3(x4,y4,z4,x1,y1,z1,x0,y0,z0,maxdepth-1);
+
+	   // all ghostlines can be added as is
+	   {
+		 for(EdgeTreeType::const_iterator it=subpath.itsEdges.begin();
+			 it != subpath.itsEdges.end();
+			 )
+		   {
+			 if(it->Exact())
+			   ++it;
+			 else
+			   {
+				 Add(*it);
+				 subpath.itsEdges.erase(it);
+				 it = subpath.itsEdges.begin();
+			   }
+		   }
+	   }
+
+	   // next we must collapse all polylines into single lines
+
+	   NFmiPath path = subpath.Path();
+	   const NFmiPathData & elements = path.Elements();
+	   float firstx = 0;
+	   float firsty = 0;
+	   float lastx = 0;
+	   float lasty = 0;
+	   for(NFmiPathData::const_iterator it=elements.begin();
+		   it!=elements.end();
+		   ++it)
+		 {
+		   switch(it->Oper())
+			 {
+			 case kFmiMoveTo:
+			   if(it!=elements.begin())
+				 Add(NFmiEdge(firstx,firsty,lastx,lasty,true));
+			   firstx = it->X();
+			   firsty = it->Y();
+			   lastx = firstx;
+			   lasty = firsty;
+			   break;
+			 case kFmiLineTo:
+			   lastx = it->X();
+			   lasty = it->Y();
+			   if(it == --elements.end())
+				 Add(NFmiEdge(firstx,firsty,lastx,lasty,true));
+			   break;
+			 default:
+			   throw runtime_error("NFmiContourTree encountered bad path element");
+			 }
+		 }
+	   cout << endl;
+	   
+	 }
   
   // Here we know for certain that there are no ambiguous areas when
   // deciding what areas to 'fill'. Due to the nature of the algorithm

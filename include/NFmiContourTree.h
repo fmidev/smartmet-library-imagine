@@ -204,6 +204,7 @@ public:
     , itHasDataHiLimit(false)
 	, itsDataLoLimit()
 	, itsDataHiLimit()
+	, itsSubTrianglesOn(true)
   { PrepareLimits(); }
   
   /// Returns the active (read-only) \em low limit of the contoured interval
@@ -269,6 +270,13 @@ public:
     itHasDataHiLimit = true;
     itsDataHiLimit = value;
   }
+
+  /// Sets the subtriangle mode flag
+  void SubTriangleMode(bool flag) { itsSubTrianglesOn = flag; }
+
+  // Returns the subtriangle-mode flag
+  bool SubTriangleMode() const { return itsSubTrianglesOn; }
+
   
   /// Test if a value is valid for contouring
   /*!
@@ -497,6 +505,8 @@ private:
   bool	itHasDataHiLimit;	//!< Is there a high limit to data validity?
   float itsDataLoLimit;		//!< Low limit to data validity.
   float itsDataHiLimit;		//!< Low limit to data validity.
+
+  bool itsSubTrianglesOn;	//!< True if rectangles subdivide into triangles
   
 };
 
