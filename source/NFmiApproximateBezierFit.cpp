@@ -93,16 +93,20 @@ namespace Imagine
 	  // no orientation for lines
 	  if(thePath.size() < 3)
 		return true;
-	  const bool isclosed = (thePath.front().X() == thePath.back().X() &&
-							 thePath.front().Y() == thePath.back().Y());
-	  cerr << "isclosed = " << isclosed << endl;
 	  // this calculates 2*polygon area with sign
 	  double sum = 0;
 	  for(unsigned int i=0; i<thePath.size()-1; i++)
         sum += thePath[i].X()*thePath[i+1].Y()-thePath[i+1].X()*thePath[i].Y();
-	  // close open segments to get valid area
+
+	  // for some reasing closing the segments will produce same area every time
+	  // must check area formula validity
+#if 0
+	  const bool isclosed = (thePath.front().X() == thePath.back().X() &&
+							 thePath.front().Y() == thePath.back().Y());
 	  if(!isclosed)
 		sum += thePath.back().X()*thePath.front().Y()-thePath.front().X()*thePath.back().Y();
+#endif
+
 	  // positive orientation for positive area
 	  return (sum>=0.0);
 	}
@@ -766,8 +770,10 @@ namespace Imagine
 	  const bool isclosed = NFmiBezierTools::IsClosed(thePath);
 
 	  const NFmiPathData & path = thePath.Elements();
-	  cerr << "Main isclosed: " << isclosed << endl;
-	  cerr << thePath << endl;
+
+	  // we want to ensure positive orientation during algorithms
+	  // to guarantee equivalent results for paths which are
+	  // mirror images of each other
 
 	  if(!IsPositivelyOriented(path))
 		{
@@ -775,7 +781,6 @@ namespace Imagine
 		  path = SimpleFit(path,theMaxError);
 		  return Reverse(path);
 		}
-
   
 	  // Estimate tangent vectors at endpoints of the curve
 	  // Note that tangents face "inward", i.e., towards the
@@ -804,56 +809,6 @@ namespace Imagine
 						  squared_max_error);
 	}
 
-	// ----------------------------------------------------------------------
-	/*!
-	 * \brief Count the occurrances of each point in paths
-	 *
-	 * Throws if any path contains conic or cubic elements.
-	 *
-	 * \param thePaths The paths
-	 * \return The counts
-	 */
-	// ----------------------------------------------------------------------
-
-	NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths & thePaths)
-	{
-	  NFmiCounter<NFmiPoint> counts;
-	  
-	  for(NFmiPaths::const_iterator pt = thePaths.begin();
-		  pt != thePaths.end();
-		  ++pt)
-		{
-		  const NFmiPathData & path = pt->Elements();
-		  
-		  // end coordinate of previous moveto
-		  NFmiPoint previous_moveto(kFloatMissing,kFloatMissing);
-		  
-		  for(NFmiPathData::const_iterator it = path.begin();
-			  it != path.end();
-			  ++it)
-			{
-			  NFmiPoint p(it->X(),it->Y());
-			  switch(it->Oper())
-				{
-				case kFmiMoveTo:
-				  counts.Add(p);
-				  previous_moveto = p;
-				  break;
-				case kFmiLineTo:
-				case kFmiGhostLineTo:
-				  // ignore moves which close a subpath
-				  if(p != previous_moveto)
-					counts.Add(p);
-				  break;
-				case kFmiCubicTo:
-				case kFmiConicTo:
-				  throw runtime_error("Cubic and conic elements not supported in multiple path Bezier fitting");
-				}
-			}
-		}
-	  
-	  return counts;
-	}
 
   } // namespace anonymous
 
@@ -943,12 +898,13 @@ namespace Imagine
 			  jt != pathlist.end();
 			  ++jt)
 			{
-			  outpath.Add(Fit(*jt,theMaxError));
+			  NFmiPath fitpath = Fit(*jt,theMaxError);
+			  outpath.Add(fitpath);
 			}
 		  outpaths.push_back(outpath);
 		}
 
-	  return thePaths;
+	  return outpaths;
 	}
 
 

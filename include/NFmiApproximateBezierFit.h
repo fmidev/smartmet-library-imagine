@@ -8,19 +8,18 @@
 #ifndef IMAGINE_NFMIAPPROXIMATEBEZIERFIT_H
 #define IMAGINE_NFMIAPPROXIMATEBEZIERFIT_H
 
-#include <vector>
+#include "NFmiBezierTools.h"
 
 namespace Imagine
 {
   class NFmiPath;
-
-  typedef std::vector<NFmiPath> NFmiPaths;
-
+  
   namespace NFmiApproximateBezierFit
   {
 
 	NFmiPath Fit(const NFmiPath & thePath, double theMaxError);
 
+	typedef NFmiBezierTools::NFmiPaths NFmiPaths;
 	NFmiPaths Fit(const NFmiPaths & thePaths, double theMaxError);
 
   } // namespace NFmiApproximateBezierFit
