@@ -26,6 +26,7 @@
 #include <list>
 #include <vector>
 #include <utility>
+#include <iomanip>
 
 using namespace std;
 
@@ -96,7 +97,20 @@ namespace Imagine
 	  // this calculates 2*polygon area with sign
 	  double sum = 0;
 	  for(unsigned int i=0; i<thePath.size()-1; i++)
-        sum += thePath[i].X()*thePath[i+1].Y()-thePath[i+1].X()*thePath[i].Y();
+		{
+		  // Must use doubles to avoid bad errors due to
+		  // cancellation. Also, the latter formula
+		  // is more accurate:
+		  // x1*y2-x2*y1 = x1*dy-dx*y1
+
+		  const double x1 = thePath[i].X();
+		  const double y1 = thePath[i].Y();
+		  const double x2 = thePath[i+1].X();
+		  const double y2 = thePath[i+1].Y();
+		  const double dx = x2-x1;
+		  const double dy = y2-y1;
+		  sum += x1*dy-dx*y1;
+		}
 
 	  // for some reasing closing the segments will produce same area every time
 	  // must check area formula validity
