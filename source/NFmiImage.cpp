@@ -21,6 +21,7 @@
 #include <cstdlib>	// for rand, RAND_MAX
 #include <png.h>	// for pnglib
 #include <iostream> // 2.1.2002/Marko cerr vaatii t‰m‰n MSVC-k‰‰nt‰j‰ss‰.
+#include <algorithm>
 
 using namespace std;
 // ----------------------------------------------------------------------
@@ -230,11 +231,11 @@ static void Composite2(T theBlender, const NFmiImage & thePattern,
 {
   // Establish the pixels of the pattern inside the target image
   
-  int i1 = FmiMax(0,-theX);
-  int j1 = FmiMax(0,-theY);
+  int i1 = std::max(0,-theX);
+  int j1 = std::max(0,-theY);
   
-  int i2 = FmiMin(thePattern.Width(), theThisImage.Width()-theX)-1;
-  int j2 = FmiMin(thePattern.Height(), theThisImage.Height()-theY)-1;
+  int i2 = std::min(thePattern.Width(), theThisImage.Width()-theX)-1;
+  int j2 = std::min(thePattern.Height(), theThisImage.Height()-theY)-1;
   
   if(theAlpha==1.0)
     {

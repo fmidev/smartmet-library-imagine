@@ -13,12 +13,13 @@
 #pragma warning(disable : 4786) // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
 #endif
 
+#include "NFmiImage.h"
+#include "NFmiEsriBuffer.h"
+
 #include <set>
 #include <map>
 #include <iostream> // 2.1.2002/Marko cerr vaatii t‰m‰n MSVC-k‰‰nt‰j‰ss‰.
-
-#include "NFmiImage.h"
-#include "NFmiEsriBuffer.h"
+#include <algorithm>
 
 // Maximum number of colors allowed in a GIF file
 
@@ -201,7 +202,7 @@ void NFmiImage::WriteGIF(FILE *out) const
   
   // Initial code size
   
-  unsigned char initcodesize = FmiMax(bits,2);
+  unsigned char initcodesize = std::max(bits,2);
   
   header +=  ',';					// image separator
   header += NFmiEsriBuffer::LittleEndianShort(0);	// left offset
@@ -225,7 +226,7 @@ void NFmiImage::WriteGIF(FILE *out) const
   
   // Initialize GIF encoder
   
-  const short data_size = FmiMax(bits,2)+1;
+  const short data_size = std::max(bits,2)+1;
   const short clear_code = 1<<(data_size-1);
   const short end_code = clear_code+1;
   

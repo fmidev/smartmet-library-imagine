@@ -14,6 +14,7 @@
 
 #include "NFmiFillMap.h"
 #include "NFmiColorBlend.h"
+#include <algorithm>
 
 using namespace std;
 // ----------------------------------------------------------------------
@@ -121,8 +122,8 @@ static void Fill2(T theBlender, NFmiImage & theImage,
 				  
 				  // Draw only the area inside the image
 				  
-				  i1 = FmiMax(i1,0);  // 2.1.2002/Marko K‰ytet‰‰n FmiMax/Min funktioita MSVC-k‰‰nt‰j‰n takia.
-				  i2 = FmiMin(i2,theImage.Width()-1);
+				  i1 = std::max(i1,0);
+				  i2 = std::min(i2,theImage.Width()-1);
 				  
 				  for(int i=i1; i<=i2; ++i)
 					//		    theImage(i,j) = T::Blend(red,green,blue,alpha,theImage(i,j));
@@ -243,8 +244,8 @@ static void Fill2(T theBlender,
 				  
 				  // Draw only the area inside the image
 				  
-				  i1 = FmiMax(i1,0); // 2.1.2002/Marko K‰ytet‰‰n FmiMax/Min funktioita MSVC-k‰‰nt‰j‰n takia.
-				  i2 = FmiMin(i2,theImage.Width()-1);
+				  i1 = std::max(i1,0);
+				  i2 = std::min(i2,theImage.Width()-1);
 				  
 				  // assert(j>=0 && j<theImage.Height());
 				  // assert(i1>=0 && i1<theImage.Width());
@@ -371,8 +372,8 @@ static void Fill2(T theBlender, NFmiImage & theImage,
 				  
 				  // Draw only the area inside the image
 				  
-				  i1 = FmiMax(i1,0); // 2.1.2002/Marko K‰ytet‰‰n FmiMax/Min funktioita MSVC-k‰‰nt‰j‰n takia.
-				  i2 = FmiMin(i2,theImage.Width()-1);
+				  i1 = std::max(i1,0);
+				  i2 = std::min(i2,theImage.Width()-1);
 				  
 				  for(int i=i1; i<=i2; ++i)
 					{
@@ -413,10 +414,10 @@ void NFmiFillMap::Add(float theX1, float theY1, float theX2, float theY2)
   
   // Ignore lines completely outside the area
   
-  if(itsLoLimit!=kFloatMissing && FmiMax(theY1,theY2)<itsLoLimit) // 2.1.2002/Marko K‰ytet‰‰n FmiMax/Min funktioita MSVC-k‰‰nt‰j‰n takia.
+  if(itsLoLimit!=kFloatMissing && std::max(theY1,theY2)<itsLoLimit)
     return;
   
-  if(itsHiLimit!=kFloatMissing && FmiMin(theY1,theY2)>itsHiLimit) // 2.1.2002/Marko K‰ytet‰‰n FmiMax/Min funktioita MSVC-k‰‰nt‰j‰n takia.
+  if(itsHiLimit!=kFloatMissing && std::min(theY1,theY2)>itsHiLimit)
     return;
   
   // First, we ignore horizontal lines, they are meaningless
@@ -637,8 +638,8 @@ void NFmiFillMap::And(const NFmiFillMap & theMap)
 			  
 			  // Otherwise there is a common linesegment
 			  
-			  iter->second.push_back(FmiMax(xvec1[pos1],xvec2[pos2])); // 2.1.2002/Marko K‰ytet‰‰n FmiMax/Min funktioita MSVC-k‰‰nt‰j‰n takia.
-			  iter->second.push_back(FmiMin(xvec1[pos1+1],xvec2[pos2+1])); // 2.1.2002/Marko K‰ytet‰‰n FmiMax/Min funktioita MSVC-k‰‰nt‰j‰n takia.
+			  iter->second.push_back(std::max(xvec1[pos1],xvec2[pos2]));
+			  iter->second.push_back(std::min(xvec1[pos1+1],xvec2[pos2+1]));
 			  
 			  // Advance the segment which ends earlier
 			  

@@ -23,6 +23,7 @@
 #else
 #include <sstream>
 #endif
+#include <algorithm>
 
 // ----------------------------------------------------------------------
 // Append a path using a line of desired type
@@ -508,7 +509,7 @@ void NFmiPath::SimplifyLines(float theOffset)
       // Get atleast 3 points before doing anything
 	  
 	  //      cachesize = min(3,cachesize+1);
-      cachesize = FmiMin(3,cachesize+1); // 18.12.2001/Marko MSVC++ version of STL doesn't define standard min function use FmiMin here.
+      cachesize = std::min(3,cachesize+1);
 	  
       if(cachesize <3)
 		continue;

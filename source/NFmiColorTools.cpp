@@ -13,12 +13,12 @@
 #pragma warning(disable : 4786) // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
 #endif
 
+#include "NFmiColorTools.h"
+
 #include <string>
 #include <map>
 #include <vector>
-
-#include "NFmiColorTools.h"
-#include "NFmiGlobals.h" // FmiMax+Min
+#include <algorithm>
 
 // 2.1.2002/Marko Piti siirt‰‰ n‰m‰ const static alustukset t‰nne cpp-tiedostoon, 
 // koska muuten MSVC-rupesi valittamaan linkkausvaiheessa.
@@ -222,7 +222,7 @@ NFmiColorTools::Color NFmiColorTools::Contrast(NFmiColorTools::Color theColor,
   const float m=0.5;
   float adjustment = m*theSign*(m*(sin(3.14159265358979323846264*(l-m))+1)-l);
   l += adjustment;
-  l = FmiMax(FmiMin(l,1.0f),0.0f);
+  l = std::max(std::min(l,1.0f),0.0f);
   
   // Transform back
   
