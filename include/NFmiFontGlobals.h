@@ -36,9 +36,9 @@ const int kFmiDisplayResolution = 96;
 // Search paths for fonts
 
 #ifdef UNIX
-const string kFmiPathHershey("/var/www/share/hershey/");
-const string kFmiPathTrueType("/var/www/share/truetype/");
-const string kFmiPathType1("/var/www/share/type1/");
+const std::string kFmiPathHershey("/var/www/share/hershey/");
+const std::string kFmiPathTrueType("/var/www/share/truetype/");
+const std::string kFmiPathType1("/var/www/share/type1/");
 
 #else
 const std::string kFmiPathHershey("/fonts/hershey/");

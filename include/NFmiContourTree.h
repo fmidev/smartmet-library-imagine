@@ -169,11 +169,11 @@ public:
   
   /// Convert a name of interpolation method to enumerated type.
   
-  static const NFmiContourInterpolation ContourInterpolationValue(const string & theName);
+  static const NFmiContourInterpolation ContourInterpolationValue(const std::string & theName);
   
   /// Convert interpolation method enum to a name
   
-  static const string ContourInterpolationName(NFmiContourInterpolation theInterpolation);
+  static const std::string ContourInterpolationName(NFmiContourInterpolation theInterpolation);
   
   /// Destructor
   
@@ -448,18 +448,18 @@ private:
   
   /// Calculate contour intersections at an edge.
   
-  void IntersectEdge(vector<float> & X,
-					 vector<float> & Y,
-					 vector<VertexExactness> & B,
+  void IntersectEdge(std::vector<float> & X,
+					 std::vector<float> & Y,
+					 std::vector<VertexExactness> & B,
 					 float x1, float y1, float z1, VertexInsidedness c1,
 					 float x2, float y2, float z2, VertexInsidedness c2
 					 );
   
   /// Add polygon formed by given points into the contour polygon.
   
-  void AddEdges(const vector<float> & X,
-				const vector<float> & Y,
-				const vector<VertexExactness> & B
+  void AddEdges(const std::vector<float> & X,
+				const std::vector<float> & Y,
+				const std::vector<VertexExactness> & B
 				);
   
   // Data members

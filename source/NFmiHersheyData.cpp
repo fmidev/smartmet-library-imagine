@@ -14,11 +14,13 @@
 #pragma warning(disable : 4786) // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
 #endif
 
+#include "NFmiHersheyData.h"
+
 #include <fstream>
 // #include <cstdlib>
 // #include <cmath>
 
-#include "NFmiHersheyData.h"
+using namespace std;
 
 // ----------------------------------------------------------------------
 // Return number of coordinates in given character

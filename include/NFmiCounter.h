@@ -81,7 +81,7 @@ public:
   
   long Add(T theElement)
   {
-    pair<NFmiCounterData::iterator, bool> result = itsData.insert(make_pair(theElement,0));
+    std::pair<NFmiCounterData::iterator, bool> result = itsData.insert(make_pair(theElement,0));
     if(result.second)
       return 1;
     else

@@ -14,6 +14,8 @@
 
 #include "NFmiContourDataHelper.h"
 
+using namespace std;
+
 // ======================================================================
 /*!
  * The constructor takes as input the NFmiDataMatrix containing the

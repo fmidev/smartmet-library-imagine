@@ -5,8 +5,8 @@
 // ======================================================================
 
 #include "NFmiEsriBuffer.h"
-
 #include <algorithm>	// swap()
+#include <iostream>
 
 using namespace std;
 
