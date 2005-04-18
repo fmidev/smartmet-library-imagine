@@ -608,7 +608,7 @@ namespace Imagine
 		// Get atleast 3 points before doing anything
 		
 		//      cachesize = min(3,cachesize+1);
-		cachesize = std::min(3,cachesize+1);
+		cachesize = FmiMin(3,cachesize+1);
 		
 		if(cachesize <3)
 		  continue;
