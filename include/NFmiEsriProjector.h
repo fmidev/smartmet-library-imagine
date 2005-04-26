@@ -23,6 +23,7 @@ namespace Imagine
   {
   public:
 	virtual ~NFmiEsriProjector(void) {};
+	NFmiEsriProjector() {}
 	virtual NFmiEsriPoint operator()(const NFmiEsriPoint & thePoint) const = 0;
   };
 
