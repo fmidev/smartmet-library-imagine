@@ -63,7 +63,7 @@ namespace Imagine
 	
 	virtual ~NFmiGeoShape(void)
 	{
-	  if(itsEsriShape!=NULL) itsEsriShape->~NFmiEsriShape();
+	  delete itsEsriShape;
 	}
 	
 	// Data-access
