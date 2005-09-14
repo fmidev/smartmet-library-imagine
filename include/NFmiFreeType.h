@@ -13,7 +13,7 @@
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"
 
-#include "boost/shared_ptr.hpp"
+#include <boost/shared_ptr.hpp>
 #include <string>
 
 namespace Imagine
