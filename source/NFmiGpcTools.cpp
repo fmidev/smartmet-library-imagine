@@ -57,7 +57,7 @@ namespace Imagine
 	class GpcPolygon
 	{
 	public:
-	  ~GpcPolygon() { gpc_free_polygon(itsData); }
+	  ~GpcPolygon();
 	  GpcPolygon();
 	  GpcPolygon(const NFmiPath & thePath);
 	  gpc_polygon * get_ptr() const { return itsData; }
@@ -70,6 +70,16 @@ namespace Imagine
 	  
 	}; // class GpcPolygon
 
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief GpcPolygon destructor
+	 */
+	// ----------------------------------------------------------------------
+
+	GpcPolygon::~GpcPolygon()
+	{
+	  gpc_free_polygon(itsData);
+	}
 	
 	// ----------------------------------------------------------------------
 	/*!
@@ -137,19 +147,30 @@ namespace Imagine
 	{
 	  assert(itsData != 0);
 	  NFmiPath p;
+	  NFmiPoint startpoint(0,0);
+	  double x = 0;
+	  double y = 0;
 	  for(int i=0; i<itsData->num_contours; i++)
 		{
 		  gpc_vertex_list & contour = itsData->contour[i];
 		  for(int j=0; j<contour.num_vertices; j++)
 			{
-			  double x = contour.vertex[j].x;
-			  double y = contour.vertex[j].y;
-			  if(i==0)
-				p.MoveTo(x,y);
+			  x = contour.vertex[j].x;
+			  y = contour.vertex[j].y;
+			  if(j==0)
+				{
+				  if(!p.Empty())
+					p.LineTo(startpoint.X(),startpoint.Y());
+				  startpoint.Set(x,y);
+				  p.MoveTo(x,y);
+				}
 			  else
 				p.LineTo(x,y);
 			}
 		}
+	  if(!p.Empty() && (startpoint.X() != x || startpoint.Y() != y))
+		p.LineTo(startpoint.X(),startpoint.Y());
+
 	  return p;
 	}
 
