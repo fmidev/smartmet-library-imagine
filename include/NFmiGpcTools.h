@@ -9,9 +9,10 @@
 #define IMAGINE_NFMIGPCTOOLS_H
 #ifdef UNIX
 
-class NFmiPath;
 namespace Imagine
 {
+  class NFmiPath;
+
   namespace NFmiGpcTools
   {
 	const NFmiPath Minus(const NFmiPath & theP1, const NFmiPath & theP2);
