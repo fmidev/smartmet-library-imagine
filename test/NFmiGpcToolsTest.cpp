@@ -84,6 +84,21 @@ namespace NFmiGpcToolsTest
 		TEST_FAILED("AND failed for intersecting rectangles: "+os.str());
 	}
 
+	// AND with holes
+
+	{
+	  NFmiPath p1,p2;
+	  p1.Add("M0,0 L0,3 L3,3 L3,0 L0,0 M1,1 L1,2 L2,2 L2,1 L1,1");
+	  p2 = p1;
+	  p2.Translate(1,1);
+
+	  std::ostringstream os;
+	  os << NFmiGpcTools::And(p1,p2);
+	  if(os.str() != "M2,2 L3,2 L3,1 L2,1 L2,2 L1,2 L1,3 L2,3 L2,2")
+		TEST_FAILED("AND failed for rectangles with holes: "+os.str());
+
+	}
+
 	TEST_PASSED();
   }
 
@@ -155,6 +170,21 @@ namespace NFmiGpcToolsTest
 	  os << NFmiGpcTools::Or(p1,p2);
 	  if(os.str() != "M5,3 L10,3 L10,2 L5,2 L5,0 L0,0 L0,5 L5,5 L5,3")
 		TEST_FAILED("OR failed for intersecting rectangles: "+os.str());
+	}
+
+	// OR with holes
+
+	{
+	  NFmiPath p1,p2;
+	  p1.Add("M0,0 L0,3 L3,3 L3,0 L0,0 M1,1 L1,2 L2,2 L2,1 L1,1");
+	  p2 = p1;
+	  p2.Translate(1,1);
+
+	  std::ostringstream os;
+	  os << NFmiGpcTools::Or(p1,p2);
+	  if(os.str() != "M4,1 L3,1 L3,0 L0,0 L0,3 L1,3 L1,4 L4,4 L4,1")
+		TEST_FAILED("OR failed for rectangles with holes: "+os.str());
+
 	}
 
 	TEST_PASSED();
@@ -230,6 +260,21 @@ namespace NFmiGpcToolsTest
 		TEST_FAILED("MINUS failed for intersecting rectangles: "+os.str());
 	}
 
+	// MINUS with holes
+
+	{
+	  NFmiPath p1,p2;
+	  p1.Add("M0,0 L0,3 L3,3 L3,0 L0,0 M1,1 L1,2 L2,2 L2,1 L1,1");
+	  p2 = p1;
+	  p2.Translate(1,1);
+
+	  std::ostringstream os;
+	  os << NFmiGpcTools::Minus(p1,p2);
+	  if(os.str() != "M3,2 L2,2 L2,3 L3,3 L3,2 M1,1 L3,1 L3,0 L0,0 L0,3 L1,3 L1,1")
+		TEST_FAILED("MINUS failed for rectangles with holes: "+os.str());
+
+	}
+
 	TEST_PASSED();
   }
 
@@ -301,6 +346,21 @@ namespace NFmiGpcToolsTest
 	  os << NFmiGpcTools::Xor(p1,p2);
 	  if(os.str() != "M5,3 L10,3 L10,2 L5,2 L5,3 L2,3 L2,2 L5,2 L5,0 L0,0 L0,5 L5,5 L5,3")
 		TEST_FAILED("XOR failed for intersecting rectangles: "+os.str());
+	}
+
+	// XOR with holes
+
+	{
+	  NFmiPath p1,p2;
+	  p1.Add("M0,0 L0,3 L3,3 L3,0 L0,0 M1,1 L1,2 L2,2 L2,1 L1,1");
+	  p2 = p1;
+	  p2.Translate(1,1);
+
+	  std::ostringstream os;
+	  os << NFmiGpcTools::Xor(p1,p2);
+	  if(os.str() != "M4,1 L3,1 L3,2 L2,2 L2,3 L1,3 L1,4 L4,4 L4,1 M1,2 L2,2 L2,1 L3,1 L3,0 L0,0 L0,3 L1,3 L1,2")
+		TEST_FAILED("XOR failed for rectangles with holes: "+os.str());
+
 	}
 
 	TEST_PASSED();
