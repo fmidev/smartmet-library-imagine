@@ -140,6 +140,51 @@ namespace Imagine
 	  if(!vertices.empty())
 		add_points_to_polygon(itsData,vertices);
 
+	  // Fixate hole information
+
+	  // No holes if there is only 1 vertex list
+	  if(itsData->num_contours > 1)
+		{
+
+		  vector<gpc_polygon *> polygons(itsData->num_contours);
+		  {
+			for(int i=0; i<itsData->num_contours; i++)
+			  {
+				gpc_polygon * p = new gpc_polygon;
+				p->num_contours = 0;
+				p->hole = 0;
+				p->contour = 0;
+				gpc_add_contour(p,&(itsData->contour[i]),0);
+				polygons[i] = p;
+			  }
+		  }
+		  
+		  vector<int> counts(itsData->num_contours,0);
+		  {
+			for(int i=0; i<itsData->num_contours; i++)
+			  for(int j=0; j<itsData->num_contours; j++)
+				{
+				  if(i!=j)
+					{
+					  boost::shared_ptr<gpc_polygon> p(new gpc_polygon);
+					  p->num_contours = 0;
+					  p->hole = 0;
+					  p->contour = 0;
+					  
+					  gpc_polygon_clip(GPC_DIFF,polygons[i],polygons[j],p.get());
+					  if(p->num_contours == 0)
+						++counts[i];
+					}
+				}
+		  }
+		  
+		  {
+			for(int i=0; i<itsData->num_contours; i++)
+			  gpc_free_polygon(polygons[i]);
+		  }
+		  
+		}
+
 	}
 
 	// ----------------------------------------------------------------------
