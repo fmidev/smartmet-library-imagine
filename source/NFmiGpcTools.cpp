@@ -14,6 +14,7 @@ extern "C" {
 #include "gpc.h"
 }
 
+#include <boost/shared_ptr.hpp>
 #include <cassert>
 #include <list>
 
@@ -33,7 +34,7 @@ namespace Imagine
 	void add_points_to_polygon(gpc_polygon * thePolygon,
 							   const list<NFmiPoint> & thePoints)
 	{
-	  gpc_vertex_list * vlist = new gpc_vertex_list;
+	  boost::shared_ptr<gpc_vertex_list> vlist(new gpc_vertex_list);
 	  vlist->num_vertices = thePoints.size();
 	  vlist->vertex = reinterpret_cast<gpc_vertex *>(calloc(thePoints.size(),sizeof(gpc_vertex)));
 	  int i=0;
@@ -45,7 +46,7 @@ namespace Imagine
 		  vlist->vertex[i].y = it->Y();
 		  i++;
 		}
-	  gpc_add_contour(thePolygon,vlist,0);
+	  gpc_add_contour(thePolygon,vlist.get(),0);
 	}
 
 	// ----------------------------------------------------------------------
@@ -91,6 +92,8 @@ namespace Imagine
 	  : itsData(new gpc_polygon)
 	{
 	  itsData->num_contours = 0;
+	  itsData->hole = 0;
+	  itsData->contour = 0;
 	}
 
 	// ----------------------------------------------------------------------
@@ -103,6 +106,8 @@ namespace Imagine
 	  : itsData(new gpc_polygon)
 	{
 	  itsData->num_contours = 0;
+	  itsData->hole = 0;
+	  itsData->contour = 0;
 
 	  list<NFmiPoint> vertices;
 
