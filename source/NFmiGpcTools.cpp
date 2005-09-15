@@ -15,11 +15,39 @@ extern "C" {
 }
 
 #include <cassert>
+#include <list>
+
+using namespace std;
 
 namespace Imagine
 {
   namespace
   {
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Helper function to add contours to GPC polygon
+	 */
+	// ----------------------------------------------------------------------
+
+	void add_points_to_polygon(gpc_polygon * thePolygon,
+							   const list<NFmiPoint> & thePoints)
+	{
+	  gpc_vertex_list * vlist = new gpc_vertex_list;
+	  vlist->num_vertices = thePoints.size();
+	  vlist->vertex = reinterpret_cast<gpc_vertex *>(calloc(thePoints.size(),sizeof(gpc_vertex)));
+	  int i=0;
+	  for(list<NFmiPoint>::const_iterator it = thePoints.begin();
+		  it != thePoints.end();
+		  ++it)
+		{
+		  vlist->vertex[i].x = it->X();
+		  vlist->vertex[i].y = it->Y();
+		  i++;
+		}
+	  gpc_add_contour(thePolygon,vlist,0);
+	}
+
 	// ----------------------------------------------------------------------
 	/*!
 	 * \brief Helper class to construct GPC polygons
@@ -53,8 +81,6 @@ namespace Imagine
 	  : itsData(new gpc_polygon)
 	{
 	  itsData->num_contours = 0;
-	  itsData->hole = 0;
-	  itsData->contour = 0;
 	}
 
 	// ----------------------------------------------------------------------
@@ -66,7 +92,39 @@ namespace Imagine
 	GpcPolygon::GpcPolygon(const NFmiPath & thePath)
 	  : itsData(new gpc_polygon)
 	{
-	  // ...
+	  itsData->num_contours = 0;
+
+	  list<NFmiPoint> vertices;
+
+	  for(NFmiPathData::const_iterator it = thePath.Elements().begin();
+		  it != thePath.Elements().end();
+		  ++it)
+		{
+		  switch(it->Oper())
+			{
+			case kFmiMoveTo:
+			  {
+				if(!vertices.empty())
+				  {
+					add_points_to_polygon(itsData,vertices);
+					vertices.clear();
+				  }
+				vertices.push_back(NFmiPoint(it->X(),it->Y()));
+				break;
+			  }
+			case kFmiLineTo:
+			case kFmiGhostLineTo:
+			  vertices.push_back(NFmiPoint(it->X(),it->Y()));
+			  break;
+			case kFmiConicTo:
+			case kFmiCubicTo:
+			  throw runtime_error("GpcTools: Cannot pass splines to GPC");
+			}
+		}
+
+	  if(!vertices.empty())
+		add_points_to_polygon(itsData,vertices);
+
 	}
 
 	// ----------------------------------------------------------------------
