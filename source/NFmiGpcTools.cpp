@@ -14,6 +14,8 @@ extern "C" {
 #include "gpc.h"
 }
 
+#include <cassert>
+
 namespace Imagine
 {
   namespace
@@ -75,8 +77,21 @@ namespace Imagine
 
 	const NFmiPath GpcPolygon::path() const
 	{
+	  assert(itsData != 0);
 	  NFmiPath p;
-	  // ...
+	  for(int i=0; i<itsData->num_contours; i++)
+		{
+		  gpc_vertex_list & contour = itsData->contour[i];
+		  for(int j=0; j<contour.num_vertices; j++)
+			{
+			  double x = contour.vertex[j].x;
+			  double y = contour.vertex[j].y;
+			  if(i==0)
+				p.MoveTo(x,y);
+			  else
+				p.LineTo(x,y);
+			}
+		}
 	  return p;
 	}
 
