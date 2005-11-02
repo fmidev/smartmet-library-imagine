@@ -22,7 +22,7 @@
  */
 // ======================================================================
 
-#ifdef UNIX
+//#ifdef UNIX
 
 #include "NFmiFreeType.h"
 #include "NFmiColorBlend.h"
@@ -162,8 +162,10 @@ namespace Imagine
 
   NFmiFreeType::Pimple::~Pimple()
   {
+#ifdef UNIX
 	for(Faces::iterator it = itsFaces.begin(); it != itsFaces.end(); ++it)
 	  delete it->second;
+#endif  // UNIX
 
 	if(itsInitialized)
 	  FT_Done_FreeType(itsLibrary);
@@ -635,6 +637,6 @@ namespace Imagine
 
 } // namespace Imagine
 
-#endif // UNIX
+//#endif // UNIX
 
 // ======================================================================

@@ -5,7 +5,7 @@
  */
 // ======================================================================
 
-#ifdef UNIX
+//#ifdef UNIX
 
 #ifndef IMAGINE_NFMIFREETYPE_H
 #define IMAGINE_NFMIFREETYPE_H
@@ -58,6 +58,6 @@ namespace Imagine
 } // namespace Imagine
 
 #endif // IMAGINE_NFMIFREETYPE_H
-#endif // UNIX
+//#endif // UNIX
 
 // ======================================================================
