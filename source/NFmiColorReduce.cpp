@@ -59,10 +59,10 @@ namespace Imagine
 	void init_gamma_table(vector<float> & theTable, bool & theFlag)
 	{
 	  const float gamma = 2.2;
-	  const float coeff = 255/(pow(255,gamma));
+	  const float coeff = 255/(pow(255.f,gamma));
 	  
 	  for(int i=0; i<256; i++)
-		theTable[i] = coeff*pow(i,gamma);
+		theTable[i] = coeff*pow(static_cast<float>(i),gamma);
 	  
 	  theFlag = true;
 
