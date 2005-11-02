@@ -5,7 +5,7 @@
  */
 // ======================================================================
 
-#ifdef UNIX
+//#ifdef UNIX
 
 #include "NFmiGpcTools.h"
 #include "NFmiPath.h"
@@ -292,6 +292,6 @@ namespace Imagine
   } // namespace NFmiGpcTools
 } // namespace Imagine
 
-#endif // UNIX
+//#endif // UNIX
 
 // ======================================================================

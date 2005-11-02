@@ -7,7 +7,7 @@
 
 #ifndef IMAGINE_NFMIGPCTOOLS_H
 #define IMAGINE_NFMIGPCTOOLS_H
-#ifdef UNIX
+//#ifdef UNIX
 
 namespace Imagine
 {
@@ -23,7 +23,7 @@ namespace Imagine
   } // namespace NFmiGpcTools
 } // namespace Imagine
 
-#endif // UNIX
+//#endif // UNIX
 #endif // IMAGINE_NFMIGPCTOOLS_H
 
 // ======================================================================

@@ -5,7 +5,7 @@
  */
 // ======================================================================
 
-#ifdef UNIX
+//#ifdef UNIX
 #ifndef IMAGINE_NFMIFACE_H
 #define IMAGINE_NFMIFACE_H
 
@@ -62,6 +62,6 @@ namespace Imagine
 } // namespace Imagine
 
 #endif // IMAGINE_NFMIFACE_H
-#endif // UNIX
+//#endif // UNIX
 
 // ======================================================================
