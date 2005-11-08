@@ -5,6 +5,9 @@
  */
 // ======================================================================
 
+#ifndef IMAGINE_NFMIIMAGETOOLS_H
+#define IMAGINE_NFMIIMAGETOOLS_H
+
 #include <string>
 
 namespace Imagine
@@ -24,5 +27,7 @@ namespace Imagine
   } // namespace NFmiImageTools
 
 } // namespace Imagine
+
+#endif // IMAGINE_NFMIIMAGETOOLS_H
 
 // ======================================================================
