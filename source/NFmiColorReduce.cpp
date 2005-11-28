@@ -29,6 +29,12 @@
 #include <memory>
 #include <vector>
 
+#ifdef UNIX
+#define USE_HASH_MAP 1
+#include <ext/hash_map>
+using namespace __gnu_cxx;
+#endif
+
 using namespace std;
 
 // The actual public interfaces
@@ -45,7 +51,11 @@ namespace Imagine
 
 	//! Histogram information
 
+#ifdef USE_HASH_MAP
+	typedef hash_map<NFmiColorTools::Color,int> Counter;
+#else
 	typedef map<NFmiColorTools::Color,int> Counter;
+#endif
 
 	//! Colormap transformation
 	typedef map<NFmiColorTools::Color,NFmiColorTools::Color> ColorMap;
@@ -79,6 +89,49 @@ namespace Imagine
 
 	const Counter calc_counts(const NFmiImage & theImage)
 	{
+#ifdef USE_HASH_MAP
+	  // The default bucket size in SGI is 100, which is quite
+	  // small for the typical number of colours we encounter
+	  // in images.
+
+	  Counter counter(4096);
+
+	  // Safety check
+
+	  if(theImage.Height() * theImage.Width() == 0)
+		return counter;
+
+	  // Insert the first color so that we can initialize the iterator cache
+	  // Note that we insert count 0, but the first loop will fix the number
+
+	  counter.insert(Counter::value_type(theImage(0,0),0));
+
+	  Counter::iterator last1 = counter.begin();
+	  Counter::iterator last2 = counter.begin();
+	  
+	  for(int j=0; j<theImage.Height(); j++)
+		for(int i=0; i<theImage.Width(); i++)
+		  {
+			NFmiColorTools::Color color = theImage(i,j);
+			
+			if(last1->first == color)
+			  ++last1->second;
+			else if(last2->first == color)
+			  {
+				++last2->second;
+				swap(last1,last2);
+			  }
+			else
+			  {
+				pair<Counter::iterator,bool> result = counter.insert(Counter::value_type(color,0));
+				last2 = last1;
+				last1 = result.first;
+				++last1->second;
+			  }
+		  }
+	  
+	  return counter;
+#else
 	  Counter counter;
 
 	  // Safety check
@@ -124,6 +177,7 @@ namespace Imagine
 		  }
 	  
 	  return counter;
+#endif
 
 	}
 
@@ -376,6 +430,42 @@ namespace Imagine
 
 	void replace_colors(NFmiImage & theImage, const ColorMap & theMap)
 	{
+#ifdef USE_HASH_MAP
+	  hash_map<NFmiColorTools::Color,NFmiColorTools::Color> colormap(256);
+	  for(ColorMap::const_iterator it = theMap.begin();
+		  it != theMap.end();
+		  ++it)
+		{
+		  colormap[it->first] = it->second;
+		}
+
+
+	  NFmiColorTools::Color last_color1 = NFmiColorTools::NoColor;
+	  NFmiColorTools::Color last_choice1 = NFmiColorTools::NoColor;
+	  NFmiColorTools::Color last_color2 = NFmiColorTools::NoColor;
+	  NFmiColorTools::Color last_choice2 = NFmiColorTools::NoColor;
+
+	  for(int j=0; j<theImage.Height(); j++)
+		for(int i=0; i<theImage.Width(); i++)
+		  {
+			if(theImage(i,j) == last_color1)
+			  theImage(i,j) = last_choice1;
+			else if(theImage(i,j) == last_color2)
+			  {
+				theImage(i,j) = last_choice2;
+				swap(last_color1,last_color2);
+				swap(last_choice1,last_choice2);
+			  }
+			else
+			  {
+				last_color2 = last_color1;
+				last_choice2 = last_choice1;
+				last_color1 = theImage(i,j);
+				last_choice1 = colormap[theImage(i,j)];
+				theImage(i,j) = last_choice1;
+			  }
+		  }
+#else
 	  NFmiColorTools::Color last_color1 = NFmiColorTools::NoColor;
 	  NFmiColorTools::Color last_choice1 = NFmiColorTools::NoColor;
 	  NFmiColorTools::Color last_color2 = NFmiColorTools::NoColor;
@@ -405,6 +495,7 @@ namespace Imagine
 				theImage(i,j) = last_choice1;
 			  }
 		  }
+#endif
 	}
 
 	// ----------------------------------------------------------------------
@@ -447,7 +538,28 @@ namespace Imagine
 			  }
 		  }
 	  }
-	
+
+	// ----------------------------------------------------------------------
+	/*!
+	 * \brief Convert counts to a histogram
+	 */
+	// ----------------------------------------------------------------------
+
+	const NFmiColorReduce::Histogram counts_to_histogram(const Counter & theCounter)
+	{
+	  NFmiColorReduce::Histogram histogram;
+	  
+	  Counter::const_iterator end = theCounter.end();
+	  for(Counter::const_iterator it = theCounter.begin();
+		  it!=end;
+		  ++it)
+		{
+		  histogram.insert(NFmiColorReduce::Histogram::value_type(it->second,it->first));
+		}
+
+	  return histogram;
+	}
+
 
   } // namespace anonymous
 
@@ -470,19 +582,8 @@ namespace Imagine
 	
 	const Histogram CalcHistogram(const NFmiImage & theImage)
 	{
-	  Counter counter = calc_counts(theImage);
-	  
-	  Histogram histogram;
-	  
-	  for(Counter::const_iterator it = counter.begin();
-		  it!=counter.end();
-		  ++it)
-		{
-		  histogram.insert(Histogram::value_type(it->second,it->first));
-		}
-	  
-	  return histogram;
-	
+	  return counts_to_histogram(calc_counts(theImage));
+  
 	}
 
 	// ----------------------------------------------------------------------
