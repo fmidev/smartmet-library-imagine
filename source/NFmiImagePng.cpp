@@ -436,15 +436,23 @@ namespace Imagine
 		
 		png_bytep row_pointer = row_data;
 		
+		NFmiColorTools::Color lastcolor = NFmiColorTools::NoColor;
+		png_byte lastindex = 0;
+
 		for(j=0; j<itsHeight; j++)
 		  {
 			for(i=0; i<itsWidth; i++)
 			  {
 				NFmiColorTools::Color c = (*this)(i,j);
-				
-				c = NFmiColorTools::Simplify(c,opaquethreshold,ignorealpha);
-				
-				row_data[i] = static_cast<png_byte>(colormap[c]);
+				if(c == lastcolor)
+				  row_data[i] = lastindex;
+				else
+				  {
+					lastcolor = c;
+					c = NFmiColorTools::Simplify(c,opaquethreshold,ignorealpha);
+					lastindex = static_cast<png_byte>(colormap[c]);
+					row_data[i] = lastindex;
+				  }
 				
 			  }
 			png_write_row(png_ptr,row_pointer);
