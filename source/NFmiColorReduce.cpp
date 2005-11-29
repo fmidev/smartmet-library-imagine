@@ -30,9 +30,10 @@
 #include <vector>
 
 #ifdef UNIX
-#define USE_HASH_MAP 1
 #include <ext/hash_map>
-using namespace __gnu_cxx;
+namespace stdext = __gnu_cxx;
+#else
+#include <hash_map>
 #endif
 
 using namespace std;
@@ -51,11 +52,7 @@ namespace Imagine
 
 	//! Histogram information
 
-#ifdef USE_HASH_MAP
-	typedef hash_map<NFmiColorTools::Color,int> Counter;
-#else
-	typedef map<NFmiColorTools::Color,int> Counter;
-#endif
+	typedef stdext::hash_map<NFmiColorTools::Color,int> Counter;
 
 	//! Colormap transformation
 	typedef map<NFmiColorTools::Color,NFmiColorTools::Color> ColorMap;
@@ -89,7 +86,6 @@ namespace Imagine
 
 	const Counter calc_counts(const NFmiImage & theImage)
 	{
-#ifdef USE_HASH_MAP
 	  // The default bucket size in SGI is 100, which is quite
 	  // small for the typical number of colours we encounter
 	  // in images.
@@ -131,53 +127,6 @@ namespace Imagine
 		  }
 	  
 	  return counter;
-#else
-	  Counter counter;
-
-	  // Safety check
-
-	  if(theImage.Height() * theImage.Width() == 0)
-		return counter;
-
-	  // Insert the first color so that we can initialize the iterator cache
-	  // Note that we insert count 0, but the first loop will fix the number
-
-	  counter.insert(Counter::value_type(theImage(0,0),0));
-
-	  Counter::iterator last1 = counter.begin();
-	  Counter::iterator last2 = counter.begin();
-	  Counter::iterator last3 = counter.begin();
-	  
-	  for(int j=0; j<theImage.Height(); j++)
-		for(int i=0; i<theImage.Width(); i++)
-		  {
-			NFmiColorTools::Color color = theImage(i,j);
-			
-			if(last1->first == color)
-			  ++last1->second;
-			else if(last2->first == color)
-			  {
-				++last2->second;
-				swap(last1,last2);
-			  }
-			else if(last3->first == color)
-			  {
-				++last3->second;
-				swap(last2,last3);
-				swap(last1,last2);
-			  }
-			else
-			  {
-				pair<Counter::iterator,bool> result = counter.insert(Counter::value_type(color,0));
-				last3 = last2;
-				last2 = last1;
-				last1 = result.first;
-				++last1->second;
-			  }
-		  }
-	  
-	  return counter;
-#endif
 
 	}
 
@@ -430,8 +379,7 @@ namespace Imagine
 
 	void replace_colors(NFmiImage & theImage, const ColorMap & theMap)
 	{
-#ifdef USE_HASH_MAP
-	  hash_map<NFmiColorTools::Color,NFmiColorTools::Color> colormap(256);
+	  stdext::hash_map<NFmiColorTools::Color,NFmiColorTools::Color> colormap(256);
 	  for(ColorMap::const_iterator it = theMap.begin();
 		  it != theMap.end();
 		  ++it)
@@ -465,37 +413,6 @@ namespace Imagine
 				theImage(i,j) = last_choice1;
 			  }
 		  }
-#else
-	  NFmiColorTools::Color last_color1 = NFmiColorTools::NoColor;
-	  NFmiColorTools::Color last_choice1 = NFmiColorTools::NoColor;
-	  NFmiColorTools::Color last_color2 = NFmiColorTools::NoColor;
-	  NFmiColorTools::Color last_choice2 = NFmiColorTools::NoColor;
-
-	  for(int j=0; j<theImage.Height(); j++)
-		for(int i=0; i<theImage.Width(); i++)
-		  {
-			if(theImage(i,j) == last_color1)
-			  theImage(i,j) = last_choice1;
-			else if(theImage(i,j) == last_color2)
-			  {
-				theImage(i,j) = last_choice2;
-				swap(last_color1,last_color2);
-				swap(last_choice1,last_choice2);
-			  }
-			else
-			  {
-				ColorMap::const_iterator it = theMap.find(theImage(i,j));
-				if(it == theMap.end())
-				  throw runtime_error("Internal error in color reduction, failed to find color");
-
-				last_color2 = last_color1;
-				last_choice2 = last_choice1;
-				last_color1 = theImage(i,j);
-				last_choice1 = it->second;
-				theImage(i,j) = last_choice1;
-			  }
-		  }
-#endif
 	}
 
 	// ----------------------------------------------------------------------
