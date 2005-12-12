@@ -59,6 +59,7 @@ namespace Imagine
 	void Add(NFmiFillMap & theMap) const;
 
 	void LinesOnly(bool theFlag){ itsLinesOnly = theFlag;}
+	void ConvertGhostLines(bool theFlag) { itsConvertGhostLines = theFlag; }
 	
   protected:
 
@@ -70,6 +71,7 @@ namespace Imagine
 	const EdgeTreeType & Edges(void) const { return itsEdges; };
 
 	bool itsLinesOnly;
+	bool itsConvertGhostLines;
 	EdgeTreeType itsEdges;
 
   };

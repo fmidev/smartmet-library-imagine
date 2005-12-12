@@ -183,7 +183,7 @@ namespace Imagine
 			  NFmiPath tmp;
 			  paths.push_back(tmp);
 			  paths.back().MoveTo(edge.GetX1(),edge.GetY1());
-			  if(edge.Exact())
+			  if(edge.Exact() || itsConvertGhostLines)
 				paths.back().LineTo(edge.GetX2(),edge.GetY2());
 			  else
 				paths.back().GhostLineTo(edge.GetX2(),edge.GetY2());
@@ -193,7 +193,7 @@ namespace Imagine
 			// Only first point matches, and it matches last point of path
 			
 		  case(PathCase(true,false,false,false)):
-			if(edge.Exact())
+			if(edge.Exact() || itsConvertGhostLines)
 			  bestFirstIter->LineTo(edge.GetX2(),edge.GetY2());
 			else
 			  bestFirstIter->GhostLineTo(edge.GetX2(),edge.GetY2());
@@ -202,7 +202,7 @@ namespace Imagine
 			// Only first point matches, and it matches first point of path
 			
 		  case(PathCase(true,false,true,false)):
-			if(edge.Exact())
+			if(edge.Exact() || itsConvertGhostLines)
 			  bestFirstIter->InsertLineTo(edge.GetX2(),edge.GetY2());
 			else
 			  bestFirstIter->InsertGhostLineTo(edge.GetX2(),edge.GetY2());
@@ -211,7 +211,7 @@ namespace Imagine
 			// Only second point matches, and it matches last point of path
 			
 		  case(PathCase(false,true,false,false)):
-			if(edge.Exact())
+			if(edge.Exact() || itsConvertGhostLines)
 			  bestLastIter->LineTo(edge.GetX1(),edge.GetY1());
 			else
 			  bestLastIter->GhostLineTo(edge.GetX1(),edge.GetY1());
@@ -220,7 +220,7 @@ namespace Imagine
 			// Only second point matches, and it matches first point of path
 			
 		  case(PathCase(false,true,false,true)):
-			if(edge.Exact())
+			if(edge.Exact() || itsConvertGhostLines)
 			  bestLastIter->InsertLineTo(edge.GetX1(),edge.GetY1());
 			else
 			  bestLastIter->InsertGhostLineTo(edge.GetX1(),edge.GetY1());
@@ -230,13 +230,13 @@ namespace Imagine
 			
 		  case(PathCase(true,true,false,false)):
 			
-			bestFirstIter->AddReverse(*bestLastIter,edge.Exact());
+			bestFirstIter->AddReverse(*bestLastIter,edge.Exact() || itsConvertGhostLines);
 			paths.erase(bestLastIter);
 			break;
 			
 		  case(PathCase(true,true,true,true)):
 			
-			bestFirstIter->Insert(*bestLastIter,edge.Exact());
+			bestFirstIter->Insert(*bestLastIter,edge.Exact() || itsConvertGhostLines);
 			paths.erase(bestLastIter);
 			break;
 			
@@ -253,7 +253,7 @@ namespace Imagine
 			
 			if( bestFirstIter == bestLastIter )
 			  {
-				if(edge.Exact())
+				if(edge.Exact() || itsConvertGhostLines)
 				  bestFirstIter->CloseLineTo();
 				else
 				  bestFirstIter->CloseGhostLineTo();
@@ -266,12 +266,12 @@ namespace Imagine
 			
 			else if(fMatchedFirstToFirst)
 			  {
-				bestLastIter->Add(*bestFirstIter,edge.Exact());
+				bestLastIter->Add(*bestFirstIter,edge.Exact() || itsConvertGhostLines);
 				paths.erase(bestFirstIter);
 			  }
 			else
 			  {
-				bestFirstIter->Add(*bestLastIter,edge.Exact());
+				bestFirstIter->Add(*bestLastIter,edge.Exact() || itsConvertGhostLines);
 				paths.erase(bestLastIter);
 			  }
 			break;
