@@ -100,7 +100,7 @@ namespace Imagine
 	 * Throws if the image format is unknown
 	 *
 	 * \param theFileName The file containing the image
-	 * \return "png", "jpeg" or "gif"
+	 * \return "png", "jpeg", "gif" or "pnm"
 	 */
 	// ----------------------------------------------------------------------
 
@@ -129,6 +129,10 @@ namespace Imagine
 		return "png";
 	  else if(magic == 0x47494638)
 		return "gif";
+	  else if(strmagic[0] == 'P' &&
+			  strmagic[1] == '6' &&
+			  strmagic[2] == '\n')
+		return "pnm";
 	  else
 		throw runtime_error("Unknown image format in '"+theFileName+"'");
 	  

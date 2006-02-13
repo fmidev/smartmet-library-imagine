@@ -417,6 +417,8 @@ namespace Imagine
 	else if(mime == "jpeg")
 	  ReadJPEG(in);
 #endif // IMAGINE_IGNORE_FORMATS
+	else if(mime == "pnm")
+	  ReadPNM(in);
 	else
 	  throw NFmiImageFormatError("Unrecognized image format in '"+theFileName+"'");
 	// Assert we got an image
@@ -445,6 +447,8 @@ namespace Imagine
 	  WriteGif(theFileName);
 	else if(theType == "wbmp")
 	  WriteWbmp(theFileName);
+	else if(theType == "pnm")
+	  WritePnm(theFileName);
 	else
 	  throw runtime_error("Image format '"+theType+"' is not supported");
   }
@@ -537,6 +541,28 @@ namespace Imagine
 	if(out==NULL)
 	  throw runtime_error("Failed to open '"+theFileName+"' for writing a GIF");
 	WriteGIF(out);
+	fclose(out);
+
+	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
+	
+	if(!status)
+	  throw runtime_error("Failed to write '"+theFileName+"'");
+  }
+  
+  // ----------------------------------------------------------------------
+  // Write image as PNM into given file.
+  // ----------------------------------------------------------------------
+  
+  void NFmiImage::WritePnm(const string & theFileName) const
+  {
+	const string dir = NFmiFileSystem::DirName(theFileName);
+	const string tmp = NFmiFileSystem::TemporaryFile(dir);
+
+	FILE *out;
+	out = fopen(tmp.c_str(),"wb");
+	if(out==NULL)
+	  throw runtime_error("Failed to open '"+theFileName+"' for writing a GIF");
+	WritePNM(out);
 	fclose(out);
 
 	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);

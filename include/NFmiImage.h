@@ -156,6 +156,7 @@ namespace Imagine
 #endif // IMAGINE_IGNORE_FORMATS
 	void WriteWbmp(const std::string & theFileName) const;
 	void WriteGif(const std::string & theFileName) const;
+	void WritePnm(const std::string & theFileName) const;
 	
 	void ReduceColors();
 
@@ -196,6 +197,9 @@ namespace Imagine
 	void ReadJPEG(FILE *in);
 	void WriteJPEG(FILE *out) const;
 #endif // IMAGINE_IGNORE_FORMATS
+
+	void WritePNM(FILE * out) const;
+	void ReadPNM(FILE * out);
 
 	void WriteWBMP(FILE *out) const;
 	
