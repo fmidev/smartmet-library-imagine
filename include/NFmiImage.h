@@ -157,6 +157,7 @@ namespace Imagine
 	void WriteWbmp(const std::string & theFileName) const;
 	void WriteGif(const std::string & theFileName) const;
 	void WritePnm(const std::string & theFileName) const;
+	void WritePgm(const std::string & theFileName) const;
 	
 	void ReduceColors();
 
@@ -200,6 +201,9 @@ namespace Imagine
 
 	void WritePNM(FILE * out) const;
 	void ReadPNM(FILE * out);
+
+	void WritePGM(FILE * out) const;
+	void ReadPGM(FILE * out);
 
 	void WriteWBMP(FILE *out) const;
 	
