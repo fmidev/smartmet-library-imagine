@@ -32,10 +32,10 @@ namespace Imagine
 
 	fseek(in,3,SEEK_CUR);
 
-	// Then there may be multiple comment lines
+	// Then there may be multiple comment lines or empty lines
 
 	fgets(buffer,maxbufsize,in);
-	while(buffer[0] == '#')
+	while(buffer[0] == '#' || buffer[0] == '\n')
 	  {
 		fgets(buffer,maxbufsize,in);
 		if(strlen(buffer) == 0)

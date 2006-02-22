@@ -35,7 +35,7 @@ namespace Imagine
 	// Then there may be multiple comment lines
 
 	fgets(buffer,maxbufsize,in);
-	while(buffer[0] == '#')
+	while(buffer[0] == '#' || buffer[0] == '\n')
 	  {
 		fgets(buffer,maxbufsize,in);
 		if(strlen(buffer) == 0)
