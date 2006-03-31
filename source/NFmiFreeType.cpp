@@ -46,6 +46,7 @@ extern "C" {
 #define FT_RENDER_MODE_NORMAL ft_render_mode_normal
 #endif
 
+#include <map>
 #include <stdexcept>
 #include <vector>
 
@@ -121,13 +122,16 @@ namespace Imagine
 	typedef map<string,FT_Face> Faces;
 
 	bool itsInitialized;
-	FT_Library itsLibrary;			//!< Freetype library reference
-	Faces itsFaces;					//!< Face name to Face ID mapping
+	FT_Library itsLibrary;				//!< Freetype library reference
+	Faces itsFaces;						//!< Face name to Face ID mapping
+	map<string,string> itsFontPaths;	//!< Font name to path cache
 
   public:
 
 	~Pimple();
 	Pimple();
+
+	const string & findFont(const string & theName);
 
 	FT_Face getFont(const string & theFont);
 	
@@ -197,6 +201,27 @@ namespace Imagine
 	  throw runtime_error("Initializing FreeType failed");
 
 	itsInitialized = true;
+  }
+
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Find a FreeType font face
+   */
+  // ----------------------------------------------------------------------
+
+  const string & NFmiFreeType::Pimple::findFont(const string & theName)
+  {
+	map<string,string>::const_iterator it = itsFontPaths.find(theName);
+
+	if(it != itsFontPaths.end())
+	  return it->second;
+
+	const string path = NFmiSettings::Optional<string>("imagine::font_path",".");
+	const string file = NFmiFileSystem::FileComplete(theName,path);
+
+	return (itsFontPaths[theName] = file);
+
   }
 
   // ----------------------------------------------------------------------
@@ -502,8 +527,7 @@ namespace Imagine
 
 	// Find the face
 
-	const string path = NFmiSettings::Optional<string>("imagine::font_path",".");
-	const string file = NFmiFileSystem::FileComplete(theFont,path);
+	const string file = itsPimple->findFont(theFont);
 
 	// Create the face
 
