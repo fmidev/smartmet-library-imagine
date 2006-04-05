@@ -96,21 +96,24 @@ namespace Imagine
   
   double NFmiEsriBuffer::LittleEndianDouble(const std::string & theBuffer, int thePos)
   {
-	if(IsCpuLittleEndian())
-	  return *reinterpret_cast<const double *>(theBuffer.data()+thePos);
-	else
-	  {
-		unsigned char tmp[8];
-		tmp[0] = theBuffer[thePos+7];
-		tmp[1] = theBuffer[thePos+6];
-		tmp[2] = theBuffer[thePos+5];
-		tmp[3] = theBuffer[thePos+4];
-		tmp[4] = theBuffer[thePos+3];
-		tmp[5] = theBuffer[thePos+2];
-		tmp[6] = theBuffer[thePos+1];
-		tmp[7] = theBuffer[thePos];
-		return *reinterpret_cast<double *>(tmp);
-	  }
+      unsigned char tmp[8];
+
+      if(IsCpuLittleEndian())
+      {
+	  memcpy(tmp,theBuffer.data()+thePos,8);
+      }
+      else
+      {
+	  tmp[0] = theBuffer[thePos+7];
+	  tmp[1] = theBuffer[thePos+6];
+	  tmp[2] = theBuffer[thePos+5];
+	  tmp[3] = theBuffer[thePos+4];
+	  tmp[4] = theBuffer[thePos+3];
+	  tmp[5] = theBuffer[thePos+2];
+	  tmp[6] = theBuffer[thePos+1];
+	  tmp[7] = theBuffer[thePos];
+      }
+      return *reinterpret_cast<const double *>(tmp);
   }
   
   // ----------------------------------------------------------------------
