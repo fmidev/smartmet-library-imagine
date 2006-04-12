@@ -37,7 +37,11 @@ namespace Imagine
 	
 	// Constructors
 	
-	NFmiEdgeTree(void) : itsLinesOnly(false), itsEdges() { }
+	NFmiEdgeTree(void)
+	  : itsLinesOnly(false)
+	  , itsConvertGhostLines(false)
+	  , itsEdges()
+	{ }
 	
 	// Destructors
 	
