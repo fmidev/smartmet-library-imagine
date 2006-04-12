@@ -166,7 +166,8 @@ namespace Imagine
 
   NFmiFreeType::Pimple::~Pimple()
   {
-#ifdef UNIX
+	// According to valgrind this should NOT be done
+#if 0
 	for(Faces::iterator it = itsFaces.begin(); it != itsFaces.end(); ++it)
 	  delete it->second;
 #endif  // UNIX
