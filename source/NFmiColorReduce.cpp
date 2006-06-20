@@ -65,7 +65,7 @@ namespace Imagine
 
 	void init_gamma_table(vector<float> & theTable, bool & theFlag)
 	{
-	  const float gamma = 2.2;
+	  const float gamma = 2.2f;
 	  const float coeff = 255/(pow(255.f,gamma));
 	  
 	  for(int i=0; i<256; i++)
@@ -90,7 +90,12 @@ namespace Imagine
 	  // small for the typical number of colours we encounter
 	  // in images.
 
+#ifdef UNIX
 	  Counter counter(4096);
+#else // #ifdef _MSC_VER  // MSVisualC++ k‰‰nt‰j‰n mukana tulleessa hash_map -koodissa 
+						  // ei ollut buckettien m‰‰r‰n s‰‰tˆ mahdollisuutta.
+	  Counter counter;
+#endif
 
 	  // Safety check
 
@@ -208,10 +213,10 @@ namespace Imagine
 					   gamma[NFmiColorTools::GetGreen(theColor2)]);
 	  const float b = (gamma[NFmiColorTools::GetBlue(theColor1)] -
 					   gamma[NFmiColorTools::GetBlue(theColor2)]);
-	  const float a = (NFmiColorTools::GetAlpha(theColor1) -
+	  const float a = static_cast<float>(NFmiColorTools::GetAlpha(theColor1) -
 					   NFmiColorTools::GetAlpha(theColor2));
 
-	  return sqrt(3.0*r*r+4.0*g*g+2.0*b*b+a*a);
+	  return sqrt(3.0f*r*r+4.0f*g*g+2.0f*b*b+a*a);
 
 	}
 
@@ -379,7 +384,13 @@ namespace Imagine
 
 	void replace_colors(NFmiImage & theImage, const ColorMap & theMap)
 	{
+#ifdef UNIX
 	  stdext::hash_map<NFmiColorTools::Color,NFmiColorTools::Color> colormap(256);
+#else // #ifdef _MSC_VER  // MSVisualC++ k‰‰nt‰j‰n mukana tulleessa hash_map -koodissa 
+						  // ei ollut buckettien m‰‰r‰n s‰‰tˆ mahdollisuutta.
+	  stdext::hash_map<NFmiColorTools::Color,NFmiColorTools::Color> colormap;
+#endif
+
 	  for(ColorMap::const_iterator it = theMap.begin();
 		  it != theMap.end();
 		  ++it)
@@ -427,8 +438,8 @@ namespace Imagine
 					ColorMap & theMap,
 					float theQuality)
 	  {
-		const float ratio = 1.0/(theImage.Width() * theImage.Height());
-		const float factor = -theQuality/log(10.0);
+		const float ratio = static_cast<float>(1.0/(theImage.Width() * theImage.Height()));
+		const float factor = -theQuality/log(10.0f);
 
 		for(NFmiColorReduce::Histogram::const_iterator it = theHistogram.begin();
 			it != theHistogram.end();
