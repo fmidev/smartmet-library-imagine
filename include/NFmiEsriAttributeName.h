@@ -48,7 +48,7 @@ namespace Imagine
 	// Special helper constructors based on the associated data type
 	// The idea is to avoid switch statements when calling the constructor
 	
-	NFmiEsriAttributeName(const std::string & theName,const std::string & theValue,int theLength=-1)
+	NFmiEsriAttributeName(const std::string & theName,const std::string & /* theValue */ , int theLength=-1)
 	  : itsName(theName)
 	  , itsType(kFmiEsriString)
 	  , itsFieldLength(-1)
@@ -56,7 +56,7 @@ namespace Imagine
 	  , itsLength(theLength)
 	{}
 	
-	NFmiEsriAttributeName(const std::string & theName, int theValue,int theFieldLength=-1,int theDecimalCount=-1)
+	NFmiEsriAttributeName(const std::string & theName, int /* theValue */ ,int theFieldLength=-1,int theDecimalCount=-1)
 	  : itsName(theName)
 	  , itsType(kFmiEsriInteger)
 	  , itsFieldLength(static_cast<short>(theFieldLength))
@@ -64,7 +64,7 @@ namespace Imagine
 	  , itsLength(-1)
 	{}
 	
-	NFmiEsriAttributeName(const std::string & theName, double theValue,int theFieldLength=-1,int theDecimalCount=-1)
+	NFmiEsriAttributeName(const std::string & theName, double /* theValue */ ,int theFieldLength=-1,int theDecimalCount=-1)
 	  : itsName(theName)
 	  , itsType(kFmiEsriDouble)
 	  , itsFieldLength(static_cast<short>(theFieldLength))
@@ -79,7 +79,7 @@ namespace Imagine
 
 	short FieldLength() const { return itsFieldLength; }
 	short DecimalCount() const { return itsDecimalCount; }
-	short Length() const { return itsLength; }
+	short Length() const { return static_cast<short>(itsLength); }
 	
   private:
 	
