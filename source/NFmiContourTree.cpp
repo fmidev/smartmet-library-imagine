@@ -1375,7 +1375,7 @@ namespace Imagine
 	
 	vector<float> X,Y;
 	vector<VertexExactness>  B;
-	
+
 	IntersectEdge(X,Y,B, x1,y1,z1,c1, x2,y2,z2,c2);
 	IntersectEdge(X,Y,B, x2,y2,z2,c2, x3,y3,z3,c3);
 	IntersectEdge(X,Y,B, x3,y3,z3,c3, x1,y1,z1,c1);
@@ -1555,7 +1555,7 @@ namespace Imagine
 	
 	if(c1==c2 && c1!=kInside)	// That is, c1==c2==kBelow/kAbove
 	  return;
-	
+
 	// The sorted values for intersection calculations:
 	
 	float xx1,yy1,zz1;
@@ -1576,20 +1576,38 @@ namespace Imagine
 	
 	float slo, shi;
 	float xlo, ylo, xhi, yhi;
-	
+	float dz = zz2-zz1;
+
 	if(c1==kBelow || c2==kBelow)
 	  {
-		slo = (LoLimit()-zz1)/(zz2-zz1);
-		xlo = xx1+slo*(xx2-xx1);
-		ylo = yy1+slo*(yy2-yy1);
+	    if(dz != 0)
+	      {
+			slo = (LoLimit()-zz1)/dz;
+			xlo = xx1+slo*(xx2-xx1);
+			ylo = yy1+slo*(yy2-yy1);
+	      }
+	    else
+	      {
+			xlo = xx1;
+			ylo = yy1;
+	      }
 	  }
+
 	if(c1==kAbove || c2==kAbove)
 	  {
-		shi = (HiLimit()-zz1)/(zz2-zz1);
-		xhi = xx1+shi*(xx2-xx1);
-		yhi = yy1+shi*(yy2-yy1);
+	    if(dz != 0)
+	      {
+			shi = (HiLimit()-zz1)/dz;
+			xhi = xx1+shi*(xx2-xx1);
+			yhi = yy1+shi*(yy2-yy1);
+	      }
+	    else
+	      {
+			xhi = xx1;
+			yhi = yy1;
+	      }
 	  }
-	
+
 	switch(c1)
 	  {
 	  case kBelow:
