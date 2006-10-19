@@ -451,6 +451,8 @@ namespace Imagine
 	  WriteWbmp(theFileName);
 	else if(theType == "pnm")
 	  WritePnm(theFileName);
+	else if(theType == "ice")
+	  WritePnm(theFileName);
 	else if(theType == "pgm")
 	  WritePgm(theFileName);
 	else
@@ -567,6 +569,28 @@ namespace Imagine
 	if(out==NULL)
 	  throw runtime_error("Failed to open '"+theFileName+"' for writing a PNM");
 	WritePNM(out);
+	fclose(out);
+
+	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
+	
+	if(!status)
+	  throw runtime_error("Failed to write '"+theFileName+"'");
+  }
+
+  // ----------------------------------------------------------------------
+  // Write image as ICE into given file.
+  // ----------------------------------------------------------------------
+  
+  void NFmiImage::WriteIce(const string & theFileName) const
+  {
+	const string dir = NFmiFileSystem::DirName(theFileName);
+	const string tmp = NFmiFileSystem::TemporaryFile(dir);
+
+	FILE *out;
+	out = fopen(tmp.c_str(),"wb");
+	if(out==NULL)
+	  throw runtime_error("Failed to open '"+theFileName+"' for writing a ICE");
+	WriteICE(out);
 	fclose(out);
 
 	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
