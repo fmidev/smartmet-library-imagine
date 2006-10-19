@@ -27,7 +27,7 @@ DIFFICULTFLAGS = -Weffc++ -Wredundant-decls -Wshadow -Woverloaded-virtual -Wunre
 CC = g++
 CFLAGS = -DUNIX -O0 -g $(MAINFLAGS) $(EXTRAFLAGS) -Werror
 CFLAGS_RELEASE =  -DUNIX -O2 -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
-LDFLAGS = -s
+LDFLAGS = -s -static
 ARFLAGS = -r
 INCLUDES = -I $(includedir) -I $(includedir)/newbase -I /usr/include/freetype2 -I $(includedir)/gpc
 LIBS = -L ../../../../lib -lnewbase -lfreetype -lgpc -ljpeg -lpng -lz
@@ -42,8 +42,8 @@ include ../../makefiles/makefile.lib
 # This would take forever to compile with -O2, so we use -O0 instead
 
 CFLAGS0 = -DUNIX -O0 -g -Wall
-NFmiColorTools.o: NFmiColorTools.cpp
-	$(CC) $(CFLAGS0) $(INCLUDES) -c -o $(objdir)/$@ $<
+# NFmiColorTools.o: NFmiColorTools.cpp
+#	$(CC) $(CFLAGS0) $(INCLUDES) -c -o $(objdir)/$@ $<
 
 # isspace uses an old style cast, cannot help it
 NFmiEsriShape.o: NFmiEsriShape.cpp
