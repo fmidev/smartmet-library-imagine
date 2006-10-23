@@ -37,14 +37,15 @@ namespace Imagine
        if (TIFFReadRGBAImage(in, w, h, raster, 0)) {
  		  int width = static_cast<int>(w);
  		  int height = static_cast<int>(h);
-		  Allocate(w,h);
+		  Allocate(width,height);
 		  for(int j=0; j<height; j++) 
 			for(int i=0; i<width; i++) {
 			  uint32 color = raster[i+j*w];
+			  // data 32-bit ABGR -paketteja 
 			  const int a = color & 0xFF000000;
-			  const int r = color & 0x00FF0000;
+			  const int b = color & 0x00FF0000;
 			  const int g = color & 0x0000FF00;
-			  const int b = color & 0x000000FF;
+			  const int r = color & 0x000000FF;
 			  (*this)(i,j) = NFmiColorTools::MakeColor(a,r,g,b);
 			}
         }
@@ -58,7 +59,7 @@ namespace Imagine
 
   void NFmiImage::WriteGTIFF(TIFF *out) const
   {
-
+	
 
   }
 
