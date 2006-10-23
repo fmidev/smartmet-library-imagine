@@ -28,6 +28,7 @@ extern "C" {
  #include <io.h>		// Windows _mktemp
 #endif
 #include <png.h>	// for pnglib
+#include <xtiffio.h>   // for geolibtiff and libtiff 
 }
 
 using namespace std;
@@ -400,10 +401,17 @@ namespace Imagine
 
 	string mime = NFmiImageTools::MimeType(theFileName);
 	
-	// Open the input file
+	// Open the input file. Note we use specific XTIFFOpen for (geo)tiff images
 	
 	FILE *in;
-	in = fopen(theFileName.c_str(), "rb");
+    TIFF *intiff;
+
+	if (mime == "tiff") {
+	  intiff = XTIFFOpen(theFileName.c_str(), "r");
+	} else {
+	   in = fopen(theFileName.c_str(), "rb");
+	}
+
 	if(in==NULL)
 	  throw NFmiImageOpenError(std::string("Failed to open image ") + theFileName);
 
@@ -417,6 +425,8 @@ namespace Imagine
 	else if(mime == "jpeg")
 	  ReadJPEG(in);
 #endif // IMAGINE_IGNORE_FORMATS
+	else if (mime == "tiff") 
+	  ReadGTIFF(intiff);
 	else if(mime == "pnm")
 	  ReadPNM(in);
 	else if(mime == "pgm")
@@ -429,8 +439,8 @@ namespace Imagine
 	  throw NFmiImageCorruptError(std::string("Failed to read image ")+theFileName);
 	
 	// Close the input file
-	
-	fclose(in);
+	if (mime == "tiff") TIFFClose(intiff);
+	else fclose(in);
 	
   }
 
@@ -455,6 +465,8 @@ namespace Imagine
 	  WritePnm(theFileName);
 	else if(theType == "pgm")
 	  WritePgm(theFileName);
+	else if(theType == "tiff")
+	  WriteGTiff(theFileName);
 	else
 	  throw runtime_error("Image format '"+theType+"' is not supported");
   }
@@ -592,6 +604,28 @@ namespace Imagine
 	  throw runtime_error("Failed to open '"+theFileName+"' for writing a ICE");
 	WriteICE(out, theFileName);
 	fclose(out);
+
+	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
+	
+	if(!status)
+	  throw runtime_error("Failed to write '"+theFileName+"'");
+  }
+  
+  // ----------------------------------------------------------------------
+  // Write image as TIFF into given file.
+  // ----------------------------------------------------------------------
+  
+  void NFmiImage::WriteGTiff(const string & theFileName) const
+  {
+	const string dir = NFmiFileSystem::DirName(theFileName);
+	const string tmp = NFmiFileSystem::TemporaryFile(dir);
+
+	TIFF *out;
+	out = XTIFFOpen(tmp.c_str(),"w");
+	if(out==NULL)
+	  throw runtime_error("Failed to open '"+theFileName+"' for writing a TIFF");
+	WriteGTIFF(out);
+	TIFFClose(out);
 
 	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
 	

@@ -1,6 +1,6 @@
 // ======================================================================
 //
-// NFmiImage addendum - ICE reading and writing
+// NFmiImage addendum - TIFF reading and writing
 // ======================================================================
 
 #include "NFmiImage.h"
@@ -25,7 +25,31 @@ namespace Imagine
 
   void NFmiImage::ReadGTIFF(TIFF *in)
   {
-	// XTIFFOpen
+	uint32 w, h;
+    uint32 npixels;
+    uint32* raster;
+        
+    TIFFGetField(in, TIFFTAG_IMAGEWIDTH, &w);
+    TIFFGetField(in, TIFFTAG_IMAGELENGTH, &h);
+    npixels = w * h;
+    raster = static_cast<uint32*>(_TIFFmalloc(npixels * sizeof (uint32)));
+    if (raster != NULL) {
+       if (TIFFReadRGBAImage(in, w, h, raster, 0)) {
+ 		  int width = static_cast<int>(w);
+ 		  int height = static_cast<int>(h);
+		  Allocate(w,h);
+		  for(int j=0; j<height; j++) 
+			for(int i=0; i<width; i++) {
+			  uint32 color = raster[i+j*w];
+			  const int a = color & 0xFF000000;
+			  const int r = color & 0x00FF0000;
+			  const int g = color & 0x0000FF00;
+			  const int b = color & 0x000000FF;
+			  (*this)(i,j) = NFmiColorTools::MakeColor(a,r,g,b);
+			}
+        }
+        _TIFFfree(raster);
+	}
   }
 
   // ----------------------------------------------------------------------
@@ -35,7 +59,6 @@ namespace Imagine
   void NFmiImage::WriteGTIFF(TIFF *out) const
   {
 
-	
 
   }
 
