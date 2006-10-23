@@ -30,7 +30,7 @@ CFLAGS_RELEASE =  -DUNIX -O2 -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
 LDFLAGS = -s -static
 ARFLAGS = -r
 INCLUDES = -I $(includedir) -I $(includedir)/newbase -I /usr/include/freetype2 -I $(includedir)/gpc
-LIBS = -L ../../../../lib -lnewbase -lfreetype -lgpc -ljpeg -lpng -lz
+LIBS = -L ../../../../lib -lnewbase -lfreetype -lgpc -ljpeg -lpng -ltiff -lgeotiff -lz
 
 # INCLUDES = -I $(includedir)/newbase -I/usr/freeware/include -I/usr/local/include/freetype2
 

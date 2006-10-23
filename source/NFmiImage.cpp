@@ -590,7 +590,7 @@ namespace Imagine
 	out = fopen(tmp.c_str(),"wb");
 	if(out==NULL)
 	  throw runtime_error("Failed to open '"+theFileName+"' for writing a ICE");
-	WriteICE(out);
+	WriteICE(out, theFileName);
 	fclose(out);
 
 	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
