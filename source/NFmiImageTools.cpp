@@ -137,6 +137,10 @@ namespace Imagine
 			  strmagic[1] == '5' &&
 			  strmagic[2] == '\n')
 		return "pgm";
+	  else if (strmagic[0] == 'I' &&
+			   strmagic[1] == 'I' &&
+			   strmagic[2] == '*')
+		return "tiff";
 	  else
 		throw runtime_error("Unknown image format in '"+theFileName+"'");
 	  
