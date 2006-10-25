@@ -58,11 +58,11 @@ namespace Imagine
 			for(int i=0; i<width; i++) {
 			  uint32 color = raster[i+j*w];
 			  // data 32-bit ABGR -paketteja 
-			  const int a = color & 0xFF000000;
-			  const int b = color & 0x00FF0000;
-			  const int g = color & 0x0000FF00;
+			  //			  const int a = (color & 0xFF000000) >> 24;
+			  const int b = (color & 0x00FF0000) >> 16;
+			  const int g = (color & 0x0000FF00) >> 8;
 			  const int r = color & 0x000000FF;
-			  (*this)(i,j) = NFmiColorTools::MakeColor(r,g,b,a);
+			  (*this)(i,j) = NFmiColorTools::MakeColor(r,g,b);
 			}
         }
         _TIFFfree(raster);
@@ -75,7 +75,62 @@ namespace Imagine
 
   void NFmiImage::WriteGTIFF(TIFF *out) const
   {
-	
+    uint32 width = itsWidth;
+    uint32 height = itsHeight;
+    uint32	rowsperstrip = static_cast<uint32>(-1);
+	uint32 row;
+
+    int	pixel_count = static_cast<int>(width*height);
+	uint32 *raster = static_cast<uint32*>(_TIFFmalloc(pixel_count * sizeof (uint32)));
+
+    TIFFSetField(out, TIFFTAG_IMAGEWIDTH, width);
+    TIFFSetField(out, TIFFTAG_IMAGELENGTH, height);
+
+    rowsperstrip = TIFFDefaultStripSize(out, rowsperstrip);
+    TIFFSetField(out, TIFFTAG_ROWSPERSTRIP, rowsperstrip);
+	TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, 4);
+	TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, 8);
+	TIFFSetField(out, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+	TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB); 
+	TIFFSetField(out, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
+    TIFFSetField(out, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
+
+	//	unsigned char *buf;
+
+    for(int j=0; j<itsHeight; j++) 
+		for(int i=0; i<itsWidth; i++) {
+		  const NFmiColorTools::Color color = (*this)(i,j);
+		  const unsigned char b = NFmiColorTools::GetBlue(color);
+		  const unsigned char g = NFmiColorTools::GetGreen(color);
+		  const unsigned char r = NFmiColorTools::GetRed(color);
+		  raster[i+j*itsWidth] = (r + (g << 8) + (b << 16) + (0xFF << 24));
+	}
+
+	for( row = 0; row < height; row += rowsperstrip )
+    {
+        unsigned char * raster_strip;
+        int	rows_to_write;
+        int	bytes_per_pixel;
+
+        raster_strip = reinterpret_cast<unsigned char*>(raster + row * width);
+        bytes_per_pixel = 4;
+
+        if( row + rowsperstrip > height )
+            rows_to_write = height - row;
+        else
+            rows_to_write = rowsperstrip;
+
+        if( TIFFWriteEncodedStrip( out, row / rowsperstrip, raster_strip,
+                             bytes_per_pixel * rows_to_write * width ) == -1 )
+        {
+            _TIFFfree( raster );
+			return;
+        }
+    }
+
+    _TIFFfree( raster );
+
+
 
   }
 
