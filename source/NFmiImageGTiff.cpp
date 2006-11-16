@@ -7,7 +7,14 @@
 #include "NFmiStringTools.h"
 #include "geo_config.h"
 #include "xtiffio.h"
-
+#include "geotiffio.h"
+#include "geotiff.h"
+#include "geo_normalize.h"
+#include "geovalues.h"
+#include "tiffio.h"
+#include "NFmiYKJArea.h"
+#include "NFmiLatLonArea.h"
+#include "NFmiGeoShape.h"
 
 #include <set>
 #include <map>
@@ -95,7 +102,67 @@ namespace Imagine
 	TIFFSetField(out, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
     TIFFSetField(out, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
 
-	//	unsigned char *buf;
+	NFmiLatLonArea area(itsTopleft,itsBottomright, NFmiPoint(0,0), NFmiPoint(itsWidth,itsHeight)); 
+	area.Init(true);
+
+	NFmiPoint topleft = area.LatLonToWorldXY(itsTopleft);
+	NFmiPoint bottomright = area.LatLonToWorldXY(itsBottomright);
+
+	if ( 0 ) {
+       cout << "topleft x " << static_cast<long>(topleft.X()) << endl;
+	   cout << "topleft y " << static_cast<long>(topleft.Y()) << endl;
+	   cout << "bottomright x " << static_cast<long>(bottomright.X()) << endl;
+	   cout << "bottomright y " << static_cast<long>(bottomright.Y()) << endl << endl;
+
+       cout << "ToXY " << (area.ToXY(itsBottomright)) << endl;
+
+	   cout << "xscale " << area.XScale() << endl;
+	   cout << "yscale " << area.YScale() << endl;
+
+	}
+
+	// GeoTiff headers
+	GTIF *gtif = GTIFNew(out);
+
+	GTIFKeySet(gtif, GTModelTypeGeoKey, TYPE_SHORT, 1, ModelTypeProjected);
+    GTIFKeySet(gtif, GTRasterTypeGeoKey, TYPE_SHORT, 1, RasterPixelIsArea);
+	GTIFKeySet(gtif, GTCitationGeoKey, TYPE_ASCII, 22, "Imagine GeoTIFF Writer");
+	GTIFKeySet(gtif, GeogGeodeticDatumGeoKey, TYPE_SHORT, 1, Datum_WGS84);
+	GTIFKeySet(gtif, GeogLinearUnitsGeoKey, TYPE_SHORT, 1, Linear_Meter);
+	GTIFKeySet(gtif, GeogAngularUnitsGeoKey, TYPE_SHORT, 1, Angular_Degree);
+	GTIFKeySet(gtif, GeogSemiMajorAxisGeoKey, TYPE_DOUBLE, 1, 6370997);
+    GTIFKeySet(gtif, ProjCoordTransGeoKey, TYPE_SHORT, 1, CT_Mercator);
+	GTIFKeySet(gtif, ProjFalseEastingGeoKey, TYPE_DOUBLE, 1, 0);
+	GTIFKeySet(gtif, ProjFalseNorthingGeoKey, TYPE_DOUBLE, 1, 0);
+  
+    double centlon = abs(itsBottomright.X() - itsTopleft.X()) / 2;
+	double centlat = abs(itsBottomright.Y() - itsTopleft.Y()) / 2;
+
+    GTIFKeySet(gtif, ProjCenterLongGeoKey, TYPE_DOUBLE, 1, centlon);
+    GTIFKeySet(gtif, ProjCenterLatGeoKey, TYPE_DOUBLE, 1, centlat);
+
+	/* geotiff tiepoint matriisi
+	   Tx = X - I * Sx; mallin x - image x * xpixelscale 
+	   Ty = Y + J * Sy; mallin y + image y * ypixelscale
+       Tz = Z - K * Sz, (2D:ssä ei tarvita)
+	*/
+
+	double tiePoints[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+    double pixelScale[3] = { 0.0, 0.0, 0.0 };
+
+	tiePoints[3] = static_cast<double>(topleft.X() - area.ToXY(itsTopleft).X() * (1/area.XScale()));
+	tiePoints[4] = static_cast<double>(bottomright.Y() + area.ToXY(itsBottomright).Y() * (1 / area.YScale()));
+
+	pixelScale[0] = 1/(area.XScale());
+	pixelScale[1] = 1/(area.YScale());
+
+	TIFFSetField( out, TIFFTAG_GEOTIEPOINTS, 6, tiePoints );
+    TIFFSetField( out, TIFFTAG_GEOPIXELSCALE, 3, pixelScale );
+
+	GTIFWriteKeys(gtif);
+
+
+	GTIFFree(gtif);
 
     for(int j=0; j<itsHeight; j++) 
 		for(int i=0; i<itsWidth; i++) {

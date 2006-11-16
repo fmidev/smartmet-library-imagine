@@ -340,6 +340,13 @@ namespace Imagine
 	itsIntent = string("");		// no intent
   }
   
+
+  void NFmiImage::SetCoordinates(const NFmiPoint topleft, const NFmiPoint bottomright) {
+	itsTopleft = topleft;
+	itsBottomright = bottomright;
+  }
+
+
   // ----------------------------------------------------------------------
   // Assignment operator
   // ----------------------------------------------------------------------
@@ -615,7 +622,7 @@ namespace Imagine
   // Write image as TIFF into given file.
   // ----------------------------------------------------------------------
   
-  void NFmiImage::WriteGTiff(const string & theFileName) const
+  void NFmiImage::WriteGTiff(const string & theFileName ) const
   {
 	const string dir = NFmiFileSystem::DirName(theFileName);
 	const string tmp = NFmiFileSystem::TemporaryFile(dir);
