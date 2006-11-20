@@ -13,7 +13,7 @@
 #include "geovalues.h"
 #include "tiffio.h"
 #include "NFmiYKJArea.h"
-#include "NFmiLatLonArea.h"
+#include "NFmiMercatorArea.h"
 #include "NFmiGeoShape.h"
 
 #include <set>
@@ -102,7 +102,7 @@ namespace Imagine
 	TIFFSetField(out, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
     TIFFSetField(out, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
 
-	NFmiLatLonArea area(itsTopleft,itsBottomright, NFmiPoint(0,0), NFmiPoint(itsWidth,itsHeight)); 
+	NFmiMercatorArea area(itsTopleft,itsBottomright, NFmiPoint(0,0), NFmiPoint(itsWidth,itsHeight)); 
 	area.Init(true);
 
 	NFmiPoint topleft = area.LatLonToWorldXY(itsTopleft);
@@ -130,31 +130,31 @@ namespace Imagine
 	GTIFKeySet(gtif, GeogGeodeticDatumGeoKey, TYPE_SHORT, 1, Datum_WGS84);
 	GTIFKeySet(gtif, GeogLinearUnitsGeoKey, TYPE_SHORT, 1, Linear_Meter);
 	GTIFKeySet(gtif, GeogAngularUnitsGeoKey, TYPE_SHORT, 1, Angular_Degree);
-	GTIFKeySet(gtif, GeogSemiMajorAxisGeoKey, TYPE_DOUBLE, 1, 6370997);
+	GTIFKeySet(gtif, GeogSemiMajorAxisGeoKey, TYPE_DOUBLE, 1, 6370997.0);
     GTIFKeySet(gtif, ProjCoordTransGeoKey, TYPE_SHORT, 1, CT_Mercator);
-	GTIFKeySet(gtif, ProjFalseEastingGeoKey, TYPE_DOUBLE, 1, 0);
-	GTIFKeySet(gtif, ProjFalseNorthingGeoKey, TYPE_DOUBLE, 1, 0);
+	GTIFKeySet(gtif, ProjFalseEastingGeoKey, TYPE_DOUBLE, 1, 0.0);
+	GTIFKeySet(gtif, ProjFalseNorthingGeoKey, TYPE_DOUBLE, 1, 0.0);
   
-    double centlon = abs(itsBottomright.X() - itsTopleft.X()) / 2;
-	double centlat = abs(itsBottomright.Y() - itsTopleft.Y()) / 2;
+    double centlon = abs(itsBottomright.X() + itsTopleft.X()) / 2;
+	double centlat = abs(itsBottomright.Y() + itsTopleft.Y()) / 2;
 
     GTIFKeySet(gtif, ProjCenterLongGeoKey, TYPE_DOUBLE, 1, centlon);
     GTIFKeySet(gtif, ProjCenterLatGeoKey, TYPE_DOUBLE, 1, centlat);
 
-	/* geotiff tiepoint matriisi
-	   Tx = X - I * Sx; mallin x - image x * xpixelscale 
-	   Ty = Y + J * Sy; mallin y + image y * ypixelscale
+ 	/* geotiff tiepoint matriisi
+  	   Tx = X - I * Sx; mallin x - image x * xpixelscale 
+  	   Ty = Y + J * Sy; mallin y + image y * ypixelscale
        Tz = Z - K * Sz, (2D:ssä ei tarvita)
 	*/
 
 	double tiePoints[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
     double pixelScale[3] = { 0.0, 0.0, 0.0 };
 
-	tiePoints[3] = static_cast<double>(topleft.X() - area.ToXY(itsTopleft).X() * (1/area.XScale()));
-	tiePoints[4] = static_cast<double>(bottomright.Y() + area.ToXY(itsBottomright).Y() * (1 / area.YScale()));
+	tiePoints[3] = static_cast<double>(topleft.X() - area.ToXY(itsTopleft).X() * area.XScale());
+	tiePoints[4] = static_cast<double>(bottomright.Y() + area.ToXY(itsBottomright).Y() * area.YScale());
 
-	pixelScale[0] = 1/(area.XScale());
-	pixelScale[1] = 1/(area.YScale());
+	pixelScale[0] = area.XScale();
+	pixelScale[1] = area.YScale();
 
 	TIFFSetField( out, TIFFTAG_GEOTIEPOINTS, 6, tiePoints );
     TIFFSetField( out, TIFFTAG_GEOPIXELSCALE, 3, pixelScale );

@@ -18,6 +18,7 @@
 
 #include "NFmiDrawable.h"
 #include "NFmiAlignment.h"
+#include "NFmiPoint.h"
 
 // TIFF *file descriptor requires xtiffio.h
 #include "xtiffio.h"
@@ -93,6 +94,11 @@ namespace Imagine
 	bool  itsWantPaletteFlag;	// true if palette is desired when possible
 	bool	itsForcePaletteFlag;	// true if palette is to be forced
 	
+
+	// corner coordinates for GeoTIFF headers 
+	NFmiPoint itsTopleft;
+	NFmiPoint itsBottomright;
+
   public:
 	
 	// Constructors, destructors
@@ -111,6 +117,7 @@ namespace Imagine
 	// All constructors call this to set the default options
 	
 	void DefaultOptions(void);
+	void SetCoordinates(const NFmiPoint topleft, const NFmiPoint bottomright);
 	
 	// Access to individual options
 	
