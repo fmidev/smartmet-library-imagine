@@ -469,7 +469,7 @@ namespace Imagine
 	else if(theType == "pnm")
 	  WritePnm(theFileName);
 	else if(theType == "ice")
-	  WritePnm(theFileName);
+	  WriteIce(theFileName);
 	else if(theType == "pgm")
 	  WritePgm(theFileName);
 	else if(theType == "tiff")

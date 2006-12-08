@@ -86,6 +86,7 @@ namespace Imagine
     uint32 height = itsHeight;
     uint32	rowsperstrip = static_cast<uint32>(-1);
 	uint32 row;
+	bool output_grayscale = true;
 
     int	pixel_count = static_cast<int>(width*height);
 	uint32 *raster = static_cast<uint32*>(_TIFFmalloc(pixel_count * sizeof (uint32)));
@@ -135,11 +136,8 @@ namespace Imagine
 	GTIFKeySet(gtif, ProjFalseEastingGeoKey, TYPE_DOUBLE, 1, 0.0);
 	GTIFKeySet(gtif, ProjFalseNorthingGeoKey, TYPE_DOUBLE, 1, 0.0);
   
-    double centlon = abs(itsBottomright.X() + itsTopleft.X()) / 2;
-	double centlat = abs(itsBottomright.Y() + itsTopleft.Y()) / 2;
-
-    GTIFKeySet(gtif, ProjCenterLongGeoKey, TYPE_DOUBLE, 1, centlon);
-    GTIFKeySet(gtif, ProjCenterLatGeoKey, TYPE_DOUBLE, 1, centlat);
+    GTIFKeySet(gtif, ProjCenterLongGeoKey, TYPE_DOUBLE, 1, 0.0);
+    GTIFKeySet(gtif, ProjCenterLatGeoKey, TYPE_DOUBLE, 1, 0.0);
 
  	/* geotiff tiepoint matriisi
   	   Tx = X - I * Sx; mallin x - image x * xpixelscale 
@@ -152,7 +150,7 @@ namespace Imagine
 
 	tiePoints[3] = static_cast<double>(topleft.X() - area.ToXY(itsTopleft).X() * area.XScale());
 	tiePoints[4] = static_cast<double>(bottomright.Y() + area.ToXY(itsBottomright).Y() * area.YScale());
-
+    
 	pixelScale[0] = area.XScale();
 	pixelScale[1] = area.YScale();
 
@@ -167,10 +165,17 @@ namespace Imagine
     for(int j=0; j<itsHeight; j++) 
 		for(int i=0; i<itsWidth; i++) {
 		  const NFmiColorTools::Color color = (*this)(i,j);
-		  const unsigned char b = NFmiColorTools::GetBlue(color);
-		  const unsigned char g = NFmiColorTools::GetGreen(color);
-		  const unsigned char r = NFmiColorTools::GetRed(color);
-		  raster[i+j*itsWidth] = (r + (g << 8) + (b << 16) + (0xFF << 24));
+		  if (!output_grayscale) {
+		     const unsigned char b = NFmiColorTools::GetBlue(color);
+		     const unsigned char g = NFmiColorTools::GetGreen(color);
+		     const unsigned char r = NFmiColorTools::GetRed(color);
+  	         raster[i+j*itsWidth] = (r + (g << 8) + (b << 16) + (0xFF << 24));
+		  } else {
+			int intensity = Imagine::NFmiColorTools::Intensity(color);
+			const unsigned char byte = static_cast<unsigned char>(intensity);
+			raster[i+j*itsWidth] = (byte + (byte << 8) + (byte << 16) + (0xFF << 24));
+		  }
+
 	}
 
 	for( row = 0; row < height; row += rowsperstrip )
