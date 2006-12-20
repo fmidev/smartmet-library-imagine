@@ -206,8 +206,7 @@ void latlon2merc(double lat, double lon, double clat, double* y, double* x)
 
     cout << "size of header " << sizeof(iceh) << endl;
 
-	iceh.file_len_1 = static_cast<long>((ceil(sizeof(iceh)+itsWidth*itsHeight*3) / 512));
-	// iceh.file_len_1 = static_cast<long>((ceil(sizeof(iceh)+itsWidth*itsHeight*3));
+	iceh.file_len_1 = static_cast<long>(ceil((sizeof(iceh)+itsWidth*itsHeight*3)/ 512.0));
 
 	//    iceh.file_len_1 = static_cast<UWORD>(file_len & 0x0000FFFF);
 	//    iceh.file_len_2 = static_cast<UWORD>(file_len & 0xFFFF0000);
