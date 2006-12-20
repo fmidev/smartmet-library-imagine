@@ -6,6 +6,7 @@
 #include "NFmiImage.h"
 #include "NFmiStringTools.h"
 #include "NFmiMercatorArea.h"
+#include "NFmiOrthographicArea.h"
 
 #include <set>
 #include <map>
@@ -14,6 +15,11 @@
 #include <string>
 #include <vector>
 #include "icehdr.h"
+
+#define PI 3.141592653589793
+#define D2R (PI/180.0) /* Degrees to Radians */
+#define R2D (180.0/PI) /* Radians to Degrees */
+
 
 	struct ICEFileHeader {
  	  char magic[3];
@@ -157,6 +163,29 @@ namespace Imagine
 
   }
 
+void latlon2merc(double lat, double lon, double clat, double* y, double* x)
+{
+  double a, b, f, reflat, lat0, lon0, e, east, nort; 
+
+  reflat=D2R*61.666667; 
+  lat0=D2R*lat; 
+  lon0=D2R*lon; 
+  a=6378137.0; 
+  b=6356752.3142;
+  double k0,k1;
+
+  f=(a-b)/a; e=sqrt(f+f-f*f);
+  k0=cos(reflat)/sqrt(1-e*e*sin(reflat)*sin(reflat));
+  clat=D2R*clat; k1=cos(clat)/sqrt(1-e*e*sin(clat)*sin(clat));
+
+  east=a*k0*lon0;
+  nort=a*k0*log(tan(PI/4.0 + lat0/2.0)*pow((1-e*sin(lat0))/(1+e*sin(lat0)),e/2.0));
+  *x=east; 
+  *y=nort;
+}
+
+
+
   // ----------------------------------------------------------------------
   // Write ICE image
   // ----------------------------------------------------------------------
@@ -177,7 +206,9 @@ namespace Imagine
 
     cout << "size of header " << sizeof(iceh) << endl;
 
-    iceh.file_len_1 = static_cast<long>((sizeof(iceh)+itsWidth*itsHeight*3) / 512);
+	iceh.file_len_1 = static_cast<long>((ceil(sizeof(iceh)+itsWidth*itsHeight*3) / 512));
+	// iceh.file_len_1 = static_cast<long>((ceil(sizeof(iceh)+itsWidth*itsHeight*3));
+
 	//    iceh.file_len_1 = static_cast<UWORD>(file_len & 0x0000FFFF);
 	//    iceh.file_len_2 = static_cast<UWORD>(file_len & 0xFFFF0000);
 
@@ -189,8 +220,11 @@ namespace Imagine
     string pad_space;
     pad_space.assign(" ", 40);
     pad_space.copy(iceh.image_id, 40);
+    
 	theFileName.copy(iceh.image_id, theFileName.length(), stripped_pos+1);    // strip path
     iceh.image_id[39] = 0;    
+
+    memset(iceh.filler5, 0, sizeof(iceh.filler5));
 
 	// write the image dimensions
 	iceh.elements =  itsWidth;
@@ -211,6 +245,12 @@ namespace Imagine
     iceh.zerol_1 = static_cast<UWORD>(0.0);
     iceh.zerol_2 = static_cast<UWORD>(0.0);
 
+
+    NFmiOrthographicArea area2(itsTopleft,itsBottomright, 0.0,  NFmiPoint(0,0), NFmiPoint(1,1));
+    area2.Init(true);
+    NFmiPoint topleft2 = area2.LatLonToWorldXY(NFmiPoint(52,15));
+    cout << "ort: " << topleft2 << endl;
+
 	//    h.pixel_size_at_61_40 = 0x8e960908;
     NFmiMercatorArea area(itsTopleft,itsBottomright, NFmiPoint(0,0), NFmiPoint(itsWidth,itsHeight));
     area.Init(true);
@@ -218,7 +258,9 @@ namespace Imagine
     NFmiPoint bottomright = area.LatLonToWorldXY(itsBottomright);
 
     iceh.ptype = MERCATOR;
+
     cout << itsTopleft << endl;
+    cout << itsBottomright << endl;
 
     long longi = static_cast<long>(itsTopleft.X() * 1000000);
     long lati = static_cast<long>(itsTopleft.Y() * 1000000);
@@ -227,10 +269,10 @@ namespace Imagine
     cout << lati << endl;     
 
 	iceh.longit_1 = static_cast<UWORD>(longi & 0x0000FFFF);
-	iceh.longit_2 = static_cast<UWORD>(longi & 0xFFFF0000);
+	iceh.longit_2 = static_cast<UWORD>((longi & 0xFFFF0000) >> 16);
 
 	iceh.latit_1 = static_cast<UWORD>(lati & 0x0000FFFF);
-	iceh.latit_2 = static_cast<UWORD>(lati & 0xFFFF0000);
+	iceh.latit_2 = static_cast<UWORD>((lati & 0xFFFF0000) >> 16);
     
     cout << iceh.longit_1 << endl;
     cout << iceh.latit_1 << endl;
@@ -242,19 +284,36 @@ namespace Imagine
     iceh.duration = 0;
     
 
-    // first eccentricity of the ellipsoid:
-    // e^2 = 2f-f^2, miss‰ f=1/298.257223563
-    // => e = 0,081819191
-    // 
-    // mercator_scaling_factor:
-    // m = sqrt(1-(e*sin(61'40))^2 / cos(61'40)
-    // => m = 2,9797987
-    //
+    /*
+    Resoluution keskell‰ saa muuntamalla kulmien arvot
+    mercator-projektion northing ja easting arvoihin ja sitten
+    pystyresoluution metreiss‰ saa jakamalla northingien erotuksen pikselien
+    m‰‰r‰ll‰ pystysuunnassa (rows) ja vaakaresoluution vastaavasti jakamalla
+    eastingien erotuksen pikselien m‰‰r‰ll‰ t‰ss‰ suunnassa (cols).
+    */
 
-    long resolution = static_cast<long>(((bottomright.X() - topleft.X()) / itsWidth) * 1000);
-    cout << "resolution " << resolution << endl;
-    // iceh.resol_1 = static_cast<UWORD>(resolution & 0x0000FFFF);
-    // iceh.resol_2 = static_cast<UWORD>(resolution & 0xFFFF0000);
+    double lat1 = itsTopleft.Y();
+	double lon1 = itsTopleft.X();
+	double lat2 = itsBottomright.Y();
+	double lon2 = itsBottomright.X();
+    double nort1,east1,nort2,east2;
+
+    double clat=0.5*(lat1+lat2);
+
+    latlon2merc(lat1, lon1, clat, &nort1, &east1);
+    latlon2merc(lat2, lon2, clat, &nort2, &east2);
+
+    double rres=(nort1-nort2)/itsHeight;
+    double cres=(east2-east1)/itsWidth;
+
+    cout << "rres: " << rres << endl;
+    cout << "cres: " << cres << endl;
+    cout << "clat: " << clat << endl;
+ 
+	long resolution = static_cast<LONG>(cres * 1000);
+     
+    iceh.resol_1 = static_cast<UWORD>(resolution & 0x0000FFFF);
+    iceh.resol_2 = static_cast<UWORD>((resolution & 0xFFFF0000) >> 16);
 
     string satellite = "Terra\0";
 	satellite.copy(iceh.satellite, 6);
@@ -274,40 +333,44 @@ namespace Imagine
 	for(int j=0; j<itsHeight; j++)
       for(int i=0; i<itsWidth; i++) {
 	     const NFmiColorTools::Color color = (*this)(i,j);
-	     const unsigned char red = NFmiColorTools::GetRed(color);
-	     const unsigned char green = NFmiColorTools::GetGreen(color);
-	     const unsigned char blue = NFmiColorTools::GetBlue(color);
+	     //const unsigned char red = NFmiColorTools::GetRed(color);
+		 // const unsigned char green = NFmiColorTools::GetGreen(color);
+	     //const unsigned char blue = NFmiColorTools::GetBlue(color);
 
-		 fwrite(&red, sizeof(red), 1, out);
-		 fwrite(&green, sizeof(green), 1, out);
-		 fwrite(&blue, sizeof(blue), 1, out);
+         int intensity = Imagine::NFmiColorTools::Intensity(color);
+         unsigned char byte = static_cast<unsigned char>(intensity);
+         fwrite(&byte, sizeof(byte), 1, out);
+
+		 // fwrite(&red, sizeof(red), 1, out);
+		 // fwrite(&green, sizeof(green), 1, out);
+		 // fwrite(&blue, sizeof(blue), 1, out);
+
+		 
 	  }
 
     // optional trailer
     string tag = "T1";
     tag.copy(icec.tag, 2);
-    icec.next_record_offset = -1;
+    icec.next_record_offset = 0;
     icec.white_pixel_limit = 255;
     icec.black_pixel_limit = 0;
     icec.entries = 255;
-    fwrite(&icec, sizeof(icec), 1, out);
+	fwrite(&icec, sizeof(icec), 1, out);
 
-    cout << "long " << sizeof(long) << endl;
-    cout << "LONG " << sizeof(LONG) << endl;
-    cout << "UWORD" << sizeof(UWORD) << endl;
-
-    unsigned char triplet = 0;
-    for(int i=0; i<256; i++) {
- 	  fwrite(&triplet, sizeof(triplet), 1, out);
+   unsigned char triplet = 0;
+   unsigned char triplet2 = 0;
+   for(int i=0; i<256; i++) {
 	  fwrite(&triplet, sizeof(triplet), 1, out);
-	  fwrite(&triplet, sizeof(triplet), 1, out);
+	  fwrite(&triplet2, sizeof(triplet), 1, out);
+	  fwrite(&triplet2, sizeof(triplet), 1, out);
       triplet++;
 	}    
     unsigned char tail[7] = {0x54,0x32,0x00,0x00,0x00,0x00,0x00};
     fwrite(&tail, sizeof(tail), 1, out);
 
-
   }
+
+
 
 
 	
