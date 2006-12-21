@@ -136,8 +136,8 @@ namespace Imagine
 	GTIFKeySet(gtif, ProjFalseEastingGeoKey, TYPE_DOUBLE, 1, 0.0);
 	GTIFKeySet(gtif, ProjFalseNorthingGeoKey, TYPE_DOUBLE, 1, 0.0);
   
-    GTIFKeySet(gtif, ProjCenterLongGeoKey, TYPE_DOUBLE, 1, 0.0);
-    GTIFKeySet(gtif, ProjCenterLatGeoKey, TYPE_DOUBLE, 1, 0.0);
+    GTIFKeySet(gtif, ProjCenterLongGeoKey, TYPE_DOUBLE, 1, (itsBottomright.X() + itsTopleft.X()) * 0.5 );
+    GTIFKeySet(gtif, ProjCenterLatGeoKey, TYPE_DOUBLE, 1, (itsBottomright.Y() + itsTopleft.Y()) * 0.5 );
 
  	/* geotiff tiepoint matriisi
   	   Tx = X - I * Sx; mallin x - image x * xpixelscale 
@@ -148,9 +148,12 @@ namespace Imagine
 	double tiePoints[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
     double pixelScale[3] = { 0.0, 0.0, 0.0 };
 
-	tiePoints[3] = static_cast<double>(topleft.X() - area.ToXY(itsTopleft).X() * area.XScale());
+	//	tiePoints[3] = static_cast<double>(topleft.X() - area.ToXY(itsTopleft).X() * area.XScale());
+	// tiePoints[4] = static_cast<double>(bottomright.Y() + area.ToXY(itsBottomright).Y() * area.YScale());
+
+	tiePoints[3] = static_cast<double>(bottomright.X() - area.ToXY(itsBottomright).X() * area.XScale());
 	tiePoints[4] = static_cast<double>(bottomright.Y() + area.ToXY(itsBottomright).Y() * area.YScale());
-    
+
 	pixelScale[0] = area.XScale();
 	pixelScale[1] = area.YScale();
 

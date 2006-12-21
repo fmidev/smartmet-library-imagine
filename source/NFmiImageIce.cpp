@@ -204,9 +204,8 @@ void latlon2merc(double lat, double lon, double clat, double* y, double* x)
 	string datum = "041007";
 	datum.copy(iceh.header_date, 6);
 
-    cout << "size of header " << sizeof(iceh) << endl;
-
-	iceh.file_len_1 = static_cast<long>(ceil((sizeof(iceh)+itsWidth*itsHeight*3)/ 512.0));
+	iceh.file_len_1 = static_cast<long>((ceil(sizeof(iceh)+itsWidth*itsHeight*3) / 512));
+	// iceh.file_len_1 = static_cast<long>((ceil(sizeof(iceh)+itsWidth*itsHeight*3));
 
 	//    iceh.file_len_1 = static_cast<UWORD>(file_len & 0x0000FFFF);
 	//    iceh.file_len_2 = static_cast<UWORD>(file_len & 0xFFFF0000);
@@ -244,12 +243,6 @@ void latlon2merc(double lat, double lon, double clat, double* y, double* x)
     iceh.zerol_1 = static_cast<UWORD>(0.0);
     iceh.zerol_2 = static_cast<UWORD>(0.0);
 
-
-    NFmiOrthographicArea area2(itsTopleft,itsBottomright, 0.0,  NFmiPoint(0,0), NFmiPoint(1,1));
-    area2.Init(true);
-    NFmiPoint topleft2 = area2.LatLonToWorldXY(NFmiPoint(52,15));
-    cout << "ort: " << topleft2 << endl;
-
 	//    h.pixel_size_at_61_40 = 0x8e960908;
     NFmiMercatorArea area(itsTopleft,itsBottomright, NFmiPoint(0,0), NFmiPoint(itsWidth,itsHeight));
     area.Init(true);
@@ -258,14 +251,8 @@ void latlon2merc(double lat, double lon, double clat, double* y, double* x)
 
     iceh.ptype = MERCATOR;
 
-    cout << itsTopleft << endl;
-    cout << itsBottomright << endl;
-
     long longi = static_cast<long>(itsTopleft.X() * 1000000);
     long lati = static_cast<long>(itsTopleft.Y() * 1000000);
-
-    cout << longi << endl;
-    cout << lati << endl;     
 
 	iceh.longit_1 = static_cast<UWORD>(longi & 0x0000FFFF);
 	iceh.longit_2 = static_cast<UWORD>((longi & 0xFFFF0000) >> 16);
@@ -273,9 +260,6 @@ void latlon2merc(double lat, double lon, double clat, double* y, double* x)
 	iceh.latit_1 = static_cast<UWORD>(lati & 0x0000FFFF);
 	iceh.latit_2 = static_cast<UWORD>((lati & 0xFFFF0000) >> 16);
     
-    cout << iceh.longit_1 << endl;
-    cout << iceh.latit_1 << endl;
-
 	iceh.zerol_1 = 0;
 	iceh.zerol_2 = 0;
 
@@ -302,15 +286,11 @@ void latlon2merc(double lat, double lon, double clat, double* y, double* x)
     latlon2merc(lat1, lon1, clat, &nort1, &east1);
     latlon2merc(lat2, lon2, clat, &nort2, &east2);
 
-    double rres=(nort1-nort2)/itsHeight;
+	// double rres=(nort1-nort2)/itsHeight;
     double cres=(east2-east1)/itsWidth;
 
-    cout << "rres: " << rres << endl;
-    cout << "cres: " << cres << endl;
-    cout << "clat: " << clat << endl;
- 
 	long resolution = static_cast<LONG>(cres * 1000);
-     
+
     iceh.resol_1 = static_cast<UWORD>(resolution & 0x0000FFFF);
     iceh.resol_2 = static_cast<UWORD>((resolution & 0xFFFF0000) >> 16);
 
