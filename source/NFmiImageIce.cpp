@@ -21,53 +21,13 @@
 #define R2D (180.0/PI) /* Radians to Degrees */
 
 
-	struct ICEFileHeader {
- 	  char magic[3];
-	  char version;
-	  char datum[6];
-      long length_or_offset;      // version 1: filesize, version 2: pointer to colortable
-      char compressiontype;
-      char filler1;
-	  char imagename[40];
-      long imagex;
-	  long imagey;
-	  long bits_per_pixel;
-      char channel[16];
-      char calibrated;
-      char filler2;
-      short minimum_pixel_value;
-      long minimum_physical_value; // times * 1000
-      short maximum_pixel_value;
-      long maximum_physical_value; // times * 1000
-	  char projection;
-	  char filler3;
-      long left_longitude;
-	  long north_latitude;
-	  long pixel_size_at_61_40;
-	  long center_longitude;
-	  char satellite_name[26];
-	  long orbit_number;
-	  char start_date;
-	  char start_time;
-	  short duration_in_seconds;
-	  short pixel_value_null_area;
-	  short pixel_different_values;
-	  short lut_info;
-	  char lut_data[52];
-	  char class_names[12];
-	  short offset_image_x;
-	  short offset_image_y;
-	  char filler4;
-	  char image_identifier[12];
-	};
-
-	struct ICEColortableHeader {
+struct ICEColortableHeader {
 	  char tag[2];
 	  LONG next_record_offset;
 	  UBYTE white_pixel_limit;
 	  UBYTE black_pixel_limit;
 	  WORD entries;
-	};
+};
 
 
 using namespace std;
@@ -204,14 +164,7 @@ void latlon2merc(double lat, double lon, double clat, double* y, double* x)
 	string datum = "041007";
 	datum.copy(iceh.header_date, 6);
 
-	iceh.file_len_1 = static_cast<long>((ceil(sizeof(iceh)+itsWidth*itsHeight*3) / 512));
-	// iceh.file_len_1 = static_cast<long>((ceil(sizeof(iceh)+itsWidth*itsHeight*3));
-
-	//    iceh.file_len_1 = static_cast<UWORD>(file_len & 0x0000FFFF);
-	//    iceh.file_len_2 = static_cast<UWORD>(file_len & 0xFFFF0000);
-
-    cout << "offset: " << iceh.file_len_1 << endl;
-
+	iceh.file_len_1 = static_cast<long>(sizeof(iceh)+itsWidth*itsHeight);
 	iceh.compression = NOT_COMPRESSED;
 	
 	int stripped_pos = theFileName.rfind("/", 40);
@@ -243,11 +196,8 @@ void latlon2merc(double lat, double lon, double clat, double* y, double* x)
     iceh.zerol_1 = static_cast<UWORD>(0.0);
     iceh.zerol_2 = static_cast<UWORD>(0.0);
 
-	//    h.pixel_size_at_61_40 = 0x8e960908;
     NFmiMercatorArea area(itsTopleft,itsBottomright, NFmiPoint(0,0), NFmiPoint(itsWidth,itsHeight));
     area.Init(true);
-    NFmiPoint topleft = area.LatLonToWorldXY(itsTopleft);
-    NFmiPoint bottomright = area.LatLonToWorldXY(itsBottomright);
 
     iceh.ptype = MERCATOR;
 
