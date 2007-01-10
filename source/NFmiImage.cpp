@@ -468,12 +468,8 @@ namespace Imagine
 	  WriteWbmp(theFileName);
 	else if(theType == "pnm")
 	  WritePnm(theFileName);
-	else if(theType == "ice")
-	  WriteIce(theFileName);
 	else if(theType == "pgm")
 	  WritePgm(theFileName);
-	else if(theType == "tiff")
-	  WriteGTiff(theFileName);
 	else
 	  throw runtime_error("Image format '"+theType+"' is not supported");
   }
@@ -596,50 +592,6 @@ namespace Imagine
 	  throw runtime_error("Failed to write '"+theFileName+"'");
   }
 
-  // ----------------------------------------------------------------------
-  // Write image as ICE into given file.
-  // ----------------------------------------------------------------------
-  
-  void NFmiImage::WriteIce(const string & theFileName) const
-  {
-	const string dir = NFmiFileSystem::DirName(theFileName);
-	const string tmp = NFmiFileSystem::TemporaryFile(dir);
-
-	FILE *out;
-	out = fopen(tmp.c_str(),"wb");
-	if(out==NULL)
-	  throw runtime_error("Failed to open '"+theFileName+"' for writing a ICE");
-	WriteICE(out, theFileName);
-	fclose(out);
-
-	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
-	
-	if(!status)
-	  throw runtime_error("Failed to write '"+theFileName+"'");
-  }
-  
-  // ----------------------------------------------------------------------
-  // Write image as TIFF into given file.
-  // ----------------------------------------------------------------------
-  
-  void NFmiImage::WriteGTiff(const string & theFileName ) const
-  {
-	const string dir = NFmiFileSystem::DirName(theFileName);
-	const string tmp = NFmiFileSystem::TemporaryFile(dir);
-
-	TIFF *out;
-	out = XTIFFOpen(tmp.c_str(),"w");
-	if(out==NULL)
-	  throw runtime_error("Failed to open '"+theFileName+"' for writing a TIFF");
-	WriteGTIFF(out);
-	TIFFClose(out);
-
-	bool status = NFmiFileSystem::RenameFile(tmp,theFileName);
-	
-	if(!status)
-	  throw runtime_error("Failed to write '"+theFileName+"'");
-  }
-  
   // ----------------------------------------------------------------------
   // Write image as PGM into given file.
   // ----------------------------------------------------------------------
