@@ -28,7 +28,6 @@ extern "C" {
  #include <io.h>		// Windows _mktemp
 #endif
 #include <png.h>	// for pnglib
-#include <xtiffio.h>   // for geolibtiff and libtiff 
 }
 
 using namespace std;
@@ -408,16 +407,10 @@ namespace Imagine
 
 	string mime = NFmiImageTools::MimeType(theFileName);
 	
-	// Open the input file. Note we use specific XTIFFOpen for (geo)tiff images
+	// Open the input file.
 	
 	FILE *in;
-    TIFF *intiff;
-
-	if (mime == "tiff") {
-	  intiff = XTIFFOpen(theFileName.c_str(), "r");
-	} else {
-	   in = fopen(theFileName.c_str(), "rb");
-	}
+	in = fopen(theFileName.c_str(), "rb");
 
 	if(in==NULL)
 	  throw NFmiImageOpenError(std::string("Failed to open image ") + theFileName);
@@ -432,8 +425,6 @@ namespace Imagine
 	else if(mime == "jpeg")
 	  ReadJPEG(in);
 #endif // IMAGINE_IGNORE_FORMATS
-	else if (mime == "tiff") 
-	  ReadGTIFF(intiff);
 	else if(mime == "pnm")
 	  ReadPNM(in);
 	else if(mime == "pgm")
@@ -446,8 +437,7 @@ namespace Imagine
 	  throw NFmiImageCorruptError(std::string("Failed to read image ")+theFileName);
 	
 	// Close the input file
-	if (mime == "tiff") TIFFClose(intiff);
-	else fclose(in);
+	fclose(in);
 	
   }
 
