@@ -152,7 +152,8 @@ namespace Imagine
 
 	  ColorTree();
 	  void insert(value_type theColor);
-
+	  int size() const;
+  	  void clear();
 	  bool empty() const;
 	  value_type nearest(value_type theColor);
 
@@ -171,6 +172,7 @@ namespace Imagine
 	  float itsMaxRight;
 	  auto_ptr<ColorTree> itsLeftBranch;
 	  auto_ptr<ColorTree> itsRightBranch;
+      int itsCount;
 
 	};
 
@@ -187,6 +189,7 @@ namespace Imagine
 	  , itsMaxRight(-1.0)
 	  , itsLeftBranch()
 	  , itsRightBranch()
+ 	  , itsCount(0)
 	{
 	}
 
@@ -233,6 +236,24 @@ namespace Imagine
 
 	// ----------------------------------------------------------------------
 	/*!
+	 * \brief Return number of colours in the tree.
+	 */
+	// ----------------------------------------------------------------------
+	
+	int ColorTree::size() const 
+	{
+	   return itsCount;
+	}
+
+	void ColorTree::clear()  
+	{
+	   itsRightBranch.reset(new ColorTree);
+	   itsLeftBranch.reset(new ColorTree);
+	   itsCount = 0;
+	}
+
+	// ----------------------------------------------------------------------
+	/*!
 	 * \brief Insert a color into the color tree
 	 *
 	 * Algorithm:
@@ -266,6 +287,7 @@ namespace Imagine
 			  itsMaxRight = max(itsMaxRight,dist_right);
 
 			  itsRightBranch->insert(theColor);
+			  itsCount++;
 			}
 		  else
 			{
@@ -277,7 +299,7 @@ namespace Imagine
 			  itsMaxLeft = max(itsMaxLeft,dist_left);
 
 			  itsLeftBranch->insert(theColor);
-
+			  itsCount++;
 			}
 		}
 	}
@@ -469,6 +491,63 @@ namespace Imagine
 
 	// ----------------------------------------------------------------------
 	/*!
+	 * \brief Build a color tree and a colormap
+	 */
+	// ----------------------------------------------------------------------
+
+	void build_tree(const NFmiImage & theImage,
+					const NFmiColorReduce::Histogram & theHistogram,
+					ColorTree & theTree,
+					ColorMap & theMap,
+					float theQuality,
+					int theMaxCount,
+				    float theErrorFactor)
+	  {
+		const float ratio = static_cast<float>(1.0/(theImage.Width() * theImage.Height()));
+
+		bool done = false;
+		while (!done) {
+		  done = true;
+		  const float factor = -theQuality/log(10.0f);
+
+		  for(NFmiColorReduce::Histogram::const_iterator it = theHistogram.begin();
+			  it != theHistogram.end();
+			  ++it)
+			{
+			  if(theTree.empty())
+				{
+				  theTree.insert(it->second);
+				  theMap.insert(ColorMap::value_type(it->second,it->second));
+				}
+			  else
+				{
+				  NFmiColorTools::Color nearest = theTree.nearest(it->second);
+				  float dist = theTree.distance(nearest,it->second);
+				
+				  const float limit = factor*log(ratio*it->first);
+				  if(dist < limit)
+					theMap.insert(ColorMap::value_type(it->second,nearest));
+				  else if(theTree.size() < theMaxCount) 
+					{
+					  theTree.insert(it->second);
+					  theMap.insert(ColorMap::value_type(it->second,it->second));
+					} 
+				  else {
+					theTree.clear();
+					theMap.clear();
+					done = false;
+					theQuality *= theErrorFactor;
+					break;
+				  }
+			  }
+		  }
+		}
+
+  } // namespace anonymous
+
+  }
+	// ----------------------------------------------------------------------
+	/*!
 	 * \brief Convert counts to a histogram
 	 */
 	// ----------------------------------------------------------------------
@@ -487,9 +566,6 @@ namespace Imagine
 
 	  return histogram;
 	}
-
-
-  } // namespace anonymous
 
 
   // ======================================================================
@@ -572,6 +648,32 @@ namespace Imagine
 	  ColorMap colormap;
 
 	  build_tree(theImage,histogram,tree,colormap,theQuality);
+
+	  // Now perform the replacements. Since we expect to encounter
+	  // sequences of color, we speed of the searches by caching
+	  // the last replacement.
+
+	  replace_colors(theImage,colormap);
+
+	}
+
+	void AdaptiveReduce(NFmiImage & theImage, float theQuality, int theMaxColors, float theErrorFactor)
+	{
+	  using namespace Imagine::NFmiColorTools;
+
+	  if (theQuality < 1) 
+   	      throw runtime_error("Quality was too low.");
+
+	  // Calculate the histogram
+	  
+	  Histogram histogram = CalcHistogram(theImage);
+
+	  // Select the colors
+
+	  ColorTree tree;
+	  ColorMap colormap;
+
+	  build_tree(theImage,histogram,tree,colormap,theQuality, theMaxColors, theErrorFactor);
 
 	  // Now perform the replacements. Since we expect to encounter
 	  // sequences of color, we speed of the searches by caching

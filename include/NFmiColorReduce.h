@@ -23,6 +23,7 @@ namespace Imagine
 
 	const Histogram CalcHistogram(const NFmiImage & theImage);
 	void AdaptiveReduce(NFmiImage & theImage, float theQuality = 10);
+	void AdaptiveReduce(NFmiImage & theImage, float theQuality, int theMaxColors, float theErrorFactor);
 
   } // namespace NFmiColorReduce
 
@@ -31,3 +32,4 @@ namespace Imagine
 #endif // IMAGINE_NFMICOLORREDUCE_H
 
 // ======================================================================
+
