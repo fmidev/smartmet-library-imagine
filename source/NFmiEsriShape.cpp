@@ -235,8 +235,15 @@ namespace Imagine
 	
 	// Derived file names
 	
-	const string shpfilename = NFmiFileSystem::FileComplete(theFilename + ".shp",shapes_path);
-	const string dbffilename = NFmiFileSystem::FileComplete(theFilename + ".dbf",shapes_path);
+	string shpfilename = NFmiFileSystem::FileComplete(theFilename + ".shp",shapes_path);
+	string dbffilename = NFmiFileSystem::FileComplete(theFilename + ".dbf",shapes_path);
+
+	// Try upper case suffix if necessary
+
+	if(!NFmiFileSystem::FileExists(shpfilename))
+	  shpfilename = NFmiFileSystem::FileComplete(theFilename + ".SHP",shapes_path);
+	if(!NFmiFileSystem::FileExists(dbffilename))
+	  dbffilename = NFmiFileSystem::FileComplete(theFilename + ".DBF",shapes_path);
 	
 	// Delete old contents if there are any
 	
