@@ -20,9 +20,6 @@
 #include "NFmiAlignment.h"
 #include "NFmiPoint.h"
 
-// TIFF *file descriptor requires xtiffio.h
-#include "xtiffio.h"
-
 #include <string>	// for filenames, drawing text etc
 #include <utility>	// for pairs
 #include <vector>	// for vectors
@@ -95,10 +92,6 @@ namespace Imagine
 	bool	itsForcePaletteFlag;	// true if palette is to be forced
 	
 
-	// corner coordinates for GeoTIFF headers 
-	NFmiPoint itsTopleft;
-	NFmiPoint itsBottomright;
-
   public:
 	
 	// Constructors, destructors
@@ -117,7 +110,6 @@ namespace Imagine
 	// All constructors call this to set the default options
 	
 	void DefaultOptions(void);
-	void SetCoordinates(const NFmiPoint topleft, const NFmiPoint bottomright);
 	
 	// Access to individual options
 	
@@ -167,8 +159,6 @@ namespace Imagine
 	void WriteWbmp(const std::string & theFileName) const;
 	void WriteGif(const std::string & theFileName) const;
 	void WritePnm(const std::string & theFileName) const;
-	void WriteIce(const std::string & theFileName) const;
-	void WriteGTiff(const std::string & theFileName) const;
 	void WritePgm(const std::string & theFileName) const;
 	
 	void ReduceColors();
@@ -213,12 +203,6 @@ namespace Imagine
 
 	void WritePNM(FILE * out) const;
 	void ReadPNM(FILE * out);
-
-    void ReadICE(FILE *in);
-    void WriteICE(FILE *out, const std::string & theFileName ) const;
-
-    void ReadGTIFF(TIFF *in);
-    void WriteGTIFF(TIFF *out) const;
 
 	void WritePGM(FILE * out) const;
 	void ReadPGM(FILE * out);

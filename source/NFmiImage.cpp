@@ -339,13 +339,6 @@ namespace Imagine
 	itsIntent = string("");		// no intent
   }
   
-
-  void NFmiImage::SetCoordinates(const NFmiPoint topleft, const NFmiPoint bottomright) {
-	itsTopleft = topleft;
-	itsBottomright = bottomright;
-  }
-
-
   // ----------------------------------------------------------------------
   // Assignment operator
   // ----------------------------------------------------------------------
