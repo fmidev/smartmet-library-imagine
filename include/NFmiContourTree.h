@@ -3,17 +3,6 @@
  * \file NFmiContourTree.h
  * \brief Definition of a class to calculate 2D contour polygons.
  *
- * \b History:
- *
- * \li 12.08.2001, Mika Heiskanen\par
- * Implemented.
- *
- * \li 27.11.2001, Mika Heiskanen\par
- * Added Doxygen comments.
- *
- * \li 18.01.2002, Mika Heiskanen\par
- * Added methods which can use NFmiContourDataHelper.
- *
  */
 // ======================================================================
 /*!
@@ -141,7 +130,6 @@
 
 #include "NFmiEdgeTree.h"	// Input edges
 #include "NFmiFillMap.h"	// Fill map generation and rendering
-#include "NFmiContourDataHelper.h"
 #include "NFmiDataHints.h"
 
 #include "NFmiGlobals.h"	// for kFloatMissing
@@ -311,11 +299,6 @@ namespace Imagine
 	
 	void Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
 				 const NFmiDataMatrix<float> & theValues,
-				 const NFmiContourDataHelper & theHelper,
-				 const NFmiContourInterpolation & theInterpolation);
-
-	void Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
-				 const NFmiDataMatrix<float> & theValues,
 				 const NFmiDataHints & theHelper,
 				 const NFmiContourInterpolation & theInterpolation);
 	
@@ -324,10 +307,6 @@ namespace Imagine
 	void Contour(const NFmiDataMatrix<float> & theValues,
 				 const NFmiContourInterpolation & theInterpolation);
 	
-	void Contour(const NFmiDataMatrix<float> & theValues,
-				 const NFmiContourDataHelper & theHelper,
-				 const NFmiContourInterpolation & theInterpolation);
-
 	void Contour(const NFmiDataMatrix<float> & theValues,
 				 const NFmiDataHints & theHelper,
 				 const NFmiContourInterpolation & theInterpolation);
@@ -406,18 +385,11 @@ namespace Imagine
 	void ContourLinear(const NFmiDataMatrix<float> & theValues);
 	
 	void ContourLinear(const NFmiDataMatrix<float> & theValues,
-					   const NFmiContourDataHelper & theHelper);
-	
-	void ContourLinear(const NFmiDataMatrix<float> & theValues,
 					   const NFmiDataHints & theHelper);
 	
 	void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 					   const NFmiDataMatrix<float> & theValues);
 	
-	void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
-					   const NFmiDataMatrix<float> & theValues,
-					   const NFmiContourDataHelper & theHelper);
-
 	void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 					   const NFmiDataMatrix<float> & theValues,
 					   const NFmiDataHints & theHelper);
@@ -427,18 +399,11 @@ namespace Imagine
 	void ContourNearest(const NFmiDataMatrix<float> & theValues);
 	
 	void ContourNearest(const NFmiDataMatrix<float> & theValues,
-						const NFmiContourDataHelper & theHelper);
-	
-	void ContourNearest(const NFmiDataMatrix<float> & theValues,
 						const NFmiDataHints & theHelper);
 	
 	void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
 						const NFmiDataMatrix<float> & theValues);
 	
-	void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
-						const NFmiDataMatrix<float> & theValues,
-						const NFmiContourDataHelper & theHelper);
-
 	void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
 						const NFmiDataMatrix<float> & theValues,
 						const NFmiDataHints & theHelper);
@@ -448,17 +413,10 @@ namespace Imagine
 	void ContourDiscrete(const NFmiDataMatrix<float> & theValues);
 	
 	void ContourDiscrete(const NFmiDataMatrix<float> & theValues,
-						 const NFmiContourDataHelper & theHelper);
-	
-	void ContourDiscrete(const NFmiDataMatrix<float> & theValues,
 						 const NFmiDataHints & theHelper);
 	
 	void ContourDiscrete(const NFmiDataMatrix<NFmiPoint> & thePts,
 						 const NFmiDataMatrix<float> & theValues);
-	
-	void ContourDiscrete(const NFmiDataMatrix<NFmiPoint> & thePts,
-						 const NFmiDataMatrix<float> & theValues,
-						 const NFmiContourDataHelper & theHelper);
 	
 	void ContourDiscrete(const NFmiDataMatrix<NFmiPoint> & thePts,
 						 const NFmiDataMatrix<float> & theValues,
