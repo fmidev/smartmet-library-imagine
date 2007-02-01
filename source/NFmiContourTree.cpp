@@ -23,16 +23,6 @@
  * opposite corner of the rectangle is contoured using
  * a triangle contourer. 
  *
- * \li 12.09.2001, Mika Heiskanen\par
- * Fixed painting of saddle points by using triangulation
- * of the rectangle.
- *
- * \li 27.11.2001, Mika Heiskanen\par
- * Added Doxygen comments.
- *
- * \li 18.01.2002, Mika Heiskanen\par
- * Added use of NFmiContourDataHelper.
- *
  */
 // ======================================================================
 
@@ -172,6 +162,42 @@ namespace Imagine
    * Contour the given data values with given coordinates. The input data
    * is expected to be topologically equivalent to a 2D uniform rectangle.
    *
+   * \param thePts The coordinates of the points.
+   * \param theValues The values at the points.
+   * \param theHelper A NFmiDataHints for speeding up contouring.
+   * \param theInterpolation The interpolation method to be used.
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
+								const NFmiDataMatrix<float> & theValues,
+								const NFmiDataHints & theHelper,
+								const NFmiContourInterpolation & theInterpolation)
+  {
+	if(thePts.NX()!=theValues.NX() || thePts.NY()!=theValues.NY())
+	  throw runtime_error("Cannot contour values with coordinate matrix of different size");
+	
+	switch(theInterpolation)
+	  {
+	  case kFmiContourNearest:
+		NFmiContourTree::ContourNearest(thePts,theValues,theHelper);
+		break;
+	  case kFmiContourLinear:
+		NFmiContourTree::ContourLinear(thePts,theValues,theHelper);
+		break;
+	  case kFmiContourDiscrete:
+		NFmiContourTree::ContourDiscrete(thePts,theValues,theHelper);
+		break;
+	  default:
+		break;
+	  }
+  }
+  
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
+   *
    * \param theValues The values at the points.
    * \param theHelper A NFmiContourDataHelper for speeding up contouring.
    * \param theInterpolation The interpolation method to be used.
@@ -180,6 +206,37 @@ namespace Imagine
   
   void NFmiContourTree::Contour(const NFmiDataMatrix<float> & theValues,
 								const NFmiContourDataHelper & theHelper,
+								const NFmiContourInterpolation & theInterpolation)
+  {
+	switch(theInterpolation)
+	  {
+	  case kFmiContourNearest:
+		NFmiContourTree::ContourNearest(theValues,theHelper);
+		break;
+	  case kFmiContourLinear:
+		NFmiContourTree::ContourLinear(theValues,theHelper);
+		break;
+	  case kFmiContourDiscrete:
+		NFmiContourTree::ContourDiscrete(theValues,theHelper);
+		break;
+	  default:
+		break;
+	  }
+  }
+  
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
+   *
+   * \param theValues The values at the points.
+   * \param theHelper A NFmiDataHints for speeding up contouring.
+   * \param theInterpolation The interpolation method to be used.
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::Contour(const NFmiDataMatrix<float> & theValues,
+								const NFmiDataHints & theHelper,
 								const NFmiContourInterpolation & theInterpolation)
   {
 	switch(theInterpolation)
@@ -353,6 +410,40 @@ namespace Imagine
   /*!
    * Contour the given data values with given coordinates. The input data
    * is expected to be topologically equivalent to a 2D uniform rectangle.
+   * Note that contour recursion depth is meaningless for nearest neighbour
+   * interpolation, the contours would be exactly equivalent.
+   *
+   * \param thePts The coordinates of the points.
+   * \param theValues The values at the points.
+   * \param theHelper A NFmiDataHints for speeding up the contouring
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
+									   const NFmiDataMatrix<float> & theValues,
+									   const NFmiDataHints & theHelper)
+  {
+	typedef NFmiDataHints::return_type Rectangles;
+
+	Rectangles rects = theHelper.rectangles(itsLoLimit,itsHiLimit);
+	
+	for(Rectangles::const_iterator it = rects.begin();
+		it != rects.end();
+		++it)
+	  {
+		for(int j=it->y1; j<it->y2; ++j)
+		  for(int i=it->x1; i<it->x2; ++i)
+			ContourNearest4(thePts[i][j].X(),thePts[i][j].Y(),theValues[i][j],
+							thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
+							thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
+							thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1]);
+	  }
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
    *
    * \param thePts The coordinates of the points.
    * \param theValues The values at the points.
@@ -408,6 +499,37 @@ namespace Imagine
 	  }
   }
   
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
+   *
+   * \param thePts The coordinates of the points.
+   * \param theValues The values at the points.
+   * \param theHelper A NFmiDataHints for speeding up the contouring
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourDiscrete(const NFmiDataMatrix<NFmiPoint> & thePts,
+										const NFmiDataMatrix<float> & theValues,
+										const NFmiDataHints & theHelper)
+  {
+	typedef NFmiDataHints::return_type Rectangles;
+
+	Rectangles rects = theHelper.rectangles(itsLoLimit,itsHiLimit);
+	
+	for(Rectangles::const_iterator it = rects.begin();
+		it != rects.end();
+		++it)
+	  {
+		for(int j=it->y1; j<it->y2; ++j)
+		  for(int i=it->x1; i<it->x2; ++i)
+			ContourDiscrete4(thePts[i][j].X(),thePts[i][j].Y(),theValues[i][j],
+							 thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
+							 thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
+							 thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1]);
+	  }
+  }
   
   // ----------------------------------------------------------------------
   /*!
@@ -472,6 +594,38 @@ namespace Imagine
   /*!
    * Contour the given data values with given coordinates. The input data
    * is expected to be topologically equivalent to a 2D uniform rectangle.
+   * Note that contour recursion depth is meaningless for nearest neighbour
+   * interpolation, the contours would be exactly equivalent.
+   *
+   * \param theValues The values at the points.
+   * \param theHelper A NFmiDataHints for speeding up the contouring
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourNearest(const NFmiDataMatrix<float> & theValues,
+									   const NFmiDataHints & theHelper)
+  {
+	typedef NFmiDataHints::return_type Rectangles;
+
+	Rectangles rects = theHelper.rectangles(itsLoLimit,itsHiLimit);
+	
+	for(Rectangles::const_iterator it = rects.begin();
+		it != rects.end();
+		++it)
+	  {
+		for(int j=it->y1; j<it->y2; ++j)
+		  for(int i=it->x1; i<it->x2; ++i)
+		  ContourNearest4(i,j,theValues[i][j],
+						  i+1,j,theValues[i+1][j],
+						  i+1,j+1,theValues[i+1][j+1],
+						  i,j+1,theValues[i][j+1]);
+	  }
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
    *
    * \param theValues The values at the points.
    * \param theHelper A NFmiContourDataHelper for speeding up the contouring
@@ -522,6 +676,36 @@ namespace Imagine
 						   i+1,j,theValues[i+1][j],
 						   i+1,j+1,theValues[i+1][j+1],
 						   i,j+1,theValues[i][j+1]);
+	  }
+  }
+  
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
+   *
+   * \param theValues The values at the points.
+   * \param theHelper A NFmiDataHints for speeding up the contouring
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourDiscrete(const NFmiDataMatrix<float> & theValues,
+										const NFmiDataHints & theHelper)
+  {
+	typedef NFmiDataHints::return_type Rectangles;
+
+	Rectangles rects = theHelper.rectangles(itsLoLimit,itsHiLimit);
+	
+	for(Rectangles::const_iterator it = rects.begin();
+		it != rects.end();
+		++it)
+	  {
+		for(int j=it->y1; j<it->y2; ++j)
+		  for(int i=it->x1; i<it->x2; ++i)
+			ContourDiscrete4(i,j,theValues[i][j],
+							 i+1,j,theValues[i+1][j],
+							 i+1,j+1,theValues[i+1][j+1],
+							 i,j+1,theValues[i][j+1]);
 	  }
   }
   
@@ -687,6 +871,40 @@ namespace Imagine
    * Note that contour recursion depth is meaningless for nearest neighbour
    * interpolation, the contours would be exactly equivalent.
    *
+   * \param thePts The coordinates of the points.
+   * \param theValues The values at the points.
+   * \param theHelper A NFmiDataHints for speeding up the contouring.
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
+									  const NFmiDataMatrix<float> & theValues,
+									  const NFmiDataHints & theHelper)
+  {
+	typedef NFmiDataHints::return_type Rectangles;
+
+	Rectangles rects = theHelper.rectangles(itsLoLimit,itsHiLimit);
+	
+	for(Rectangles::const_iterator it = rects.begin();
+		it != rects.end();
+		++it)
+	  {
+		for(int j=it->y1; j<it->y2; ++j)
+		  for(int i=it->x1; i<it->x2; ++i)
+			ContourLinear4(thePts[i][j].X(),thePts[i][j].Y(),theValues[i][j],
+						   thePts[i+1][j].X(),thePts[i+1][j].Y(),theValues[i+1][j],
+						   thePts[i+1][j+1].X(),thePts[i+1][j+1].Y(),theValues[i+1][j+1],
+						   thePts[i][j+1].X(),thePts[i][j+1].Y(),theValues[i][j+1]);
+	  }
+  }
+  
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
+   * Note that contour recursion depth is meaningless for nearest neighbour
+   * interpolation, the contours would be exactly equivalent.
+   *
    * \param theValues The values at the points.
    * \param theHelper A NFmiContourDataHelper for speeding up the contouring.
    */
@@ -772,6 +990,38 @@ namespace Imagine
 							 i+1,j+1,theValues[i+1][j+1],
 							 i,j+1,theValues[i][j+1]);
 		  }
+	  }
+  }
+  
+  // ----------------------------------------------------------------------
+  /*!
+   * Contour the given data values with given coordinates. The input data
+   * is expected to be topologically equivalent to a 2D uniform rectangle.
+   * Note that contour recursion depth is meaningless for nearest neighbour
+   * interpolation, the contours would be exactly equivalent.
+   *
+   * \param theValues The values at the points.
+   * \param theHelper A NFmiDataHints for speeding up the contouring.
+   */
+  // ----------------------------------------------------------------------
+  
+  void NFmiContourTree::ContourLinear(const NFmiDataMatrix<float> & theValues,
+									  const NFmiDataHints & theHelper)
+  {
+	typedef NFmiDataHints::return_type Rectangles;
+
+	Rectangles rects = theHelper.rectangles(itsLoLimit,itsHiLimit);
+	
+	for(Rectangles::const_iterator it = rects.begin();
+		it != rects.end();
+		++it)
+	  {
+		for(int j=it->y1; j<it->y2; ++j)
+		  for(int i=it->x1; i<it->x2; ++i)
+			ContourLinear4(i,j,theValues[i][j],
+						   i+1,j,theValues[i+1][j],
+						   i+1,j+1,theValues[i+1][j+1],
+						   i,j+1,theValues[i][j+1]);
 	  }
   }
   

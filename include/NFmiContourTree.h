@@ -142,6 +142,7 @@
 #include "NFmiEdgeTree.h"	// Input edges
 #include "NFmiFillMap.h"	// Fill map generation and rendering
 #include "NFmiContourDataHelper.h"
+#include "NFmiDataHints.h"
 
 #include "NFmiGlobals.h"	// for kFloatMissing
 #include "NFmiGrid.h"		// for grids
@@ -312,6 +313,11 @@ namespace Imagine
 				 const NFmiDataMatrix<float> & theValues,
 				 const NFmiContourDataHelper & theHelper,
 				 const NFmiContourInterpolation & theInterpolation);
+
+	void Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
+				 const NFmiDataMatrix<float> & theValues,
+				 const NFmiDataHints & theHelper,
+				 const NFmiContourInterpolation & theInterpolation);
 	
 	// These assume the coordinates run from 0 to size-1
 	
@@ -320,6 +326,10 @@ namespace Imagine
 	
 	void Contour(const NFmiDataMatrix<float> & theValues,
 				 const NFmiContourDataHelper & theHelper,
+				 const NFmiContourInterpolation & theInterpolation);
+
+	void Contour(const NFmiDataMatrix<float> & theValues,
+				 const NFmiDataHints & theHelper,
 				 const NFmiContourInterpolation & theInterpolation);
 	
 	NFmiPath Path(void) const;
@@ -398,12 +408,19 @@ namespace Imagine
 	void ContourLinear(const NFmiDataMatrix<float> & theValues,
 					   const NFmiContourDataHelper & theHelper);
 	
+	void ContourLinear(const NFmiDataMatrix<float> & theValues,
+					   const NFmiDataHints & theHelper);
+	
 	void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 					   const NFmiDataMatrix<float> & theValues);
 	
 	void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
 					   const NFmiDataMatrix<float> & theValues,
 					   const NFmiContourDataHelper & theHelper);
+
+	void ContourLinear(const NFmiDataMatrix<NFmiPoint> & thePts,
+					   const NFmiDataMatrix<float> & theValues,
+					   const NFmiDataHints & theHelper);
 	
 	/// Contour a data-matrix using nearest neighbour interpolation
 	
@@ -412,12 +429,19 @@ namespace Imagine
 	void ContourNearest(const NFmiDataMatrix<float> & theValues,
 						const NFmiContourDataHelper & theHelper);
 	
+	void ContourNearest(const NFmiDataMatrix<float> & theValues,
+						const NFmiDataHints & theHelper);
+	
 	void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
 						const NFmiDataMatrix<float> & theValues);
 	
 	void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
 						const NFmiDataMatrix<float> & theValues,
 						const NFmiContourDataHelper & theHelper);
+
+	void ContourNearest(const NFmiDataMatrix<NFmiPoint> & thePts,
+						const NFmiDataMatrix<float> & theValues,
+						const NFmiDataHints & theHelper);
 
 	/// Contour a data-matrix using discrete interpolation
 	
@@ -426,12 +450,19 @@ namespace Imagine
 	void ContourDiscrete(const NFmiDataMatrix<float> & theValues,
 						 const NFmiContourDataHelper & theHelper);
 	
+	void ContourDiscrete(const NFmiDataMatrix<float> & theValues,
+						 const NFmiDataHints & theHelper);
+	
 	void ContourDiscrete(const NFmiDataMatrix<NFmiPoint> & thePts,
 						 const NFmiDataMatrix<float> & theValues);
 	
 	void ContourDiscrete(const NFmiDataMatrix<NFmiPoint> & thePts,
 						 const NFmiDataMatrix<float> & theValues,
 						 const NFmiContourDataHelper & theHelper);
+	
+	void ContourDiscrete(const NFmiDataMatrix<NFmiPoint> & thePts,
+						 const NFmiDataMatrix<float> & theValues,
+						 const NFmiDataHints & theHelper);
 	
 	/// Contour a triangular element using linear interpolation
 	
