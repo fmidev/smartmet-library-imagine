@@ -281,12 +281,18 @@ namespace Imagine
 	bool haschildren = (theNode->itsLeft.get() != 0 &&
 						theNode->itsRight.get() != 0);
 
+	// Quick exit if the rectangle does not intersect at all
+
+	bool ok = rectangle_intersects(theNode->itsRectangle,
+								   theLoLimit,
+								   theHiLimit);
+
+	if(!ok)
+	  return false;
+
 	if(!haschildren)
 	  {
-		bool ok = rectangle_intersects(theNode->itsRectangle,
-									   theLoLimit,
-									   theHiLimit);
-		return ok;
+		return true;
 	  }
 	else
 	  {
