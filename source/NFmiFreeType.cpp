@@ -290,10 +290,58 @@ namespace Imagine
 	FT_Bool use_kerning = FT_HAS_KERNING(theFace);
 	FT_UInt previous = 0;
 
-	string::size_type i;
-	for(i = 0; i<theText.size(); i++)
+	string::size_type glyphpos = 0;
+	string::size_type i = 0;
+	while(i < theText.size())
 	  {
-		unsigned char ch = static_cast<unsigned char>(theText[i]);
+		unsigned short ch = static_cast<unsigned char>(theText[i]);
+
+		if(ch < 0xc0)
+		  {
+			++i;
+		  }
+		else if(ch < 0xe0)
+		  {
+			if(i+1 < theText.size() &&
+			   static_cast<unsigned char>(theText[i+1]&0xc0) == 0x80)
+			  {
+				ch = ((theText[i]&0x1f)<<6 |
+					  (theText[i+1]&0x3f));
+				i += 2;
+			  }
+			else
+			  ++i;
+		  }
+		else if(ch < 0xf0)
+		  {
+			if(i+2 < theText.size() &&
+			   static_cast<unsigned char>(theText[i+1]&0xc0) == 0x80 &&
+			   static_cast<unsigned char>(theText[i+2]&0xc0) == 0x80)
+			  {
+				ch = ((theText[i]&0xf)<<12 |
+					  (theText[i+1]&0x3f)<<6 |
+					  (theText[i+2]&0x3f));
+				i += 3;
+			  }
+			else
+			  ++i;
+		  }
+		else
+		  {
+			if(i+3 < theText.size() &&
+			   static_cast<unsigned char>(theText[i+1]&0xc0) == 0x80 &&
+			   static_cast<unsigned char>(theText[i+2]&0xc0) == 0x80 &&
+			   static_cast<unsigned char>(theText[i+3]&0xc0) == 0x80)
+			  {
+				ch = ((theText[i]&0xf)<<18 |
+					  (theText[i+1]&0x3f)<<12 |
+					  (theText[i+2]&0x3f<<6) |
+					  (theText[i+3]&0x3f));
+				i += 4;
+			  }
+			else
+			  ++i;
+		  }
 
 		glyph_index = FT_Get_Char_Index(theFace,ch);
 
@@ -307,7 +355,7 @@ namespace Imagine
 		  }
 
 		// store current pen position
-		pos[i] = pen;
+		pos[glyphpos] = pen;
 
 		// load glyph image into the slow without rendering
 
@@ -317,9 +365,11 @@ namespace Imagine
 
 		// Extract glyph image and store it in our table
 
-		error = FT_Get_Glyph(theFace->glyph,&glyphs[i]);
+		error = FT_Get_Glyph(theFace->glyph,&glyphs[glyphpos]);
 		if(error)
 		  continue;
+
+		glyphpos++;
 
 		// Increment pen position
 		pen.x += (slot->advance.x >> 6);
@@ -366,7 +416,7 @@ namespace Imagine
 
 	// And render the glyphs
 
-	for(i = 0; i<glyphs.size(); i++)
+	for(i = 0; i<glyphpos; i++)
 	  {
 		FT_Glyph image = glyphs[i];
 
