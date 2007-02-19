@@ -591,7 +591,7 @@ namespace Imagine
 	
 	// If all points are in the same region, no recursion is needed
 	
-	if(c1==c2 && c2==c3 && c3==c4 && c1!=kInside)
+	if(c1==c2 && c2==c3 && c3==c4)
 	  {
 		// If above or below, nothing to do
 		
