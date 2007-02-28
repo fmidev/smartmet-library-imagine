@@ -92,6 +92,9 @@ namespace Imagine
   
   void NFmiEsriPoint::Project(const NFmiEsriProjector & theProjector)
   {
+	// Hmm, I'll just ignore this problem, since we're moving to GDAL
+	// theProjector.SetBox(itsBox);
+
 	NFmiEsriPoint tmp(X(),Y());
 	tmp = theProjector(tmp);
 	X(tmp.X());

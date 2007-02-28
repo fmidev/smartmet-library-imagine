@@ -15,6 +15,7 @@
 // ======================================================================
 
 #include "NFmiEsriPolygon.h"
+#include <iostream>
 
 using namespace Imagine::NFmiEsriBuffer;	// Conversion tools
 using namespace std;
@@ -142,6 +143,8 @@ namespace Imagine
   
   void NFmiEsriPolygon::Project(const NFmiEsriProjector & theProjector)
   {
+	theProjector.SetBox(itsBox);
+
 	itsBox.Init();
 	for(int i=0; i<NumPoints(); i++)
 	  {

@@ -21,23 +21,50 @@ using namespace std;
 
 namespace Imagine
 {
-
+  bool overlaps(double min1, double max1,
+				double min2, double max2)
+  {
+	return (max(min1,min2) < min(max1,max2));
+  }
+				
   // NFmiEsriPoint projector function object
   
   class ProjectXYEsriPoint : public NFmiEsriProjector
   {
   public:
-	ProjectXYEsriPoint(const NFmiArea *theArea) : itsArea(theArea) {}
-	
+	ProjectXYEsriPoint(const NFmiArea *theArea)
+	  : itsArea(theArea)
+	  , itsXshift(0)
+	{
+	}
+  
 	NFmiEsriPoint operator() (const NFmiEsriPoint & thePoint) const
 	{
-	  NFmiPoint tmp(thePoint.X(),thePoint.Y());
+	  NFmiPoint tmp(thePoint.X()+itsXshift,thePoint.Y());
 	  tmp = itsArea->ToXY(tmp);
 	  return NFmiEsriPoint(tmp.X(),tmp.Y());
 	}
-	
+
+	void SetBox(const NFmiEsriBox & theBox) const
+	{
+	  // Apply a 360 degree shift to all points if we can bbox overlap
+	  // that way
+	  
+	  double x1 = itsArea->BottomLeftLatLon().X();
+	  double x2 = itsArea->TopRightLatLon().X();
+	  if(x2 < x1) x2 += 360;
+	  
+	  if(overlaps(x1,x2,theBox.Xmin(),theBox.Xmax()))
+		itsXshift = 0;
+	  else if(overlaps(x1,x2,theBox.Xmin()+360,theBox.Xmax()+360))
+		itsXshift = 360;
+	  else if(overlaps(x1,x2,theBox.Xmin()-360,theBox.Xmax()-360))
+		itsXshift = -360;
+	}
+
   private:
 	const NFmiArea	*itsArea;
+	mutable double itsXshift;
   };
   
   // ----------------------------------------------------------------------

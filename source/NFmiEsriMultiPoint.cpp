@@ -120,6 +120,7 @@ namespace Imagine
   
   void NFmiEsriMultiPoint::Project(const NFmiEsriProjector & theProjector)
   {
+	theProjector.SetBox(itsBox);
 	itsBox.Init();
 	for(int i=0; i<NumPoints(); i++)
 	  {

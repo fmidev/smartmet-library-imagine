@@ -169,6 +169,8 @@ namespace Imagine
   
   void NFmiEsriMultiPatch::Project(const NFmiEsriProjector & theProjector)
   {
+	theProjector.SetBox(itsBox);
+
 	static_cast<NFmiEsriBox>(itsBox).Init();
 	for(int i=0; i<NumPoints(); i++)
 	  {

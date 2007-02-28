@@ -144,6 +144,7 @@ namespace Imagine
   
   void NFmiEsriPolyLine::Project(const NFmiEsriProjector & theProjector)
   {
+	theProjector.SetBox(itsBox);
 	itsBox.Init();
 	for(int i=0; i<NumPoints(); i++)
 	  {
