@@ -7,7 +7,7 @@ Group: Development/Libraries
 URL: http://www.weatherproof.fi
 Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}
-Requires: newbase >= 1.0-1, freetype >= 2.1.4, freetype-devel >= 2.1.4, gpc >= 1-0-1, libjpeg, libjpeg-devel, libpng10 >= 1.0, libpng-devel >= 1.2.2, zlib >= 1.1.4, zlib-devel >= 1.1.4
+Requires: newbase >= 1.0-1, freetype >= 2.1.4, gpc >= 1-0-1, libjpeg, libjpeg-devel, libpng-devel >= 1.2.2, libpng10 => 1.0, zlib >= 1.1.4, zlib-devel >= 1.1.4
 Provides: imagine
 
 %description
