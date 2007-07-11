@@ -19,7 +19,7 @@
  * \endcode
  * are used. Normally the value is something like
  * \code
- * imagine::font_path = /data/share/fonts:/usr/lib/X11/fonts
+ * imagine::font_path = /smartmet/share/fonts:/usr/lib/X11/fonts
  * \endcode
  *
  */
