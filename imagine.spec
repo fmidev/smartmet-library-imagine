@@ -20,6 +20,8 @@ mkdir $RPM_BUILD_ROOT
 %setup -q -n %{name}
  
 %build
+make clean
+make depend
 make %{_smp_mflags} 
 
 %install
