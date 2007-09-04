@@ -1,5 +1,5 @@
 Summary: imagine library
-Name: smartmet_imagine
+Name: imagine
 Version: 1.0
 Release: 1
 License: FMI
@@ -25,7 +25,7 @@ make depend
 make %{_smp_mflags} 
 
 %install
-make install PREFIX="${RPM_BUILD_ROOT}%{_usr}"
+%makeinstall
 
 %clean
 rm -rf $RPM_BUILD_ROOT
