@@ -31,7 +31,7 @@ make %{_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,www,www,0775)
+%defattr(-,root,www,0775)
 %{_includedir}/imagine
 %{_libdir}/libimagine.a
 
