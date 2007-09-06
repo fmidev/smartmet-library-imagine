@@ -1,7 +1,7 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: smartmet-%{LIBNAME}
-Version: 1.0
+Version: 1.0.1
 Release: 1.el5.fmi
 License: FMI
 Group: Development/Libraries
@@ -23,7 +23,7 @@ mkdir $RPM_BUILD_ROOT
 %build
 make clean
 make depend
-make %{_smp_mflags} 
+make %{_smp_mflags} release
 
 %install
 %makeinstall includedir=%{buildroot}%{_includedir}/smartmet
