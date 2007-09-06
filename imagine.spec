@@ -1,6 +1,6 @@
 %define LIBNAME imagine
 Summary: imagine library
-Name: smartmet-%{LIBNAME}
+Name: libsmartmet-%{LIBNAME}
 Version: 1.0.1
 Release: 1.el5.fmi
 License: FMI
@@ -8,7 +8,8 @@ Group: Development/Libraries
 URL: http://www.weatherproof.fi
 Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}
-Requires: smartmet-newbase >= 1.0.1-1, freetype >= 2.1.4, smartmet-gpc >= 1.0.1-1, libjpeg, libjpeg-devel, libpng-devel >= 1.2.2, libpng10 => 1.0, zlib >= 1.1.4, zlib-devel >= 1.1.4
+#How about libpng10?
+BuildPrereq: smartmet-newbase >= 1.0.1-1,  smartmet-gpc >= 1.0.1-1, freetype, libjpeg, libjpeg-devel, libpng-devel, zlib, zlib-devel
 Provides: %{LIBNAME}
 
 %description

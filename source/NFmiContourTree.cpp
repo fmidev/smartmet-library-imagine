@@ -70,9 +70,7 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
   
-  void NFmiContourTree::Contour(const NFmiDataMatrix<NFmiPoint> & thePts,
-								const NFmiDataMatrix<float> & theValues,
-								const NFmiContourInterpolation & theInterpolation)
+  void NFmiContourTree::Contour(const NFmiDataMatrix<NFmiPoint> & thePts,const NFmiDataMatrix<float> & theValues,const NFmiContourInterpolation & theInterpolation)
   {
 	if(thePts.NX()!=theValues.NX() || thePts.NY()!=theValues.NY())
 	  throw runtime_error("Cannot contour values with coordinate matrix of different size");

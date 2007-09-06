@@ -145,9 +145,9 @@ objdir:
 rpm:
 	if [ -a $(LIB).spec ]; \
 	then \
-	  tar -C ../ -cf $(rpmsourcedir)/smartmet-$(LIB).tar $(LIB) ; \
-	  gzip -f $(rpmsourcedir)/smartmet-$(LIB).tar ; \
-	  rpmbuild -ta $(rpmsourcedir)/smartmet-$(LIB).tar.gz ; \
+	  tar -C ../ -cf $(rpmsourcedir)/libsmartmet-$(LIB).tar $(LIB) ; \
+	  gzip -f $(rpmsourcedir)/libsmartmet-$(LIB).tar ; \
+	  rpmbuild -ta $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
 	else \
 	  echo $(rpmerr); \
 	fi;
