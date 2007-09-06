@@ -29,8 +29,8 @@ CFLAGS = -DUNIX -O0 -g $(MAINFLAGS) $(EXTRAFLAGS) -Werror
 CFLAGS_RELEASE =  -DUNIX -O2 -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
 LDFLAGS = -s -static
 ARFLAGS = -r
-INCLUDES = -I $(includedir) -I $(includedir)/newbase -I $(includedir)/freetype2 -I $(includedir)/gpc
-LIBS = -L $(libdir) -lnewbase -lfreetype -lgpc -ljpeg -lpng -lz
+INCLUDES = -I $(includedir) -I $(includedir)/smartmet/newbase -I $(includedir)/freetype2 -I $(includedir)/smartmet/gpc
+LIBS = -L $(libdir) -lsmartmet_newbase -lfreetype -lsmartmet_gpc -ljpeg -lpng -lz
 
 # INCLUDES = -I $(includedir)/newbase -I/usr/freeware/include -I/usr/local/include/freetype2
 
