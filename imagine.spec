@@ -1,14 +1,15 @@
+%define LIBNAME imagine
 Summary: imagine library
-Name: imagine
+Name: smartmet-%{LIBNAME}
 Version: 1.0
-Release: 1
+Release: 1.el5.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
 Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}
-Requires: newbase >= 1.0.1-1, freetype >= 2.1.4, gpc >= 1.0.1-1, libjpeg, libjpeg-devel, libpng-devel >= 1.2.2, libpng10 => 1.0, zlib >= 1.1.4, zlib-devel >= 1.1.4
-Provides: imagine
+Requires: smartmet-newbase >= 1.0.1-1, freetype >= 2.1.4, smartmet-gpc >= 1.0.1-1, libjpeg, libjpeg-devel, libpng-devel >= 1.2.2, libpng10 => 1.0, zlib >= 1.1.4, zlib-devel >= 1.1.4
+Provides: %{LIBNAME}
 
 %description
 FMI imagine library
@@ -17,7 +18,7 @@ FMI imagine library
 rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 
-%setup -q -n %{name}
+%setup -q -n %{LIBNAME}
  
 %build
 make clean
@@ -25,15 +26,15 @@ make depend
 make %{_smp_mflags} 
 
 %install
-%makeinstall
+%makeinstall includedir=%{buildroot}%{_includedir}/smartmet
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,www,0775)
-%{_includedir}/imagine
-%{_libdir}/libimagine.a
+%defattr(-,root,root,0775)
+%{_includedir}/smartmet/%{LIBNAME}
+%{_libdir}/libsmartmet_%{LIBNAME}.a
 
 
 %changelog
