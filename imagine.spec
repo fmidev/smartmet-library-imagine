@@ -20,8 +20,6 @@ rm -rf $RPM_BUILD_ROOT
 %setup -q -n %{LIBNAME}
  
 %build
-make clean
-make depend
 make %{_smp_mflags} release
 
 %install

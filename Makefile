@@ -142,7 +142,7 @@ html::
 objdir:
 	@mkdir -p $(objdir)
 
-rpm:
+rpm: clean depend
 	if [ -a $(LIB).spec ]; \
 	then \
 	  tar -C ../ -cf $(rpmsourcedir)/libsmartmet-$(LIB).tar $(LIB) ; \
@@ -204,4 +204,3 @@ NFmiImage.o: NFmiImage.cpp
 
 # -include Dependencies
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-
