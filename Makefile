@@ -32,8 +32,6 @@ ARFLAGS = -r
 INCLUDES = -I $(includedir) -I $(includedir)/smartmet/newbase -I $(includedir)/freetype2
 LIBS = -L $(libdir) -lsmartmet_newbase -lfreetype -ljpeg -lpng -lz
 
-# INCLUDES = -I $(includedir)/newbase -I/usr/freeware/include -I/usr/local/include/freetype2
-
 
 # Common library compiling template
 
@@ -64,7 +62,6 @@ rpmerr = "There's no spec file ($(LIB).spec). RPM wasn't created. Please make a 
 # What to install
 
 LIBFILE = libsmartmet_$(LIB).a
-PGLIBFILE = libsmartmet_$(LIB)pg.a
 
 # How to install
 
@@ -75,11 +72,6 @@ INSTALL_DATA = install -m 664
 
 ifneq (,$(findstring release,$(MAKECMDGOALS)))
   CFLAGS = $(CFLAGS_RELEASE)
-endif
-
-ifneq (,$(findstring gmon,$(MAKECMDGOALS)))
- objdir := pgobj
- CFLAGS := -pg $(CFLAGS)
 endif
 
 # Compilation directories
@@ -95,11 +87,10 @@ HDRS = $(patsubst include/%,%,$(wildcard include/*.h))
 OBJS = $(SRCS:%.cpp=%.o)
 
 OBJFILES = $(OBJS:%.o=obj/%.o)
-PGOBJFILES = $(OBJS:%.o=pgobj/%.o)
 
 INCLUDES := -I include $(INCLUDES)
 
-.PHONY: test gmon rpm
+.PHONY: test rpm
 
 # The rules
 
@@ -110,17 +101,14 @@ release: all
 $(LIBFILE): $(OBJS)
 	$(AR) $(ARFLAGS) $(LIBFILE) $(OBJFILES)
 
-$(PGLIBFILE): $(OBJS)
-	$(AR) $(ARFLAGS) $(PGLIBFILE) $(PGOBJFILES)
-
 clean:
-	rm -f $(LIBFILE) $(OBJFILES) $(PGOBJFILES) *~ source/*~ include/*~
+	rm -f $(LIBFILE) $(OBJFILES) *~ source/*~ include/*~
 
 install:
 	@mkdir -p $(includedir)/$(LIB)
 	@list='$(HDRS)'; \
 	for hdr in $$list; do \
-	  if [[ include/$$hdr -nt $(includedir)/$(LIB)/$$hdr ]]; \
+	  if [ include/$$hdr -nt $(includedir)/$(LIB)/$$hdr ]; \
 	  then \
 	    echo $(INSTALL_DATA) include/$$hdr $(includedir)/$(LIB)/$$hdr; \
 	  fi; \
@@ -143,7 +131,7 @@ objdir:
 	@mkdir -p $(objdir)
 
 rpm: clean depend
-	if [ -a $(LIB).spec ]; \
+	if [ -e $(LIB).spec ]; \
 	then \
 	  tar -C ../ -cf $(rpmsourcedir)/libsmartmet-$(LIB).tar $(LIB) ; \
 	  gzip -f $(rpmsourcedir)/libsmartmet-$(LIB).tar ; \
@@ -151,19 +139,6 @@ rpm: clean depend
 	else \
 	  echo $(rpmerr); \
 	fi;
-
-gmon: objdir $(PGLIBFILE) gmon.txt
-
-gmon.txt: $(PGLIBFILE)
-	@echo Creating a temporary profiling program
-	@echo "int main(int argc, char ** argv){}" > foobar.cpp
-	@g++ -pg -o foobar foobar.cpp -Wl,-whole-archive -L. -l$(LIB)pg -Wl,-no-whole-archive $(LIBS)
-	@./foobar
-	@rm -f foobar.cpp
-	@echo Created temporary gmon.out
-	@gprof -b -q -c -z foobar gmon.out > gmon.txt
-	@rm -f foobar gmon.out
-	@echo Created gmon.txt for analysis
 
 headertest:
 	@echo "Checking self-sufficiency of each header:"
