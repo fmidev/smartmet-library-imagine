@@ -135,7 +135,7 @@ rpm: clean depend
 	then \
 	  tar -C ../ -cf $(rpmsourcedir)/libsmartmet-$(LIB).tar $(LIB) ; \
 	  gzip -f $(rpmsourcedir)/libsmartmet-$(LIB).tar ; \
-	  rpmbuild -ta $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
+	  TAR_OPTIONS=--wildcards rpmbuild -ta $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
 	else \
 	  echo $(rpmerr); \
 	fi;
