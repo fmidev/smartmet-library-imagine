@@ -475,7 +475,7 @@ namespace Imagine
 	
 	else if(theColor[0]<'0' || theColor[0]>'9')
 	  {
-		unsigned int pos = theColor.find(",");
+	        string::size_type pos = theColor.find(",");
 		if(pos == string::npos)
 		  return ColorValue(theColor);
 		else
