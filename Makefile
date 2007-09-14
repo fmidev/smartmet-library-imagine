@@ -25,13 +25,19 @@ RELEASEFLAGS = -Wuninitialized
 DIFFICULTFLAGS = -Weffc++ -Wredundant-decls -Wshadow -Woverloaded-virtual -Wunreachable-code
 
 CC = g++
-CFLAGS = -DUNIX -O0 -g $(MAINFLAGS) $(EXTRAFLAGS) -Werror
-CFLAGS_RELEASE =  -DUNIX -O2 -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
-LDFLAGS = -s -static
 ARFLAGS = -r
+
+# Default compile options
+
+CFLAGS =  -DUNIX -O2 -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
+
+# Special mode options
+
+CFLAGS_DEBUG = -DUNIX -O0 -g $(MAINFLAGS) $(EXTRAFLAGS) -Werror
+CFLAGS_PROFILE =  -DUNIX -O2 -g -pg -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
+
 INCLUDES = -I $(includedir) -I $(includedir)/smartmet/newbase -I $(includedir)/freetype2
 LIBS = -L $(libdir) -lsmartmet_newbase -lfreetype -ljpeg -lpng -lz
-
 
 # Common library compiling template
 
@@ -56,8 +62,12 @@ includedir = $(PREFIX)/include
 objdir = obj
 
 # rpm variables
+
 rpmsourcedir = /smartmet/src/redhat/SOURCES
 rpmerr = "There's no spec file ($(LIB).spec). RPM wasn't created. Please make a spec file or copy and rename it into $(LIB).spec"
+
+rpmversion := $(shell grep "^Version:" $(LIB).spec  | cut -d\  -f 2 | tr . _)
+rpmrelease := $(shell grep "^Release:" $(LIB).spec  | cut -d\  -f 2 | tr . _)
 
 # What to install
 
@@ -68,10 +78,14 @@ LIBFILE = libsmartmet_$(LIB).a
 INSTALL_PROG = install -m 775
 INSTALL_DATA = install -m 664
 
-# CFLAGS
+# Compile option overrides
 
-ifneq (,$(findstring release,$(MAKECMDGOALS)))
-  CFLAGS = $(CFLAGS_RELEASE)
+ifneq (,$(findstring debug,$(MAKECMDGOALS)))
+  CFLAGS = $(CFLAGS_DEBUG)
+endif
+
+ifneq (,$(findstring profile,$(MAKECMDGOALS)))
+  CFLAGS = $(CFLAGS_PROFILE)
 endif
 
 # Compilation directories
@@ -97,6 +111,7 @@ INCLUDES := -I include $(INCLUDES)
 all: objdir $(LIBFILE)
 debug: all
 release: all
+profile: all
 
 $(LIBFILE): $(OBJS)
 	$(AR) $(ARFLAGS) $(LIBFILE) $(OBJFILES)
@@ -139,6 +154,9 @@ rpm: clean depend
 	else \
 	  echo $(rpmerr); \
 	fi;
+
+tag:
+	cvs -f tag 'libsmartmet_$(LIB)_$(rpmversion)-$(rpmrelease)' .
 
 headertest:
 	@echo "Checking self-sufficiency of each header:"
