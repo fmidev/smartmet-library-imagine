@@ -36,14 +36,14 @@ CFLAGS =  -DUNIX -O2 -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
 CFLAGS_DEBUG = -DUNIX -O0 -g $(MAINFLAGS) $(EXTRAFLAGS) -Werror
 CFLAGS_PROFILE =  -DUNIX -O2 -g -pg -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
 
-INCLUDES = -I $(includedir) -I $(includedir)/smartmet/newbase -I $(includedir)/freetype2
+INCLUDES = -I$(includedir) -I$(includedir)/smartmet/newbase -I$(includedir)/freetype2
 LIBS = -L $(libdir) -lsmartmet_newbase -lfreetype -ljpeg -lpng -lz
 
 # Common library compiling template
 
 # Installation directories
 
-prosessor := $(shell uname -p)
+processor := $(shell uname -p)
 
 ifeq ($(origin PREFIX), undefined)
   PREFIX = /usr
@@ -51,7 +51,7 @@ else
   PREFIX = $(PREFIX)
 endif
 
-ifeq ($(prosessor), x86_64)
+ifeq ($(processor), x86_64)
   libdir = $(PREFIX)/lib64
 else
   libdir = $(PREFIX)/lib
@@ -102,7 +102,11 @@ OBJS = $(SRCS:%.cpp=%.o)
 
 OBJFILES = $(OBJS:%.o=obj/%.o)
 
-INCLUDES := -I include $(INCLUDES)
+INCLUDES := -Iinclude $(INCLUDES)
+
+# For make depend:
+
+ALLSRCS = $(wildcard *.cpp source/*.cpp)
 
 .PHONY: test rpm
 
@@ -133,7 +137,7 @@ install:
 	$(INSTALL_DATA) $(LIBFILE) $(libdir)/$(LIBFILE)
 
 depend:
-	makedepend $(INCLUDES)
+	gccmakedep -fDependencies -- $(CFLAGS) $(INCLUDES) -- $(ALLSRCS)
 
 test:
 	cd test && make test
@@ -195,5 +199,4 @@ NFmiPath.o: NFmiPath.cpp
 NFmiImage.o: NFmiImage.cpp
 	$(CC) $(CFLAGS) -Wno-error $(INCLUDES) -c -o $(objdir)/$@ $<
 
-# -include Dependencies
-# DO NOT DELETE THIS LINE -- make depend depends on it.
+-include Dependencies
