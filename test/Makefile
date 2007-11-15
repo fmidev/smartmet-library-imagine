@@ -13,7 +13,7 @@ DIFFICULTFLAGS = -Weffc++ -Wunreachable-code -Wredundant-decls
 CC = g++
 CFLAGS = -DUNIX -O0 -g $(MAINFLAGS)
 INCLUDES = -I ../include -I /usr/include/ -I /usr/include/smartmet/newbase -I /usr/include/smartmet/regression -I /usr/include/freetype2
-LIBS =  -L .. -lsmartmet_imagine -L /usr/lib -lsmartmet_newbase -lsmartmet_gpc -lfreetype -lpng -ljpeg -lz
+LIBS =  -L .. -lsmartmet_imagine -L /usr/lib -lsmartmet_newbase -lfreetype -lpng -ljpeg -lz
 
 all: $(PROG)
 clean:
@@ -25,6 +25,6 @@ test: $(PROG)
 	./$$prog; \
 	done
 
-$(PROG) : % : %.cpp ../libimagine.a
+$(PROG) : % : %.cpp ../libsmartmet_imagine.a
 	$(CC) $(CFLAGS) -o $@ $@.cpp $(INCLUDES) $(LIBS)
 
