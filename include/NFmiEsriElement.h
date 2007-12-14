@@ -69,6 +69,7 @@ namespace Imagine
 	const std::string GetString(const std::string & theName) const;
 	int GetInteger(const std::string & theName) const;
 	double GetDouble(const std::string & theName) const;
+	NFmiEsriAttributeType GetType(const std::string & theName) const;
 	
 	// Update given bounding box
 	
