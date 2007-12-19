@@ -8,6 +8,10 @@
 #include <algorithm>	// swap()
 #include <iostream>
 
+extern "C" {
+#include "stdint.h"
+}
+
 using namespace std;
 
 namespace Imagine
@@ -39,10 +43,10 @@ namespace Imagine
 		tmp[1] = theBuffer[thePos+2];
 		tmp[2] = theBuffer[thePos+1];
 		tmp[3] = theBuffer[thePos];
-		return *reinterpret_cast<int *>(tmp);
+		return *reinterpret_cast<uint32_t *>(tmp);
 	  }
 	else
-	  return *reinterpret_cast<const int *>(theBuffer.data()+thePos);
+	  return *reinterpret_cast<const uint32_t *>(theBuffer.data()+thePos);
   }
   
   // ----------------------------------------------------------------------
@@ -60,7 +64,7 @@ namespace Imagine
 		tmp[1] = theBuffer[thePos+2];
 		tmp[2] = theBuffer[thePos+1];
 		tmp[3] = theBuffer[thePos];
-		return *reinterpret_cast<int *>(tmp);
+		return *reinterpret_cast<uint32_t *>(tmp);
 	  }
   }
   
