@@ -1,7 +1,7 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 1.0.5
+Version: 1.0.6
 Release: 1.el5.fmi
 License: FMI
 Group: Development/Libraries
@@ -34,6 +34,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Wed Dec 19 2007 mheiskan <mika.heiskanen@fmi.fi> - 1.0.6-1.el5.fmi
+- API fixes
 * Fri Dec 14 2007 mheiskan <mika.heiskanen@fmi.fi> - 1.0.5-1.el5.fmi
 - Added new GetType method to NFmiEsriElement
 * Fri Nov 30 2007 mheiskan <mika.heiskanen@fmi.fi> - 1.0.4-1.el5.fmi
