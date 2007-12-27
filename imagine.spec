@@ -1,14 +1,14 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 1.0.6
+Version: 1.0.7
 Release: 1.el5.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
 Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: libsmartmet-newbase >= 1.0.5-1, freetype-devel, libjpeg-devel, libpng-devel, zlib-devel
+BuildRequires: libsmartmet-newbase >= 1.0.7-1, freetype-devel, libjpeg-devel, libpng-devel, zlib-devel
 Provides: %{LIBNAME}
 
 %description
@@ -34,6 +34,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Thu Dec 27 2007 mheiskan <mika.heiskanen@fmi.fi> - 1.0.7-1.el5.fmi
+- Linked with newbase 1-0.7 with wind direction bugfixes
 * Wed Dec 19 2007 mheiskan <mika.heiskanen@fmi.fi> - 1.0.6-1.el5.fmi
 - API fixes
 * Fri Dec 14 2007 mheiskan <mika.heiskanen@fmi.fi> - 1.0.5-1.el5.fmi
