@@ -1,7 +1,7 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 1.0.7
+Version: 8.1.25
 Release: 1.el5.fmi
 License: FMI
 Group: Development/Libraries
@@ -34,6 +34,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Wed Jan 30 2008 mheiskan <mika.heiskanen@fmi.fi> - 8.1.30-1.el5.fmi
+- Linked with newbase 8.1.25-1 for getting new parameter names
 * Thu Dec 27 2007 mheiskan <mika.heiskanen@fmi.fi> - 1.0.7-1.el5.fmi
 - Linked with newbase 1-0.7 with wind direction bugfixes
 * Wed Dec 19 2007 mheiskan <mika.heiskanen@fmi.fi> - 1.0.6-1.el5.fmi
