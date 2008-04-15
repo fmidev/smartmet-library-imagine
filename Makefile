@@ -1,6 +1,6 @@
 LIB = imagine
 
-MAINFLAGS = -Wall -W -Wno-unused-parameter
+MAINFLAGS = -Wall -W -Wno-unused-parameter -Wno-variadic-macros
 
 EXTRAFLAGS = \
         -ansi \
