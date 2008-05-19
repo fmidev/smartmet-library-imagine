@@ -1016,6 +1016,72 @@ namespace Imagine
 	  }
 	
   }
+
+  // ----------------------------------------------------------------------
+  // Stroke onto given image using various Porter-Duff rules
+  // ----------------------------------------------------------------------
+  
+  void NFmiPath::Stroke(NFmiImage & theImage,
+						float theWidth,
+						NFmiColorTools::Color theColor,
+						NFmiColorTools::NFmiBlendRule theRule) const
+  {
+	// Quick exit if color is not real
+	
+	if(theColor==NFmiColorTools::NoColor)
+	  return;
+
+	if(theWidth <= 0)
+	  return;
+	
+	// Current point is not defined yet
+	
+	float lastX = kFloatMissing;
+	float lastY = kFloatMissing;
+	
+	NFmiPathData::const_iterator iter = Elements().begin();
+	
+	for( ; iter!= Elements().end() ; ++iter)
+	  {
+		// Next point
+		
+		float nextX = (*iter).X();
+		float nextY = (*iter).Y();
+		
+		if((*iter).Oper()==kFmiConicTo || (*iter).Oper()==kFmiCubicTo)
+		  throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::Stroke()");
+		
+		// Only LineTo operations get rendered
+		
+		if((*iter).Oper() == kFmiLineTo)
+		  if(lastX!=kFloatMissing && lastY!=kFloatMissing &&
+			 nextX!=kFloatMissing && nextY!=kFloatMissing)
+			{
+			  // Calculate wide line box coordinates
+
+			  if(lastX!=nextX || lastY!=nextY)
+				{
+				  NFmiPath box;
+				  float dx = nextX-lastX;
+				  float dy = nextY-lastY;
+				  double alpha = atan2(dy,dx);
+
+				  box.MoveTo(lastX-theWidth/2*sin(alpha),lastY+theWidth/2*cos(alpha));
+				  box.LineTo(lastX+theWidth/2*sin(alpha),lastY-theWidth/2*cos(alpha));
+				  box.LineTo(nextX+theWidth/2*sin(alpha),nextY-theWidth/2*cos(alpha));
+				  box.LineTo(nextX-theWidth/2*sin(alpha),nextY+theWidth/2*cos(alpha));
+				  box.CloseLineTo();
+				  box.Fill(theImage,theColor,theRule);
+				}
+			}
+		
+		// New last point
+		
+		lastX = nextX;
+		lastY = nextY;
+	  }
+	
+  }
   
   const NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, double theMargin) const
   {

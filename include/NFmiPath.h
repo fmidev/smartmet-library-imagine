@@ -243,6 +243,11 @@ namespace Imagine
 	void Stroke(NFmiImage & theImage,
 				NFmiColorTools::Color theColor,
 				NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
+
+	void Stroke(NFmiImage & theImage,
+				float theWidth,
+				NFmiColorTools::Color theColor,
+				NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
 	
 	// Return the bounding box
 	
