@@ -8,7 +8,7 @@ Group: Development/Libraries
 URL: http://www.weatherproof.fi
 Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: libsmartmet-newbase >= 8.4.15-2, freetype-devel, libjpeg-devel, libpng-devel, zlib-devel
+BuildRequires: libsmartmet-newbase >= 8.3.12-1, freetype-devel, libjpeg-devel, libpng-devel, zlib-devel
 Provides: %{LIBNAME}
 
 %description
