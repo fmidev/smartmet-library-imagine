@@ -8,10 +8,10 @@
 // ======================================================================
 
 #include "NFmiFace.h"
-#include "NFmiFileSystem.h"
 #include "NFmiFreeType.h"
 #include "NFmiImage.h"
 #include "NFmiPath.h"
+#include <newbase/NFmiFileSystem.h>
 
 #include <iostream>
 
