@@ -4,28 +4,41 @@ MAINFLAGS = -Wall -W -Wno-unused-parameter -Wno-variadic-macros
 
 EXTRAFLAGS = \
         -ansi \
-        -pedantic \
         -Wcast-align \
         -Wcast-qual \
         -Wconversion \
-        -Wctor-dtor-privacy \
         -Winline \
         -Wno-multichar \
         -Wno-pmf-conversions \
-        -Wold-style-cast \
         -Woverloaded-virtual  \
         -Wpointer-arith \
         -Wredundant-decls \
-        -Wshadow \
         -Wsign-promo \
         -Wwrite-strings
 
 RELEASEFLAGS = -Wuninitialized
 
-DIFFICULTFLAGS = -Weffc++ -Wredundant-decls -Wshadow -Woverloaded-virtual -Wunreachable-code
+DIFFICULTFLAGS = \
+	-Weffc++ \
+	-Wredundant-decls \
+	-Wshadow \
+	-Woverloaded-virtual \
+        -Wctor-dtor-privacy \
+        -Wold-style-cast \
+        -pedantic \
+	-Wunreachable-code
 
 CC = g++
 ARFLAGS = -rs
+
+INCLUDES = -I$(includedir) \
+	-I$(includedir)/smartmet/newbase \
+        -I/usr/local/include/boost-1_35 \
+	-I/usr/include/freetype2
+
+LIBS = -L$(libdir) \
+	-lsmartmet_newbase \
+	-lfreetype -ljpeg -lpng -lz
 
 # Default compile options
 
@@ -35,9 +48,6 @@ CFLAGS =  -DUNIX -O2 -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
 
 CFLAGS_DEBUG = -DUNIX -O0 -g $(MAINFLAGS) $(EXTRAFLAGS) -Werror
 CFLAGS_PROFILE =  -DUNIX -O2 -g -pg -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
-
-INCLUDES = -I$(includedir) -I$(includedir)/smartmet/newbase -I$(includedir)/freetype2
-LIBS = -L $(libdir) -lsmartmet_newbase -lfreetype -ljpeg -lpng -lz
 
 # Common library compiling template
 
