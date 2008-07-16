@@ -2,21 +2,46 @@ PROG = $(patsubst %.cpp,%,$(wildcard *Test.cpp))
 
 MAINFLAGS = -Wall -W -Wno-unused-parameter
 
-EXTRAFLAGS = -Werror -pedantic -Wpointer-arith -Wcast-qual \
-	-Wcast-align -Wwrite-strings -Wconversion -Winline \
-	-Wctor-dtor-privacy -Wnon-virtual-dtor -Wno-pmf-conversions \
-	-Wsign-promo -Wchar-subscripts -Wold-style-cast \
-	-Wshadow -Woverloaded-virtual
+EXTRAFLAGS = \
+	-Werror \
+	-pedantic \
+	-Wpointer-arith \
+	-Wcast-qual \
+	-Wcast-align \
+	-Wwrite-strings \
+	-Wconversion \
+	-Winline \
+	-Wctor-dtor-privacy \
+	-Wnon-virtual-dtor \
+	-Wno-pmf-conversions \
+	-Wsign-promo \
+	-Wchar-subscripts \
+	-Wold-style-cast \
+	-Wshadow \
+	-Woverloaded-virtual
 
-DIFFICULTFLAGS = -Weffc++ -Wunreachable-code -Wredundant-decls
+DIFFICULTFLAGS = \
+	-Weffc++ \
+	-Wunreachable-code \
+	-Wredundant-decls
 
 CC = g++
 CFLAGS = -DUNIX -O0 -g $(MAINFLAGS)
-INCLUDES = -I ../include -I /usr/include/ -I /usr/include/smartmet/newbase -I /usr/include/smartmet/regression -I /usr/include/freetype2
+
+INCLUDES = \
+	-I ../include \
+	-I /usr/include/ \
+	-I /usr/include/smartmet/newbase \
+	-I /usr/include/smartmet/regression \
+	-I /usr/include/freetype2
+
 LIBS =  -L .. -lsmartmet_imagine \
 	-lsmartmet_newbase \
-	-lboost_regex \
-	-lboost_filesystem \
+	-Wl,-rpath,/usr/local/lib \
+        -L /usr/local/lib \
+	-lboost_regex-gcc41-mt \
+	-lboost_filesystem-gcc41-mt \
+        -lboost_iostreams-gcc41-mt \
 	-lfreetype \
 	-lpng \
 	-ljpeg \
