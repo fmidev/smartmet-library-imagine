@@ -31,14 +31,36 @@ DIFFICULTFLAGS = \
 CC = g++
 ARFLAGS = -rs
 
+ifeq "$(shell uname -s)" "Darwin"
+  NEWBASE_PATH = $(HOME)/Work/IL/cvs/newbase
+  PREFIX = /sw
+else
+  NEWBASE_PATH = /home/kauppi/IL/cvs/newbase
+  ifeq ($(origin PREFIX), undefined)
+    PREFIX = /usr
+  else
+    PREFIX = $(PREFIX)
+  endif
+endif
+
+# Platform independent Freetype2 support    -- AKa 17-Jul-2008
+#
+FT2_LIBS= $(shell freetype-config --libs)
+FT2_CFLAGS= $(shell freetype-config --cflags)
+
 INCLUDES = -I$(includedir) \
-	-I$(includedir)/smartmet/newbase \
-        -I/usr/local/include/boost-1_35 \
-	-I/usr/include/freetype2
+	-I$(NEWBASE_PATH)/include \
+	-I/usr/local/include/boost-1_35 \
+	$(FT2_CFLAGS)
+
+#INCLUDES = -I$(includedir) \
+#	-I$(includedir)/smartmet/newbase \
+#        -I/usr/local/include/boost-1_35 \
+#	-I/usr/include/freetype2
 
 LIBS = -L$(libdir) \
 	-lsmartmet_newbase \
-	-lfreetype -ljpeg -lpng -lz
+	$(FT2_LIBS) -ljpeg -lpng -lz
 
 # Default compile options
 
@@ -54,12 +76,6 @@ CFLAGS_PROFILE =  -DUNIX -O2 -g -pg -DNDEBUG $(MAINFLAGS) $(RELEASEFLAGS)
 # Installation directories
 
 processor := $(shell uname -p)
-
-ifeq ($(origin PREFIX), undefined)
-  PREFIX = /usr
-else
-  PREFIX = $(PREFIX)
-endif
 
 ifeq ($(processor), x86_64)
   libdir = $(PREFIX)/lib64
