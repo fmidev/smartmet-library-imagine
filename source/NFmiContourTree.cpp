@@ -726,19 +726,19 @@ namespace Imagine
 			it!=elements.end();
 			++it)
 		  {
-			switch((*it).Oper())
+			switch( it->op )
 			  {
 			  case kFmiMoveTo:
 				if(it!=elements.begin())
 				  Add(NFmiEdge(firstx,firsty,lastx,lasty,true));
-				firstx = (*it).X();
-				firsty = (*it).Y();
+				firstx = it->x;
+				firsty = it->y;
 				lastx = firstx;
 				lasty = firsty;
 				break;
 			  case kFmiLineTo:
-				lastx = (*it).X();
-				lasty = (*it).Y();
+				lastx = it->x;
+				lasty = it->y;
 				if(it == --elements.end())
 				  Add(NFmiEdge(firstx,firsty,lastx,lasty,true));
 				break;

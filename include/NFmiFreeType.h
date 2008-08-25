@@ -1,3 +1,7 @@
+#ifdef IMAGINE_WITH_CAIRO
+# error "Either Cairo or us"
+#endif
+
 // ======================================================================
 /*!
  * \file

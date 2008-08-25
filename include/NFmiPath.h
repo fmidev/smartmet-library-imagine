@@ -34,9 +34,22 @@
 // Essential includes
 
 #include "NFmiPathElement.h"
-#include "NFmiFillMap.h"
-#include "NFmiAffine.h"
+
 #include "NFmiArea.h"
+#include "NFmiAlignment.h"
+#include "NFmiColorTools.h"
+
+#ifdef IMAGINE_WITH_CAIRO
+# include "ImagineXr.h"
+typedef ImagineXr ImagineXr_or_NFmiImage;
+# define CAIRO_NORMAL_LINE_WIDTH (0.4)      // 2.0 is normal Cairo default
+#else
+# include "NFmiImage.h"
+# include "NFmiDrawable.h"
+# include "NFmiFillMap.h"
+# include "NFmiAffine.h"
+typedef Imagine::NFmiImage ImagineXr_or_NFmiImage;
+#endif
 
 #include <string>
 #include <deque>
@@ -57,12 +70,15 @@ namespace Imagine
   // ----------------------------------------------------------------------
   // A class defining a path
   // ----------------------------------------------------------------------
-  
-  class _FMI_DLL NFmiPath : public NFmiDrawable
+
+  class NFmiPath
+#ifndef IMAGINE_WITH_CAIRO
+    : public NFmiDrawable
+#endif
   {
   public:
 	
-	virtual ~NFmiPath(void) {}
+	virtual ~NFmiPath() {}
 	
 	NFmiPath() : itsInsideOut(false), itsElements() { }
 	NFmiPath(const NFmiPathData &thePathData, bool theInsideOut = false) : itsInsideOut(theInsideOut), itsElements(thePathData) { }
@@ -73,14 +89,14 @@ namespace Imagine
 	
 	// Data-access
 	
-	const NFmiPathData & Elements(void) const { return itsElements; }
+	const NFmiPathData & Elements() const { return itsElements; }
 	
-	int Size(void) const { return static_cast<int>(itsElements.size()); }
-	int Empty(void) const { return itsElements.empty(); }
+	int Size() const { return static_cast<int>(itsElements.size()); }
+	int Empty() const { return itsElements.empty(); }
 	
 	// Clear contents
 	
-	void Clear(void)
+	void Clear()
 	{ itsElements.clear(); itsInsideOut=false; }
 	
 	// Add the given path element
@@ -112,16 +128,16 @@ namespace Imagine
 	
 	void InsertLineTo(float theX, float theY)
 	{
-	  itsElements.front().Oper(kFmiLineTo);
-	  itsElements.push_front(NFmiPathElement(kFmiMoveTo,theX,theY));
+	  itsElements.front().op= kFmiLineTo;
+	  itsElements.push_front( NFmiPathElement(kFmiMoveTo,theX,theY) );
 	}
 	
 	// Draw a line from the given point to the first point
 	
 	void InsertGhostLineTo(float theX, float theY)
 	{
-	  itsElements.front().Oper(kFmiGhostLineTo);
-	  itsElements.push_front(NFmiPathElement(kFmiMoveTo,theX,theY));
+	  itsElements.front().op= kFmiGhostLineTo;
+	  itsElements.push_front( NFmiPathElement(kFmiMoveTo,theX,theY) );
 	}
 	
 	// Add a conic control point
@@ -140,14 +156,14 @@ namespace Imagine
 	
 	// Close the last subpath with a line
 	
-	void CloseLineTo(void)
+	void CloseLineTo()
 	{
 	  DoCloseLineTo(kFmiLineTo);
 	}
 	
 	// Close the path with an invisible line
 	
-	void CloseGhostLineTo(void)
+	void CloseGhostLineTo()
 	{
 	  DoCloseLineTo(kFmiGhostLineTo);
 	}
@@ -165,9 +181,9 @@ namespace Imagine
 	  NFmiPathData::const_iterator it = thePath.itsElements.begin();
 	  // strip leading moveto if the coordinate is the same as last end point
 	  if(!Empty() &&
-		 (*it).Oper() == kFmiMoveTo &&
-		 (*it).X() == itsElements.back().X() &&
-		 (*it).Y() == itsElements.back().Y())
+		 (*it).op == kFmiMoveTo &&
+		 (*it).x == itsElements.back().x &&
+		 (*it).y == itsElements.back().y)
 		++it;
 
 	  itsElements.insert(itsElements.end(), it, thePath.itsElements.end());
@@ -200,8 +216,9 @@ namespace Imagine
 	
 	// Add the path to a fill map
 	
+#ifndef IMAGINE_WITH_CAIRO
 	void Add(NFmiFillMap & theMap) const;
-	
+#endif	
 	// Add a string representation of a path to the path
 	
 	void Add(const std::string & theString);
@@ -223,63 +240,84 @@ namespace Imagine
 	void Scale(float theXScale, float theYScale);
 	
 	// Apply a general affine transformation
-	
+#ifndef IMAGINE_WITH_CAIRO
 	void Transform(NFmiAffine & theAffine);
-	
+#endif
 	// Align path to desired corner
 	
-	void Align(NFmiAlignment theAlignment, float theX=0.0, float theY=0.0);
+	void Align( NFmiAlignment theAlignment, float theX=0.0, float theY=0.0 );
 	
 	// Project
-	
 	void Project(const NFmiArea * const theArea);
 	
 	void InvProject(const NFmiArea * const theArea);
-	
+
 	void InvGrid(const NFmiGrid * const theGrid);
 	
 	// Stroke onto given image using various Porter-Duff rules
-	
-	void Stroke(NFmiImage & theImage,
-				NFmiColorTools::Color theColor,
-				NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
 
-	void Stroke(NFmiImage & theImage,
+	void Stroke( ImagineXr_or_NFmiImage &img,
 				float theWidth,
 				NFmiColorTools::Color theColor,
-				NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
-	
+				NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy ) const;
+
+#ifdef IMAGINE_WITH_CAIRO
+	void Stroke( ImagineXr &img,
+				NFmiColorTools::Color theColor,
+				NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy ) const {
+        Stroke( img, CAIRO_NORMAL_LINE_WIDTH, theColor, theRule );
+    }
+#else
+	void Stroke( NFmiImage &img,
+				NFmiColorTools::Color theColor,
+				NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy ) const;
+#endif
 	// Return the bounding box
 	
-	const NFmiEsriBox BoundingBox(void) const;
+	const NFmiEsriBox BoundingBox() const;
 	
 	const NFmiPath Clip(double theX1, double theY1, double theX2, double theY2, double theMargin = 0) const;
-	
-	void InsideOut(void) { itsInsideOut = !itsInsideOut; }
+
+	void InsideOut() { itsInsideOut = !itsInsideOut; }
 	bool IsInsideOut() const { return itsInsideOut; }
-	
+
+#ifdef IMAGINE_WITH_CAIRO
+    void Fill( ImagineXr &img,
+               NFmiColorTools::Color col,
+			   NFmiColorTools::NFmiBlendRule rule ) const {
+        img.Fill( itsElements, col, rule );
+    }
+
+    void Fill( ImagineXr &img, 
+               const ImagineXr &pattern, 
+               NFmiColorTools::NFmiBlendRule rule, 
+               float factor ) const {
+        img.Fill( itsElements, pattern, rule, factor );
+    }
+#endif
+
+    /***
+    */	
   private:
-	
 	// Close the last subpath with an invisible or visible line
-	
-	void DoCloseLineTo(NFmiPathOperation theOper);
+    //	
+	void DoCloseLineTo( NFmiPathOperation theOper );
 	
 	// Floating point number to string
 	// This is needed because stringstream version of SVG() does not
 	// work using g++ v2.95, instead we must format the numbers by
 	// ourselves for string concatenation operations
-	
-	std::string ftoa(float theValue) const;
+    //	
+	std::string ftoa( float theValue ) const;
 	
 	// Simplification subroutines
-	
-	void SimplifyTrivial(void);
+    //	
+	void SimplifyTrivial();
 	
 	// Data-members
-	
+    //
 	bool itsInsideOut;
 	NFmiPathData itsElements;
-	
   };
 
 } // namespace Imagine

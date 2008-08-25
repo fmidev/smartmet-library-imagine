@@ -129,7 +129,11 @@
 // Essential includes:
 
 #include "NFmiEdgeTree.h"	// Input edges
-#include "NFmiFillMap.h"	// Fill map generation and rendering
+
+#ifndef IMAGINE_WITH_CAIRO
+# include "NFmiFillMap.h"	// Fill map generation and rendering
+#endif
+
 #include "NFmiDataHints.h"
 
 #include "NFmiGlobals.h"	// for kFloatMissing

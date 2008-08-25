@@ -141,8 +141,9 @@ namespace Imagine
 						 kFmiColorAtop,
 						 kFmiColorKeepAtop,
 						 kFmiColorXor,
-						 
+
 						 kFmiColorPlus,
+#ifndef IMAGINE_WITH_CAIRO						 
 						 kFmiColorMinus,
 						 kFmiColorAdd,
 						 kFmiColorSubstract,
@@ -163,9 +164,10 @@ namespace Imagine
 						 kFmiColorDentmap,
 						 kFmiColorAddContrast,
 						 kFmiColorReduceContrast,
-						 
 						 kFmiColorOnOpaque,
-						 kFmiColorOnTransparent  };
+						 kFmiColorOnTransparent  
+#endif
+    };
 	
 	// -------------------- colour name conversion --------------------
 	

@@ -17,7 +17,10 @@
 
 #include "NFmiEdge.h"		// Input edges
 #include "NFmiPath.h"		// Path generation
-#include "NFmiFillMap.h"	// Fill map generation and rendering
+
+#ifndef IMAGINE_WITH_CAIRO
+# include "NFmiFillMap.h"	// Fill map generation and rendering
+#endif
 
 #include <utility>	// pairs
 #include <set>		// sets
@@ -31,7 +34,10 @@ namespace Imagine
   // A working class, holding a tree of unique edges
   // ----------------------------------------------------------------------
   
-  class _FMI_DLL NFmiEdgeTree : public NFmiDrawable
+  class _FMI_DLL NFmiEdgeTree
+#ifndef IMAGINE_WITH_CAIRO
+    : public NFmiDrawable
+#endif
   {
   public:
 	
@@ -59,8 +65,9 @@ namespace Imagine
 	const NFmiPath Path(void) const;
 	
 	// Add the tree to a fill map
-	
+#ifndef IMAGINE_WITH_CAIRO
 	void Add(NFmiFillMap & theMap) const;
+#endif
 
 	void LinesOnly(bool theFlag){ itsLinesOnly = theFlag;}
 	void ConvertGhostLines(bool theFlag) { itsConvertGhostLines = theFlag; }

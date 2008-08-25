@@ -94,7 +94,7 @@ namespace Imagine
 		  it != thePath.Elements().end();
 		  ++it)
 		{
-		  switch((*it).Oper())
+		  switch(it->op)
 			{
 			case kFmiMoveTo:
 			case kFmiConicTo:
@@ -104,14 +104,14 @@ namespace Imagine
 			case kFmiGhostLineTo:
 			case kFmiLineTo:
 			  SubdivideLine(out,
-							(*it).Oper(),
+							it->op,
 							lastx,lasty,
-							(*it).X(), (*it).Y(),
+							it->x, it->y,
 							theMaxLength);
 			  break;
 			}
-		  lastx = (*it).X();
-		  lasty = (*it).Y();
+		  lastx = it->x;
+		  lasty = it->y;
 		}
 
 	  return out;

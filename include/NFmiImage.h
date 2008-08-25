@@ -2,11 +2,12 @@
 //
 // C++ Image API, defining basic image operations.
 //
-// This is a wrapper for the GD graphics library, with some additional
+// This is a wrapper for the Cairo graphics library, with some additional
 // methods defined to improve performance.
 //
 // History:
 //
+// 31.07.2008 Asko Kauppi; GD replaced by Cairo
 // 13.08.2001 Mika Heiskanen
 //
 //	Implemented
@@ -16,9 +17,12 @@
 #ifndef IMAGINE_NFMIIMAGE_H
 #define IMAGINE_NFMIIMAGE_H
 
-#include "NFmiDrawable.h"
+#include "NFmiColorTools.h"
 #include "NFmiAlignment.h"
-#include "NFmiPoint.h"
+
+#ifndef IMAGINE_WITH_CAIRO
+# include "NFmiDrawable.h"
+#endif
 
 #include <string>	// for filenames, drawing text etc
 #include <utility>	// for pairs
@@ -65,21 +69,23 @@ namespace Imagine
 	NFmiImageCorruptError(const std::string & s) : NFmiImageError(s) { }
   };
   
-  class _FMI_DLL NFmiImage : public NFmiDrawable
-  
+  class _FMI_DLL NFmiImage
+#ifndef IMAGINE_WITH_CAIRO
+    : public NFmiDrawable
+#endif
   {
-	
   private:
 	
 	// Data elements
-	
+    //	
 	int			itsWidth;
 	int			itsHeight;
-	std::string	itsType;				// when read from a file
-	NFmiColorTools::Color	*itsPixels;
-	
+	std::string	itsType;	// when read from a file
+
+	NFmiColorTools::Color *itsPixels;
+
 	// Various options
-	
+	//
 	int	itsJpegQuality;		// JPEG compression quality, 0-100
 	int	itsPngQuality;		// PNG compression level, 0-9
 	int	itsPngFilter;		// PNG filter
@@ -90,27 +96,36 @@ namespace Imagine
 	bool	itsSaveAlphaFlag;	// true if alpha is to be saved
 	bool  itsWantPaletteFlag;	// true if palette is desired when possible
 	bool	itsForcePaletteFlag;	// true if palette is to be forced
-	
 
+    /********************/
   public:
 	
 	// Constructors, destructors
-	
-	NFmiImage(int theWidth=0, int theHeight=0, NFmiColorTools::Color theColor=0);
-	NFmiImage(const NFmiImage & theImg);
-	NFmiImage(const std::string & theFileName);
-	virtual ~NFmiImage(void) { Destroy(); }
+	//
+	NFmiImage( int theWidth=0, int theHeight=0, NFmiColorTools::Color theColor=0 );
+	NFmiImage( const NFmiImage & theImg );
+
+#ifndef IMAGINE_WITH_CAIRO
+	NFmiImage( const std::string & theFileName );
+#endif
+
+    // AKa 4-Aug-2008: Constructor based on raw data from Cairo ImageSurface
+    //
+    NFmiImage( int w, int h, const NFmiColorTools::Color *data );
+
+
+	virtual ~NFmiImage() { Destroy(); }
 	
 	// Data access
-	
-	int Width(void) const { return itsWidth; }
-	int Height(void) const { return itsHeight; }
+    //	
+	int Width() const { return itsWidth; }
+	int Height() const { return itsHeight; }
 	const std::string & Type() const { return itsType; }
 
 	// All constructors call this to set the default options
-	
-	void DefaultOptions(void);
-	
+	//
+	void DefaultOptions();
+
 	// Access to individual options
 	
 #ifndef IMAGINE_IGNORE_FORMATS
@@ -132,30 +147,33 @@ namespace Imagine
 	void Gamma(float value)		{ itsGamma = value; }
 	void Intent(const std::string & value){ itsIntent = value; }
 #endif  // IMAGINE_IGNORE_FORMATS
-	
+
 	// This makes  A(i,j) = B(x,y) work
-	
-	NFmiColorTools::Color & operator()(int i, int j) const
+    //
+	NFmiColorTools::Color & operator()( int i, int j ) const
 	{
-	  return itsPixels[j*itsWidth+i];
+	   return itsPixels[j*itsWidth+i];
 	}
 	
 	// Assignment operator
 	
-	NFmiImage & operator= (const NFmiImage & theImage);
-	NFmiImage & operator= (const NFmiColorTools::Color theColor);
+	NFmiImage & operator= ( const NFmiImage & theImage );
+	NFmiImage & operator= ( const NFmiColorTools::Color theColor );
 	
 	// Reading an image
-	
-	void Read(const std::string & theFileName);
-	
-	// Writing the image
+    //	
+#ifndef IMAGINE_WITH_CAIRO
+	void Read( const std::string &fn );
+#endif
 
-	void Write(const std::string & theFileName, const std::string & theType) const;
+	// Writing the image
+    //
+	void Write( const std::string &fn, const std::string &type ) const;
+
 #ifndef IMAGINE_IGNORE_FORMATS
 	void WriteJpeg(const std::string & theFileName) const;
 	void WritePng(const std::string & theFileName) const;
-#endif // IMAGINE_IGNORE_FORMATS
+#endif
 	void WriteWbmp(const std::string & theFileName) const;
 	void WriteGif(const std::string & theFileName) const;
 	void WritePnm(const std::string & theFileName) const;
@@ -164,43 +182,43 @@ namespace Imagine
 	void ReduceColors();
 
 	// Erasing image with desired colour
-	
-	void Erase(NFmiColorTools::Color theColor);
+	//
+	void Erase( NFmiColorTools::Color theColor );
 	
 	// A simple non-antialiased line of width 1 pixel
-	
-	void StrokeBasic(float theX1, float theY1,
-					 float theX2, float theY2,
-					 NFmiColorTools::Color theColor,
-					 NFmiColorTools::NFmiBlendRule theRule);
+	//
+	void StrokeBasic( float theX1, float theY1,
+					  float theX2, float theY2,
+					  NFmiColorTools::Color theColor,
+					  NFmiColorTools::NFmiBlendRule theRule );
 	
 	// Composite image over another
+	//
+	void Composite( const NFmiImage & theImage,
+				    NFmiColorTools::NFmiBlendRule theRule,
+				    NFmiAlignment theAlignment = kFmiAlignNorthWest,
+				    int theX=0,
+				    int theY=0,
+				    float theAlpha=1.0 );
 	
-	void Composite(const NFmiImage & theImage,
-				   NFmiColorTools::NFmiBlendRule theRule,
-				   NFmiAlignment theAlignment = kFmiAlignNorthWest,
-				   int theX=0,
-				   int theY=0,
-				   float theAlpha=1.0);
-	
+	/******
+	*/
   private:
 	
 	// Constructor, destructor utilities
-	
-	void Destroy(void);
-	void Allocate(int width, int height);
-	void Reallocate(int width, int height);
+    //	
+	void Destroy();
+	void Allocate( int width, int height );
+	void Reallocate( int width, int height );
 	
 	// Reading and writing various image formats
-	
 #ifndef IMAGINE_IGNORE_FORMATS
 	void ReadPNG(FILE *in);
 	void WritePNG(FILE *out) const;
 	
 	void ReadJPEG(FILE *in);
 	void WriteJPEG(FILE *out) const;
-#endif // IMAGINE_IGNORE_FORMATS
-
+#endif
 	void WritePNM(FILE * out) const;
 	void ReadPNM(FILE * out);
 
@@ -213,23 +231,23 @@ namespace Imagine
 	void WriteGIF(FILE *out) const;
 
 	// Test whether the image is opaque
-	
-	bool IsOpaque(int threshold = -1) const;
+	//
+	bool IsOpaque( int threshold = -1 ) const;
 	
 	// Test whether the image is fully opaque/transparent
-	
-	bool IsFullyOpaqueOrTransparent(int threshold = -1) const;
+	//
+	bool IsFullyOpaqueOrTransparent( int threshold = -1 ) const;
 	
 	// Returns an RGB value which does NOT occur in the image
-	
-	NFmiColorTools::Color UnusedColor(void) const;
+    //	
+	NFmiColorTools::Color UnusedColor() const;
 	
 	// Put image colors into the given set
-	
-	bool AddColors(std::set<NFmiColorTools::Color> & theSet,
+	//
+	bool AddColors( std::set<NFmiColorTools::Color> & theSet,
 				   int maxcolors=-1,
 				   int opaquethreshold=-1,
-				   bool ignoreAlpha=false) const;
+				   bool ignoreAlpha=false ) const;
 	
 	// Strokebasic low level drivers for each blending rule
 	// By default we use the generally faster RGBA version below

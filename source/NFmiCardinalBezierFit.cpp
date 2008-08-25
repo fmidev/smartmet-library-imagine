@@ -143,16 +143,16 @@ namespace Imagine
 		  const unsigned int p3 = (i+2<n ? i+2 : (isclosed ? 1 : n-1));
 
 		  CubicControlPoints(theSmoothness,
-							 path[p0].X(), path[p0].Y(),
-							 path[p1].X(), path[p1].Y(),
-							 path[p2].X(), path[p2].Y(),
-							 path[p3].X(), path[p3].Y(),
+							 path[p0].x, path[p0].y,
+							 path[p1].x, path[p1].y,
+							 path[p2].x, path[p2].y,
+							 path[p3].x, path[p3].y,
 							 cx1, cy1,
 							 cx2, cy2);
 
 		  outpath.CubicTo(cx1,cy1);
 		  outpath.CubicTo(cx2,cy2);
-		  outpath.CubicTo(path[p2].X(),path[p2].Y());
+		  outpath.CubicTo(path[p2].x,path[p2].y);
 		}
 
 	  return outpath;

@@ -59,8 +59,8 @@ namespace Imagine
 				outpath.Clear();
 			  }
 			// prepend a leading moveto to all new path segments
-			if(i>0 && outpath.Empty() && path[i].Oper()!=Imagine::kFmiMoveTo)
-			  outpath.MoveTo(path[i].X(),path[i].Y());
+			if(i>0 && outpath.Empty() && path[i].op != Imagine::kFmiMoveTo)
+			  outpath.MoveTo(path[i].x,path[i].y);
 			
 		  }
 		
@@ -90,12 +90,12 @@ namespace Imagine
 
 		if(path.size() == 3)
 		  {
-			const double x1 = path[0].X();
-			const double y1 = path[0].Y();
-			double cx = path[1].X();
-			double cy = path[1].Y();
-			const double x2 = path[2].X();
-			const double y2 = path[2].Y();
+			const double x1 = path[0].x;
+			const double y1 = path[0].y;
+			double cx = path[1].x;
+			double cy = path[1].y;
+			const double x2 = path[2].x;
+			const double y2 = path[2].y;
 
 			const double cx1 = (x1 + cx) / 2.0;
 			const double cy1 = (y1 + cy) / 2.0;
@@ -119,14 +119,14 @@ namespace Imagine
 		  }
 		else if(path.size() == 4)
 		  {
-			const double x1 = path[0].X();
-			const double y1 = path[0].Y();
-			double cx1 = path[1].X();
-			double cy1 = path[1].Y();
-			double cx2 = path[2].X();
-			double cy2 = path[2].Y();
-			const double x2 = path[3].X();
-			const double y2 = path[3].Y();
+			const double x1 = path[0].x;
+			const double y1 = path[0].y;
+			double cx1 = path[1].x;
+			double cy1 = path[1].y;
+			double cx2 = path[2].x;
+			double cy2 = path[2].y;
+			const double x2 = path[3].x;
+			const double y2 = path[3].y;
 
 			double cx = (cx1 + cx2) / 2.0;
 			double cy = (cy1 + cy2) / 2.0;
@@ -172,16 +172,16 @@ namespace Imagine
 		const int n = thePath.Size()-1;
 		double arclength = 0;
 		for(int i=0; i<n; i++)
-		  arclength += NFmiGeoTools::Distance(thePath.Elements()[i].X(),
-											  thePath.Elements()[i].Y(),
-											  thePath.Elements()[i+1].X(),
-											  thePath.Elements()[i+1].Y());
+		  arclength += NFmiGeoTools::Distance(thePath.Elements()[i].x,
+											  thePath.Elements()[i].y,
+											  thePath.Elements()[i+1].x,
+											  thePath.Elements()[i+1].y);
 		
 		const double chordlength
-		  = NFmiGeoTools::Distance(thePath.Elements().front().X(),
-								   thePath.Elements().front().Y(),
-								   thePath.Elements().back().X(),
-								   thePath.Elements().back().Y());
+		  = NFmiGeoTools::Distance(thePath.Elements().front().x,
+								   thePath.Elements().front().y,
+								   thePath.Elements().back().x,
+								   thePath.Elements().back().y);
 
 		const double len = (2*chordlength + (n-1)*arclength)/(n+1);
 		const double err = arclength - chordlength;
@@ -222,7 +222,7 @@ namespace Imagine
 	  const NFmiPathElement & first = thePath.Elements().front();
 	  const NFmiPathElement & last = thePath.Elements().back();
 	  
-	  return (first.X() == last.X() && first.Y() == last.Y());
+	  return (first.x == last.x && first.y == last.y);
 			  
 	}
 
@@ -254,8 +254,8 @@ namespace Imagine
 			  it != path.end();
 			  ++it)
 			{
-			  NFmiPoint p((*it).X(),(*it).Y());
-			  switch((*it).Oper())
+			  NFmiPoint p(it->x,it->y);
+			  switch(it->op)
 				{
 				case kFmiMoveTo:
 				  counts.Add(p);
@@ -308,8 +308,8 @@ namespace Imagine
 		  // b) type changes from regular to nonregular
 
 		  bool flush = (!outpath.Empty() &&
-						((*it).Oper() == kFmiMoveTo ||
-						((*it).Oper() == kFmiLineTo && !isregular)));
+						(it->op == kFmiMoveTo ||
+						(it->op == kFmiLineTo && !isregular)));
 
 		  if(flush)
 			{
@@ -321,7 +321,7 @@ namespace Imagine
 			}
 
 		  // add the element, but remove zero-length line segments
-		  switch((*it).Oper())
+		  switch(it->op)
 			{
 			case kFmiMoveTo:
 			case kFmiConicTo:
@@ -333,8 +333,8 @@ namespace Imagine
 			  {
 				if(outpath.Empty())
 				  outpath.Add(*it);
-				else if(outpath.Elements().back().X() != (*it).X() ||
-						outpath.Elements().back().Y() != (*it).Y())
+				else if(outpath.Elements().back().x != it->x ||
+						outpath.Elements().back().y != it->y)
 				  outpath.Add(*it);
 				  
 			  }
@@ -342,7 +342,7 @@ namespace Imagine
 
 		  // lineto cannot start a new regular segment!
 		  if(outpath.Size() == 1)
-			isregular = ((*it).Oper() == kFmiMoveTo);
+			isregular = (it->op == kFmiMoveTo);
 
 		}
 
@@ -374,7 +374,7 @@ namespace Imagine
 		  it != thePath.Elements().end();
 		  ++it)
 		{
-		  if((*it).Oper() == kFmiMoveTo && !outpath.Empty())
+		  if(it->op == kFmiMoveTo && !outpath.Empty())
 			{
 			  out.push_back(outpath);
 			  outpath.Clear();
@@ -432,7 +432,7 @@ namespace Imagine
 			  jt != path.end();
 			  ++jt)
 			{
-			  const NFmiPoint point((*jt).X(),(*jt).Y());
+			  const NFmiPoint point(jt->x,jt->y);
 			  const long count = theCounts.Count(point);
 			  counts.push_back(count);
 			}
@@ -463,7 +463,7 @@ namespace Imagine
 				  NFmiPath tmppath;
 				  std::vector<long> tmpcounts;
 				  unsigned long j;
-				  tmppath.MoveTo(path[i].X(),path[i].Y());
+				  tmppath.MoveTo(path[i].x,path[i].y);
 				  tmpcounts.push_back(counts[i]);
 				  for(j=i+1; j<n; j++)
 					{
@@ -509,10 +509,10 @@ namespace Imagine
 		case 1:
 		  return 0;
 		case 2:
-		  return NFmiGeoTools::Distance(thePath.Elements().front().X(),
-										thePath.Elements().front().Y(),
-										thePath.Elements().back().X(),
-										thePath.Elements().back().Y());
+		  return NFmiGeoTools::Distance(thePath.Elements().front().x,
+										thePath.Elements().front().y,
+										thePath.Elements().back().x,
+										thePath.Elements().back().y);
 		case 3:
 		case 4:
 		  {

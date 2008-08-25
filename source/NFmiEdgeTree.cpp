@@ -128,10 +128,10 @@ namespace Imagine
 		
 		for(pathiter=paths.begin(); pathiter!=paths.end(); ++pathiter)
 		  {
-			float firstx = pathiter->Elements().front().X();
-			float firsty = pathiter->Elements().front().Y();
-			float lastx  = pathiter->Elements().back().X();
-			float lasty  = pathiter->Elements().back().Y();
+			float firstx = pathiter->Elements().front().x;
+			float firsty = pathiter->Elements().front().y;
+			float lastx  = pathiter->Elements().back().x;
+			float lasty  = pathiter->Elements().back().y;
 			
 			if(firstx==edge.GetX1() && firsty==edge.GetY1())
 			  {
@@ -294,7 +294,8 @@ namespace Imagine
   // ----------------------------------------------------------------------
   // Add the contour tree to a fill map
   // ----------------------------------------------------------------------
-  
+
+#ifndef IMAGINE_WITH_CAIRO
   void NFmiEdgeTree::Add(NFmiFillMap & theMap) const
   {
 	// The iterator for traversing the data
@@ -304,6 +305,7 @@ namespace Imagine
 	for( ; iter!=Edges().end(); ++iter)
 	  theMap.Add(iter->GetX1(),iter->GetY1(),iter->GetX2(),iter->GetY2());
   }
+#endif
 
 } // namespace Imagine
   

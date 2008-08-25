@@ -34,52 +34,18 @@ namespace Imagine
 	  kFmiCubicTo
 	};
 
-  // ----------------------------------------------------------------------
-  // A class defining a path element
-  // ----------------------------------------------------------------------
-  
-  class _FMI_DLL NFmiPathElement
-  {
-  public:
-	
-	// Constructor
-	
-	NFmiPathElement(NFmiPathOperation operation, float x, float y)
-	  : itsOperation(operation), itsX(x), itsY(y)
-	{}
-	
-	// Data-access
-	
-	NFmiPathOperation Oper(void) const	{ return itsOperation; }
-	float X(void) const			{ return itsX; }
-	float Y(void) const			{ return itsY; }
-	
-	// Setting data
-	
-	void Oper(NFmiPathOperation theOp)	{ itsOperation = theOp; }
-	void X(float theX)			{ itsX = theX; }
-	void Y(float theY)			{ itsY = theY; }
-	
-	// Equality comparison
-	
-	bool operator==(const NFmiPathElement & theElement) const
-	{
-	  return (itsOperation == theElement.itsOperation &&
-			  itsX == theElement.itsX &&
-			  itsY == theElement.itsY);
-	}
-	
-  private:
-	
-	// Protect from bad constructors
-	
-	NFmiPathElement(void);
-	
-	// Data-members
-	
-	NFmiPathOperation	itsOperation;
-	float			itsX;
-	float			itsY;
+    /* The struct is basically the same, a _bit_ shorter... then old (below)
+    */
+  struct NFmiPathElement {
+    enum NFmiPathOperation op;
+    float x,y;
+    
+    NFmiPathElement( enum NFmiPathOperation op_, float x_, float y_ )
+        : op(op_), x(x_), y(y_) {}
+
+	bool operator==( const NFmiPathElement &other ) const {
+	  return op == other.op && x==other.x && y==other.y;
+   }
   };
 
 } // namespace Imagine

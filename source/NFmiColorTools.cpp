@@ -837,6 +837,12 @@ namespace Imagine
 	BLENDINSERT("Xor",kFmiColorXor);
 	
 	BLENDINSERT("Plus",kFmiColorPlus);
+
+#ifdef IMAGINE_WITH_CAIRO
+    // Take "OnOpaque" as "Copy" for Cairo; used in selftests
+    //
+	BLENDINSERT("OnOpaque",kFmiColorCopy);
+#else
 	BLENDINSERT("Minus",kFmiColorMinus);
 	BLENDINSERT("Add",kFmiColorAdd);
 	BLENDINSERT("Substract",kFmiColorSubstract);
@@ -860,7 +866,7 @@ namespace Imagine
 	
 	BLENDINSERT("OnOpaque",kFmiColorOnOpaque);
 	BLENDINSERT("OnTransparent",kFmiColorOnTransparent);
-	
+#endif	
   }
 
 } // namespace Imagine

@@ -1,3 +1,5 @@
+#ifndef IMAGINE_WITH_CAIRO
+
 // ======================================================================
 //
 // Definition of a map of x-coordinates indexed by an y-coordinate.
@@ -962,3 +964,5 @@ namespace Imagine
   
 // ======================================================================
   
+#endif
+    // IMAGINE_WITH_CAIRO

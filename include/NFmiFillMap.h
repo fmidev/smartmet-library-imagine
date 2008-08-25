@@ -1,3 +1,7 @@
+#ifdef IMAGINE_WITH_CAIRO
+# error "Either Cairo or us"
+#endif
+
 // ======================================================================
 //
 // Definition of a map of x-coordinates indexed by an y-coordinate.

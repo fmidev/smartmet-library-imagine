@@ -110,8 +110,9 @@ namespace Imagine
   // ----------------------------------------------------------------------
   // Add map data to a NFmiFillMap
   // ----------------------------------------------------------------------
-  
-  void NFmiGeoShape::Add(NFmiFillMap & theMap) const
+
+#ifndef IMAGINE_WITH_CAIRO
+  void NFmiGeoShape::Add( NFmiFillMap & theMap) const
   {
 	switch(Type())
 	  {
@@ -124,12 +125,13 @@ namespace Imagine
 		throw NFmiGeoShapeError("NFmiGeoShape::Add() kFmiGeoShapeGMT not implemented");
 	  }
   }
+#endif
   
   // ----------------------------------------------------------------------
   // Stroke map data
   // ----------------------------------------------------------------------
-  
-  void NFmiGeoShape::Stroke(NFmiImage & theImage,
+
+  void NFmiGeoShape::Stroke( ImagineXr_or_NFmiImage &img,
 							NFmiColorTools::Color theColor,
 							NFmiColorTools::NFmiBlendRule theRule) const
   {
@@ -141,7 +143,7 @@ namespace Imagine
 	switch(Type())
 	  {
 	  case kFmiGeoShapeEsri:
-		StrokeEsri(theImage,theColor,theRule);
+		StrokeEsri(img,theColor,theRule);
 		break;
 	  case kFmiGeoShapeShoreLine:
 		throw NFmiGeoShapeError("NFmiGeoShape::Stroke() kFmiGeoShapeShoreLine not implemented");
@@ -149,21 +151,20 @@ namespace Imagine
 		throw NFmiGeoShapeError("NFmiGeoShape::Stroke() kFmiGeoShapeGMT not implemented");
 	  }
   }
-  
+
   // ----------------------------------------------------------------------
   // Mark map data
   // ----------------------------------------------------------------------
-  
-  void NFmiGeoShape::Mark(NFmiImage & theImage,
-						  const NFmiImage & theMarker,
+
+  void NFmiGeoShape::Mark( ImagineXr_or_NFmiImage &img,
+						  const ImagineXr_or_NFmiImage& marker,
 						  NFmiColorTools::NFmiBlendRule theRule,
 						  NFmiAlignment theAlignment,
-						  float theAlpha) const
-  {
+						  float theAlpha ) const {
 	switch(Type())
 	  {
 	  case kFmiGeoShapeEsri:
-		MarkEsri(theImage,theMarker,theRule,theAlignment,theAlpha);
+		MarkEsri(img,marker,theRule,theAlignment,theAlpha);
 		break;
 	  case kFmiGeoShapeShoreLine:
 		throw NFmiGeoShapeError("NFmiGeoShape::Mark() kFmiGeoShapeShoreLine not implemented");
@@ -171,14 +172,13 @@ namespace Imagine
 		throw NFmiGeoShapeError("NFmiGeoShape::Mark() kFmiGeoShapeGMT not implemented");
 	  }
   }
-  
+
   // ----------------------------------------------------------------------
   // Generate imagemap data to a file
   // ----------------------------------------------------------------------
   
   void NFmiGeoShape::WriteImageMap(std::ostream & os,
-								   const string & theFieldName) const
-  {
+								   const string & theFieldName) const {
 	switch(Type())
 	  {
 	  case kFmiGeoShapeEsri:
@@ -384,7 +384,8 @@ namespace Imagine
   // The same output is given for M and Z data types
   //
   // ----------------------------------------------------------------------
-  
+
+#ifndef IMAGINE_WITH_CAIRO
   void NFmiGeoShape::AddEsri(NFmiFillMap & theMap) const
   {
 	// Just a safety, should not happen
@@ -510,7 +511,8 @@ namespace Imagine
 		  }
 	  }
   }
-  
+#endif
+
   // ----------------------------------------------------------------------
   // Stroke ESRI shape data onto given image
   //
@@ -522,10 +524,10 @@ namespace Imagine
   // MultiPatch	[moveto [lineto]*]*
   //
   // ----------------------------------------------------------------------
-  
-  void NFmiGeoShape::StrokeEsri(NFmiImage & theImage,
+
+  void NFmiGeoShape::StrokeEsri( ImagineXr_or_NFmiImage &img,
 								NFmiColorTools::Color theColor,
-								NFmiColorTools::NFmiBlendRule theRule) const
+								NFmiColorTools::NFmiBlendRule theRule ) const
   {
 	// We don't want to handle polyline stroking in several places,
 	// it's easier just to create a path and let path stroker handle
@@ -534,19 +536,19 @@ namespace Imagine
 	// Add(NFmiFillMap) above.
 	
 	NFmiPath path = Path();
-	path.Stroke(theImage,theColor,theRule);
+	path.Stroke(img,theColor,theRule);
   }
   
   // ----------------------------------------------------------------------
   // Mark ESRI shapefile map data
   // Note that we consider multipatches invalid in this context
   // ----------------------------------------------------------------------
-  
-  void NFmiGeoShape::MarkEsri(NFmiImage & theImage,
-							  const NFmiImage & theMarker,
+
+  void NFmiGeoShape::MarkEsri( ImagineXr_or_NFmiImage &img,
+							  const ImagineXr_or_NFmiImage &marker,
 							  NFmiColorTools::NFmiBlendRule theRule,
 							  NFmiAlignment theAlignment,
-							  float theAlpha) const
+							  float theAlpha ) const
   {
 	// Just a safety, should not happen
 	
@@ -576,7 +578,7 @@ namespace Imagine
 			{
 			  int x = static_cast<int>((*iter)->X());
 			  int y = static_cast<int>((*iter)->Y());
-			  theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
+			  img.Composite(marker,theRule,theAlignment,x,y,theAlpha);
 			  break;
 			}
 			
@@ -589,7 +591,7 @@ namespace Imagine
 				{
 				  int x = static_cast<int>(elem->Points()[i].X());
 				  int y = static_cast<int>(elem->Points()[i].Y());
-				  theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
+				  img.Composite(marker,theRule,theAlignment,x,y,theAlpha);
 				}
 			  break;
 			}
@@ -603,7 +605,7 @@ namespace Imagine
 				{
 				  int x = static_cast<int>(elem->Points()[i].X());
 				  int y = static_cast<int>(elem->Points()[i].Y());
-				  theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
+				  img.Composite(marker,theRule,theAlignment,x,y,theAlpha);
 				}
 			  break;
 			}
@@ -617,14 +619,14 @@ namespace Imagine
 				{
 				  int x = static_cast<int>(elem->Points()[i].X());
 				  int y = static_cast<int>(elem->Points()[i].Y());
-				  theImage.Composite(theMarker,theRule,theAlignment,x,y,theAlpha);
+				  img.Composite(marker,theRule,theAlignment,x,y,theAlpha);
 				}
 			  break;
 			}
 		  }
 	  }
   }
-  
+
   // ----------------------------------------------------------------------
   // Generate imagemap data to a file
   //
@@ -761,7 +763,8 @@ namespace Imagine
 		  }
 	  }
   }
-  
+
+
 } // namespace Imagine
   
 // ======================================================================

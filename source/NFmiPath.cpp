@@ -16,6 +16,11 @@
 #include "NFmiGrid.h"
 #include "NFmiValueString.h"
 
+#ifdef IMAGINE_WITH_CAIRO
+# include "ImagineXr.h"
+# define CAIRO_LINE_WIDTH (1.0)
+#endif
+
 #include <iostream>
 #include <algorithm>
 #include <stdexcept>
@@ -86,7 +91,7 @@ namespace Imagine
 	for( ; iter!= thePath.itsElements.end() ; ++iter)
 	  {
 		if(iter == thePath.itsElements.begin())
-		  Add(fExact ? kFmiLineTo : kFmiGhostLineTo, (*iter).X(), (*iter).Y());
+		  Add(fExact ? kFmiLineTo : kFmiGhostLineTo, iter->x, iter->y);
 		else
 		  Add(*iter);
 	  }
@@ -108,10 +113,10 @@ namespace Imagine
 	bool first = true;
 	for( ; iter!=thePath.itsElements.end(); ++iter)
 	  {
-		if( (first&&fExact) || (!first && (*iter).Oper()==kFmiLineTo) )
-		  InsertLineTo((*iter).X(),(*iter).Y());
+		if( (first&&fExact) || (!first && iter->op==kFmiLineTo) )
+		  InsertLineTo( iter->x, iter->y );
 		else
-		  InsertGhostLineTo((*iter).X(),(*iter).Y());
+		  InsertGhostLineTo( iter->x, iter->y );
 		first = false;
 	  }
   }
@@ -139,8 +144,8 @@ namespace Imagine
 	NFmiPathData::const_reverse_iterator iter = thePath.itsElements.rbegin();
 	for( ; iter!=thePath.itsElements.rend(); ++iter)
 	  {
-		Add(op, (*iter).X(), (*iter).Y());
-		op = (*iter).Oper();
+		Add(op, iter->x, iter->y );
+		op = iter->op;
 	  }
   }
   
@@ -155,11 +160,11 @@ namespace Imagine
 	NFmiPathData::reverse_iterator iter;
 	for(iter=itsElements.rbegin(); iter!=itsElements.rend(); ++iter)
 	  {
-		if((*iter).Oper()==kFmiMoveTo)
+		if(iter->op==kFmiMoveTo)
 		  {
 			// The element to be added
 			
-			NFmiPathElement tmp(theOper,(*iter).X(),(*iter).Y());
+			NFmiPathElement tmp( theOper, iter->x, iter->y );
 			
 			// Don't add if the last element is exactly the same
 			
@@ -346,12 +351,12 @@ namespace Imagine
 	NFmiPathData::const_iterator iter;
 	for(iter=Elements().begin() ; iter!=Elements().end(); ++iter)
 	  {
-		switch((*iter).Oper())
+		switch( iter->op )
 		  {
 		  case kFmiMoveTo:
 		  case kFmiLineTo:
 		  case kFmiGhostLineTo:
-			counter.Add(make_pair((*iter).X(),(*iter).Y()));
+			counter.Add( make_pair( iter->x, iter->y ) );
 			break;
 		  default:
 			break;
@@ -362,10 +367,8 @@ namespace Imagine
 	//
 	// a) Optional one moveto + lineto's
 	// b) Optional one moveto + ghostlineto's
-	
-	
-	
-	
+
+
   }
   
   // ----------------------------------------------------------------------
@@ -378,8 +381,11 @@ namespace Imagine
 	
 	for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 	  {
-		(*iter).X((*iter).X()+theX);	// X += theX
-		(*iter).Y((*iter).Y()+theY);	// Y += theY
+        iter->x += theX;
+        iter->y += theY;
+
+        //(*iter).X((*iter).X()+theX);	// X += theX
+		//(*iter).Y((*iter).Y()+theY);	// Y += theY
 	  }
   }
   
@@ -402,8 +408,11 @@ namespace Imagine
 	
 	for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 	  {
-		(*iter).X((*iter).X()*theXScale);
-		(*iter).Y((*iter).Y()*theYScale);
+	     iter->x *= theXScale;
+	     iter->y *= theYScale;
+	     
+		//(*iter).X((*iter).X()*theXScale);
+		//(*iter).Y((*iter).Y()*theYScale);
 	  }
   }
   
@@ -422,29 +431,31 @@ namespace Imagine
 	
 	for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 	  {
-		float x = (*iter).X();
-		float y = (*iter).Y();
-		(*iter).X(x*cosa+y*sina);
-		(*iter).Y(-x*sina+y*cosa);
+	    float x= iter->x;
+	    float y= iter->y;
+	    iter->x= x*cosa + y*sina;
+	    iter->y= -x*sina + y*cosa;
 	  }
   }
   
   // ----------------------------------------------------------------------
   // Apply affine transformation on the path
   // ----------------------------------------------------------------------
-  
+
+#if 0
   void NFmiPath::Transform(NFmiAffine & theAffine)
   {
 	NFmiPathData::iterator iter;
 	
 	for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 	  {
-		float x = (*iter).X();
-		float y = (*iter).Y();
-		(*iter).X(theAffine.X(x,y));
-		(*iter).Y(theAffine.Y(x,y));
+		float x = iter->x;
+		float y = iter->y;
+		iter->x= theAffine.X( x,y );
+		iter->y= theAffine.Y( x,y );
 	  }
   }
+#endif
   
   // ----------------------------------------------------------------------
   // Apply alignment on the path
@@ -464,7 +475,7 @@ namespace Imagine
   // ----------------------------------------------------------------------
   // Apply a projection to a path
   // ----------------------------------------------------------------------
-  
+
   void NFmiPath::Project(const NFmiArea * const theArea)
   {
 	if(theArea!=0)
@@ -472,9 +483,9 @@ namespace Imagine
 		NFmiPathData::iterator iter;
 		for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 		  {
-			NFmiPoint pt = theArea->ToXY(NFmiPoint((*iter).X(),(*iter).Y()));
-			(*iter).X(pt.X());
-			(*iter).Y(pt.Y());
+			NFmiPoint pt = theArea->ToXY( NFmiPoint( iter->x, iter->y ));
+			iter->x= pt.X();
+			iter->y= pt.Y();
 		  }
 	  }
   }
@@ -490,9 +501,9 @@ namespace Imagine
 		NFmiPathData::iterator iter;
 		for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 		  {
-			NFmiPoint pt = theArea->ToLatLon(NFmiPoint((*iter).X(),(*iter).Y()));
-			(*iter).X(pt.X());
-			(*iter).Y(pt.Y());
+			NFmiPoint pt = theArea->ToLatLon( NFmiPoint( iter->x, iter->y ));
+			iter->x= pt.X();
+			iter->y= pt.Y();
 		  }
 	  }
   }
@@ -508,9 +519,9 @@ namespace Imagine
 		NFmiPathData::iterator iter;
 		for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 		  {
-			NFmiPoint pt = theGrid->GridToLatLon((*iter).X(), (*iter).Y());
-			(*iter).X(pt.X());
-			(*iter).Y(pt.Y());
+			NFmiPoint pt = theGrid->GridToLatLon( iter->x, iter->y );
+			iter->x= pt.X();
+			iter->y= pt.Y();
 		  }
 	  }
   }
@@ -535,14 +546,14 @@ namespace Imagine
 		
 		for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 		  {
-			switch((*iter).Oper())
+			switch( iter->op )
 			  {
 			  case kFmiMoveTo:
 			  case kFmiLineTo:
 			  case kFmiGhostLineTo:
 			  case kFmiConicTo:
 			  case kFmiCubicTo:
-				box.Update((*iter).X(),(*iter).Y());
+				box.Update( iter->x, iter->y );
 				break;
 			  }
 		  }
@@ -597,9 +608,9 @@ namespace Imagine
 		
 		newelements.push_back(*iter);
 
-		oper3 = (*iter).Oper();
-		x3 = theOffset+(*iter).X();
-		y3 = theOffset+(*iter).Y();
+		oper3 = iter->op;
+		x3 = theOffset+ iter->x;
+		y3 = theOffset+ iter->y;
 		
 		// Delete-iterator is current element, 
 		
@@ -677,20 +688,20 @@ namespace Imagine
 		if(iter != thePath.Elements().begin())
 		  os << " ";
 		
-		if((*iter).Oper() == kFmiMoveTo)
+		if ( iter->op == kFmiMoveTo)
 		  os << 'M';
-		else if((*iter).Oper() == kFmiLineTo)
+		else if( iter->op == kFmiLineTo)
 		  os << 'L';
-		else if((*iter).Oper() == kFmiGhostLineTo)
+		else if( iter->op == kFmiGhostLineTo)
 		  os << 'G';
-		else if((*iter).Oper() == kFmiConicTo)
+		else if( iter->op == kFmiConicTo)
 		  os << 'Q';
-		else if((*iter).Oper() == kFmiCubicTo)
+		else if( iter->op == kFmiCubicTo)
 		  os << 'C';
 		else
 		  os << '?';
 		
-		os << (*iter).X() << "," << (*iter).Y();
+		os << iter->x << "," << iter->y;
 		
 	  }
 	return os;
@@ -733,9 +744,9 @@ namespace Imagine
 		if(os.size() > 0.9 * os.capacity())
 		  os.reserve(os.size() * 2);
 #endif
-		const float x = (*iter).X();
-		const float y = (*iter).Y();
-		const NFmiPathOperation op = (*iter).Oper();
+		const float x = iter->x;
+		const float y = iter->y;
+		const NFmiPathOperation op = iter->op;
 
 		switch(op)
 		  {
@@ -896,7 +907,8 @@ namespace Imagine
   // ----------------------------------------------------------------------
   // Add the path to a fill map
   // ----------------------------------------------------------------------
-  
+
+#ifndef IMAGINE_WITH_CAIRO
   void NFmiPath::Add(NFmiFillMap & theMap) const
   {
 	// Data holders for moves. 1 is the newest, 4 the oldest
@@ -919,11 +931,11 @@ namespace Imagine
 	
 	for( ; iter!=Elements().end(); ++iter)
 	  {
-		x1 = (*iter).X();
-		y1 = (*iter).Y();
-		op1 = (*iter).Oper();
+		x1 = iter->x;
+		y1 = iter->y;
+		op1 = iter->op;
 		
-		switch((*iter).Oper())
+		switch( iter->op )
 		  {
 		  case kFmiMoveTo:
 			break;
@@ -938,7 +950,7 @@ namespace Imagine
 				  break;
 				case kFmiCubicTo:
 				  if(op3==kFmiCubicTo)
-					theMap.AddCubic(x4,y4,x4,y3,x2,y2,x1,y1);
+					theMap.AddCubic(x4,y4,x4,y3,x2,y2,x1,y1);      // AKa 7-Aug-08: clearly a BUG: x4->x3
 				  break;
 				default:
 				  theMap.Add(x2,y2,x1,y1);	// Line segment
@@ -969,15 +981,17 @@ namespace Imagine
 	  }
 	
   }
-  
+#endif
+
   // ----------------------------------------------------------------------
   // Stroke onto given image using various Porter-Duff rules
   // ----------------------------------------------------------------------
-  
-  void NFmiPath::Stroke(NFmiImage & theImage,
-						NFmiColorTools::Color theColor,
-						NFmiColorTools::NFmiBlendRule theRule) const
-  {
+
+#ifndef IMAGINE_WITH_CAIRO
+void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
+						 NFmiColorTools::Color theColor,
+						 NFmiColorTools::NFmiBlendRule theRule ) const
+{
 	// Quick exit if color is not real
 	
 	if(theColor==NFmiColorTools::NoColor)
@@ -987,26 +1001,26 @@ namespace Imagine
 	
 	float lastX = kFloatMissing;
 	float lastY = kFloatMissing;
-	
+
 	NFmiPathData::const_iterator iter = Elements().begin();
 	
 	for( ; iter!= Elements().end() ; ++iter)
 	  {
 		// Next point
 		
-		float nextX = (*iter).X();
-		float nextY = (*iter).Y();
+		float nextX = iter->x;
+		float nextY = iter->y;
 		
-		if((*iter).Oper()==kFmiConicTo || (*iter).Oper()==kFmiCubicTo)
+		if ( iter->op==kFmiConicTo || iter->op==kFmiCubicTo )
 		  throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::Stroke()");
 		
 		// Only LineTo operations get rendered
 		
-		if((*iter).Oper() == kFmiLineTo)
+		if( iter->op == kFmiLineTo)
 		  if(lastX!=kFloatMissing && lastY!=kFloatMissing &&
 			 nextX!=kFloatMissing && nextY!=kFloatMissing)
 			{
-			  theImage.StrokeBasic(lastX,lastY,nextX,nextY,theColor,theRule);
+			  img.StrokeBasic(lastX,lastY,nextX,nextY,theColor,theRule);
 			}
 		
 		// New last point
@@ -1014,14 +1028,14 @@ namespace Imagine
 		lastX = nextX;
 		lastY = nextY;
 	  }
-	
   }
+#endif
 
   // ----------------------------------------------------------------------
   // Stroke onto given image using various Porter-Duff rules
   // ----------------------------------------------------------------------
-  
-  void NFmiPath::Stroke(NFmiImage & theImage,
+
+void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 						float theWidth,
 						NFmiColorTools::Color theColor,
 						NFmiColorTools::NFmiBlendRule theRule) const
@@ -1034,26 +1048,34 @@ namespace Imagine
 	if(theWidth <= 0)
 	  return;
 	
+    /*
+    * Important that Cairo drawings are done the whole path at once;
+    * cutting to thousands of moveto/lineto segments kills performance,
+    * especially when creating PDF output (Cairo 1.6.4).
+    */
+#ifdef IMAGINE_WITH_CAIRO
+    img.Stroke( itsElements, theWidth, theColor, theRule );
+#else
 	// Current point is not defined yet
 	
 	float lastX = kFloatMissing;
 	float lastY = kFloatMissing;
-	
+
 	NFmiPathData::const_iterator iter = Elements().begin();
 	
 	for( ; iter!= Elements().end() ; ++iter)
 	  {
 		// Next point
 		
-		float nextX = (*iter).X();
-		float nextY = (*iter).Y();
+		float nextX = iter->x;
+		float nextY = iter->y;
 		
-		if((*iter).Oper()==kFmiConicTo || (*iter).Oper()==kFmiCubicTo)
+		if( iter->op==kFmiConicTo || iter->op==kFmiCubicTo)
 		  throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::Stroke()");
 		
 		// Only LineTo operations get rendered
 		
-		if((*iter).Oper() == kFmiLineTo)
+		if(iter->op == kFmiLineTo)
 		  if(lastX!=kFloatMissing && lastY!=kFloatMissing &&
 			 nextX!=kFloatMissing && nextY!=kFloatMissing)
 			{
@@ -1061,17 +1083,18 @@ namespace Imagine
 
 			  if(lastX!=nextX || lastY!=nextY)
 				{
+                  // Emulate thick line with a box
 				  NFmiPath box;
 				  float dx = nextX-lastX;
 				  float dy = nextY-lastY;
 				  double alpha = atan2(dy,dx);
 
-				  box.MoveTo(lastX-theWidth/2*sin(alpha),lastY+theWidth/2*cos(alpha));
-				  box.LineTo(lastX+theWidth/2*sin(alpha),lastY-theWidth/2*cos(alpha));
-				  box.LineTo(nextX+theWidth/2*sin(alpha),nextY-theWidth/2*cos(alpha));
-				  box.LineTo(nextX-theWidth/2*sin(alpha),nextY+theWidth/2*cos(alpha));
+				  box.MoveTo( lastX-theWidth/2*sin(alpha), lastY+theWidth/2*cos(alpha) );
+				  box.LineTo( lastX+theWidth/2*sin(alpha),lastY-theWidth/2*cos(alpha) );
+				  box.LineTo( nextX+theWidth/2*sin(alpha),nextY-theWidth/2*cos(alpha) );
+				  box.LineTo( nextX-theWidth/2*sin(alpha),nextY+theWidth/2*cos(alpha) );
 				  box.CloseLineTo();
-				  box.Fill(theImage,theColor,theRule);
+				  box.Fill( img,theColor,theRule );
 				}
 			}
 		
@@ -1080,9 +1103,10 @@ namespace Imagine
 		lastX = nextX;
 		lastY = nextY;
 	  }
-	
+#endif
   }
-  
+
+#ifndef IMAGINE_WITH_CAIRO
   const NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, double theMargin) const
   {
 	if(itsElements.empty())
@@ -1111,9 +1135,9 @@ namespace Imagine
 	
 	for(NFmiPathData::const_iterator iter=begin; iter!=end; )
 	  {
-		double X = (*iter).X();
-		double Y = (*iter).Y();
-		NFmiPathOperation op = (*iter).Oper();
+		double X = iter->x;
+		double Y = iter->y;
+		NFmiPathOperation op = iter->op;
 		++iter;
 		
 		this_quadrant = quadrant(X, Y, theX1, theY1, theX2, theY2, theMargin);
@@ -1164,8 +1188,8 @@ namespace Imagine
 			}
 		  case kFmiConicTo:
 			{
-			  double X2 = (*iter).X();
-			  double Y2 = (*iter).Y();
+			  double X2 = iter->x;
+			  double Y2 = iter->y;
 			  ++iter;
 			  
 			  int end_quadrant = quadrant(X2,Y2,theX1,theY1,theX2,theY2,theMargin);
@@ -1194,12 +1218,12 @@ namespace Imagine
 			}
 		  case kFmiCubicTo:
 			{
-			  double X2 = (*iter).X();
-			  double Y2 = (*iter).Y();
+			  double X2 = iter->x;
+			  double Y2 = iter->y;
 			  ++iter;
 
-			  double X3 = (*iter).X();
-			  double Y3 = (*iter).Y();
+			  double X3 = iter->x;
+			  double Y3 = iter->y;
 			  ++iter;
 			  
 			  int middle_quadrant = quadrant(X2,Y2,theX1,theY1,theX2,theY2,theMargin);
@@ -1241,6 +1265,7 @@ namespace Imagine
 
 	return outPath;
   }
+#endif
 
 } // namespace Imagine
   

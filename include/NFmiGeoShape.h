@@ -17,7 +17,16 @@
 #include "NFmiArea.h"
 #include "NFmiEsriShape.h"
 #include "NFmiPath.h"
-#include "NFmiFillMap.h"
+
+#ifdef IMAGINE_WITH_CAIRO
+# include "ImagineXr.h"
+#else
+# include "NFmiColorTools.h"
+# include "NFmiImage.h"
+# include "NFmiFillMap.h"
+# include "NFmiDrawable.h"
+#endif
+
 #include <string>
 #include <stdexcept>
 
@@ -39,13 +48,15 @@ namespace Imagine
 	NFmiGeoShapeError(const std::string & s) : std::runtime_error(s) { }
   };
   
-  class _FMI_DLL NFmiGeoShape : public NFmiDrawable
-  
+  class _FMI_DLL NFmiGeoShape
+#ifndef IMAGINE_WITH_CAIRO
+    : public NFmiDrawable
+#endif
   {
   public:
 	
 	// Constructor
-	NFmiGeoShape(void)
+	NFmiGeoShape()
 	  :itsType(kFmiGeoShapeEsri)
 	   ,itsEsriShape(0)
 	{}
@@ -61,14 +72,14 @@ namespace Imagine
 	
 	// Destructor
 	
-	virtual ~NFmiGeoShape(void)
+	virtual ~NFmiGeoShape()
 	{
 	  delete itsEsriShape;
 	}
 	
 	// Data-access
 	
-	NFmiGeoShapeType Type(void) const	{ return itsType; }
+	NFmiGeoShapeType Type() const	{ return itsType; }
 	
 	// Project the data
 	
@@ -76,26 +87,41 @@ namespace Imagine
 	
 	// Create a path from the map data
 	
-	const NFmiPath Path(void) const;
+	const NFmiPath Path() const;
 	
 	// Add the data to a fill map
-	
+#ifndef IMAGINE_WITH_CAIRO
 	void Add(NFmiFillMap & theMap) const;
-	
+#endif
+
 	// Stroke onto given image using various Porter-Duff rules
-	
+
+#ifdef IMAGINE_WITH_CAIRO
+	void Stroke( ImagineXr &drawing,
+				NFmiColorTools::Color theColor,
+				NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
+#else
 	void Stroke(NFmiImage & theImage,
 				NFmiColorTools::Color theColor,
 				NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
-	
+#endif
+
 	// Mark the coordinates
-	
+
+#ifdef IMAGINE_WITH_CAIRO
+	void Mark( ImagineXr &drawing,
+			  const ImagineXr &marker,
+			  NFmiColorTools::NFmiBlendRule theRule,
+			  NFmiAlignment theAlignment = kFmiAlignCenter,
+			  float theAlpha=1.0 ) const;
+#else
 	void Mark(NFmiImage & theImage,
 			  const NFmiImage & theMarker,
 			  NFmiColorTools::NFmiBlendRule theRule,
 			  NFmiAlignment theAlignment = kFmiAlignCenter,
 			  float theAlpha=1.0) const;
-	
+#endif
+
 	// Write imagemap data to a file
 	
 	void WriteImageMap(std::ostream & os, const std::string & theFieldName) const;
@@ -118,30 +144,54 @@ namespace Imagine
 		  throw NFmiGeoShapeError("kFmiGeoShapeFMT not implemented");
 		}
 	}
-	
+
+#ifdef IMAGINE_WITH_CAIRO
+    void Fill( ImagineXr &image, Imagine::NFmiColorTools::Color col, NFmiColorTools::NFmiBlendRule rule )
+#else
+    void Fill( Imagine::NFmiImage &image, Imagine::NFmiColorTools::Color col, NFmiColorTools::NFmiBlendRule rule )
+#endif
+    {
+        PathEsri().Fill( image, col, rule );
+    }
+
   private:
 	
 	// Path creation
 	
-	const NFmiPath PathEsri(void) const;
+	const NFmiPath PathEsri() const;
 	
 	// Stroking
 	
-	void StrokeEsri(NFmiImage & theImage,
+#ifdef IMAGINE_WITH_CAIRO
+	void StrokeEsri( ImagineXr & drawing,
 					NFmiColorTools::Color theColor,
-					NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
+					NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy ) const;
+#else
+	void StrokeEsri( Imagine::NFmiImage & theImage,
+					NFmiColorTools::Color theColor,
+					NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy ) const;
+#endif
 	
 	// Adding to a fillmap
-	
+#ifndef IMAGINE_WITH_CAIRO
 	void AddEsri(NFmiFillMap & theMap) const;
-	
+#endif
+
 	// Mark the coordinates
 	
-	void MarkEsri(NFmiImage & theImage,
-				  const NFmiImage & theMarker,
+#ifdef IMAGINE_WITH_CAIRO
+	void MarkEsri( ImagineXr &drawing,
+				  const ImagineXr &marker,
 				  NFmiColorTools::NFmiBlendRule theRule,
 				  NFmiAlignment theAlignment = kFmiAlignCenter,
-				  float theAlpha=1.0) const;
+				  float theAlpha=1.0 ) const;
+#else
+	void MarkEsri( Imagine::NFmiImage &theImage,
+				  const Imagine::NFmiImage &marker,
+				  NFmiColorTools::NFmiBlendRule theRule,
+				  NFmiAlignment theAlignment = kFmiAlignCenter,
+				  float theAlpha=1.0 ) const;
+#endif
 	
 	// Write imagemap data to a file
 	

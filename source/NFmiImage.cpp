@@ -6,6 +6,7 @@
 //
 // History:
 //
+// 31.07.2008 Asko Kauppi; adaptation to Cairo
 // 13.08.2001 Mika Heiskanen
 //
 //	Implemented
@@ -13,11 +14,17 @@
 // ======================================================================
 
 #include "NFmiFileSystem.h"
-#include "NFmiImage.h"
-#include "NFmiImageTools.h"
+#include "NFmiStringTools.h"
+
 #include "NFmiColorBlend.h"
 #include "NFmiColorReduce.h"
-#include "NFmiStringTools.h"
+
+#include "NFmiImage.h"
+
+#ifndef IMAGINE_WITH_CAIRO
+# include "NFmiImageTools.h"
+#endif
+
 #include <cstdlib>	// for rand, RAND_MAX
 #include <iostream>
 #include <algorithm>
@@ -50,6 +57,7 @@ namespace Imagine
   // Function1<MyClass1>();
   // Pit‰‰ olla mieluummin:
   // Function1(MyClass1());
+#ifndef IMAGINE_WITH_CAIRO
   template <class T>
   static void StrokeBasic2(T theBlender, float theX1, float theY1,
 						   float theX2, float theY2,
@@ -273,7 +281,9 @@ namespace Imagine
 			}
 	  }
   }
-  
+#endif
+    // not IMAGINE_WITH_CAIRO
+
   // ----------------------------------------------------------------------
   // Destructor
   // ----------------------------------------------------------------------
@@ -301,8 +311,10 @@ namespace Imagine
   // Copy constructor
   // ----------------------------------------------------------------------
   
-  NFmiImage::NFmiImage(const NFmiImage & theImage)
-	: NFmiDrawable()
+  NFmiImage::NFmiImage(const NFmiImage & theImage) 
+#ifndef IMAGINE_WITH_CAIRO
+        : NFmiDrawable()
+#endif
   {
 	DefaultOptions();
 	itsType = theImage.itsType;
@@ -313,18 +325,32 @@ namespace Imagine
   // ----------------------------------------------------------------------
   // Constructor based on filename. The file type is autodetected.
   // ----------------------------------------------------------------------
-  
+#ifndef IMAGINE_WITH_CAIRO
   NFmiImage::NFmiImage(const string & theFileName)
 	: itsPixels(NULL)
   {
 	DefaultOptions();
 	Read(theFileName);
   }
-  
+#endif
+
+  // ----------------------------------------------------------------------
+  // Constructor from raw Cairo ARGB_32 image data, for output using NFmiImage
+  // (format support wider than Cairo's, and color reduction)
+  //    -AKa 4-Aug-2008
+  // ----------------------------------------------------------------------
+  NFmiImage::NFmiImage( int w, int h, const NFmiColorTools::Color *data ) 
+    /* : NFmiDrawable() */
+  {
+	DefaultOptions();
+	Allocate( w, h );
+	memcpy( itsPixels, data, w*h*sizeof(NFmiColorTools::Color) );
+  }
+
   // ----------------------------------------------------------------------
   // Image default options
   // ----------------------------------------------------------------------
-  
+
   void NFmiImage::DefaultOptions(void)
   {
 	itsType = "";
@@ -391,7 +417,7 @@ namespace Imagine
   // ----------------------------------------------------------------------
   // Replace image with image in given file
   // ----------------------------------------------------------------------
-  
+#ifndef IMAGINE_WITH_CAIRO
   void NFmiImage::Read(const string & theFileName)
   {
 	// Make sure old contents are destroyed
@@ -417,7 +443,7 @@ namespace Imagine
 	  ReadPNG(in);
 	else if(mime == "jpeg")
 	  ReadJPEG(in);
-#endif // IMAGINE_IGNORE_FORMATS
+#endif
 	else if(mime == "pnm")
 	  ReadPNM(in);
 	else if(mime == "pgm")
@@ -431,8 +457,8 @@ namespace Imagine
 	
 	// Close the input file
 	fclose(in);
-	
   }
+#endif
 
   // ----------------------------------------------------------------------
   // Write image of desired type
@@ -596,7 +622,7 @@ namespace Imagine
 	if(!status)
 	  throw runtime_error("Failed to write '"+theFileName+"'");
   }
-  
+ 
   // ----------------------------------------------------------------------
   // Fill the image with a desired colour. Note that alpha-blending
   // is ignored, it is assumed that we wish to overwrite the desired
@@ -814,6 +840,7 @@ namespace Imagine
   // various Porter-Duff rules
   // ----------------------------------------------------------------------
   
+#ifndef IMAGINE_WITH_CAIRO
   void NFmiImage::StrokeBasic(float theX1, float theY1,
 							  float theX2, float theY2,
 							  NFmiColorTools::Color theColor,
@@ -1036,12 +1063,13 @@ namespace Imagine
 		break;
 	  }
   }
-  
+#endif
   
   // ----------------------------------------------------------------------
   // Composite image over another using given blending rule
   // ----------------------------------------------------------------------
   
+#ifndef IMAGINE_WITH_CAIRO
   void NFmiImage::Composite(const NFmiImage & thePattern,
 							NFmiColorTools::NFmiBlendRule theRule,
 							NFmiAlignment theAlignment,
@@ -1195,7 +1223,8 @@ namespace Imagine
 		break;
 	  }
   }
-  
+#endif
+
 } // namespace Imagine
   
 // ======================================================================

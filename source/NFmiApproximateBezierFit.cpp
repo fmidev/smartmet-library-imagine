@@ -103,10 +103,10 @@ namespace Imagine
 		  // is more accurate:
 		  // x1*y2-x2*y1 = x1*dy-dx*y1
 
-		  const double x1 = thePath[i].X();
-		  const double y1 = thePath[i].Y();
-		  const double x2 = thePath[i+1].X();
-		  const double y2 = thePath[i+1].Y();
+		  const double x1 = thePath[i].x;
+		  const double y1 = thePath[i].y;
+		  const double x2 = thePath[i+1].x;
+		  const double y2 = thePath[i+1].y;
 		  const double dx = x2-x1;
 		  const double dy = y2-y1;
 		  sum += x1*dy-dx*y1;
@@ -115,10 +115,10 @@ namespace Imagine
 	  // for some reasing closing the segments will produce same area every time
 	  // must check area formula validity
 #if 0
-	  const bool isclosed = (thePath.front().X() == thePath.back().X() &&
-							 thePath.front().Y() == thePath.back().Y());
+	  const bool isclosed = (thePath.front().x == thePath.back().x &&
+							 thePath.front().y == thePath.back().y);
 	  if(!isclosed)
-		sum += thePath.back().X()*thePath.front().Y()-thePath.front().X()*thePath.back().Y();
+		sum += thePath.back().x*thePath.front().y-thePath.front().x*thePath.back().y;
 #endif
 
 	  // positive orientation for positive area
@@ -136,12 +136,12 @@ namespace Imagine
 	{
 	  const NFmiPathData & path = thePath.Elements();
 	  NFmiPath out;
-	  out.MoveTo(path.back().X(),path.back().Y());
+	  out.MoveTo(path.back().x,path.back().y);
 	  for(unsigned int i=path.size()-1; i>0; i--)
 		{
-		  out.Add(NFmiPathElement(path[i].Oper(),
-								  path[i-1].X(),
-								  path[i-1].Y()));
+		  out.Add(NFmiPathElement(path[i].op,
+								  path[i-1].x,
+								  path[i-1].y));
 		}
 	  return out;
 	}
@@ -209,8 +209,8 @@ namespace Imagine
 
 	NFmiPoint ComputeLeftTangent(const NFmiPathData & thePath)
 	{
-	  const double dx = thePath[1].X() - thePath[0].X();
-	  const double dy = thePath[1].Y() - thePath[0].Y();
+	  const double dx = thePath[1].x - thePath[0].x;
+	  const double dy = thePath[1].y - thePath[0].y;
 	  return Tangent(dx,dy);
 	}
 
@@ -226,8 +226,8 @@ namespace Imagine
 	NFmiPoint ComputeRightTangent(const NFmiPathData & thePath)
 	{
 	  const int n = thePath.size();
-	  const double dx = thePath[n-2].X() - thePath[n-1].X();
-	  const double dy = thePath[n-2].Y() - thePath[n-1].Y();
+	  const double dx = thePath[n-2].x - thePath[n-1].x;
+	  const double dy = thePath[n-2].y - thePath[n-1].y;
 	  return Tangent(dx,dy);
 	}
 
@@ -255,10 +255,10 @@ namespace Imagine
 		  int prev = (thePos>=d ? thePos-d : 0);
 		  int next = (thePos+d<thePath.size() ? thePos+d : thePath.size()-1);
 
-		  double dx1 = thePath[prev].X() - thePath[thePos].X();
-		  double dy1 = thePath[prev].Y() - thePath[thePos].Y();
-		  double dx2 = thePath[thePos].X() - thePath[next].X();
-		  double dy2 = thePath[thePos].Y() - thePath[next].Y();
+		  double dx1 = thePath[prev].x - thePath[thePos].x;
+		  double dy1 = thePath[prev].y - thePath[thePos].y;
+		  double dx2 = thePath[thePos].x - thePath[next].x;
+		  double dy2 = thePath[thePos].y - thePath[next].y;
 		  double dx = (dx1+dx2)/2;
 		  double dy = (dy1+dy2)/2;
 
@@ -288,11 +288,11 @@ namespace Imagine
 	{
 	  const int n = thePath.size();
 
-	  const double dx1 = thePath[0].X() - thePath[n-2].X();
-	  const double dy1 = thePath[0].Y() - thePath[n-2].Y();
+	  const double dx1 = thePath[0].x - thePath[n-2].x;
+	  const double dy1 = thePath[0].y - thePath[n-2].y;
 
-	  const double dx2 = thePath[1].X() - thePath[0].X();
-	  const double dy2 = thePath[1].Y() - thePath[0].Y();
+	  const double dx2 = thePath[1].x - thePath[0].x;
+	  const double dy2 = thePath[1].y - thePath[0].y;
 
 	  const double dx = (dx1+dx2)/2;
 	  const double dy = (dy1+dy2)/2;
@@ -324,10 +324,10 @@ namespace Imagine
 	  for(unsigned int i=1; i<=degree; i++)
 		for(unsigned int j=0; j<=degree-i; j++)
 		  {
-			tmp[j].X((1-theValue)*tmp[j].X() + theValue*tmp[j+1].X());
-			tmp[j].Y((1-theValue)*tmp[j].Y() + theValue*tmp[j+1].Y());
+			tmp[j].x= (1-theValue)*tmp[j].x + theValue*tmp[j+1].x;
+			tmp[j].y= (1-theValue)*tmp[j].y + theValue*tmp[j+1].y;
 		  }
-	  return NFmiPoint(tmp[0].X(),tmp[0].Y());
+	  return NFmiPoint(tmp[0].x,tmp[0].y);
 	}
 
 	// ----------------------------------------------------------------------
@@ -354,10 +354,10 @@ namespace Imagine
 	  unsigned int i;
 	  for(i = theFirst+1; i <= theLast; i++)
 		{
-		  const double dist = NFmiGeoTools::Distance(thePath[i].X(),
-													 thePath[i].Y(),
-													 thePath[i-1].X(),
-													 thePath[i-1].Y());
+		  const double dist = NFmiGeoTools::Distance(thePath[i].x,
+													 thePath[i].y,
+													 thePath[i-1].x,
+													 thePath[i-1].y);
 		  out[i-theFirst] = out[i-theFirst-1] + dist;
 		}
 
@@ -421,14 +421,14 @@ namespace Imagine
 	  // Generate control vertices for Q'
 	  NFmiPath Q1;
 	  for(i=0; i<=2; i++)
-		Q1.ConicTo(3*(thePath[i+1].X() - thePath[i].X()),
-				   3*(thePath[i+1].Y() - thePath[i].Y()));
+		Q1.ConicTo(3*(thePath[i+1].x - thePath[i].x),
+				   3*(thePath[i+1].y - thePath[i].y));
 
 	  // Generate control vertices for Q''
 	  NFmiPath Q2;
 	  for(i=0; i<=1; i++)
-		Q2.LineTo(2*(Q1.Elements()[i+1].X()-Q1.Elements()[i].X()),
-				  2*(Q1.Elements()[i+1].Y()-Q1.Elements()[i].Y()));
+		Q2.LineTo(2*(Q1.Elements()[i+1].x-Q1.Elements()[i].x),
+				  2*(Q1.Elements()[i+1].y-Q1.Elements()[i].y));
 
 	  // Compute Q'(u) and Q''(u)
 
@@ -437,11 +437,11 @@ namespace Imagine
 
 	  // Compute f(u)/f'(u)
 
-	  double numerator = ( (Q_u.X()-thePoint.X()) * Q1_u.X() +
-						   (Q_u.Y()-thePoint.Y()) * Q1_u.Y());
+	  double numerator = ( (Q_u.X()-thePoint.x) * Q1_u.X() +
+						   (Q_u.Y()-thePoint.y) * Q1_u.Y());
 	  double denominator = ( (Q1_u.X()*Q1_u.X() + Q1_u.Y()*Q1_u.Y() +
-							  (Q_u.X()-thePoint.X())*Q2_u.X() +
-							  (Q_u.Y()-thePoint.Y())*Q2_u.Y()) );
+							  (Q_u.X()-thePoint.x)*Q2_u.X() +
+							  (Q_u.Y()-thePoint.y)*Q2_u.Y()) );
 
 	  // u = u - f(u)/f'(u)
 	  // the safety check against division by zero was missing
@@ -541,8 +541,8 @@ namespace Imagine
 	  for(unsigned int i = theFirst+1; i < theLast; i++)
 		{
 		  NFmiPoint P = Bezier(theBezier,theU[i-theFirst]);
-		  const double dx = P.X() - thePath[i].X();
-		  const double dy = P.Y() - thePath[i].Y();
+		  const double dx = P.X() - thePath[i].x;
+		  const double dy = P.Y() - thePath[i].y;
 		  double dist = dx*dx+dy*dy;
 		  if(dist >= maxdist)
 			{
@@ -580,8 +580,8 @@ namespace Imagine
 	  
 	  double len = 0;
 	  for(unsigned int i=0; i<thePath.size()-1; i++)
-		len += NFmiGeoTools::Distance(thePath[i].X(),thePath[i].Y(),
-									  thePath[i+1].X(),thePath[i+1].Y());
+		len += NFmiGeoTools::Distance(thePath[i].x,thePath[i].y,
+									  thePath[i+1].x,thePath[i+1].y);
 
 	  
 	  return (bezlen <= 2*len);
@@ -633,8 +633,8 @@ namespace Imagine
 	  double C[2][2] = { {0,0},{0,0} };
 	  double X[2] = { 0,0 };
 
-	  const NFmiPoint p0(thePath[theFirst].X(),thePath[theFirst].Y());
-	  const NFmiPoint p3(thePath[theLast].X(),thePath[theLast].Y());
+	  const NFmiPoint p0(thePath[theFirst].x,thePath[theFirst].y);
+	  const NFmiPoint p3(thePath[theLast].x,thePath[theLast].y);
 
 	  for(i=0; i<n; i++)
 		{
@@ -644,7 +644,7 @@ namespace Imagine
 		  C[1][1] += DotProduct(A[i].second,A[i].second);
 
 		  const double u = theU[i];
-		  const NFmiPoint p(thePath[theFirst+i].X(),thePath[theFirst+i].Y()); 
+		  const NFmiPoint p(thePath[theFirst+i].x,thePath[theFirst+i].y); 
 
 		  NFmiPoint tmp = p - (p0*(B0(u)+B1(u)) + p3*(B2(u)+B3(u)));
 
@@ -729,10 +729,10 @@ namespace Imagine
 	  // Use heuristic if region has only two points in it
 	  if(n == 2)
 		{
-		  const double x0 = thePath[theFirst].X();
-		  const double y0 = thePath[theFirst].Y();
-		  const double x3 = thePath[theLast].X();
-		  const double y3 = thePath[theLast].Y();
+		  const double x0 = thePath[theFirst].x;
+		  const double y0 = thePath[theFirst].y;
+		  const double x3 = thePath[theLast].x;
+		  const double y3 = thePath[theLast].y;
 		  
 		  const double dist = NFmiGeoTools::Distance(x0,y0,x3,y3)/3;
 
