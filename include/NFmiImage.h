@@ -272,6 +272,11 @@ namespace Imagine
   };
 
 } // namespace Imagine
+
+#ifndef IMAGINE_WITH_CAIRO
+  // Similar define in 'ImagineXr.h' for the Cairo version
+  typedef Imagine::NFmiImage ImagineXr_or_NFmiImage;
+#endif
   
 #endif // IMAGINE_NFMIIMAGE_H
   

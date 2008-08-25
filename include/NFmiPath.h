@@ -41,14 +41,12 @@
 
 #ifdef IMAGINE_WITH_CAIRO
 # include "ImagineXr.h"
-typedef ImagineXr ImagineXr_or_NFmiImage;
 # define CAIRO_NORMAL_LINE_WIDTH (0.4)      // 2.0 is normal Cairo default
 #else
 # include "NFmiImage.h"
 # include "NFmiDrawable.h"
 # include "NFmiFillMap.h"
 # include "NFmiAffine.h"
-typedef Imagine::NFmiImage ImagineXr_or_NFmiImage;
 #endif
 
 #include <string>
