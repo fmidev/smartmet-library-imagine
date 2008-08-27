@@ -1,6 +1,6 @@
 LIB = imagine
 
-MAINFLAGS = -Wall -W -Wno-unused-parameter -Wno-variadic-macros
+MAINFLAGS = -Wall -W -Wno-unused-parameter -Wno-variadic-macros -fPIC
 
 # CAIRO_FLAGS to use 'libcairo' for rendering (gives antialiasing and PDF output
 # but is 1.1-2.0 times slower than original self-made code)
