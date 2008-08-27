@@ -57,7 +57,7 @@ FT2_LIBS= $(shell freetype-config --libs)
 FT2_CFLAGS= $(shell freetype-config --cflags)
 
 INCLUDES = -I$(includedir) \
-	-I$(NEWBASE_PATH)/include \
+	-I$(includedir)/smartmet/newbase \
 	-I/usr/local/include/boost-1_35 \
 	$(FT2_CFLAGS)
 
