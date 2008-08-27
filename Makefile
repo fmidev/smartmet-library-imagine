@@ -165,14 +165,11 @@ clean:
 	rm -f $(LIBFILE) $(OBJFILES) *~ source/*~ include/*~
 
 install:
-	@mkdir -p $(includedir)/$(LIB)
+	@mkdir -p $(includedir)/smartmet/$(LIB)
 	@list='$(HDRS)'; \
 	for hdr in $$list; do \
-	  if [ include/$$hdr -nt $(includedir)/$(LIB)/$$hdr ]; \
-	  then \
-	    echo $(INSTALL_DATA) include/$$hdr $(includedir)/$(LIB)/$$hdr; \
-	  fi; \
-	  $(INSTALL_DATA) include/$$hdr $(includedir)/$(LIB)/$$hdr; \
+	  echo $(INSTALL_DATA) include/$$hdr $(includedir)/smartmet/$(LIB)/$$hdr; \
+	  $(INSTALL_DATA) include/$$hdr $(includedir)/smartmet/$(LIB)/$$hdr; \
 	done
 	@mkdir -p $(libdir)
 	$(INSTALL_DATA) $(LIBFILE) $(libdir)/$(LIBFILE)
