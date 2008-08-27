@@ -53,6 +53,10 @@ namespace Imagine
     enum NFmiPathOperation Oper() const { return op; }
     float X() const { return x; }
     float Y() const { return y; }
+    
+    void Oper( enum NFmiPathOperation v ) { op=v; }
+    void X( float v ) { x=v; }
+    void Y( float v ) { y=v; }
 #endif
   };
 
