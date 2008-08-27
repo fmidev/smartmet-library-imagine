@@ -46,6 +46,14 @@ namespace Imagine
 	bool operator==( const NFmiPathElement &other ) const {
 	  return op == other.op && x==other.x && y==other.y;
    }
+
+    /* Verbose alternatives for old code's compatibility
+    */
+#if 1
+    enum NFmiPathOperation Oper() const { return op; }
+    float X() const { return x; }
+    float Y() const { return y; }
+#endif
   };
 
 } // namespace Imagine
