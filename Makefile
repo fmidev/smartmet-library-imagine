@@ -2,14 +2,6 @@ LIB = imagine
 
 MAINFLAGS = -Wall -W -Wno-unused-parameter -Wno-variadic-macros -fPIC
 
-# CAIRO_FLAGS to use 'libcairo' for rendering (gives antialiasing and PDF output
-# but is 1.1-2.0 times slower than original self-made code)
-#
-# Note: Font control is different; self-made uses bitmap fonts and TTF with
-#       filenames; Cairo uses system font names and point size.
-#
-CAIRO_FLAGS = -DIMAGINE_WITH_CAIRO #-DIMAGINE_DEBUG
-
 EXTRAFLAGS = \
         -ansi \
         -Wcast-align \
@@ -68,14 +60,12 @@ INCLUDES = -I$(includedir) \
 
 LIBS = -L$(libdir) \
 	-lsmartmet_newbase \
-	$(FT2_LIBS) -ljpeg -lpng -lz $(CAIROMM_LIBS)
+	$(FT2_LIBS) -ljpeg -lpng -lz
 
 # Platform independent Cairomm support      -- AKa 25-Aug-2008
 #
-ifneq "$(CAIRO_FLAGS)" ""
-  LIBS += $(shell pkg-config --libs cairomm-1.0)
-  MAINFLAGS += $(CAIRO_FLAGS) $(shell pkg-config --cflags cairomm-1.0)
-endif
+LIBS += $(shell pkg-config --libs cairomm-1.0)
+MAINFLAGS += $(CAIRO_FLAGS) $(shell pkg-config --cflags cairomm-1.0)
 
 # Default compile options
 

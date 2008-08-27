@@ -1,7 +1,3 @@
-#ifdef IMAGINE_WITH_CAIRO
-# error "Either Cairo or this"
-#endif
-
 // ======================================================================
 /*!
  * \file NFmiDrawable.h
@@ -25,6 +21,12 @@
 
 #ifndef IMAGINE_NFMIDRAWABLE_H
 #define IMAGINE_NFMIDRAWABLE_H
+
+#include "imagine-config.h"
+
+#ifdef IMAGINE_WITH_CAIRO
+# error "Either Cairo or this"
+#endif
 
 // Note: Any drawable must invariably know how to handle colour,
 //       hence this include is here instead of derived classes.

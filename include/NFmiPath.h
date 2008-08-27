@@ -31,6 +31,8 @@
 #ifndef IMAGINE_NFMIPATH_H
 #define IMAGINE_NFMIPATH_H
 
+#include "imagine-config.h"
+
 // Essential includes
 
 #include "NFmiPathElement.h"

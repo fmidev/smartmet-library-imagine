@@ -22,6 +22,8 @@
 #ifndef IMAGINE_NFMICOLORTOOLS_H
 #define IMAGINE_NFMICOLORTOOLS_H
 
+#include "imagine-config.h"
+
 #include "NFmiDef.h"
 #include <cmath>	// max,abs etc
 #include <string>	// for color name definitions

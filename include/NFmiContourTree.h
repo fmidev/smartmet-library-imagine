@@ -126,6 +126,8 @@
 #ifndef IMAGINE_NFMICONTOURTREE_H
 #define IMAGINE_NFMICONTOURTREE_H
 
+#include "imagine-config.h"
+
 // Essential includes:
 
 #include "NFmiEdgeTree.h"	// Input edges

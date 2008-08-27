@@ -1,7 +1,3 @@
-#ifdef IMAGINE_WITH_CAIRO
-# error "Either Cairo or us"
-#endif
-
 // ======================================================================
 /*!
  * \file
@@ -12,6 +8,12 @@
 //#ifdef UNIX
 #ifndef IMAGINE_NFMIFACE_H
 #define IMAGINE_NFMIFACE_H
+
+#include "imagine-config.h"
+
+#ifdef IMAGINE_WITH_CAIRO
+# error "Either Cairo or us"
+#endif
 
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"

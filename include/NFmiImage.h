@@ -17,6 +17,8 @@
 #ifndef IMAGINE_NFMIIMAGE_H
 #define IMAGINE_NFMIIMAGE_H
 
+#include "imagine-config.h"
+
 #include "NFmiColorTools.h"
 #include "NFmiAlignment.h"
 

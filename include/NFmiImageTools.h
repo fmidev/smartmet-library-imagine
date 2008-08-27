@@ -1,7 +1,3 @@
-#ifdef IMAGINE_WITH_CAIRO
-# error "Either Cairo or this"
-#endif
-
 // ======================================================================
 /*!
  * \file
@@ -11,6 +7,12 @@
 
 #ifndef IMAGINE_NFMIIMAGETOOLS_H
 #define IMAGINE_NFMIIMAGETOOLS_H
+
+#include "imagine-config.h"
+
+#ifdef IMAGINE_WITH_CAIRO
+# error "Either Cairo or this"
+#endif
 
 #include <string>
 

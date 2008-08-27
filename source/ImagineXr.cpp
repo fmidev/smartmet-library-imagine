@@ -3,6 +3,8 @@
 *
 * Replacement for 'Imagine' library, using Cairo drawing
 */
+#include "imagine-config.h"
+
 #ifdef IMAGINE_WITH_CAIRO
 
 #include "ImagineXr.h"

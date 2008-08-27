@@ -1,7 +1,3 @@
-#ifdef IMAGINE_WITH_CAIRO
-# error "Either Cairo or us"
-#endif
-
 // ======================================================================
 //
 // Definition of a map of x-coordinates indexed by an y-coordinate.
@@ -41,6 +37,12 @@
 
 #ifndef IMAGINE_NFMIFILLMAP_H
 #define IMAGINE_NFMIFILLMAP_H
+
+#include "imagine-config.h"
+
+#ifdef IMAGINE_WITH_CAIRO
+# error "Either Cairo or us"
+#endif
 
 #ifdef WIN32
 #pragma warning(disable : 4786) // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta

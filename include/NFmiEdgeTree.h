@@ -13,6 +13,8 @@
 #ifndef IMAGINE_NFMIEDGETREE_H
 #define IMAGINE_NFMIEDGETREE_H
 
+#include "imagine-config.h"
+
 // Essential includes:
 
 #include "NFmiEdge.h"		// Input edges

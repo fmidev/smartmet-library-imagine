@@ -7,6 +7,8 @@
 #ifndef IMAGINE_XR_H
 #define IMAGINE_XR_H
 
+#include "imagine-config.h"
+
 #ifndef IMAGINE_WITH_CAIRO
 # error "Please define IMAGINE_WITH_CAIRO to use us."
 #endif

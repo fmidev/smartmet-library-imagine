@@ -1,3 +1,5 @@
+#include "imagine-config.h"
+
 #ifndef IMAGINE_WITH_CAIRO
 // ======================================================================
 /*!
