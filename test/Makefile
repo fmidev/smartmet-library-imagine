@@ -25,6 +25,23 @@ DIFFICULTFLAGS = \
 	-Wunreachable-code \
 	-Wredundant-decls
 
+CAIROMODE = -DIMAGINE_WITH_CAIRO 
+
+# Platform independent Freetype2 support
+
+FT2_LIBS= $(shell freetype-config --libs)
+FT2_CFLAGS= $(shell freetype-config --cflags)
+
+# Platform independent Cairomm support
+
+ifneq "$(CAIROMODE)" ""
+  CAIRO_LIBS = $(shell pkg-config --libs cairomm-1.0)
+  CAIRO_CFLAGS = $(CAIROMODE) $(shell pkg-config --cflags cairomm-1.0)
+else
+  CAIRO_LIBS =
+  CAIRO_CFLAGS = 
+endif
+
 CC = g++
 CFLAGS = -DUNIX -O0 -g $(MAINFLAGS)
 
@@ -33,7 +50,8 @@ INCLUDES = \
 	-I /usr/include/ \
 	-I /usr/include/smartmet/newbase \
 	-I /usr/include/smartmet/regression \
-	-I /usr/include/freetype2
+	$(FT2_CFLAGS) \
+	$(CAIRO_CFLAGS)
 
 LIBS =  -L .. -lsmartmet_imagine \
 	-lsmartmet_newbase \
@@ -42,10 +60,9 @@ LIBS =  -L .. -lsmartmet_imagine \
 	-lboost_regex-gcc41-mt \
 	-lboost_filesystem-gcc41-mt \
         -lboost_iostreams-gcc41-mt \
-	-lfreetype \
-	-lpng \
-	-ljpeg \
-	-lz
+	$(FT2_LIBS) \
+	$(CAIRO_LIBS) \
+	-lpng -ljpeg -lz
 
 all: $(PROG)
 clean:
