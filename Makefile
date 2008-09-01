@@ -35,7 +35,6 @@ ifeq "$(shell uname -s)" "Darwin"
   NEWBASE_PATH = $(HOME)/Work/IL/cvs/newbase
   PREFIX = /sw
 else
-  NEWBASE_PATH = /home/kauppi/IL/cvs/newbase
   ifeq ($(origin PREFIX), undefined)
     PREFIX = /usr
   else
@@ -66,6 +65,11 @@ LIBS = -L$(libdir) \
 #
 LIBS += $(shell pkg-config --libs cairomm-1.0)
 MAINFLAGS += $(CAIRO_FLAGS) $(shell pkg-config --cflags cairomm-1.0)
+
+ifneq "$(NEWBASE_PATH)" ""
+  INCLUDES += -I$(NEWBASE_PATH)/include
+  LIBS += -L$(NEWBASE_PATH)
+endif
 
 # Default compile options
 
