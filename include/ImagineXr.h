@@ -129,7 +129,4 @@ class ImagineXr {
     void Write() const;
 };
 
-// Similar define in 'NFmiImage.h' for the non-Cairo version
-typedef ImagineXr ImagineXr_or_NFmiImage;
-
 #endif

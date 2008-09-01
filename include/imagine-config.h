@@ -16,5 +16,18 @@
 // Comment this out for original (self made) rendering
 #define IMAGINE_WITH_CAIRO
 
+// Having this typedef makes many either-or places shorter (could also be
+// made a class of its own, but this is how it ended in summer-08) --AKa
+//
+#ifdef IMAGINE_WITH_CAIRO
+  class ImagineXr;
+  typedef ImagineXr ImagineXr_or_NFmiImage;
+#else
+  namespace Imagine {
+    class NFmiImage;
+    typedef Imagine::NFmiImage ImagineXr_or_NFmiImage;
+  }
+#endif
+
 #endif
 

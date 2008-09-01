@@ -40,12 +40,12 @@
 #include "NFmiArea.h"
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"
+#include "NFmiImage.h"
 
 #ifdef IMAGINE_WITH_CAIRO
 # include "ImagineXr.h"
 # define CAIRO_NORMAL_LINE_WIDTH (0.4)      // 2.0 is normal Cairo default
 #else
-# include "NFmiImage.h"
 # include "NFmiDrawable.h"
 # include "NFmiFillMap.h"
 # include "NFmiAffine.h"
