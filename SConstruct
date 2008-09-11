@@ -83,8 +83,6 @@ elif OSX:
     env.Append( CPPPATH= [ "/sw/include" ] )
     env.Append( LIBPATH= [ "/sw/lib" ] )
 
-#env.Append( LIBS= "boost_iostreams" )
-
 env.Append( LIBS= [ "smartmet_newbase" ] )
 
 #

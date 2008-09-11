@@ -76,7 +76,7 @@ install:
 test:
 	cd test && make test
 
-html::
+html:
 	mkdir -p /data/local/html/lib/$(LIB)
 	doxygen $(LIB).dox
 
@@ -102,6 +102,4 @@ headertest:
 	echo "int main() { return 0; }" >> /tmp/$(LIB).cpp; \
 	$(CC) $(CFLAGS) $(INCLUDES) -o /dev/null /tmp/$(LIB).cpp $(LIBS); \
 	done
-
-.SUFFIXES: $(SUFFIXES) .cpp
 
