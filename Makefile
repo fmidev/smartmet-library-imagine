@@ -54,8 +54,8 @@ profile:
 	scons $(SCONS_FLAGS) profile=1 $(LIBFILE)
 
 clean:
-	scons -c objdir=$(objdir)
-	-rm -f *~ source/*~ include/*~
+	@#scons -c objdir=$(objdir)
+	-rm -f $(LIBFILE) *~ source/*~ include/*~
 	-rm -rf $(objdir)
 
 install:
