@@ -42,14 +42,16 @@ INSTALL_DATA = install -m 664
 #
 # The rules
 #
+SCONS_FLAGS += objdir=$(objdir) prefix=$(PREFIX)
+
 all release $(LIBFILE):
-	scons $(SCONS_FLAGS) objdir=$(objdir) $(LIBFILE)
+	scons $(SCONS_FLAGS) $(LIBFILE)
 
 debug:
-	scons $(SCONS_FLAGS) objdir=$(objdir) debug=1 $(LIBFILE)
+	scons $(SCONS_FLAGS) debug=1 $(LIBFILE)
 
 profile:
-	scons $(SCONS_FLAGS) objdir=$(objdir) profile=1 $(LIBFILE)
+	scons $(SCONS_FLAGS) profile=1 $(LIBFILE)
 
 clean:
 	scons -c objdir=$(objdir)

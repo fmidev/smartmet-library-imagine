@@ -19,7 +19,7 @@
 import os.path
 
 Help(""" 
-    Usage: scons [-j 4] [-Q] [debug=1|profile=1] [objdir=<path>]
+    Usage: scons [-j 4] [-Q] [debug=1|profile=1] [objdir=<path>] [prefix=<path>]
     
     Or just use 'make release|debug|profile', which point right back to us.
 """) 
@@ -29,6 +29,7 @@ PROFILE=    int( ARGUMENTS.get("profile", 0) ) != 0
 RELEASE=    (not DEBUG) and (not PROFILE)     # default
 
 OBJDIR=     ARGUMENTS.get("objdir","obj")
+PREFIX=     ARGUMENTS.get("prefix","/usr/")
 
 #
 # Base settings
@@ -65,7 +66,7 @@ if not WINDOWS:
 if LINUX:
     # Newbase from system install
     #
-    env.Append( CPPPATH= [ PREFIX+"include/smartmet/newbase" ] )
+    env.Append( CPPPATH= [ PREFIX+"/include/smartmet/newbase" ] )
 
     # Boost 1.35 built to /usr/local
     #
@@ -131,7 +132,7 @@ if not WINDOWS:
 else:
     debug_flags= []
 
-env_debug.Append( CXXFLAGS=[ "-O0", "-g", debug_flags ] )
+env_debug.Append( CXXFLAGS=[ "-O0", "-g" ] + debug_flags )
 
 
 #
