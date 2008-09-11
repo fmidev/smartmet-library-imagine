@@ -6,6 +6,11 @@ else
   PREFIX = $(PREFIX)
 endif
 
+#
+# To build serially (helps get the error messages right): make debug SCONS_FLAGS=""
+#
+SCONS_FLAGS=-j 4
+
 # Installation directories
 
 processor := $(shell uname -p)
