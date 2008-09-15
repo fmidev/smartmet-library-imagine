@@ -12,6 +12,10 @@
 #       different machines are used only for debug/release/profile.
 #           -- AKa 11-Sep-2008
 #
+# Windows usage:
+#	Run 'vcvars32.bat' or similar before using us, to give right
+#	env.var. setups for Visual C++ 2008 command line tools & headers.
+#
 # Change log:
 #       AKa 15-Sep-2008: Simplified (using just one build environment)
 #       AKa 11-Sep-2008: Initial version (same as existing Makefile)
@@ -36,12 +40,23 @@ env= Environment()
 
 LINUX=  env["PLATFORM"]=="posix"
 OSX=    env["PLATFORM"]=="darwin"
-WINDOWS= env["PLATFORM"]=="windows"
+WINDOWS= env["PLATFORM"]=="win32"
+
+if WINDOWS:
+    GNUWIN32= "D:/GnuWin32"
+
+#
+# SCons does not pass env.vars automatically through to executing commands.
+# On Windows, we want it to get them all (Visual C++ 2008).
+#
+if WINDOWS:
+    env.Replace( ENV= os.environ )
 
 env.Append( CPPPATH= [ "./include" ] )
 
 if WINDOWS: 
-    { }     # TBD
+    if env["CC"]=="cl":
+        env.Append( CXXFLAGS= ["/EHsc"] )
 else:
     env.Append( CPPDEFINES= ["UNIX"] )
     env.Append( CXXFLAGS= [
@@ -63,7 +78,28 @@ else:
 	    #"-pedantic",
     ] )
 
-if LINUX:
+BOOST_POSTFIX=""
+BOOST_PREFIX=""
+
+if WINDOWS:
+    # Installed from 'boost_1_35_0_setup.exe' from BoostPro Internet page.
+    #
+    BOOST_INSTALL_PATH= "D:/Boost/1_35_0"
+    env.Append( CPPPATH= [ BOOST_INSTALL_PATH ] )
+    env.Append( LIBPATH= [ BOOST_INSTALL_PATH + "/lib" ] )
+    if DEBUG:
+        BOOST_POSTFIX= "-vc90-mt-gd-1_35"
+    else:
+        BOOST_POSTFIX= "-vc90-mt-1_35"
+        BOOST_PREFIX= "lib"
+    env.Append( LIBS= [ BOOST_PREFIX+"boost_iostreams"+BOOST_POSTFIX,
+                        BOOST_PREFIX+"boost_date_time"+BOOST_POSTFIX ] )
+
+if WINDOWS:
+    env.Append( CPPPATH= [ "../newbase/include" ] )
+    env.Append( LIBPATH= [ "../newbase" ] )
+
+elif LINUX:
     # Newbase from system install
     #
     env.Append( CPPPATH= [ PREFIX+"/include/smartmet/newbase" ] )
@@ -74,7 +110,7 @@ elif OSX:
     env.Append( CPPPATH= [ "../newbase/include" ] )
     env.Append( LIBPATH= [ "../newbase" ] )
 
-    # Boost from Fink
+    # Fink
     #
     env.Append( CPPPATH= [ "/sw/include" ] )
     env.Append( LIBPATH= [ "/sw/lib" ] )
@@ -84,19 +120,41 @@ env.Append( LIBS= [ "smartmet_newbase" ] )
 #
 # Freetype2 support
 #
-if not WINDOWS:
+if WINDOWS:
+    env.Append( CPPPATH= [ GNUWIN32+"/freetype-2.3.5-1-lib/include",
+                           GNUWIN32+"/freetype-2.3.5-1-lib/include/freetype2"  ] )
+    env.Append( LIBPATH= [ GNUWIN32+"/freetype-2.3.5-1-lib/lib" ] )
+    env.Append( LIBS= [ "freetype" ] )
+else:
     env.ParseConfig("freetype-config --cflags --libs") 
 
 #
 # Cairomm-1.0 support
 #
-if not WINDOWS:
+if WINDOWS:
+    #env.Append( CPPPATH= [ "../cairomm-1.0/include" ] )
+    #env.Append( LIBPATH= [ "../cairomm-1.0/lib" ] )
+    env.Append( CPPPATH= [ "../cairo-dev-1.6.4-2/include" ] )
+    env.Append( LIBPATH= [ "../cairo-dev-1.6.4-2/lib" ] )
+else:
     env.ParseConfig("pkg-config --cflags --libs cairomm-1.0") 
 
 #
 # Other libraries
 #
-env.Append( LIBS= [ "jpeg", "png", "z" ] )
+if WINDOWS:
+    env.Append( CPPPATH= [ GNUWIN32+"/libpng-1.2.24-lib/include",
+			   GNUWIN32+"/jpeg-6b-4-lib/include",
+                           GNUWIN32+"/zlib-1.2.3-lib/include",
+                         ] 
+		)
+    env.Append( LIBPATH= [ GNUWIN32+"/libpng-1.2.24-lib/lib",
+			   GNUWIN32+"/jpeg-6b-4-lib/lib",
+                           GNUWIN32+"/zlib-1.2.3-lib/lib" ] 
+		)
+    env.Append( LIBS= [ "jpeg", "libpng", "zlib" ] )
+else:
+    env.Append( LIBS= [ "jpeg", "png", "z" ] )
 
 
 #
@@ -104,7 +162,12 @@ env.Append( LIBS= [ "jpeg", "png", "z" ] )
 #
 if DEBUG:
     if WINDOWS:
-        { } # TBD
+        if env["CC"]=="cl":
+            env.AppendUnique( CPPDEFINES=["_DEBUG","DEBUG"] )
+            # Debug multithreaded DLL runtime, no opt.
+            env.AppendUnique( CCFLAGS=["/MDd", "/Od"] )
+            # Each obj gets own .PDB so parallel building (-jN) works
+            env.AppendUnique( CCFLAGS=["/Zi", "/Fd${TARGET}.pdb"] )
     else:
         env.Append( CXXFLAGS=[ "-O0", "-g", "-Werror",
     
@@ -129,7 +192,9 @@ if DEBUG:
 #
 if RELEASE or PROFILE:
     if WINDOWS:
-        { }     # TBD
+        if env["CC"]=="cl":
+            # multithreaded DLL runtime, reasonable opt.
+            env.AppendUnique( CCFLAGS=["/MD", "/Ox"] )
     else:
         env.Append( CPPDEFINES="NDEBUG",
                     CXXFLAGS= ["-O2",
@@ -162,41 +227,49 @@ if PROFILE:
 objs= []
 shared_objs= []
 
-if DEBUG:
-    e_O0= env       # No change, anyways
-    e_noerror= env.Clone()
-    e_noerror["CXXFLAGS"].remove( "-Werror" )
-    e_noerror["CXXFLAGS"].append( "-Wno-error" )
-else:
-    e_O0= env.Clone()
-    e_O0["CXXFLAGS"].remove("-O2")
-    e_O0["CXXFLAGS"].append("-O0")
-    e_O0["CXXFLAGS"].remove("-Wuninitialized")    # not supported without '-O'
-    e_noerror= env    # anyways no -Werror
+if WINDOWS:
+    for fn in Glob("source/*.cpp"): 
+        s= os.path.basename( str(fn) )
+        obj_s= OBJDIR+"/"+ s.replace(".cpp","")
 
-for fn in Glob("source/*.cpp"): 
-    s= os.path.basename( str(fn) )
-    obj_s= OBJDIR+"/"+ s.replace(".cpp","")
-    
-    # Using -O0 since -O2 would take so long to compile (really...?)
-    #
-    if (
-        #s == "NFmiColorTools.cpp" or
-        False): 
-        objs += e_O0.Object( obj_s, fn )
-        shared_objs += e_O0.SharedObject( obj_s, fn )
-    elif (
-         #s == "NFmiEsriShape.cpp" or    # isspace uses an old style cast
-         #s == "NFmiImageJpeg.cpp" or    # jpeglib calls cause warnings
-         #s == "NFmiPath.cpp" or         # isspace
-         #s == "NFmiImage.cpp" or        # sstream causes warnings
-        False):
-        objs += e_noerror.Object( obj_s, fn )
-        shared_objs += e_noerror.SharedObject( obj_s, fn )
-
-    else:
         objs += env.Object( obj_s, fn )
         shared_objs += env.SharedObject( obj_s, fn ) 
+else:
+    if DEBUG:
+        e_O0= env       # No change, anyways
+        e_noerror= env.Clone()
+        e_noerror["CXXFLAGS"].remove( "-Werror" )
+        e_noerror["CXXFLAGS"].append( "-Wno-error" )
+    else:
+        e_O0= env.Clone()
+        e_O0["CXXFLAGS"].remove("-O2")
+        e_O0["CXXFLAGS"].append("-O0")
+        e_O0["CXXFLAGS"].remove("-Wuninitialized")    # not supported without '-O'
+        e_noerror= env    # anyways no -Werror
+    
+    for fn in Glob("source/*.cpp"): 
+        s= os.path.basename( str(fn) )
+        obj_s= OBJDIR+"/"+ s.replace(".cpp","")
+        
+        # Using -O0 since -O2 would take so long to compile (really...?)
+        #
+        if (
+            #s == "NFmiColorTools.cpp" or
+            False): 
+            objs += e_O0.Object( obj_s, fn )
+            shared_objs += e_O0.SharedObject( obj_s, fn )
+        elif (
+             #s == "NFmiEsriShape.cpp" or    # isspace uses an old style cast
+             #s == "NFmiImageJpeg.cpp" or    # jpeglib calls cause warnings
+             #s == "NFmiPath.cpp" or         # isspace
+             #s == "NFmiImage.cpp" or        # sstream causes warnings
+            False):
+            objs += e_noerror.Object( obj_s, fn )
+            shared_objs += e_noerror.SharedObject( obj_s, fn )
+    
+        else:
+            objs += env.Object( obj_s, fn )
+            shared_objs += env.SharedObject( obj_s, fn ) 
 
 env.Library( "smartmet_imagine", objs )
 env.SharedLibrary( "smartmet_imagine", shared_objs )
