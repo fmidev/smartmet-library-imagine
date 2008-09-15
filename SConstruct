@@ -13,6 +13,7 @@
 #           -- AKa 11-Sep-2008
 #
 # Change log:
+#       AKa 15-Sep-2008: Simplified (using just one build environment)
 #       AKa 11-Sep-2008: Initial version (same as existing Makefile)
 #
 
@@ -31,10 +32,7 @@ RELEASE=    (not DEBUG) and (not PROFILE)     # default
 OBJDIR=     ARGUMENTS.get("objdir","obj")
 PREFIX=     ARGUMENTS.get("prefix","/usr/")
 
-#
-# Base settings
-#
-env= DefaultEnvironment()
+env= Environment()
 
 LINUX=  env["PLATFORM"]=="posix"
 OSX=    env["PLATFORM"]=="darwin"
@@ -42,7 +40,9 @@ WINDOWS= env["PLATFORM"]=="windows"
 
 env.Append( CPPPATH= [ "./include" ] )
 
-if not WINDOWS: 
+if WINDOWS: 
+    { }     # TBD
+else:
     env.Append( CPPDEFINES= ["UNIX"] )
     env.Append( CXXFLAGS= [
         # MAINFLAGS from orig. Makefile ('-fPIC' is automatically added by SCons)
@@ -102,83 +102,77 @@ env.Append( LIBS= [ "jpeg", "png", "z" ] )
 #
 # Debug settings
 #
-env_debug= env.Clone() 
-
-if not WINDOWS: 
-    debug_flags= [
-	    "-Werror",
-
-        # EXTRAFLAGS from orig. Makefile (for 'debug' target)
-        #
-        "-ansi",
-        "-Wcast-align",
-        "-Wcast-qual",
-        "-Wconversion",
-        "-Winline",
-        "-Wno-multichar",
-        "-Wno-pmf-conversions",
-        "-Woverloaded-virtual",
-        "-Wpointer-arith",
-        "-Wredundant-decls",
-        "-Wsign-promo",
-        "-Wwrite-strings",
-    ]
-else:
-    debug_flags= []
-
-env_debug.Append( CXXFLAGS=[ "-O0", "-g" ] + debug_flags )
-
+if DEBUG:
+    if WINDOWS:
+        { } # TBD
+    else:
+        env.Append( CXXFLAGS=[ "-O0", "-g", "-Werror",
+    
+            # EXTRAFLAGS from orig. Makefile (for 'debug' target)
+            #
+            "-ansi",
+            "-Wcast-align",
+            "-Wcast-qual",
+            "-Wconversion",
+            "-Winline",
+            "-Wno-multichar",
+            "-Wno-pmf-conversions",
+            "-Woverloaded-virtual",
+            "-Wpointer-arith",
+            "-Wredundant-decls",
+            "-Wsign-promo",
+            "-Wwrite-strings",
+        ] )
 
 #
 # Release settings
 #
-env_release= env.Clone() 
-
-if not WINDOWS: 
-    release_flags= [
-        # RELEASEFLAGS from orig. Makefile (for 'release' and 'profile' targets)
-        #
-        "-Wuninitialized",
-    ]
-else:
-    release_flags= []
-
-env_release.Append( CXXFLAGS="-O2", CPPDEFINES="NDEBUG" )
-
-env_release.Append( CXXFLAGS= release_flags )
+if RELEASE or PROFILE:
+    if WINDOWS:
+        { }     # TBD
+    else:
+        env.Append( CPPDEFINES="NDEBUG",
+                    CXXFLAGS= ["-O2",
+ 
+            # RELEASEFLAGS from orig. Makefile (for 'release' and 'profile' targets)
+            #
+            "-Wuninitialized",
+        ] )
 
 
 #
 # Profile settings
 #
-env_profile= env_release.Clone() 
-
-if not WINDOWS: 
-    env_profile.Append( CXXFLAGS="-g -pg" )
+if PROFILE:
+    if WINDOWS:
+        { }     # TBD
+    else: 
+        env.Append( CXXFLAGS="-g -pg" )
 
 
 #---
 # Exceptions to the regular compilation rules (from orig. Makefile)
 #
+# Note: Samples show 'env.Replace( OBJDIR=... )' to be able to use separate
+#       object dir, but this did not work.    -- AKa 15-Sep-2008
+#
+#env.Replace( OBJDIR=OBJDIR )
+#env.Library( "smartmet_imagine", Glob("source/*.cpp") )
+
 objs= []
 shared_objs= []
 
 if DEBUG:
-    e= env_debug
-    e_O0= env_debug       # No change, anyways
-    e_noerror= env_debug.Clone()
+    e_O0= env       # No change, anyways
+    e_noerror= env.Clone()
     e_noerror["CXXFLAGS"].remove( "-Werror" )
     e_noerror["CXXFLAGS"].append( "-Wno-error" )
 else:
-    if PROFILE:
-        e= env_profile
-    else:
-        e= env_release
-    e_O0= e.Clone()
+    e_O0= env.Clone()
     e_O0["CXXFLAGS"].remove("-O2")
     e_O0["CXXFLAGS"].append("-O0")
     e_O0["CXXFLAGS"].remove("-Wuninitialized")    # not supported without '-O'
-    e_noerror= e    # anyways no -Werror
+    e_noerror= env    # anyways no -Werror
 
 for fn in Glob("source/*.cpp"): 
     s= os.path.basename( str(fn) )
@@ -201,10 +195,10 @@ for fn in Glob("source/*.cpp"):
         shared_objs += e_noerror.SharedObject( obj_s, fn )
 
     else:
-        objs += e.Object( obj_s, fn )
-        shared_objs += e.SharedObject( obj_s, fn ) 
+        objs += env.Object( obj_s, fn )
+        shared_objs += env.SharedObject( obj_s, fn ) 
 
-e.Library( "smartmet_imagine", objs )
-e.SharedLibrary( "smartmet_imagine", shared_objs )
+env.Library( "smartmet_imagine", objs )
+env.SharedLibrary( "smartmet_imagine", shared_objs )
 
 
