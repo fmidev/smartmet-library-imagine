@@ -25,6 +25,8 @@ bindir = $(PREFIX)/bin
 includedir = $(PREFIX)/include
 objdir = obj
 
+HDRS = $(patsubst include/%,%,$(wildcard include/*.h))
+
 # rpm variables
 
 rpmsourcedir = /smartmet/src/redhat/SOURCES
