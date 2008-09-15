@@ -68,10 +68,6 @@ if LINUX:
     #
     env.Append( CPPPATH= [ PREFIX+"/include/smartmet/newbase" ] )
 
-    # Boost 1.35 built to /usr/local
-    #
-    env.Append( CPPPATH= [ "/usr/local/include/boost-1_35" ] )
-    env.Append( LIBPATH= [ "/usr/local/lib" ] )
 elif OSX:
     # Newbase from local CVS
     #

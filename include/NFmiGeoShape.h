@@ -150,7 +150,8 @@ namespace Imagine
 #ifdef IMAGINE_WITH_CAIRO
     void Fill( ImagineXr &image, Imagine::NFmiColorTools::Color col, NFmiColorTools::NFmiBlendRule rule )
 #else
-    void Fill( Imagine::NFmiImage &image, Imagine::NFmiColorTools::Color col, NFmiColorTools::NFmiBlendRule rule )
+	  using NFmiDrawable::Fill;
+	  void Fill( Imagine::NFmiImage &image, Imagine::NFmiColorTools::Color col, NFmiColorTools::NFmiBlendRule rule) const
 #endif
     {
         PathEsri().Fill( image, col, rule );

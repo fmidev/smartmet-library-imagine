@@ -64,11 +64,11 @@ clean:
 	-rm -rf $(objdir)
 
 install:
-	@mkdir -p $(includedir)/smartmet/$(LIB)
+	@mkdir -p $(includedir)/$(LIB)
 	@list='$(HDRS)'; \
 	for hdr in $$list; do \
-	  echo $(INSTALL_DATA) include/$$hdr $(includedir)/smartmet/$(LIB)/$$hdr; \
-	  $(INSTALL_DATA) include/$$hdr $(includedir)/smartmet/$(LIB)/$$hdr; \
+	  echo $(INSTALL_DATA) include/$$hdr $(includedir)/$(LIB)/$$hdr; \
+	  $(INSTALL_DATA) include/$$hdr $(includedir)/$(LIB)/$$hdr; \
 	done
 	@mkdir -p $(libdir)
 	$(INSTALL_DATA) $(LIBFILE) $(libdir)/$(LIBFILE)

@@ -25,7 +25,7 @@ DIFFICULTFLAGS = \
 	-Wunreachable-code \
 	-Wredundant-decls
 
-CAIROMODE = -DIMAGINE_WITH_CAIRO 
+CAIROMODE = # -DIMAGINE_WITH_CAIRO 
 
 # Platform independent Freetype2 support
 
@@ -55,11 +55,9 @@ INCLUDES = \
 
 LIBS =  -L .. -lsmartmet_imagine \
 	-lsmartmet_newbase \
-	-Wl,-rpath,/usr/local/lib \
-        -L /usr/local/lib \
-	-lboost_regex-gcc41-mt \
-	-lboost_filesystem-gcc41-mt \
-        -lboost_iostreams-gcc41-mt \
+	-lboost_regex-mt \
+	-lboost_filesystem-mt \
+        -lboost_iostreams-mt \
 	$(FT2_LIBS) \
 	$(CAIRO_LIBS) \
 	-lpng -ljpeg -lz
