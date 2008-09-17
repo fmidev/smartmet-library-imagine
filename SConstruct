@@ -44,9 +44,6 @@ LINUX=  env["PLATFORM"]=="posix"
 OSX=    env["PLATFORM"]=="darwin"
 WINDOWS= env["PLATFORM"]=="win32"
 
-if WINDOWS:
-    GNUWIN32= "D:/GnuWin32"
-
 #
 # SCons does not pass env.vars automatically through to executing commands.
 # On Windows, we want it to get them all (Visual C++ 2008).
@@ -122,22 +119,15 @@ env.Append( LIBS= [ "smartmet_newbase" ] )
 #
 # Freetype2 support
 #
-if WINDOWS:
-    env.Append( CPPPATH= [ GNUWIN32+"/freetype-2.3.5-1-lib/include",
-                           GNUWIN32+"/freetype-2.3.5-1-lib/include/freetype2"  ] )
-    env.Append( LIBPATH= [ GNUWIN32+"/freetype-2.3.5-1-lib/lib" ] )
-    env.Append( LIBS= [ "freetype" ] )
-else:
+if not WINDOWS:
     env.ParseConfig("freetype-config --cflags --libs") 
 
 #
 # Cairomm-1.0 support
 #
 if WINDOWS:
-    #env.Append( CPPPATH= [ "../cairomm-1.0/include" ] )
-    #env.Append( LIBPATH= [ "../cairomm-1.0/lib" ] )
-    env.Append( CPPPATH= [ "../cairo-dev-1.6.4-2/include" ] )
-    env.Append( LIBPATH= [ "../cairo-dev-1.6.4-2/lib" ] )
+    env.Append( CPPPATH= [ "../cairomm-1.6.4" ] )
+    env.Append( LIBPATH= [ "../cairomm-1.6.4/MSVC_Net2005/cairomm/Release" ] )
 else:
     env.ParseConfig("pkg-config --cflags --libs cairomm-1.0") 
 
@@ -145,16 +135,7 @@ else:
 # Other libraries
 #
 if WINDOWS:
-    env.Append( CPPPATH= [ GNUWIN32+"/libpng-1.2.24-lib/include",
-			   GNUWIN32+"/jpeg-6b-4-lib/include",
-                           GNUWIN32+"/zlib-1.2.3-lib/include",
-                         ] 
-		)
-    env.Append( LIBPATH= [ GNUWIN32+"/libpng-1.2.24-lib/lib",
-			   GNUWIN32+"/jpeg-6b-4-lib/lib",
-                           GNUWIN32+"/zlib-1.2.3-lib/lib" ] 
-		)
-    env.Append( LIBS= [ "jpeg", "libpng", "zlib" ] )
+    { }     # ...maybe we can do without?
 else:
     env.Append( LIBS= [ "jpeg", "png", "z" ] )
 
@@ -273,7 +254,11 @@ else:
             objs += env.Object( obj_s, fn )
             shared_objs += env.SharedObject( obj_s, fn ) 
 
+#
+# Make just the static lib (at least it should be default for just 'scons')
+#
 env.Library( "smartmet_imagine", objs )
-env.SharedLibrary( "smartmet_imagine", shared_objs )
+
+#env.SharedLibrary( "smartmet_imagine", shared_objs )
 
 

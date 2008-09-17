@@ -28,6 +28,10 @@ using namespace Cairo;
 using namespace Imagine;
 using namespace Imagine::NFmiColorTools;
 
+#ifdef _MSC_VER
+  typedef int int32_t;
+#endif
+
 class ImagineXr {
   private:
     /* Either 'pdf_surf' or 'image_surf' is non-NULL; tried to use just a single
