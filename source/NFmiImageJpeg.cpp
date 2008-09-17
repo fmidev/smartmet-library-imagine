@@ -13,9 +13,14 @@
 #include "NFmiImage.h"
 #include <iostream>
 
-// JPEG group idiots.. I wasted hours on this one
+// Additional switch to avoid libJpeg dependency on Windows (AKa 17-Sep-2008)
+//
+// Note: This switches JPEG support off on Unix as well, unless IMAGINE_WITH_JPEG
+//       is defined (imagine is being phased out, so I took the risk).
+//
+#if defined(IMAGINE_WITH_JPEG) && (!defined(IMAGINE_IGNORE_FORMATS))
 
-#ifndef IMAGINE_IGNORE_FORMATS
+// JPEG group idiots.. I wasted hours on this one
 
 extern "C" {
 #include "jpeglib.h"

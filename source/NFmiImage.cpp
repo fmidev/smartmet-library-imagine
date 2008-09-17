@@ -469,8 +469,10 @@ namespace Imagine
   {
 	if(theType == "png")
 	  WritePng(theFileName);
+#ifdef IMAGINE_WITH_JPEG
 	else if(theType == "jpeg" || theType == "jpg")
 	  WriteJpeg(theFileName);
+#endif
 	else if(theType == "gif")
 	  WriteGif(theFileName);
 	else if(theType == "wbmp")
@@ -489,7 +491,8 @@ namespace Imagine
   // in the range 0-95.
   // ----------------------------------------------------------------------
 #ifndef IMAGINE_IGNORE_FORMATS
-  
+# ifdef IMAGINE_WITH_JPEG
+
   void NFmiImage::WriteJpeg(const string & theFileName) const
   {
 	const string dir = NFmiFileSystem::DirName(theFileName);
@@ -507,6 +510,7 @@ namespace Imagine
 	if(!status)
 	  throw runtime_error("Failed to write '"+theFileName+"'");
   }
+#endif
   
   // ----------------------------------------------------------------------
   // Write image as PNG into given file. The compression quality

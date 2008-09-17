@@ -128,6 +128,9 @@ if not WINDOWS:
 if WINDOWS:
     env.Append( CPPPATH= [ "../cairomm-1.6.4" ] )
     env.Append( LIBPATH= [ "../cairomm-1.6.4/MSVC_Net2005/cairomm/Release" ] )
+
+    env.Append( CPPPATH= [ "../cairo-1.6.4/src" ] )
+    #env.Append( LIBPATH= [ "../cairo-1.6.4/src/release" ] )
 else:
     env.ParseConfig("pkg-config --cflags --libs cairomm-1.0") 
 
@@ -135,7 +138,8 @@ else:
 # Other libraries
 #
 if WINDOWS:
-    { }     # ...maybe we can do without?
+    env.Append( CPPPATH= [ "../lpng1231", "../zlib123" ] )
+    #env.Append( LIBS= [ "../lpng1231/libpng.lib", "../zlib123/zlib.lib" ] )
 else:
     env.Append( LIBS= [ "jpeg", "png", "z" ] )
 

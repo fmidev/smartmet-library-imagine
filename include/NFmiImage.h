@@ -173,7 +173,9 @@ namespace Imagine
 	void Write( const std::string &fn, const std::string &type ) const;
 
 #ifndef IMAGINE_IGNORE_FORMATS
+# ifdef IMAGINE_WITH_JPEG
 	void WriteJpeg(const std::string & theFileName) const;
+# endif
 	void WritePng(const std::string & theFileName) const;
 #endif
 	void WriteWbmp(const std::string & theFileName) const;
