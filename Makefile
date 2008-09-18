@@ -22,10 +22,8 @@ else
 endif
 
 bindir = $(PREFIX)/bin
-includedir = $(PREFIX)/include
+includedir = $(PREFIX)/include/smartmet
 objdir = obj
-
-HDRS = $(patsubst include/%,%,$(wildcard include/*.h))
 
 # rpm variables
 
@@ -67,7 +65,7 @@ clean:
 
 install:
 	@mkdir -p $(includedir)/$(LIB)
-	@list='$(HDRS)'; \
+	 @list=`cd include && ls -1 *.h`; \
 	for hdr in $$list; do \
 	  echo $(INSTALL_DATA) include/$$hdr $(includedir)/$(LIB)/$$hdr; \
 	  $(INSTALL_DATA) include/$$hdr $(includedir)/$(LIB)/$$hdr; \
@@ -98,7 +96,7 @@ tag:
 headertest:
 	@echo "Checking self-sufficiency of each header:"
 	@echo
-	@for hdr in $(HDRS); do \
+	@for hdr in `cd include && ls -1 *.h`; do \
 	echo $$hdr; \
 	echo "#include \"$$hdr\"" > /tmp/$(LIB).cpp; \
 	echo "int main() { return 0; }" >> /tmp/$(LIB).cpp; \

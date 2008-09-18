@@ -60,7 +60,7 @@ LIBS =  -L .. -lsmartmet_imagine \
         -lboost_iostreams-mt \
 	$(FT2_LIBS) \
 	$(CAIRO_LIBS) \
-	-lpng -ljpeg -lz
+	-lpng -ljpeg -lz -lbz2 -lpthread
 
 all: $(PROG)
 clean:
