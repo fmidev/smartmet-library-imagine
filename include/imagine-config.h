@@ -6,8 +6,8 @@
 * This is in a config file (and not Makefile) so that other projects using
 * Imagine will get the headers right automatically.
 */
-#ifndef _imagine_config_h
-#define _imagine_config_h
+#ifndef IMAGINE_CONFIG_H
+#define IMAGINE_CONFIG_H
 
 #ifdef IMAGINE_WITH_CAIRO
 # error "Do NOT define IMAGINE_WITH_CAIRO in a Makefile"
@@ -23,10 +23,11 @@
   class ImagineXr;
   typedef ImagineXr ImagineXr_or_NFmiImage;
 #else
-  namespace Imagine {
+  namespace Imagine
+  {
     class NFmiImage;
-    typedef Imagine::NFmiImage ImagineXr_or_NFmiImage;
   }
+  typedef Imagine::NFmiImage ImagineXr_or_NFmiImage;
 #endif
 
 #endif
