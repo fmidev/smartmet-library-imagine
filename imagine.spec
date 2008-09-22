@@ -2,13 +2,13 @@
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
 Version: 8.9.22
-Release: 2.el5.fmi
+Release: 3.el5.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
 Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: libsmartmet-newbase >= 8.9.22-2, freetype-devel, libjpeg-devel, libpng-devel, zlib-devel, cairomm-devel, boost-devel >= 1.36
+BuildRequires: libsmartmet-newbase >= 8.9.22-3, freetype-devel, libjpeg-devel, libpng-devel, zlib-devel, cairomm-devel, boost-devel >= 1.36
 Requires: freetype, libjpeg, libpng, zlib
 Provides: %{LIBNAME}
 
@@ -35,8 +35,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Mon Sep 22 2008 mheiskan <mika.heiskanen@fmi.fi> - 8.9.22-3.el5.fmi
+- Restored jpeg support to be on by default
 * Mon Sep 22 2008 mheiskan <mika.heiskanen@fmi.fi> - 8.9.22-2.el5.fmi
-- Fixed typedef when Caito is not in use
+- Fixed typedef when Cairo is not in use
 * Mon Sep 22 2008 mheiskan <mika.heiskanen@fmi.fi> - 8.9.22-1.el5.fmi
 - Updates from Asko and compiled with static boost 1.36
 * Mon Sep 15 2008 mheiskan <mika.heiskanen@fmi.fi> - 8.9.15-1.el5.fmi

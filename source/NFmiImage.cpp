@@ -469,7 +469,7 @@ namespace Imagine
   {
 	if(theType == "png")
 	  WritePng(theFileName);
-#ifdef IMAGINE_WITH_JPEG
+#ifndef IMAGINE_WITHOUT_JPEG
 	else if(theType == "jpeg" || theType == "jpg")
 	  WriteJpeg(theFileName);
 #endif
@@ -491,7 +491,7 @@ namespace Imagine
   // in the range 0-95.
   // ----------------------------------------------------------------------
 #ifndef IMAGINE_IGNORE_FORMATS
-# ifdef IMAGINE_WITH_JPEG
+#ifndef IMAGINE_WITHOUT_JPEG
 
   void NFmiImage::WriteJpeg(const string & theFileName) const
   {
