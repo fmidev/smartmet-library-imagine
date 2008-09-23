@@ -59,8 +59,9 @@ if WINDOWS:
 else:
     env.Append( CPPDEFINES= ["UNIX"] )
     env.Append( CXXFLAGS= [
-        # MAINFLAGS from orig. Makefile ('-fPIC' is automatically added by SCons)
+        # MAINFLAGS from orig. Makefile
         #
+        "-fPIC",
         "-Wall", 
         "-Wno-unused-parameter",
         "-Wno-variadic-macros",
