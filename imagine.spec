@@ -1,14 +1,14 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 8.9.22
-Release: 3.el5.fmi
+Version: 8.9.29
+Release: 1.el5.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
 Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: libsmartmet-newbase >= 8.9.22-3, freetype-devel, libjpeg-devel, libpng-devel, zlib-devel, cairomm-devel, boost-devel >= 1.36
+BuildRequires: libsmartmet-newbase >= 8.9.29-1, freetype-devel, libjpeg-devel, libpng-devel, zlib-devel, cairomm-devel, boost-devel >= 1.36
 Requires: freetype, libjpeg, libpng, zlib
 Provides: %{LIBNAME}
 
@@ -35,6 +35,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Mon Sep 29 2008 mheiskan <mika.heiskanen@fmi.fi> - 8.9.29-1.el5.fmi
+- Newbase header change forced recompile
 * Mon Sep 22 2008 mheiskan <mika.heiskanen@fmi.fi> - 8.9.22-3.el5.fmi
 - Restored jpeg support to be on by default
 * Mon Sep 22 2008 mheiskan <mika.heiskanen@fmi.fi> - 8.9.22-2.el5.fmi
