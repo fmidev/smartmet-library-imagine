@@ -14,7 +14,7 @@
 #endif
 
 // Comment this out for original (self made) rendering
-// #define IMAGINE_WITH_CAIRO
+#define IMAGINE_WITH_CAIRO
 
 // Having this typedef makes many either-or places shorter (could also be
 // made a class of its own, but this is how it ended in summer-08) --AKa

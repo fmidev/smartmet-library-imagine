@@ -20,7 +20,7 @@
 #define DEFAULT_LINE_WIDTH 0.4      // Cairo itself has 2.0 as default
                                     // 0.2 is too little; starts graying the lines out
 
-#ifdef IMAGINE_DEBUG
+#ifdef IMAGINE_USAGE
 # define USAGE(msg, ...) fprintf( stderr, ">>> #%d: " msg "\n", __LINE__, __VA_ARGS__ )
 # define USAGE0(msg) USAGE("%s", msg)
 #else
@@ -33,7 +33,7 @@
 
 // Note: 'ColorName()' does not give has stuff, only pre-known colors are named
 //
-#ifdef IMAGINE_DEBUG
+#ifdef IMAGINE_USAGE
   static const char *COLORNAME( NFmiColorTools::Color col ) {
     static char buf[100];
     sprintf( buf, "%02x%02x%02x%02x", 127-NFmiColorTools::GetAlpha(col),
@@ -214,6 +214,15 @@ bool ImagineXr::SetPath( const std::deque<NFmiPathElement> &path ) {
             case kFmiMoveTo: 
 USAGE( "\t\tmove_to( %.2f, %.2f )", x, y );
                 cr->move_to(x,y); 
+#if 0
+    // DEBUG
+    { static unsigned int nnn=1;
+    char buf[10]; sprintf( buf, "%d", nnn++ );
+    cr->save();
+    cr->set_source_rgb( 0,0,0 );    // black
+    cr->show_text( string(buf) );
+    cr->restore(); }
+#endif
                 break;
 
             case kFmiLineTo: 

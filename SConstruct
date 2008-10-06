@@ -21,6 +21,10 @@
 #       AKa 11-Sep-2008: Initial version (same as existing Makefile)
 #
 
+# Show usage log from Imagine?
+#
+IMAGINE_USAGE= True
+
 import os.path
 
 Help(""" 
@@ -258,6 +262,9 @@ else:
         else:
             objs += env.Object( obj_s, fn )
             shared_objs += env.SharedObject( obj_s, fn ) 
+
+if IMAGINE_USAGE:
+    env.Append( CPPDEFINES= ["IMAGINE_USAGE"] )
 
 #
 # Make just the static lib (at least it should be default for just 'scons')
