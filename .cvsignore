@@ -1,5 +1,5 @@
-obj
-libsmartmet_imagine.a
+*.a
 .sconsign.dblite
 ._*
+.DS_Store
 
