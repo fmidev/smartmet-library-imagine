@@ -23,7 +23,7 @@
 
 # Show usage log from Imagine?
 #
-#IMAGINE_USAGE= True
+IMAGINE_USAGE= False    #True
 
 import os.path
 
@@ -283,4 +283,4 @@ if IMAGINE_USAGE:
 out= env.Library( "smartmet_imagine", objs )
 
 if WINDOWS:
-    Depends( out, "../newbase/libsmartmet_newbase.lib" )
+    Depends( out, "../newbase/smartmet_newbase.lib" )
