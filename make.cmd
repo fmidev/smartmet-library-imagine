@@ -20,6 +20,9 @@
 @goto EXIT
 
 :VC_OK
-scons %1=1 windows_boost_path=%2 windows_prebuilt_path=%3 smartmet_imagine.lib
+@REM 'objdir' on local disk to speed up compilation if using a remote file system
+@REM (s.a. ssh mapped to G: via SFtpDrive)
+@REM
+scons %1=1 windows_boost_path=%2 windows_prebuilt_path=%3 smartmet_imagine_%1.lib objdir=%TEMP%\imagine-%1
 
 :EXIT

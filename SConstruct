@@ -280,7 +280,8 @@ if IMAGINE_USAGE:
 #
 # Make just the static lib (at least it should be default for just 'scons')
 #
-out= env.Library( "smartmet_imagine", objs )
+out_postfix= WINDOWS and (DEBUG and "_debug" or "_release") or ""
+out= env.Library( "smartmet_imagine"+out_postfix, objs )
 
 if WINDOWS:
-    Depends( out, "../newbase/smartmet_newbase.lib" )
+    Depends( out, "../newbase/smartmet_newbase"+out_postfix+".lib" )
