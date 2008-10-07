@@ -38,6 +38,24 @@
      using std::FILE;
 #endif
 
+// IMAGINE_IGNORE_FORMATS (old define, this is compatibility code) disables 
+// JPEG and PNG formats.
+//
+// If either IMAGINE_FORMAT_JPEG or IMAGINE_FORMAT_PNG is on, only that support
+// is built in.
+//
+// If no defines are there, both JPEG and PNG are on (compatibility to how
+// it was)
+//  --AKa 7-Oct-2008
+//
+#ifdef IMAGINE_IGNORE_FORMATS
+# undef IMAGINE_FORMAT_JPEG
+# undef IMAGINE_FORMAT_PNG
+#elif (!defined IMAGINE_FORMAT_JPEG) && (!defined IMAGINE_FORMAT_PNG)
+# define IMAGINE_FORMAT_JPEG
+# define IMAGINE_FORMAT_PNG
+#endif
+
 namespace Imagine
 {
 
@@ -88,16 +106,22 @@ namespace Imagine
 
 	// Various options
 	//
+#ifdef IMAGINE_FORMAT_JPEG
 	int	itsJpegQuality;		// JPEG compression quality, 0-100
+#endif
+#ifdef IMAGINE_FORMAT_PNG
 	int	itsPngQuality;		// PNG compression level, 0-9
 	int	itsPngFilter;		// PNG filter
+#endif
+#if (defined IMAGINE_FORMAT_JPEG) || (defined IMAGINE_FORMAT_PNG)
 	int	itsAlphaLimit;		// alpha<=limit is considered opaque
 	float itsGamma;		// Gamma, 1-3 is reasonable
 	std::string itsIntent;	// Rendering intent (PNG)
-	
+
 	bool	itsSaveAlphaFlag;	// true if alpha is to be saved
 	bool  itsWantPaletteFlag;	// true if palette is desired when possible
 	bool	itsForcePaletteFlag;	// true if palette is to be forced
+#endif
 
     /********************/
   public:
@@ -129,26 +153,29 @@ namespace Imagine
 	void DefaultOptions();
 
 	// Access to individual options
-	
-#ifndef IMAGINE_IGNORE_FORMATS
+
+#ifdef IMAGINE_FORMAT_JPEG
 	int JpegQuality(void) const		{ return itsJpegQuality; }
+	void JpegQuality(int quality)		{ itsJpegQuality = quality; }
+#endif
+#ifdef IMAGINE_FORMAT_PNG
 	int PngQuality(void) const		{ return itsPngQuality; }
+	void PngQuality(int quality)		{ itsPngQuality = quality; }
+#endif
+#if (defined IMAGINE_FORMAT_JPEG) || (defined IMAGINE_FORMAT_PNG)
 	int AlphaLimit(void) const		{ return itsAlphaLimit; }
 	bool SaveAlpha(void) const		{ return itsSaveAlphaFlag; }
 	bool WantPalette(void) const		{ return itsWantPaletteFlag; }
 	bool ForcePalette(void) const		{ return itsForcePaletteFlag; }
 	float Gamma(void) const		{ return itsGamma; }
 	const std::string Intent(void) const	{ return itsIntent; }
-	
-	void JpegQuality(int quality)		{ itsJpegQuality = quality; }
-	void PngQuality(int quality)		{ itsPngQuality = quality; }
 	void AlphaLimit(int limit)		{ itsAlphaLimit = limit; }
 	void SaveAlpha(bool flag)		{ itsSaveAlphaFlag = flag; }
 	void WantPalette(bool flag)		{ itsWantPaletteFlag = flag; }
 	void ForcePalette(bool flag)		{ itsForcePaletteFlag = flag; }
 	void Gamma(float value)		{ itsGamma = value; }
 	void Intent(const std::string & value){ itsIntent = value; }
-#endif  // IMAGINE_IGNORE_FORMATS
+#endif
 
 	// This makes  A(i,j) = B(x,y) work
     //
@@ -172,10 +199,10 @@ namespace Imagine
     //
 	void Write( const std::string &fn, const std::string &type ) const;
 
-#ifndef IMAGINE_IGNORE_FORMATS
-#ifndef IMAGINE_WITHOUT_JPEG
+#ifdef IMAGINE_FORMAT_JPEG
 	void WriteJpeg(const std::string & theFileName) const;
-# endif
+#endif
+#ifdef IMAGINE_FORMAT_PNG
 	void WritePng(const std::string & theFileName) const;
 #endif
 	void WriteWbmp(const std::string & theFileName) const;
@@ -216,12 +243,13 @@ namespace Imagine
 	void Reallocate( int width, int height );
 	
 	// Reading and writing various image formats
-#ifndef IMAGINE_IGNORE_FORMATS
-	void ReadPNG(FILE *in);
-	void WritePNG(FILE *out) const;
-	
+#ifdef IMAGINE_FORMAT_JPEG	
 	void ReadJPEG(FILE *in);
 	void WriteJPEG(FILE *out) const;
+#endif
+#ifdef IMAGINE_FORMAT_PNG
+	void ReadPNG(FILE *in);
+	void WritePNG(FILE *out) const;
 #endif
 	void WritePNM(FILE * out) const;
 	void ReadPNM(FILE * out);

@@ -23,12 +23,13 @@
 
 # Show usage log from Imagine?
 #
-IMAGINE_USAGE= True
+#IMAGINE_USAGE= True
 
 import os.path
 
 Help(""" 
     Usage: scons [-j 4] [-Q] [debug=1|profile=1] [objdir=<path>] [prefix=<path>]
+                 [windows_boost_path=<path>] [windows_prebuilt_path=<path>]
     
     Or just use 'make release|debug|profile', which point right back to us.
 """) 
@@ -42,6 +43,14 @@ RELEASE=    (not DEBUG) and (not PROFILE)     # default
 OBJDIR=     ARGUMENTS.get("objdir","obj")
 PREFIX=     ARGUMENTS.get("prefix","/usr/")
 
+# Installed from 'boost_1_36_0_setup.exe' from BoostPro Internet page.
+#
+WINDOWS_BOOST_PATH= ARGUMENTS.get("windows_boost_path","")
+
+# Prebuilt freetype2, cairo, cairomm etc.
+#
+WINDOWS_PREBUILT_PATH= ARGUMENTS.get("windows_prebuilt_path","")
+
 env= Environment()
 
 LINUX=  env["PLATFORM"]=="posix"
@@ -54,6 +63,7 @@ WINDOWS= env["PLATFORM"]=="win32"
 #
 if WINDOWS:
     env.Replace( ENV= os.environ )
+    env.Append( CPPDEFINES= ["IMAGINE_FORMAT_PNG"] )  # no JPEG
 
 env.Append( CPPPATH= [ "./include" ] )
 
@@ -86,11 +96,8 @@ BOOST_POSTFIX=""
 BOOST_PREFIX=""
 
 if WINDOWS:
-    # Installed from 'boost_1_35_0_setup.exe' from BoostPro Internet page.
-    #
-    BOOST_INSTALL_PATH= "D:/Boost/1_35_0"
-    env.Append( CPPPATH= [ BOOST_INSTALL_PATH ] )
-    env.Append( LIBPATH= [ BOOST_INSTALL_PATH + "/lib" ] )
+    env.Append( CPPPATH= [ WINDOWS_BOOST_PATH ] )
+    env.Append( LIBPATH= [ WINDOWS_BOOST_PATH + "/lib" ] )
     if DEBUG:
         BOOST_POSTFIX= "-vc90-mt-gd-1_35"
     else:
@@ -100,6 +107,8 @@ if WINDOWS:
                         BOOST_PREFIX+"boost_date_time"+BOOST_POSTFIX ] )
 
 if WINDOWS:
+    # Newbase from cvs local build
+    #
     env.Append( CPPPATH= [ "../newbase/include" ] )
     env.Append( LIBPATH= [ "../newbase" ] )
 
@@ -131,11 +140,11 @@ if not WINDOWS:
 # Cairomm-1.0 support
 #
 if WINDOWS:
-    env.Append( CPPPATH= [ "../cairomm-1.6.4" ] )
-    env.Append( LIBPATH= [ "../cairomm-1.6.4/MSVC_Net2005/cairomm/Release" ] )
+    env.Append( CPPPATH= [ WINDOWS_PREBUILT_PATH+"/cairomm-1.6.4" ] )
+    env.Append( LIBPATH= [ WINDOWS_PREBUILT_PATH+"/cairomm-1.6.4/MSVC_Net2005/cairomm/Release" ] )
 
-    env.Append( CPPPATH= [ "../cairo-1.6.4/src" ] )
-    #env.Append( LIBPATH= [ "../cairo-1.6.4/src/release" ] )
+    env.Append( CPPPATH= [ WINDOWS_PREBUILT_PATH+"/cairo-1.6.4/src" ] )
+    #env.Append( LIBPATH= [ WINDOWS_PREBUILT_PATH+"/cairo-1.6.4/src/release" ] )
 else:
     env.ParseConfig("pkg-config --cflags --libs cairomm-1.0") 
 
@@ -143,8 +152,10 @@ else:
 # Other libraries
 #
 if WINDOWS:
-    env.Append( CPPPATH= [ "../lpng1231", "../zlib123" ] )
-    #env.Append( LIBS= [ "../lpng1231/libpng.lib", "../zlib123/zlib.lib" ] )
+    # Yes, expanding LPNG creates two sets of folder levels (maybe a packaging bug in?)
+    #
+    env.Append( CPPPATH= [ WINDOWS_PREBUILT_PATH+"/lpng1231/lpng1231", 
+                           WINDOWS_PREBUILT_PATH+"/zlib123" ] )
 else:
     env.Append( LIBS= [ "jpeg", "png", "z" ] )
 
@@ -269,8 +280,7 @@ if IMAGINE_USAGE:
 #
 # Make just the static lib (at least it should be default for just 'scons')
 #
-env.Library( "smartmet_imagine", objs )
+out= env.Library( "smartmet_imagine", objs )
 
-#env.SharedLibrary( "smartmet_imagine", shared_objs )
-
-
+if WINDOWS:
+    Depends( out, "../newbase/libsmartmet_newbase.lib" )

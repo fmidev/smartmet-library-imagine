@@ -354,15 +354,22 @@ namespace Imagine
   void NFmiImage::DefaultOptions(void)
   {
 	itsType = "";
+#ifdef IMAGINE_FORMAT_JPEG
 	itsJpegQuality = 75;			// 0-100
+#endif
+#ifdef IMAGINE_FORMAT_PNG
 	itsPngQuality = 6;			// 0=none, 1=fast,9=slow
-	itsAlphaLimit = -1;			// do not force opaque/transparent
 	itsPngFilter = PNG_FILTER_TYPE_DEFAULT;	// usually fastest and often best
+#endif
+#if (defined IMAGINE_FORMAT_JPEG) || (defined IMAGINE_FORMAT_PNG)
+	itsAlphaLimit = -1;			// do not force opaque/transparent
+	itsGamma = -1.0;			// negative means default gamma
+	itsIntent = string("");		// no intent
+
 	itsSaveAlphaFlag = true;		// yes, save alpha channel
 	itsWantPaletteFlag = true;		// yes, try palette
 	itsForcePaletteFlag = false;		// no, do not force palette
-	itsGamma = -1.0;			// negative means default gamma
-	itsIntent = string("");		// no intent
+#endif
   }
   
   // ----------------------------------------------------------------------
@@ -438,9 +445,11 @@ namespace Imagine
 	
 	if(mime == "gif")
 	  ReadGIF(in);
-#ifndef IMAGINE_IGNORE_FORMATS
+#ifdef IMAGINE_FORMAT_PNG
 	else if(mime == "png")
 	  ReadPNG(in);
+#endif
+#ifdef IMAGINE_FORMAT_JPEG
 	else if(mime == "jpeg")
 	  ReadJPEG(in);
 #endif
@@ -467,9 +476,12 @@ namespace Imagine
   void NFmiImage::Write(const string & theFileName,
 						const string & theType) const
   {
-	if(theType == "png")
+    if (0);
+#ifdef IMAGINE_FORMAT_PNG
+	else if(theType == "png")
 	  WritePng(theFileName);
-#ifndef IMAGINE_WITHOUT_JPEG
+#endif
+#ifdef IMAGINE_FORMAT_JPEG
 	else if(theType == "jpeg" || theType == "jpg")
 	  WriteJpeg(theFileName);
 #endif
@@ -490,9 +502,7 @@ namespace Imagine
   // The quality should be negative to imply default quality, or
   // in the range 0-95.
   // ----------------------------------------------------------------------
-#ifndef IMAGINE_IGNORE_FORMATS
-#ifndef IMAGINE_WITHOUT_JPEG
-
+#ifdef IMAGINE_FORMAT_JPEG
   void NFmiImage::WriteJpeg(const string & theFileName) const
   {
 	const string dir = NFmiFileSystem::DirName(theFileName);
@@ -516,7 +526,7 @@ namespace Imagine
   // Write image as PNG into given file. The compression quality
   // cannot be controlled.
   // ----------------------------------------------------------------------
-  
+#ifdef IMAGINE_FORMAT_PNG
   void NFmiImage::WritePng(const string & theFileName) const
   {
 	const string dir = NFmiFileSystem::DirName(theFileName);
@@ -535,7 +545,7 @@ namespace Imagine
 	  throw runtime_error("Failed to write '"+theFileName+"'");
 
   }
-#endif // IMAGINE_IGNORE_FORMATS
+#endif
   
   // ----------------------------------------------------------------------
   // Write image as WBMP into given file. The compression quality

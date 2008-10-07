@@ -13,7 +13,7 @@
 #include "NFmiImage.h"
 #include <iostream>
 
-#if !defined(IMAGINE_IGNORE_FORMATS)
+#ifdef IMAGINE_FORMAT_JPEG
 
 // JPEG group idiots.. I wasted hours on this one
 
@@ -256,7 +256,7 @@ namespace Imagine
 
 } // namespace Imagine
 
-#endif // IMAGINE_IGNORE_FORMATS
+#endif // IMAGINE_FORMAT_JPEG
   
 // ======================================================================
   

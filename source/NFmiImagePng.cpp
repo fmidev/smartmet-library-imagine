@@ -10,9 +10,9 @@
 //
 // ======================================================================
 
-#ifndef IMAGINE_IGNORE_FORMATS
-
 #include "NFmiImage.h"
+
+#ifdef IMAGINE_FORMAT_PNG
 
 #include <png.h>
 #include <map>
@@ -471,7 +471,7 @@ namespace Imagine
 
 } // namespace Imagine
   
-#endif // IMAGINE_IGNORE_FORMATS
+#endif // IMAGINE_FORMAT_PNG
   
 // ======================================================================
   
