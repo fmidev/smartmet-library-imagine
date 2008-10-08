@@ -57,6 +57,8 @@ LINUX=  env["PLATFORM"]=="posix"
 OSX=    env["PLATFORM"]=="darwin"
 WINDOWS= env["PLATFORM"]=="win32"
 
+out_postfix= WINDOWS and (DEBUG and "_debug" or "_release") or ""
+
 #
 # SCons does not pass env.vars automatically through to executing commands.
 # On Windows, we want it to get them all (Visual C++ 2008).
@@ -128,7 +130,7 @@ elif OSX:
     env.Append( CPPPATH= [ "/sw/include" ] )
     env.Append( LIBPATH= [ "/sw/lib" ] )
 
-env.Append( LIBS= [ "smartmet_newbase" ] )
+env.Append( LIBS= [ "smartmet_newbase"+out_postfix ] )
 
 #
 # Freetype2 support
@@ -280,8 +282,9 @@ if IMAGINE_USAGE:
 #
 # Make just the static lib (at least it should be default for just 'scons')
 #
-out_postfix= WINDOWS and (DEBUG and "_debug" or "_release") or ""
 out= env.Library( "smartmet_imagine"+out_postfix, objs )
 
 if WINDOWS:
     Depends( out, "../newbase/smartmet_newbase"+out_postfix+".lib" )
+elif LINUX:
+    Depends( out, PREFIX+"/lib64/libsmartmet_newbase.a" )

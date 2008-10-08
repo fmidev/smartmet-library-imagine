@@ -2,4 +2,4 @@
 .sconsign.dblite
 ._*
 .DS_Store
-
+*.lib
