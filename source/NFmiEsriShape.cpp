@@ -275,7 +275,7 @@ namespace Imagine
 	
 	// Read header elements
 	
-	int shpsize = BigEndianInt(shpheader,kFmiEsriPosFileLength);
+	unsigned int shpsize = BigEndianInt(shpheader,kFmiEsriPosFileLength);
 	// int shpversion = LittleEndianInt(shpheader,kFmiEsriPosVersion);
 	int shptype = LittleEndianInt(shpheader,kFmiEsriPosType);
 	
@@ -317,7 +317,7 @@ namespace Imagine
 	// Then process all records in the file
 	
 	unsigned int pos = 0;
-	while(pos < shpdata.size())
+	while(pos < shpsize)
 	  {
 		// Record header
 		
@@ -330,12 +330,14 @@ namespace Imagine
 		
 		bool ok = Add(recnum,shpdata,pos);
 		
-		pos += reclen*2;		// Esri sizes are in 16-bit units!
-		
 		// Abort if data seems strange
 		
 		if(!ok)
-		  return false;
+		  {
+			return false;
+		  }
+
+		pos += reclen*2;		// Esri sizes are in 16-bit units!
 		
 	  }
 	
@@ -379,6 +381,12 @@ namespace Imagine
 	int recordlength = LittleEndianShort(dbfheader,kFmixBaseRecordLengthPos);
 	
 	int numfields = (headerlength-kFmixBaseHeaderSize)/kFmixBaseFieldSize;
+
+	if(numrecords > static_cast<int>(Elements().size()))
+	  {
+		cerr << "Warning: DBF contains more records than SHP" << endl;
+		numrecords = Elements().size();
+	  }
 	
 	// Read all the fields in
 	
