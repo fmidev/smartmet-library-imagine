@@ -317,7 +317,7 @@ namespace Imagine
 	// Then process all records in the file
 	
 	unsigned int pos = 0;
-	while(pos < shpsize)
+	while(pos < shpdata.size())
 	  {
 		// Record header
 		
@@ -325,7 +325,7 @@ namespace Imagine
 		int reclen = BigEndianInt(shpdata,pos+kFmiEsriRecordHeaderPosLen);
 		
 		pos += kFmiEsriRecordHeaderSize;
-		
+
 		// Interpret the data element
 		
 		bool ok = Add(recnum,shpdata,pos);
@@ -337,6 +337,10 @@ namespace Imagine
 			return false;
 		  }
 
+		// Safety check
+		if(reclen < 0)
+		  break;
+		
 		pos += reclen*2;		// Esri sizes are in 16-bit units!
 		
 	  }
