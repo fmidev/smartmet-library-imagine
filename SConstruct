@@ -42,6 +42,7 @@ RELEASE=    (not DEBUG) and (not PROFILE)     # default
 
 OBJDIR=     ARGUMENTS.get("objdir","obj")
 PREFIX=     ARGUMENTS.get("prefix","/usr/")
+LIBDIR=     ARGUMENTS.get("libdir","/usr/lib")
 
 # Installed from 'boost_1_36_0_setup.exe' from BoostPro Internet page.
 #
@@ -287,4 +288,4 @@ out= env.Library( "smartmet_imagine"+out_postfix, objs )
 if WINDOWS:
     Depends( out, "../newbase/smartmet_newbase"+out_postfix+".lib" )
 elif LINUX:
-    Depends( out, PREFIX+"/lib64/libsmartmet_newbase.a" )
+    Depends( out, LIBDIR+"/libsmartmet_newbase.a" )
