@@ -47,7 +47,7 @@ INSTALL_DATA = install -m 664
 #
 # The rules
 #
-SCONS_FLAGS += objdir=$(objdir) prefix=$(PREFIX)
+SCONS_FLAGS += objdir=$(objdir) prefix=$(PREFIX) libdir=$(libdir)
 
 all release $(LIBFILE):
 	scons $(SCONS_FLAGS) $(LIBFILE)
@@ -103,3 +103,4 @@ headertest:
 	$(CC) $(CFLAGS) $(INCLUDES) -o /dev/null /tmp/$(LIB).cpp $(LIBS); \
 	done
 
+# DO NOT DELETE
