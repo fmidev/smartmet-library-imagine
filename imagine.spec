@@ -1,15 +1,24 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 8.11.12
+Version: 9.3.18
 Release: 1.el5.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
 Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: libsmartmet-newbase >= 8.9.29-1, freetype-devel, libjpeg-devel, libpng-devel, zlib-devel, cairomm-devel, boost-devel >= 1.36
-Requires: freetype, libjpeg, libpng, zlib
+BuildRequires: boost-devel >= 1.36
+BuildRequires: cairomm-devel
+BuildRequires: freetype-devel
+BuildRequires: libjpeg-devel
+BuildRequires: libpng-devel
+BuildRequires: libsmartmet-newbase >= 9.3.16-1
+BuildRequires: zlib-devel
+Requires: freetype
+Requires: libjpeg
+Requires: libpng
+Requires: zlib
 Provides: %{LIBNAME}
 
 %description
@@ -35,6 +44,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Wed Mar 18 2009 mheiskan <mika.heiskanen@fmi.fi> - 9.3.18-1.el5.fmi
+- Recompiled due to newbase API changes
 * Mon Nov 12 2008 pkeranen <pekka.keranen@fmi.fi> - 8.11.12-1.el5.fmi
 - More improved shapefile support
 * Mon Nov 10 2008 pkeranen <pekka.keranen@fmi.fi> - 8.11.10-1.el5.fmi
