@@ -620,10 +620,11 @@ namespace Imagine
 		
 		//      cachesize = min(3,cachesize+1);
 		cachesize = FmiMin(3,cachesize+1);
-		
+
 		if(cachesize <3)
 		  continue;
-		
+
+
 		// Now, if the last 2 operations are of equal lineto-type,
 		// we may simplify the sequence of 3 points:
 		//
@@ -660,7 +661,6 @@ namespace Imagine
 				oper2 = oper1;
 				x2=x1;
 				y2=y1;
-				cachesize--;
 			  }
 		  }
 	  }
