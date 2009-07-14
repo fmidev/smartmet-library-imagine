@@ -55,9 +55,10 @@ INCLUDES = \
 
 LIBS =  -L .. -lsmartmet_imagine \
 	-lsmartmet_newbase \
-	-lboost_regex-mt \
-	-lboost_filesystem-mt \
-        -lboost_iostreams-mt \
+	-lboost_regex \
+	-lboost_filesystem \
+        -lboost_iostreams \
+        -lboost_system \
 	$(FT2_LIBS) \
 	$(CAIRO_LIBS) \
 	-lpng -ljpeg -lz -lbz2 -lpthread
