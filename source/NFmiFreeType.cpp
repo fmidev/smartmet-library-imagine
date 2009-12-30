@@ -50,6 +50,7 @@ extern "C" {
 #define FT_RENDER_MODE_NORMAL ft_render_mode_normal
 #endif
 
+#include <cmath>
 #include <map>
 #include <stdexcept>
 #include <vector>
@@ -358,20 +359,32 @@ namespace Imagine
 			pen.x += (delta.x >> 6);
 		  }
 
-		// store current pen position
-		pos[glyphpos] = pen;
-
-		// load glyph image into the slow without rendering
+		// load glyph image into the slot without rendering
 
 		error = FT_Load_Glyph(theFace, glyph_index, FT_LOAD_DEFAULT);
 		if(error)
 		  continue;
 
 		// Extract glyph image and store it in our table
-
 		error = FT_Get_Glyph(theFace->glyph,&glyphs[glyphpos]);
 		if(error)
 		  continue;
+
+		// store current pen position
+
+		pos[glyphpos].x = pen.x;
+		pos[glyphpos].y = pen.y;
+
+#if 1
+		FT_Glyph image = glyphs[glyphpos];
+		error = FT_Glyph_To_Bitmap(&image, FT_RENDER_MODE_NORMAL, &pen, 0);
+		if(!error)
+		  {
+			FT_BitmapGlyph bit = reinterpret_cast<FT_BitmapGlyph>(image);
+			pos[glyphpos].x += bit->left;
+			pos[glyphpos].y -= bit->top;
+		  }
+#endif
 
 		glyphpos++;
 
@@ -396,15 +409,15 @@ namespace Imagine
 	const double xfactor = XAlignmentFactor(theAlignment);
 	const double yfactor = YAlignmentFactor(theAlignment);
 
-	const int start_x = static_cast<int>(64*(theX - xfactor*width));
-	const int start_y = static_cast<int>(64*(theY + (1- yfactor)*height));
+	const int start_x = static_cast<int>(round(theX - xfactor*width));
+	const int start_y = static_cast<int>(round(theY + (1- yfactor)*height));
 
 	// Render the background
 
 	if(theBackgroundOn)
 	  {
-		const int x1 = (start_x >> 6) - theBackgroundWidth;
-		const int y2 = (start_y >> 6) + theBackgroundHeight;
+		const int x1 = start_x - theBackgroundWidth;
+		const int y2 = start_y + theBackgroundHeight;
 		const int x2 = x1 + width  + 2*theBackgroundWidth;
 		const int y1 = y2 - height - 2*theBackgroundHeight;
 
@@ -424,22 +437,26 @@ namespace Imagine
 	  {
 		FT_Glyph image = glyphs[i];
 
-		pen.x = start_x + 64*pos[i].x;
-		pen.y = start_y + 64*pos[i].y;
+		pen.x = start_x + pos[i].x;
+		pen.y = start_y + pos[i].y;
 
-		error = FT_Glyph_To_Bitmap(&image, FT_RENDER_MODE_NORMAL, 0, 0);
+		error = FT_Glyph_To_Bitmap(&image, FT_RENDER_MODE_NORMAL, &pen, 0);
 
 		if(!error)
 		  {
 			FT_BitmapGlyph bit = reinterpret_cast<FT_BitmapGlyph>(image);
 
-			int x = (pen.x >> 6);
-			int y = (pen.y >> 6) - bit->bitmap.rows;
-
+#if 0
 			this->Draw(theBlender, theImage, theColor,
 					   bit->bitmap,
-					   x,
-					   y);
+					   pen.x + bit->left,
+					   pen.y - bit->top);
+#else
+			this->Draw(theBlender, theImage, theColor,
+					   bit->bitmap,
+					   pen.x,
+					   pen.y);
+#endif
 
 			FT_Done_Glyph(image);
 		  }
@@ -463,12 +480,15 @@ namespace Imagine
 								  FT_Int theY)
   {
 	FT_Int i, j, p, q;
-	FT_Int x_max = theX + theBitmap.width;
-	FT_Int y_max = theY + theBitmap.rows;
+	FT_Int x = theX;
+	FT_Int y = theY;
 
-	for ( i = theX, p = 0; i < x_max; i++, p++ )
+	FT_Int x_max = x + theBitmap.width;
+	FT_Int y_max = y + theBitmap.rows;
+
+	for ( i = x, p = 0; i < x_max; i++, p++ )
 	  {
-		for ( j = theY, q = 0; j < y_max; j++, q++ )
+		for ( j = y, q = 0; j < y_max; j++, q++ )
 		  {
 			if ( i<0 || j<0 || i >= theImage.Width() || j >= theImage.Height())
 			  continue;
