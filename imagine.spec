@@ -1,8 +1,8 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 10.1.5
-Release: 1.el5.fmi
+Version: 10.1.11
+Release: 2.el5.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
@@ -13,7 +13,7 @@ BuildRequires: cairomm-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: libsmartmet-newbase >= 9.7.14-1
+BuildRequires: libsmartmet-newbase >= 10.1.11-2
 BuildRequires: zlib-devel
 Requires: freetype
 Requires: libjpeg
@@ -44,6 +44,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Mon Jan 11 2010 mheiskan <mika.heiskanen@fmi.fi> - 10.1.11-1.el5.fmi
+- Compiled with latest newbase
 * Tue Jan  5 2010 mheiskan <mika.heiskanen@fmi.fi> - 10.1.5-1.el5.fmi
 - Fixed TrueType font rendering
 * Tue Jul 14 2009 mheiskan <mika.heiskanen@fmi.fi> - 9.4.17-1.el5.fmi
