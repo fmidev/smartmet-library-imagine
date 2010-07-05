@@ -2,7 +2,7 @@
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
 Version: 10.7.5
-Release: 1.el5.fmi
+Release: 2.el5.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
@@ -13,7 +13,7 @@ BuildRequires: cairomm-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: libsmartmet-newbase >= 10.7.5-1
+BuildRequires: libsmartmet-newbase >= 10.7.5-2
 BuildRequires: zlib-devel
 Requires: freetype
 Requires: libjpeg
