@@ -1,19 +1,19 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 10.7.5
-Release: 2.el5.fmi
+Version: 10.9.14
+Release: 1.el5.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
 Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: boost-devel >= 1.41
+BuildRequires: boost-devel >= 1.44
 BuildRequires: cairomm-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: libsmartmet-newbase >= 10.7.5-2
+BuildRequires: libsmartmet-newbase >= 10.9.14-1
 BuildRequires: zlib-devel
 Requires: freetype
 Requires: libjpeg
@@ -44,6 +44,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Tue Sep 14 2010 mheiskan <mika.heiskanen@fmi.fi> - 10.9.14-1.el5.fmi
+- Upgraded to boost 1.44 and newbase 10.9.14-1
 * Mon Jul  7 2010 mheiskan <mika.heiskanen@fmi.fi> - 10.7.5-1.el5.fmi
 - Upgraded to newbase 10.7.5-1
 * Fri Jan 15 2010 mheiskan <mika.heiskanen@fmi.fi> - 10.1.15-1.el5.fmi
