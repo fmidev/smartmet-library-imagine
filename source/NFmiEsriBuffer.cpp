@@ -7,6 +7,7 @@
 #include "NFmiEsriBuffer.h"
 #include <algorithm>	// swap()
 #include <iostream>
+#include <cstring>
 
 #ifdef UNIX
   extern "C" {

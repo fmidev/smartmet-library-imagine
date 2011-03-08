@@ -18,6 +18,7 @@
 #define IMAGINE_NFMICOLORBLEND_H
 
 #include "NFmiColorTools.h"
+#include <cstdlib>
 
 #ifdef __BORLANDC__
      using std::abs;

@@ -154,6 +154,7 @@
 
 #include <fstream>
 #include <iomanip>
+#include <cstdlib>
 
 using namespace Imagine::NFmiEsriBuffer;	// Conversion tools
 using namespace std;

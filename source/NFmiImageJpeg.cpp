@@ -12,6 +12,8 @@
 
 #include "NFmiImage.h"
 #include <iostream>
+#include <cstring>
+#include <cstdlib>
 
 #ifdef IMAGINE_FORMAT_JPEG
 
