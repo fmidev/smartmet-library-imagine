@@ -148,8 +148,8 @@ if WINDOWS:
 
     env.Append( CPPPATH= [ WINDOWS_PREBUILT_PATH+"/cairo-1.6.4/src" ] )
     #env.Append( LIBPATH= [ WINDOWS_PREBUILT_PATH+"/cairo-1.6.4/src/release" ] )
-else:
-    env.ParseConfig("pkg-config --cflags --libs cairomm-1.0") 
+# else:
+#   env.ParseConfig("pkg-config --cflags --libs cairomm-1.0") 
 
 #
 # Other libraries
