@@ -1,7 +1,7 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 11.3.24
+Version: 11.5.31
 Release: 1.el5.fmi
 License: FMI
 Group: Development/Libraries
@@ -12,7 +12,7 @@ BuildRequires: boost-devel >= 1.46
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: libsmartmet-newbase >= 11.3.24
+BuildRequires: libsmartmet-newbase >= 11.5.31
 BuildRequires: zlib-devel
 Requires: freetype
 Requires: libjpeg
@@ -43,6 +43,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Tue May 31 2011 mheiskan <mika.heiskanen@fmi.fi> - 11.5.31-1.el5.fmi
+- Major newbase upgrade
+* Fri May 20 2011 mheiskan <mika.heiskanen@fmi.fi> - 11.5.20-1.el6.fmi
+- Upgrade to RHEL6
 * Thu Mar 24 2011 mheiskan <mika.heiskanen@fmi.fi> - 11.3.24-1.el5.fmi
 - Upgrade to boost 1.46
 * Thu Feb  3 2011 mheiskan <mika.heiskanen@fmi.fi> - 11.2.3-1.el5.fmi
