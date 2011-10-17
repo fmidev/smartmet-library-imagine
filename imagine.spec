@@ -1,7 +1,7 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 11.7.20
+Version: 11.10.17
 Release: 1.el5.fmi
 License: FMI
 Group: Development/Libraries
@@ -12,7 +12,7 @@ BuildRequires: boost-devel >= 1.47
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: libsmartmet-newbase >= 11.7.20
+BuildRequires: libsmartmet-newbase >= 11.10.17
 BuildRequires: zlib-devel
 Requires: freetype
 Requires: libjpeg
@@ -43,6 +43,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Mon Oct 17 2011 mheiskan <mika.heiskanen@fmi.fi> - 11.10.17-1.el5.fmi
+- Upgrade to newbase 11.10.17
 * Wed Jul 20 2011 mheiskan <mika.heiskanen@fmi.fi> - 11.7.20-1.el5.fmi
 - Upgrade to boost 1.47
 * Tue May 31 2011 mheiskan <mika.heiskanen@fmi.fi> - 11.5.31-1.el5.fmi
