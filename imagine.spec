@@ -2,7 +2,7 @@
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
 Version: 11.10.17
-Release: 2.el5.fmi
+Release: 3.el5.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
