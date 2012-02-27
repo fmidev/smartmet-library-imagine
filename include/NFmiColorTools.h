@@ -213,15 +213,15 @@ namespace Imagine
 	
 	//! Convert RGB values to HLS values.
 	
-	void RGBtoHLS(int red, int green, int blue, float *h, float *l, float *s);
+	void RGBtoHLS(int red, int green, int blue, double *h, double *l, double *s);
 	
 	//! Convert HLS values to RGB values
 	
-	void HLStoRGB(float h, float l, float s, int *r, int *g, int *b);
+	void HLStoRGB(double h, double l, double s, int *r, int *g, int *b);
 	
 	//! Utility used by HLS -- RGB conversion functions.
 	
-	float hls_to_rgb_util(float m1, float m2, float h);
+	double hls_to_rgb_util(double m1, double m2, double h);
 	
 	// -------------------- miscellaneous --------------------
 	

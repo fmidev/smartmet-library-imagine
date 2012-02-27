@@ -38,9 +38,9 @@ namespace Imagine
     */
   struct NFmiPathElement {
     enum NFmiPathOperation op;
-    float x,y;
+    double x,y;
     
-    NFmiPathElement( enum NFmiPathOperation op_, float x_, float y_ )
+    NFmiPathElement( enum NFmiPathOperation op_, double x_, double y_ )
         : op(op_), x(x_), y(y_) {}
 
 	bool operator==( const NFmiPathElement &other ) const {
@@ -51,12 +51,12 @@ namespace Imagine
     */
 #if 1
     enum NFmiPathOperation Oper() const { return op; }
-    float X() const { return x; }
-    float Y() const { return y; }
+    double X() const { return x; }
+    double Y() const { return y; }
     
     void Oper( enum NFmiPathOperation v ) { op=v; }
-    void X( float v ) { x=v; }
-    void Y( float v ) { y=v; }
+    void X( double v ) { x=v; }
+    void Y( double v ) { y=v; }
 #endif
   };
 

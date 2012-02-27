@@ -451,9 +451,9 @@ namespace Imagine
 			  unsigned long i;
 			  for(i=0; i<n; i++)
 				{
-				  const int c0 = (i>0 ? counts[i-1] : counts[n-2]);
-				  const int c1 = counts[i];
-				  const int c2 = (i+1<n ? counts[i+1] : counts[1]);
+				  const size_t c0 = (i>0 ? counts[i-1] : counts[n-2]);
+				  const size_t c1 = counts[i];
+				  const size_t c2 = (i+1<n ? counts[i+1] : counts[1]);
 				  if(c0<c1 || c2<c1)
 					break;
 				}

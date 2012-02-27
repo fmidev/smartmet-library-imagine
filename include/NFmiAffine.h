@@ -25,28 +25,28 @@ namespace Imagine
 	
 	~NFmiAffine();
 	NFmiAffine();
-	NFmiAffine(float theA, float theB, float theC,
-			   float theD, float theE, float theF);
+	NFmiAffine(double theA, double theB, double theC,
+			   double theD, double theE, double theF);
 	
 	NFmiAffine(const NFmiAffine & theAffine);
 	NFmiAffine & operator=(const NFmiAffine & theAffine);
 	
-	void Translate(float tx, float ty);
-	void Scale(float s);
-	void Scale(float sx, float sy);
-	void Rotate(float a);
+	void Translate(double tx, double ty);
+	void Scale(double s);
+	void Scale(double sx, double sy);
+	void Rotate(double a);
 	void Multiply(const NFmiAffine & theAffine);
-	float X(float x, float y);
-	float Y(float x, float y);
+	double X(double x, double y);
+	double Y(double x, double y);
 
   private:
 	
-	float itsA;
-	float itsB;
-	float itsC;
-	float itsD;
-	float itsE;
-	float itsF;
+	double itsA;
+	double itsB;
+	double itsC;
+	double itsD;
+	double itsE;
+	double itsF;
 	
   };
 

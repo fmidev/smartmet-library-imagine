@@ -106,27 +106,27 @@ namespace Imagine
 	
 	// Add the given path element via its components
 	
-	void Add(NFmiPathOperation theOper, float theX, float theY)
+	void Add(NFmiPathOperation theOper, double theX, double theY)
 	{ itsElements.push_back(NFmiPathElement(theOper,theX,theY)); }
 	
 	// Move to a new point
 	
-	void MoveTo(float theX, float theY)
+	void MoveTo(double theX, double theY)
 	{ itsElements.push_back(NFmiPathElement(kFmiMoveTo,theX,theY)); }
 	
 	// Draw a line from current point to new point
 	
-	void LineTo(float theX, float theY)
+	void LineTo(double theX, double theY)
 	{ itsElements.push_back(NFmiPathElement(kFmiLineTo,theX,theY)); }
 	
 	// Draw an invisible line from current point to new point
 	
-	void GhostLineTo(float theX, float theY)
+	void GhostLineTo(double theX, double theY)
 	{ itsElements.push_back(NFmiPathElement(kFmiGhostLineTo,theX,theY)); }
 	
 	// Draw a line from the given point to the first point
 	
-	void InsertLineTo(float theX, float theY)
+	void InsertLineTo(double theX, double theY)
 	{
 	  itsElements.front().op= kFmiLineTo;
 	  itsElements.push_front( NFmiPathElement(kFmiMoveTo,theX,theY) );
@@ -134,7 +134,7 @@ namespace Imagine
 	
 	// Draw a line from the given point to the first point
 	
-	void InsertGhostLineTo(float theX, float theY)
+	void InsertGhostLineTo(double theX, double theY)
 	{
 	  itsElements.front().op= kFmiGhostLineTo;
 	  itsElements.push_front( NFmiPathElement(kFmiMoveTo,theX,theY) );
@@ -142,14 +142,14 @@ namespace Imagine
 	
 	// Add a conic control point
 	
-	void ConicTo(float theX, float theY)
+	void ConicTo(double theX, double theY)
 	{
 	  itsElements.push_back(NFmiPathElement(kFmiConicTo,theX,theY));
 	}
 	
 	// Add a cubic control point
 	
-	void CubicTo(float theX, float theY)
+	void CubicTo(double theX, double theY)
 	{
 	  itsElements.push_back(NFmiPathElement(kFmiCubicTo,theX,theY));
 	}
@@ -204,11 +204,11 @@ namespace Imagine
 	// Simplify using Douglas-Peucker algorithm. The input is the
 	// maximum allowed error for any line segment.
 	
-	void Simplify(float epsilon=0.0);
+	void Simplify(double epsilon=0.0);
 	
 	// Simplify long straight line segments
 	
-	void SimplifyLines(float offset=0.0);
+	void SimplifyLines(double offset=0.0);
 	
 	// Return SVG-string description
 	
@@ -225,19 +225,19 @@ namespace Imagine
 	
 	// Rotate the path by the given decimal degrees
 	
-	void Rotate(float theAngle);
+	void Rotate(double theAngle);
 	
 	// Translate the path by the given amount
 	
-	void Translate(float theX, float theY);
+	void Translate(double theX, double theY);
 	
 	// Scale the path by the given amount
 	
-	void Scale(float theScale);
+	void Scale(double theScale);
 	
 	// Scale the path by the given amounts in x- and y-directions
 	
-	void Scale(float theXScale, float theYScale);
+	void Scale(double theXScale, double theYScale);
 	
 	// Apply a general affine transformation
 #ifndef IMAGINE_WITH_CAIRO
@@ -245,7 +245,7 @@ namespace Imagine
 #endif
 	// Align path to desired corner
 	
-	void Align( NFmiAlignment theAlignment, float theX=0.0, float theY=0.0 );
+	void Align( NFmiAlignment theAlignment, double theX=0.0, double theY=0.0 );
 	
 	// Project
 	void Project(const NFmiArea * const theArea);
@@ -257,7 +257,7 @@ namespace Imagine
 	// Stroke onto given image using various Porter-Duff rules
 
 	void Stroke( ImagineXr_or_NFmiImage &img,
-				float theWidth,
+				double theWidth,
 				NFmiColorTools::Color theColor,
 				NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy ) const;
 
@@ -291,7 +291,7 @@ namespace Imagine
     void Fill( ImagineXr &img, 
                const ImagineXr &pattern, 
                NFmiColorTools::NFmiBlendRule rule, 
-               float factor ) const {
+               double factor ) const {
         img.Fill( itsElements, pattern, rule, factor );
     }
 #endif
@@ -308,7 +308,7 @@ namespace Imagine
 	// work using g++ v2.95, instead we must format the numbers by
 	// ourselves for string concatenation operations
     //	
-	std::string ftoa( float theValue ) const;
+	std::string ftoa( double theValue ) const;
 	
 	// Simplification subroutines
     //	

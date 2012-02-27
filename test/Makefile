@@ -58,6 +58,7 @@ LIBS =  -L .. -lsmartmet_imagine \
 	-lboost_regex \
 	-lboost_filesystem \
         -lboost_iostreams \
+        -lboost_thread \
         -lboost_system \
 	$(FT2_LIBS) \
 	$(CAIRO_LIBS) \

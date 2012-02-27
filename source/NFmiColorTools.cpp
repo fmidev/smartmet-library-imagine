@@ -220,15 +220,15 @@ namespace Imagine
   // ----------------------------------------------------------------------
   
   void NFmiColorTools::RGBtoHLS(int red, int green, int blue,
-								float *h, float *l, float *s)
+								double *h, double *l, double *s)
   {
-	float v,m,delta,l1,h1,r,g,b;
+	double v,m,delta,l1,h1,r,g,b;
 	
 	// Normalize input to range 0-1 for calculations
 	
-	r = static_cast<float>(red)/MaxRGB;
-	g = static_cast<float>(green)/MaxRGB;
-	b = static_cast<float>(blue)/MaxRGB;
+	r = static_cast<double>(red)/MaxRGB;
+	g = static_cast<double>(green)/MaxRGB;
+	b = static_cast<double>(blue)/MaxRGB;
 	
 	v = (r>g) ? ((r>b) ? r : b) : ((g>b) ? g : b);
 	m = (r<g) ? ((r<b) ? r : b) : ((g<b) ? g : b);
@@ -265,10 +265,10 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
   
-  void NFmiColorTools::HLStoRGB(float h, float l, float s,
+  void NFmiColorTools::HLStoRGB(double h, double l, double s,
 								int *r, int *g, int *b)
   {
-	float m1, m2;
+	double m1, m2;
 	
 	// handle greyscale separately
 	if(s < 1e-10)
@@ -285,9 +285,9 @@ namespace Imagine
   
   // Utility function needed by HLStoRGB
   
-  float NFmiColorTools::hls_to_rgb_util(float m1, float m2, float h)
+  double NFmiColorTools::hls_to_rgb_util(double m1, double m2, double h)
   {
-	float hue = h;
+	double hue = h;
 	if(hue>360) hue=hue-360;
 	if(hue<0)   hue=hue+360;
 	if(hue<60)
@@ -322,7 +322,7 @@ namespace Imagine
 	if(fraction>=1)
 	  return c2;
 	
-	float h1,l1,s1, h2,l2,s2, h,l,s;
+	double h1,l1,s1, h2,l2,s2, h,l,s;
 	int   r,g,b,a;
 	
 	// Covert to HLS space
@@ -372,15 +372,15 @@ namespace Imagine
 	
 	// Transform to hls space
 	
-	float h,l,s;
+	double h,l,s;
 	RGBtoHLS(r,g,b,&h,&l,&s);
 	
 	// Calculate adjustment
 	
 	const float m=0.5;
-	float adjustment = m*theSign*(m*(sin(3.14159265358979323846264*(l-m))+1)-l);
+	double adjustment = m*theSign*(m*(sin(3.14159265358979323846264*(l-m))+1)-l);
 	l += adjustment;
-	l = std::max(std::min(l,1.0f),0.0f);
+	l = std::max(std::min(l,1.0),0.0);
 	
 	// Transform back
 	
@@ -481,7 +481,7 @@ namespace Imagine
 		else
 		  {
 			int value = -1;
-			for(unsigned int i=pos+1; i<theColor.length(); i++)
+			for(size_t i=pos+1; i<theColor.length(); i++)
 			  {
 				if(theColor[i]>='0' && theColor[i]<='9')
 				  {

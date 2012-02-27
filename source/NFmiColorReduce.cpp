@@ -29,11 +29,10 @@
 #include <memory>
 #include <vector>
 
-#ifdef UNIX
-#include <ext/hash_map>
-namespace stdext = __gnu_cxx;
-#else
 #include <hash_map>
+
+#ifdef UNIX
+using namespace __gnu_cxx;
 #endif
 
 using namespace std;
@@ -52,7 +51,7 @@ namespace Imagine
 
 	//! Histogram information
 
-	typedef stdext::hash_map<NFmiColorTools::Color,int> Counter;
+	typedef hash_map<NFmiColorTools::Color,int> Counter;
 
 	//! Colormap transformation
 	typedef map<NFmiColorTools::Color,NFmiColorTools::Color> ColorMap;
@@ -407,7 +406,7 @@ namespace Imagine
 	void replace_colors(NFmiImage & theImage, const ColorMap & theMap)
 	{
 #ifdef UNIX
-	  stdext::hash_map<NFmiColorTools::Color,NFmiColorTools::Color> colormap(256);
+	  hash_map<NFmiColorTools::Color,NFmiColorTools::Color> colormap(256);
 #else // #ifdef _MSC_VER  // MSVisualC++ k‰‰nt‰j‰n mukana tulleessa hash_map -koodissa 
 						  // ei ollut buckettien m‰‰r‰n s‰‰tˆ mahdollisuutta.
 	  stdext::hash_map<NFmiColorTools::Color,NFmiColorTools::Color> colormap;

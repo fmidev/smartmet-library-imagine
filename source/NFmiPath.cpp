@@ -34,7 +34,7 @@ namespace
 {
 
   // Inside-out inversion limit
-  const float inside_out_limit = 1e8;
+  const double inside_out_limit = 1e8;
 
   //! The number identifying the region within the rectangle
   const int central_quadrant = 4;
@@ -208,16 +208,16 @@ namespace Imagine
   void NFmiPath::Add(const string & theString)
   {
 	NFmiPathOperation previous_op = kFmiMoveTo;
-	float previous_x = 0;
-	float previous_y = 0;
+	double previous_x = 0;
+	double previous_y = 0;
 	bool previous_relative = false;
 	
 	unsigned int pos = 0;		// parser position
 	
 	int phase = 0;	// 0 = op, 1 = x, 2 = y
 	
-	float x = 0.0f;
-	float y = 0.0f;
+	double x = 0.0f;
+	double y = 0.0f;
 	bool relative = false;
 	NFmiPathOperation op = kFmiMoveTo;
 	
@@ -295,7 +295,7 @@ namespace Imagine
 			if(theString[pos]==',')
 			  pos++;
 			
-			float number = atof(asciinumber.c_str());
+			double number = atof(asciinumber.c_str());
 			
 			if(phase==1)
 			  x = number;
@@ -339,14 +339,14 @@ namespace Imagine
   // of different paths to be simplified.
   // ----------------------------------------------------------------------
   
-  void NFmiPath::Simplify(float epsilon)
+  void NFmiPath::Simplify(double epsilon)
   {
 	if(epsilon<0.0)
 	  return;
 	
 	// Count the important points
 	
-	NFmiCounter<pair<float,float> > counter;
+	NFmiCounter<pair<double,double> > counter;
 	
 	NFmiPathData::const_iterator iter;
 	for(iter=Elements().begin() ; iter!=Elements().end(); ++iter)
@@ -375,7 +375,7 @@ namespace Imagine
   // Translate the path by the given amount
   // ----------------------------------------------------------------------
   
-  void NFmiPath::Translate(float theX, float theY)
+  void NFmiPath::Translate(double theX, double theY)
   {
 	NFmiPathData::iterator iter;
 	
@@ -393,7 +393,7 @@ namespace Imagine
   // Scale the path by the given amount
   // ----------------------------------------------------------------------
   
-  void NFmiPath::Scale(float theScale)
+  void NFmiPath::Scale(double theScale)
   {
 	Scale(theScale, theScale);
   }
@@ -402,7 +402,7 @@ namespace Imagine
   // Scale the path by the given amounts in x- and y-directions
   // ----------------------------------------------------------------------
   
-  void NFmiPath::Scale(float theXScale, float theYScale)
+  void NFmiPath::Scale(double theXScale, double theYScale)
   {
 	NFmiPathData::iterator iter;
 	
@@ -420,19 +420,19 @@ namespace Imagine
   // Rotate the path by the given amount
   // ----------------------------------------------------------------------
   
-  void NFmiPath::Rotate(float theAngle)
+  void NFmiPath::Rotate(double theAngle)
   {
-	const float pi = 3.14159265358979f;
+	const double pi = 3.14159265358979f;
 	
 	NFmiPathData::iterator iter;
 	
-	float cosa = cos(theAngle*pi/180);
-	float sina = sin(theAngle*pi/180);
+	double cosa = cos(theAngle*pi/180);
+	double sina = sin(theAngle*pi/180);
 	
 	for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 	  {
-	    float x= iter->x;
-	    float y= iter->y;
+	    double x= iter->x;
+	    double y= iter->y;
 	    iter->x= x*cosa + y*sina;
 	    iter->y= -x*sina + y*cosa;
 	  }
@@ -449,8 +449,8 @@ namespace Imagine
 	
 	for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 	  {
-		float x = iter->x;
-		float y = iter->y;
+		double x = iter->x;
+		double y = iter->y;
 		iter->x= theAffine.X( x,y );
 		iter->y= theAffine.Y( x,y );
 	  }
@@ -461,7 +461,7 @@ namespace Imagine
   // Apply alignment on the path
   // ----------------------------------------------------------------------
   
-  void NFmiPath::Align(NFmiAlignment theAlignment, float theX, float theY)
+  void NFmiPath::Align(NFmiAlignment theAlignment, double theX, double theY)
   {
 	NFmiEsriBox box(BoundingBox());
 	
@@ -579,7 +579,7 @@ namespace Imagine
   // This simplification ignores possible important points.
   // ----------------------------------------------------------------------
   
-  void NFmiPath::SimplifyLines(float theOffset)
+  void NFmiPath::SimplifyLines(double theOffset)
   {
 	NFmiPathData::iterator iter = itsElements.begin();
 	NFmiPathData::iterator end  = itsElements.end();
@@ -589,7 +589,7 @@ namespace Imagine
 	// Cached previous path element:
 	
 	NFmiPathOperation oper1,oper2,oper3;
-	float x1,y1,x2,y2,x3,y3;
+	double x1,y1,x2,y2,x3,y3;
 	
 	oper1 = oper2 = oper3 = kFmiMoveTo;
 	x1 = y1 = x2 = y2 = x3 = y3 = kFloatMissing;
@@ -726,8 +726,8 @@ namespace Imagine
 	string os;
 	
 	
-	float last_x, last_y;
-	float last_out_x, last_out_y;
+	double last_x, last_y;
+	double last_out_x, last_out_y;
 	NFmiPathOperation last_op = kFmiMoveTo;
 	
 	last_x = last_y = kFloatMissing;
@@ -744,8 +744,8 @@ namespace Imagine
 		if(os.size() > 0.9 * os.capacity())
 		  os.reserve(os.size() * 2);
 #endif
-		const float x = iter->x;
-		const float y = iter->y;
+		const double x = iter->x;
+		const double y = iter->y;
 		const NFmiPathOperation op = iter->op;
 
 		switch(op)
@@ -897,7 +897,7 @@ namespace Imagine
   // Convert floating point number to string for the benefit of SVG() method
   // ----------------------------------------------------------------------
   
-  string NFmiPath::ftoa(float theValue) const
+  string NFmiPath::ftoa(double theValue) const
   {
 	ostringstream str;
 	str << theValue;
@@ -916,14 +916,14 @@ namespace Imagine
 	NFmiPathOperation op1 = kFmiMoveTo;
 	NFmiPathOperation op2 = kFmiMoveTo;
 	NFmiPathOperation op3 = kFmiMoveTo;
-	float x1 = kFloatMissing;
-	float x2 = kFloatMissing;
-	float x3 = kFloatMissing;
-	float x4 = kFloatMissing;
-	float y1 = kFloatMissing;
-	float y2 = kFloatMissing;
-	float y3 = kFloatMissing;
-	float y4 = kFloatMissing;
+	double x1 = kFloatMissing;
+	double x2 = kFloatMissing;
+	double x3 = kFloatMissing;
+	double x4 = kFloatMissing;
+	double y1 = kFloatMissing;
+	double y2 = kFloatMissing;
+	double y3 = kFloatMissing;
+	double y4 = kFloatMissing;
 	
 	// The iterator for traversing the data
 	
@@ -999,8 +999,8 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	
 	// Current point is not defined yet
 	
-	float lastX = kFloatMissing;
-	float lastY = kFloatMissing;
+	double lastX = kFloatMissing;
+	double lastY = kFloatMissing;
 
 	NFmiPathData::const_iterator iter = Elements().begin();
 	
@@ -1008,8 +1008,8 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	  {
 		// Next point
 		
-		float nextX = iter->x;
-		float nextY = iter->y;
+		double nextX = iter->x;
+		double nextY = iter->y;
 		
 		if ( iter->op==kFmiConicTo || iter->op==kFmiCubicTo )
 		  throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::Stroke()");
@@ -1036,7 +1036,7 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
   // ----------------------------------------------------------------------
 
 void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
-						float theWidth,
+						double theWidth,
 						NFmiColorTools::Color theColor,
 						NFmiColorTools::NFmiBlendRule theRule) const
   {
@@ -1058,8 +1058,8 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 #else
 	// Current point is not defined yet
 	
-	float lastX = kFloatMissing;
-	float lastY = kFloatMissing;
+	double lastX = kFloatMissing;
+	double lastY = kFloatMissing;
 
 	NFmiPathData::const_iterator iter = Elements().begin();
 	
@@ -1067,8 +1067,8 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	  {
 		// Next point
 		
-		float nextX = iter->x;
-		float nextY = iter->y;
+		double nextX = iter->x;
+		double nextY = iter->y;
 		
 		if( iter->op==kFmiConicTo || iter->op==kFmiCubicTo)
 		  throw std::runtime_error("Conic and Cubic control points not supported in NFmiPath::Stroke()");
@@ -1085,8 +1085,8 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 				{
                   // Emulate thick line with a box
 				  NFmiPath box;
-				  float dx = nextX-lastX;
-				  float dy = nextY-lastY;
+				  double dx = nextX-lastX;
+				  double dy = nextY-lastY;
 				  double alpha = atan2(dy,dx);
 
 				  box.MoveTo( lastX-theWidth/2*sin(alpha), lastY+theWidth/2*cos(alpha) );

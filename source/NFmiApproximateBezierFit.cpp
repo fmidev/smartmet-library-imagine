@@ -137,7 +137,7 @@ namespace Imagine
 	  const NFmiPathData & path = thePath.Elements();
 	  NFmiPath out;
 	  out.MoveTo(path.back().x,path.back().y);
-	  for(unsigned int i=path.size()-1; i>0; i--)
+	  for(size_t i=path.size()-1; i>0; i--)
 		{
 		  out.Add(NFmiPathElement(path[i].op,
 								  path[i-1].x,
@@ -225,7 +225,7 @@ namespace Imagine
 
 	NFmiPoint ComputeRightTangent(const NFmiPathData & thePath)
 	{
-	  const int n = thePath.size();
+	  const size_t n = thePath.size();
 	  const double dx = thePath[n-2].x - thePath[n-1].x;
 	  const double dy = thePath[n-2].y - thePath[n-1].y;
 	  return Tangent(dx,dy);
@@ -250,10 +250,10 @@ namespace Imagine
 	  // some tangent estimate, we use p1,p5 and so on until
 	  // we get a result
 
-	  for(unsigned int d=1; d<thePath.size(); d++)
+	  for(size_t d=1; d<thePath.size(); d++)
 		{
-		  int prev = (thePos>=d ? thePos-d : 0);
-		  int next = (thePos+d<thePath.size() ? thePos+d : thePath.size()-1);
+		  size_t prev = (thePos>=d ? thePos-d : 0);
+		  size_t next = (thePos+d<thePath.size() ? thePos+d : thePath.size()-1);
 
 		  double dx1 = thePath[prev].x - thePath[thePos].x;
 		  double dy1 = thePath[prev].y - thePath[thePos].y;
@@ -286,7 +286,7 @@ namespace Imagine
 
 	NFmiPoint ComputeInitialTangent(const NFmiPathData & thePath)
 	{
-	  const int n = thePath.size();
+	  const size_t n = thePath.size();
 
 	  const double dx1 = thePath[0].x - thePath[n-2].x;
 	  const double dy1 = thePath[0].y - thePath[n-2].y;
@@ -320,9 +320,9 @@ namespace Imagine
 	{
 	  NFmiPathData tmp = thePath;
 	  // triangle computation
-	  const unsigned int degree = thePath.size()-1;
-	  for(unsigned int i=1; i<=degree; i++)
-		for(unsigned int j=0; j<=degree-i; j++)
+	  const size_t degree = thePath.size()-1;
+	  for(size_t i=1; i<=degree; i++)
+		for(size_t j=0; j<=degree-i; j++)
 		  {
 			tmp[j].x= (1-theValue)*tmp[j].x + theValue*tmp[j+1].x;
 			tmp[j].y= (1-theValue)*tmp[j].y + theValue*tmp[j+1].y;

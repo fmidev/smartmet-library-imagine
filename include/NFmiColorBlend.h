@@ -687,10 +687,10 @@ namespace Imagine
 	static inline NFmiColorTools::Color Blend
 	(int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
 	{
-	  float hsrc,lsrc,ssrc;
+	  double hsrc,lsrc,ssrc;
 	  NFmiColorTools::RGBtoHLS(srcr,srcg,srcb,&hsrc,&lsrc,&ssrc);
 	  
-	  float hdst,ldst,sdst;
+	  double hdst,ldst,sdst;
 	  NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
 							   NFmiColorTools::GetGreen(dst),
 							   NFmiColorTools::GetBlue(dst),
@@ -721,10 +721,10 @@ namespace Imagine
 	static inline NFmiColorTools::Color Blend
 	(int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
 	{
-	  float hsrc,lsrc,ssrc;
+	  double hsrc,lsrc,ssrc;
 	  NFmiColorTools::RGBtoHLS(srcr,srcg,srcb,&hsrc,&lsrc,&ssrc);
 	  
-	  float hdst,ldst,sdst;
+	  double hdst,ldst,sdst;
 	  NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
 							   NFmiColorTools::GetGreen(dst),
 							   NFmiColorTools::GetBlue(dst),
@@ -755,10 +755,10 @@ namespace Imagine
 	static inline NFmiColorTools::Color Blend
 	(int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
 	{
-	  float hsrc,lsrc,ssrc;
+	  double hsrc,lsrc,ssrc;
 	  NFmiColorTools::RGBtoHLS(srcr,srcg,srcb,&hsrc,&lsrc,&ssrc);
 	  
-	  float hdst,ldst,sdst;
+	  double hdst,ldst,sdst;
 	  NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
 							   NFmiColorTools::GetGreen(dst),
 							   NFmiColorTools::GetBlue(dst),
@@ -813,10 +813,10 @@ namespace Imagine
 	static inline NFmiColorTools::Color Blend
 	(int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
 	{
-	  float hsrc,lsrc,ssrc;
+	  double hsrc,lsrc,ssrc;
 	  NFmiColorTools::RGBtoHLS(srcr,srcg,srcb,&hsrc,&lsrc,&ssrc);
 	  
-	  float hdst,ldst,sdst;
+	  double hdst,ldst,sdst;
 	  NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
 							   NFmiColorTools::GetGreen(dst),
 							   NFmiColorTools::GetBlue(dst),
@@ -847,10 +847,10 @@ namespace Imagine
 	static inline NFmiColorTools::Color Blend
 	(int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
 	{
-	  float hsrc,lsrc,ssrc;
+	  double hsrc,lsrc,ssrc;
 	  NFmiColorTools::RGBtoHLS(srcr,srcg,srcb,&hsrc,&lsrc,&ssrc);
 	  
-	  float hdst,ldst,sdst;
+	  double hdst,ldst,sdst;
 	  NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
 							   NFmiColorTools::GetGreen(dst),
 							   NFmiColorTools::GetBlue(dst),
@@ -881,10 +881,10 @@ namespace Imagine
 	static inline NFmiColorTools::Color Blend
 	(int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
 	{
-	  float hsrc,lsrc,ssrc;
+	  double hsrc,lsrc,ssrc;
 	  NFmiColorTools::RGBtoHLS(srcr,srcg,srcb,&hsrc,&lsrc,&ssrc);
 	  
-	  float hdst,ldst,sdst;
+	  double hdst,ldst,sdst;
 	  NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
 							   NFmiColorTools::GetGreen(dst),
 							   NFmiColorTools::GetBlue(dst),

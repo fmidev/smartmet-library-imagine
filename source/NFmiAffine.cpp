@@ -64,8 +64,8 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
 
-  NFmiAffine::NFmiAffine(float theA, float theB, float theC,
-						 float theD, float theE, float theF)
+  NFmiAffine::NFmiAffine(double theA, double theB, double theC,
+						 double theD, double theE, double theF)
 	: itsA(theA)
 	, itsB(theB)
 	, itsC(theC)
@@ -117,7 +117,7 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
 	
-  void NFmiAffine::Translate(float tx, float ty)
+  void NFmiAffine::Translate(double tx, double ty)
   {
 	// Multiply(1,0,0,1,tx,ty)
 	
@@ -131,7 +131,7 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
 
-  void NFmiAffine::Scale(float s)
+  void NFmiAffine::Scale(double s)
   {
 	// Multiply(NFmiAffine(s,0,0,s,0,0));
 	itsA *= s;
@@ -146,7 +146,7 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
 	
-  void NFmiAffine::Scale(float sx, float sy)
+  void NFmiAffine::Scale(double sx, double sy)
   {
 	// Multiply(NFmiAffine(sx,0,0,sy,0,0));
 	itsA *= sx;
@@ -162,18 +162,18 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
 	
-  void NFmiAffine::Rotate(float a)
+  void NFmiAffine::Rotate(double a)
   {
 	// Multiply(NFmiAffine(cos(a),sin(a),-sin(a),cos(a),0,0))
 	
-	const float pi180 = static_cast<float>(3.141592658579323846/180.0);
-	float ca = cos(a*pi180);
-	float sa = sin(a*pi180);
+	const double pi180 = 3.141592658579323846/180.0;
+	double ca = cos(a*pi180);
+	double sa = sin(a*pi180);
 	
-	float oldA = itsA;
-	float oldB = itsB;
-	float oldC = itsC;
-	float oldD = itsD;
+	double oldA = itsA;
+	double oldB = itsB;
+	double oldC = itsC;
+	double oldD = itsD;
 	
 	itsA =   oldA * ca + oldC * sa;
 	itsB =   oldB * ca + oldD * sa;
@@ -190,12 +190,12 @@ namespace Imagine
   
   void NFmiAffine::Multiply(const NFmiAffine & theAffine)
   {
-	float oldA = itsA;
-	float oldB = itsB;
-	float oldC = itsC;
-	float oldD = itsD;
-	float oldE = itsE;
-	float oldF = itsF;
+	double oldA = itsA;
+	double oldB = itsB;
+	double oldC = itsC;
+	double oldD = itsD;
+	double oldE = itsE;
+	double oldF = itsF;
 	
 	itsA = oldA * theAffine.itsA + oldC * theAffine.itsB;
 	itsB = oldB * theAffine.itsA + oldD * theAffine.itsB;
@@ -211,7 +211,7 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
 
-  float NFmiAffine::X(float x, float y)
+  double NFmiAffine::X(double x, double y)
   {
 	return itsA*x + itsC*y + itsE;
   }
@@ -222,7 +222,7 @@ namespace Imagine
    */
   // ----------------------------------------------------------------------
 	
-  float NFmiAffine::Y(float x, float y)
+  double NFmiAffine::Y(double x, double y)
   {
 	return itsB*x + itsD*y + itsF;
   }
