@@ -13,8 +13,6 @@
 //
 // ======================================================================
 
-#include "NFmiFileSystem.h"
-#include "NFmiStringTools.h"
 
 #include "NFmiColorBlend.h"
 #include "NFmiColorReduce.h"
@@ -24,6 +22,9 @@
 #ifndef IMAGINE_WITH_CAIRO
 # include "NFmiImageTools.h"
 #endif
+
+#include <NFmiFileSystem.h>
+#include <NFmiStringTools.h>
 
 #include <cstdlib>	// for rand, RAND_MAX
 #include <iostream>

@@ -145,12 +145,9 @@
 #include "NFmiEsriPolygonZ.h"
 #include "NFmiEsriMultiPatch.h"
 
-#include "NFmiFileSystem.h"
-#include "NFmiSettings.h"
-#include "NFmiTime.h"
-#ifdef PERKELEEN_296
- #include "NFmiValueString.h"
-#endif
+#include <NFmiFileSystem.h>
+#include <NFmiSettings.h>
+#include <NFmiTime.h>
 
 #include <fstream>
 #include <iomanip>

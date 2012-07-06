@@ -138,9 +138,9 @@
 
 #include "NFmiDataHints.h"
 
-#include "NFmiGlobals.h"	// for kFloatMissing
-#include "NFmiGrid.h"		// for grids
-#include "NFmiFastQueryInfo.h"	// for querydata
+#include <NFmiGlobals.h>	// for kFloatMissing
+#include <NFmiGrid.h>		// for grids
+#include <NFmiFastQueryInfo.h>	// for querydata
 
 #include <utility>	// pairs
 #include <set>		// sets

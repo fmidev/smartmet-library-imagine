@@ -31,8 +31,8 @@
 // Note: Any drawable must invariably know how to handle colour,
 //       hence this include is here instead of derived classes.
 
-#include "NFmiGlobals.h"
 #include "NFmiColorTools.h"
+#include <NFmiGlobals.h>
 
 namespace Imagine
 {

@@ -30,10 +30,10 @@
 
 #include "NFmiFreeType.h"
 #include "NFmiColorBlend.h"
-#include "NFmiFileSystem.h"
 #include "NFmiFace.h"
 #include "NFmiPath.h"
-#include "NFmiSettings.h"
+#include <NFmiFileSystem.h>
+#include <NFmiSettings.h>
 
 extern "C" {
  #include <ft2build.h>

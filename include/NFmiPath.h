@@ -37,7 +37,6 @@
 
 #include "NFmiPathElement.h"
 
-#include "NFmiArea.h"
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"
 #include "NFmiImage.h"
@@ -50,6 +49,8 @@
 # include "NFmiFillMap.h"
 # include "NFmiAffine.h"
 #endif
+
+#include <NFmiArea.h>
 
 #include <string>
 #include <deque>

@@ -11,7 +11,7 @@
 
 #ifdef UNIX
   extern "C" {
-# include "stdint.h"
+#include <stdint.h>
   }
 #else
   typedef unsigned int uint32_t;

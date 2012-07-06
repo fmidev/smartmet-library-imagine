@@ -16,7 +16,6 @@
 
 #include "imagine-config.h"
 
-#include "NFmiArea.h"
 #include "NFmiEsriShape.h"
 #include "NFmiPath.h"
 
@@ -28,6 +27,8 @@
 # include "NFmiFillMap.h"
 # include "NFmiDrawable.h"
 #endif
+
+#include <NFmiArea.h>
 
 #include <string>
 #include <stdexcept>

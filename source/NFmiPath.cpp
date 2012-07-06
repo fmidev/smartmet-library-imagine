@@ -13,8 +13,8 @@
 #include "NFmiPath.h"
 #include "NFmiCounter.h"
 #include "NFmiEsriBox.h"
-#include "NFmiGrid.h"
-#include "NFmiValueString.h"
+#include <NFmiGrid.h>
+#include <NFmiValueString.h>
 
 #ifdef IMAGINE_WITH_CAIRO
 # include "ImagineXr.h"

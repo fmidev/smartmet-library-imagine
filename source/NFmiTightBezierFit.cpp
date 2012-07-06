@@ -22,7 +22,7 @@
 #include "NFmiCounter.h"
 #include "NFmiPath.h"
 
-#include "NFmiGeoTools.h"
+#include <NFmiGeoTools.h>
 
 #include <list>
 #include <vector>

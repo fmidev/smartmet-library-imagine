@@ -13,7 +13,7 @@
 #ifndef IMAGINE_NFMIESRIPROJECTOR_H
 #define IMAGINE_NFMIESRIPROJECTOR_H
 
-#include "NFmiDef.h"
+#include <NFmiDef.h>
 
 namespace Imagine
 {

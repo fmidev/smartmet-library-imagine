@@ -5,7 +5,7 @@
 // ======================================================================
 
 #include "NFmiDataHints.h"
-#include "NFmiGlobals.h"
+#include <NFmiGlobals.h>
 
 using namespace std;
 

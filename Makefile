@@ -94,6 +94,9 @@ rpm: clean
 tag:
 	cvs -f tag 'libsmartmet_$(LIB)_$(rpmversion)-$(rpmrelease)' .
 
+cppcheck:
+	cppcheck -DUNIX -I include -I $(includedir) source
+
 headertest:
 	@echo "Checking self-sufficiency of each header:"
 	@echo

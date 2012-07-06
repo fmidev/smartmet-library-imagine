@@ -4,7 +4,7 @@
 // ======================================================================
 
 #include "NFmiImage.h"
-#include "NFmiStringTools.h"
+#include <NFmiStringTools.h>
 
 #include <set>
 #include <map>

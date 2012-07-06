@@ -6,10 +6,10 @@
 // ======================================================================
 
 #include "NFmiGshhsTools.h"
-#include "NFmiFileSystem.h"
 #include "NFmiPath.h"
-#include "NFmiPoint.h"
-#include "NFmiSettings.h"
+#include <NFmiFileSystem.h>
+#include <NFmiPoint.h>
+#include <NFmiSettings.h>
 #include <stdexcept>
 
 using namespace std;

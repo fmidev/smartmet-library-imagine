@@ -13,7 +13,7 @@
 #ifndef IMAGINE_NFMIEDGE_H
 #define IMAGINE_NFMIEDGE_H
 
-#include "NFmiGlobals.h"	// for kFloatMissing
+#include <NFmiGlobals.h>
 #include <cmath>
 
 namespace Imagine

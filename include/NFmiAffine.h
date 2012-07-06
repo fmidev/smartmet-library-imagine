@@ -13,7 +13,7 @@
 #ifndef IMAGINE_NFMIAFFINE_H
 #define IMAGINE_NFMIAFFINE_H
 
-#include "NFmiGlobals.h"
+#include <NFmiGlobals.h>
 
 namespace Imagine
 {

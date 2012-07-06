@@ -20,7 +20,7 @@
 // JPEG group idiots.. I wasted hours on this one
 
 extern "C" {
-#include "jpeglib.h"
+#include <jpeglib.h>
 }
 
 using namespace std;
