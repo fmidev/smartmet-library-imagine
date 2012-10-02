@@ -29,7 +29,9 @@
 #include <memory>
 #include <vector>
 
-#include <hash_map>
+// std version not available in RHEL5, must use boost instead
+
+#include <boost/unordered_map.hpp>
 
 #ifdef UNIX
 using namespace __gnu_cxx;
@@ -51,7 +53,7 @@ namespace Imagine
 
 	//! Histogram information
 
-	typedef hash_map<NFmiColorTools::Color,int> Counter;
+	typedef boost::unordered_map<NFmiColorTools::Color,int> Counter;
 
 	//! Colormap transformation
 	typedef map<NFmiColorTools::Color,NFmiColorTools::Color> ColorMap;
@@ -405,12 +407,7 @@ namespace Imagine
 
 	void replace_colors(NFmiImage & theImage, const ColorMap & theMap)
 	{
-#ifdef UNIX
-	  hash_map<NFmiColorTools::Color,NFmiColorTools::Color> colormap(256);
-#else // #ifdef _MSC_VER  // MSVisualC++ k‰‰nt‰j‰n mukana tulleessa hash_map -koodissa 
-						  // ei ollut buckettien m‰‰r‰n s‰‰tˆ mahdollisuutta.
-	  stdext::hash_map<NFmiColorTools::Color,NFmiColorTools::Color> colormap;
-#endif
+	  boost::unordered_map<NFmiColorTools::Color,NFmiColorTools::Color> colormap(256);
 
 	  for(ColorMap::const_iterator it = theMap.begin();
 		  it != theMap.end();

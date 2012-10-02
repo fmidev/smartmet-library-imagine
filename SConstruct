@@ -75,7 +75,7 @@ else:
     env.Append( CXXFLAGS= [
         # MAINFLAGS from orig. Makefile
         #
-	"-std=c++0x",
+	# "-std=c++0x",
         "-fPIC",
         "-Wall", 
         "-Wno-unused-parameter",
