@@ -27,7 +27,7 @@ objdir = obj
 
 # rpm variables
 
-rpmsourcedir=$(shell test -d /smartmet && echo /smartmet/src/redhat/SOURCES || echo /fmi/dev/src/redhat/SOURCES )
+rpmsourcedir=/tmp/$(shell whoami)/rpmbuild
 
 rpmerr = "There's no spec file ($(LIB).spec). RPM wasn't created. Please make a spec file or copy and rename it into $(LIB).spec"
 
@@ -86,9 +86,11 @@ html:
 rpm: clean
 	if [ -e $(LIB).spec ]; \
 	then \
+	  mkdir -p $(rpmsourcedir) ; \
 	  tar $(rpmexcludevcs) -C ../ -cf $(rpmsourcedir)/libsmartmet-$(LIB).tar $(LIB) ; \
 	  gzip -f $(rpmsourcedir)/libsmartmet-$(LIB).tar ; \
 	  TAR_OPTIONS=--wildcards rpmbuild -ta $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
+	  rm -f $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
 	else \
 	  echo $(rpmerr); \
 	fi;
