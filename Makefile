@@ -34,6 +34,8 @@ rpmerr = "There's no spec file ($(LIB).spec). RPM wasn't created. Please make a 
 rpmversion := $(shell grep "^Version:" $(LIB).spec  | cut -d\  -f 2 | tr . _)
 rpmrelease := $(shell grep "^Release:" $(LIB).spec  | cut -d\  -f 2 | tr . _)
 
+rpmexcludevcs := $(shell tar --help | grep -m 1 -o -- '--exclude-vcs')
+
 # What to install
 
 LIBFILE = libsmartmet_$(LIB).a
@@ -86,7 +88,7 @@ rpm: clean
 	then \
 	  tar -C ../ -cf $(rpmsourcedir)/libsmartmet-$(LIB).tar $(LIB) ; \
 	  gzip -f $(rpmsourcedir)/libsmartmet-$(LIB).tar ; \
-	  TAR_OPTIONS=--wildcards rpmbuild -ta $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
+	  TAR_OPTIONS=--wildcards $(rpmexcludevcs) rpmbuild -ta $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
 	else \
 	  echo $(rpmerr); \
 	fi;
