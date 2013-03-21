@@ -75,17 +75,32 @@ else:
     env.Append( CXXFLAGS= [
         # MAINFLAGS from orig. Makefile
         #
-	# "-std=c++0x",
+	"-std=c++0x",
+	"-Wall",
+	"-W",
+        "-Wpointer-arith",
+        "-Wcast-qual",
+        "-Wwrite-strings",
+        "-Wnon-virtual-dtor",
+        "-Wno-pmf-conversions",
+        "-Wsign-promo",
+        "-Wchar-subscripts",
+        "-Wredundant-decls",
+        "-Woverloaded-virtual",
+	"-std=c++0x",
         "-fPIC",
         "-Wall", 
+	"-Wdeprecated",
         "-Wno-unused-parameter",
         "-Wno-variadic-macros",
-	"-Wno-deprecated", # hash_map
-	    
+	"-Wdeprecated"
+
+	# "-Wno-deprecated", # hash_map
 	    # DIFFICULTFLAGS from orig. Makefile (flags that cause some choking,
 	    # would be good but not used)
 	    #
 	    #"-Weffc++",
+	    #"-Winline",
 	    #"-Wredundant-decls",
 	    #"-Wshadow",
 	    #"-Woverloaded-virtual",
@@ -178,8 +193,8 @@ if DEBUG:
     
             # EXTRAFLAGS from orig. Makefile (for 'debug' target)
             #
+	    "-Werror",
             "-ansi",
-            "-Wcast-align",
             "-Wcast-qual",
             "-Winline",
             "-Wno-multichar",

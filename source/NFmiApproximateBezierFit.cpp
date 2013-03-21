@@ -579,7 +579,7 @@ namespace Imagine
 	  const double bezlen = NFmiBezierTools::BezierLength(theBezier,0.01);
 	  
 	  double len = 0;
-	  for(unsigned int i=0; i<thePath.size()-1; i++)
+	  for(unsigned int i=theFirst; i<=theLast; i++)
 		len += NFmiGeoTools::Distance(thePath[i].x,thePath[i].y,
 									  thePath[i+1].x,thePath[i+1].y);
 

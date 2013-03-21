@@ -1,7 +1,7 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 12.11.7
+Version: 13.3.21
 Release: 1%{?dist}.fmi
 License: FMI
 Group: Development/Libraries
@@ -12,7 +12,7 @@ BuildRequires: boost-devel >= 1.52
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: libsmartmet-newbase >= 12.11.7-1
+BuildRequires: libsmartmet-newbase >= 13.3.21-1
 BuildRequires: zlib-devel
 Requires: freetype
 Requires: libjpeg
@@ -43,6 +43,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Thu Mar 21 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.3.21-1.fmi
+- Replaced auto_ptr with shared_ptr
 * Wed Nov  7 2012 Mika Heiskanen <mika.heiskanen@fmi.fi> - 12.11.7-1.fmi
 - Upgrade to boost 1.52
 * Fri Jul  6 2012 Mika Heiskanen <mika.heiskanen@fmi.fi> - 12.7.6-1.el6.fmi

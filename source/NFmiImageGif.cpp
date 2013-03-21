@@ -464,7 +464,7 @@ namespace Imagine
 	
 	// We do not throw since pbmplus merely warns about this
 	if(lzwreadbyte(theInput,false,c) >= 0)
-	  ; // throw runtime_error("Too much data in GIF image section");
+	  { } // throw runtime_error("Too much data in GIF image section");
 	
   }
 

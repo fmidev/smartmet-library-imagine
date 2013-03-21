@@ -55,9 +55,9 @@ namespace Imagine
   // Cloning
   // ----------------------------------------------------------------------
 
-  std::auto_ptr<NFmiEsriElement> NFmiEsriPolygon::Clone() const
+  boost::shared_ptr<NFmiEsriElement> NFmiEsriPolygon::Clone() const
   {
-	return auto_ptr<NFmiEsriElement>(new NFmiEsriPolygon(*this));
+	return boost::shared_ptr<NFmiEsriElement>(new NFmiEsriPolygon(*this));
   }
 
   // ----------------------------------------------------------------------

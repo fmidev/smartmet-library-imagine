@@ -23,6 +23,8 @@
 #include "NFmiColorTools.h"
 #include "NFmiNearTree.h"
 
+#include <boost/shared_ptr.hpp>
+
 #include <iostream>
 #include <list>
 #include <map>
@@ -167,12 +169,12 @@ namespace Imagine
 
 	  bool nearest(value_type theColor, value_type & theNearest, float & theRadius) const;
 
-	  auto_ptr<value_type> itsLeftObject;
-	  auto_ptr<value_type> itsRightObject;
+	  boost::shared_ptr<value_type> itsLeftObject;
+	  boost::shared_ptr<value_type> itsRightObject;
 	  float itsMaxLeft;
 	  float itsMaxRight;
-	  auto_ptr<ColorTree> itsLeftBranch;
-	  auto_ptr<ColorTree> itsRightBranch;
+	  boost::shared_ptr<ColorTree> itsLeftBranch;
+	  boost::shared_ptr<ColorTree> itsRightBranch;
       int itsCount;
 
 	};

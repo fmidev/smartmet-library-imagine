@@ -12,9 +12,10 @@
 #include "NFmiEsriAttribute.h"
 #include "NFmiEsriBuffer.h"
 
+#include <boost/shared_ptr.hpp>
+
 #include <iostream>
 #include <list>
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -55,7 +56,7 @@ namespace Imagine
 
 	// Copying
 
-	virtual std::auto_ptr<NFmiEsriElement> Clone() const = 0;
+	virtual boost::shared_ptr<NFmiEsriElement> Clone() const = 0;
 	
 	// Adding an attribute
 	
