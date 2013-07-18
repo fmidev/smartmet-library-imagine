@@ -630,10 +630,15 @@ namespace Imagine
 	
 	// Opaque threshold must be > 0, we have binary transparency
 	
+#if (defined IMAGINE_FORMAT_JPEG) || (defined IMAGINE_FORMAT_PNG)
 	int opaquethreshold = itsAlphaLimit;
 	if(opaquethreshold<0) opaquethreshold = NFmiColorTools::MaxAlpha/2;
 	
 	bool ignorealpha = !itsSaveAlphaFlag;
+#else
+	int opaquethreshold = NFmiColorTools::MaxAlpha/2;
+	bool ignorealpha = true; // Mikä arvo tälle?
+#endif
 	
 	bool overflow = AddColors(theColors,MaxColors,opaquethreshold,ignorealpha);
 	

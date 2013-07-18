@@ -13,6 +13,9 @@
 //
 // ======================================================================
 
+#ifdef _MSC_VER
+#pragma warning( disable : 4996 ) // VC++ kääntäjällä tulee paljon varoitusta 'turvattomien'  funktioiden käytöstä, tässä fopen pitäisi muka korvata fopen_s -funktiolla.
+#endif
 
 #include "NFmiColorBlend.h"
 #include "NFmiColorReduce.h"
@@ -35,7 +38,9 @@ extern "C" {
 #ifndef UNIX
  #include <io.h>		// Windows _mktemp
 #endif
-#include <png.h>	// for pnglib
+#ifdef IMAGINE_FORMAT_PNG
+ #include <png.h>	// for pnglib
+#endif
 }
 
 using namespace std;
@@ -664,6 +669,7 @@ namespace Imagine
   {
 	// First we must simplify the alpha channel as requested in the color save mode
 
+#if (defined IMAGINE_FORMAT_JPEG) || (defined IMAGINE_FORMAT_PNG)
 	bool savealpha = (itsSaveAlphaFlag && !IsOpaque(itsAlphaLimit));
 	bool ignorealpha = !savealpha;
 
@@ -673,6 +679,7 @@ namespace Imagine
 												itsAlphaLimit,
 												ignorealpha);
 	  }
+#endif
 
 	// Then we simplify
 
