@@ -9,6 +9,7 @@
 #define IMAGINE_NFMICOLORREDUCE_H
 
 #include "NFmiColorTools.h"
+#include <functional>
 
 #include <map>
 
