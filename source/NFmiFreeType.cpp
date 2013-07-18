@@ -26,7 +26,7 @@
  */
 // ======================================================================
 
-//#ifdef UNIX
+#ifdef UNIX
 
 #include "NFmiFreeType.h"
 #include "NFmiColorBlend.h"
@@ -736,7 +736,7 @@ namespace Imagine
 
 } // namespace Imagine
 
-//#endif // UNIX
+#endif // UNIX
 
 // ======================================================================
 

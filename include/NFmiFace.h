@@ -5,7 +5,7 @@
  */
 // ======================================================================
 
-//#ifdef UNIX
+#ifdef UNIX // En saanut viel‰ Imagine::NFmiFace-luokkaa toimimaan VC++ 2012 k‰‰nt‰j‰ss‰
 #ifndef IMAGINE_NFMIFACE_H
 #define IMAGINE_NFMIFACE_H
 
@@ -68,6 +68,6 @@ namespace Imagine
 } // namespace Imagine
 
 #endif // IMAGINE_NFMIFACE_H
-//#endif // UNIX
+#endif // UNIX
 
 // ======================================================================
