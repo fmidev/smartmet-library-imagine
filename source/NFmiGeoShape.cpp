@@ -190,7 +190,24 @@ namespace Imagine
 		throw NFmiGeoShapeError("NFmiGeoShape::WriteImageMap() kFmiGeoShapeGMT not implemented");
 	  }
   }
-  
+
+  template<class Element>
+  bool DoZeroTo360Fix(bool doZeroTo360Fix, const Element *elem, NFmiPath &outpath, int i, double &lastLongitude)
+  {
+    if(doZeroTo360Fix)
+    {
+        double currentLongitude = elem->Points()[i].X();
+        if(lastLongitude <= 0 && currentLongitude > 0 || lastLongitude > 0 && currentLongitude <= 0)
+        {
+            outpath.MoveTo(elem->Points()[i].X(),
+							elem->Points()[i].Y());
+            lastLongitude = currentLongitude;
+            return true;
+        }
+    }
+	return false;
+  }
+
   // ----------------------------------------------------------------------
   // Build a path from ESRI shape data. Depending on the data element type,
   // the returned data is:
@@ -272,17 +289,8 @@ namespace Imagine
 									 elem->Points()[i1].Y());
 					  for(int i=i1+1; i<=i2; i++)
                       {
-                          if(doZeroTo360Fix)
-                          {
-                              double currentLongitude = elem->Points()[i].X();
-                              if(lastLongitude <= 0 && currentLongitude > 0 || lastLongitude > 0 && currentLongitude <= 0)
-                              {
-                                  outpath.MoveTo(elem->Points()[i].X(),
-							                     elem->Points()[i].Y());
-                                  lastLongitude = currentLongitude;
-                                  continue;
-                              }
-                          }
+						  if(DoZeroTo360Fix(doZeroTo360Fix, elem, outpath, i, lastLongitude))
+							continue;
 
                           outpath.LineTo(elem->Points()[i].X(),
 							             elem->Points()[i].Y());
@@ -308,11 +316,16 @@ namespace Imagine
 				  
 				  if(i2>=i1)
 					{
+                      double lastLongitude = elem->Points()[i1].X();
 					  outpath.MoveTo(elem->Points()[i1].X(),
 									 elem->Points()[i1].Y());
 					  for(int i=i1+1; i<=i2; i++)
+					  {
+						if(DoZeroTo360Fix(doZeroTo360Fix, elem, outpath, i, lastLongitude))
+							continue;
 						outpath.LineTo(elem->Points()[i].X(),
 									   elem->Points()[i].Y());
+					  }
 					}
 				}
 			  break;
