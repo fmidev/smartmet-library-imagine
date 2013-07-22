@@ -8,11 +8,11 @@ Group: Development/Libraries
 URL: http://www.weatherproof.fi
 Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: boost-devel >= 1.54
+BuildRequires: boost-devel >= 1.53
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: libsmartmet-newbase >= 13.7.3-1
+BuildRequires: libsmartmet-newbase >= 13.6.10-1
 BuildRequires: zlib-devel
 Requires: freetype
 Requires: libjpeg
@@ -55,7 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 - Migration to boost 1.50
 * Sat Mar 31 2012 mheiskan <mika.heiskanen@fmi.fi> - 12.3.31-1.el5.fmi
 - RHEL5 specific release with latest newbase math functions
-* Tue Mar 28 2012 mheiskan <mika.heiskanen@fmi.fi> - 12.3.28-1.el6.fmi
+* Wed Mar 28 2012 mheiskan <mika.heiskanen@fmi.fi> - 12.3.28-1.el6.fmi
 - Upgrade to boost 1.49
 * Mon Feb 27 2012 mheiskan <mika.heiskanen@fmi.fi> - 12.2.27-1.el6.fmi
 - Upgraded newbase
@@ -73,7 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 - Upgraded to latest newbase
 * Tue Sep 14 2010 mheiskan <mika.heiskanen@fmi.fi> - 10.9.14-1.el5.fmi
 - Upgraded to boost 1.44 and newbase 10.9.14-1
-* Mon Jul  7 2010 mheiskan <mika.heiskanen@fmi.fi> - 10.7.5-1.el5.fmi
+* Wed Jul  7 2010 mheiskan <mika.heiskanen@fmi.fi> - 10.7.5-1.el5.fmi
 - Upgraded to newbase 10.7.5-1
 * Fri Jan 15 2010 mheiskan <mika.heiskanen@fmi.fi> - 10.1.15-1.el5.fmi
 - Upgraded to boost 1.41
@@ -85,7 +85,7 @@ rm -rf $RPM_BUILD_ROOT
 - Recompiled due to newbase and WIN32 changes
 * Wed Mar 18 2009 mheiskan <mika.heiskanen@fmi.fi> - 9.3.18-1.el5.fmi
 - Recompiled due to newbase API changes
-* Mon Nov 12 2008 pkeranen <pekka.keranen@fmi.fi> - 8.11.12-1.el5.fmi
+* Wed Nov 12 2008 pkeranen <pekka.keranen@fmi.fi> - 8.11.12-1.el5.fmi
 - More improved shapefile support
 * Mon Nov 10 2008 pkeranen <pekka.keranen@fmi.fi> - 8.11.10-1.el5.fmi
 - Improved shapefile support
