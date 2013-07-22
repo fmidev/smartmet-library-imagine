@@ -275,7 +275,8 @@ namespace Imagine
                           if(doZeroTo360Fix)
                           {
                               double currentLongitude = elem->Points()[i].X();
-                              if(lastLongitude <= 0 && currentLongitude > 0 || lastLongitude > 0 && currentLongitude <= 0)
+                              if( (lastLongitude <= 0 && currentLongitude > 0) ||
+								  (lastLongitude > 0 && currentLongitude <= 0))
                               {
                                   outpath.MoveTo(elem->Points()[i].X(),
 							                     elem->Points()[i].Y());
