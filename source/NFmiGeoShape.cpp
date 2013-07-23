@@ -91,13 +91,13 @@ namespace Imagine
   // an empty path is returned.
   // ----------------------------------------------------------------------
   
-  const NFmiPath NFmiGeoShape::Path(bool doZeroTo360Fix) const
+  const NFmiPath NFmiGeoShape::Path(bool doPacificViewFix) const
   {
 	NFmiPath out;
 	switch(Type())
 	  {
 	  case kFmiGeoShapeEsri:
-		out = PathEsri(doZeroTo360Fix);
+		out = PathEsri(doPacificViewFix);
 		break;
 	  case kFmiGeoShapeShoreLine:
 		throw NFmiGeoShapeError("NFmiGeoShape::Path() kFmiGeoShapeShoreLine not implemented");
@@ -192,9 +192,9 @@ namespace Imagine
   }
 
   template<class Element>
-  bool DoZeroTo360Fix(bool doZeroTo360Fix, const Element *elem, NFmiPath &outpath, int i, double &lastLongitude)
+  bool DoPacificViewFix(bool doPacificViewFix, const Element *elem, NFmiPath &outpath, int i, double &lastLongitude)
   {
-    if(doZeroTo360Fix)
+    if(doPacificViewFix)
     {
         double currentLongitude = elem->Points()[i].X();
         if(lastLongitude <= 0 && currentLongitude > 0 || lastLongitude > 0 && currentLongitude <= 0)
@@ -223,7 +223,7 @@ namespace Imagine
   //
   // ----------------------------------------------------------------------
   
-  const NFmiPath NFmiGeoShape::PathEsri(bool doZeroTo360Fix) const
+  const NFmiPath NFmiGeoShape::PathEsri(bool doPacificViewFix) const
   {
 	// The result is a single path containing all the moves
 	
@@ -289,7 +289,7 @@ namespace Imagine
 									 elem->Points()[i1].Y());
 					  for(int i=i1+1; i<=i2; i++)
                       {
-						  if(DoZeroTo360Fix(doZeroTo360Fix, elem, outpath, i, lastLongitude))
+						  if(DoPacificViewFix(doPacificViewFix, elem, outpath, i, lastLongitude))
 							continue;
 
                           outpath.LineTo(elem->Points()[i].X(),
@@ -321,7 +321,7 @@ namespace Imagine
 									 elem->Points()[i1].Y());
 					  for(int i=i1+1; i<=i2; i++)
 					  {
-						if(DoZeroTo360Fix(doZeroTo360Fix, elem, outpath, i, lastLongitude))
+						if(DoPacificViewFix(doPacificViewFix, elem, outpath, i, lastLongitude))
 							continue;
 						outpath.LineTo(elem->Points()[i].X(),
 									   elem->Points()[i].Y());
