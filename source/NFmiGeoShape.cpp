@@ -91,13 +91,13 @@ namespace Imagine
   // an empty path is returned.
   // ----------------------------------------------------------------------
   
-  const NFmiPath NFmiGeoShape::Path(bool doPacificViewFix) const
+  const NFmiPath NFmiGeoShape::Path() const
   {
 	NFmiPath out;
 	switch(Type())
 	  {
 	  case kFmiGeoShapeEsri:
-		out = PathEsri(doPacificViewFix);
+		out = PathEsri();
 		break;
 	  case kFmiGeoShapeShoreLine:
 		throw NFmiGeoShapeError("NFmiGeoShape::Path() kFmiGeoShapeShoreLine not implemented");
@@ -191,23 +191,6 @@ namespace Imagine
 	  }
   }
 
-  template<class Element>
-  bool DoPacificViewFix(bool doPacificViewFix, const Element *elem, NFmiPath &outpath, int i, double &lastLongitude)
-  {
-    if(doPacificViewFix)
-    {
-        double currentLongitude = elem->Points()[i].X();
-        if(lastLongitude <= 0 && currentLongitude > 0 || lastLongitude > 0 && currentLongitude <= 0)
-        {
-            outpath.MoveTo(elem->Points()[i].X(),
-							elem->Points()[i].Y());
-            lastLongitude = currentLongitude;
-            return true;
-        }
-    }
-	return false;
-  }
-
   // ----------------------------------------------------------------------
   // Build a path from ESRI shape data. Depending on the data element type,
   // the returned data is:
@@ -223,7 +206,7 @@ namespace Imagine
   //
   // ----------------------------------------------------------------------
   
-  const NFmiPath NFmiGeoShape::PathEsri(bool doPacificViewFix) const
+  const NFmiPath NFmiGeoShape::PathEsri() const
   {
 	// The result is a single path containing all the moves
 	
@@ -284,17 +267,12 @@ namespace Imagine
 				  
 				  if(i2>=i1)
 					{
-                      double lastLongitude = elem->Points()[i1].X();
 					  outpath.MoveTo(elem->Points()[i1].X(),
 									 elem->Points()[i1].Y());
 					  for(int i=i1+1; i<=i2; i++)
                       {
-						  if(DoPacificViewFix(doPacificViewFix, elem, outpath, i, lastLongitude))
-							continue;
-
                           outpath.LineTo(elem->Points()[i].X(),
 							             elem->Points()[i].Y());
-                          lastLongitude = elem->Points()[i].X();
                       }
 					}
 				}
@@ -316,13 +294,10 @@ namespace Imagine
 				  
 				  if(i2>=i1)
 					{
-                      double lastLongitude = elem->Points()[i1].X();
 					  outpath.MoveTo(elem->Points()[i1].X(),
 									 elem->Points()[i1].Y());
 					  for(int i=i1+1; i<=i2; i++)
 					  {
-						if(DoPacificViewFix(doPacificViewFix, elem, outpath, i, lastLongitude))
-							continue;
 						outpath.LineTo(elem->Points()[i].X(),
 									   elem->Points()[i].Y());
 					  }

@@ -11,8 +11,10 @@
 // ======================================================================
 
 #include "NFmiPath.h"
+#include "NFmiContourTree.h"
 #include "NFmiCounter.h"
 #include "NFmiEsriBox.h"
+
 #include <NFmiGrid.h>
 #include <NFmiValueString.h>
 
@@ -1266,6 +1268,86 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	return outPath;
   }
 #endif
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Rebuild the path into a Pacific view if so requested
+   *
+   * At this point there is no known need to convert a Pacific path
+   * into Atlantic (if the input flag is false), hence we just return
+   * the path back as is.
+   *
+   * Since the path is already mostly built, we do not rebuild the
+   * path from scratch as when contouring, but utilize the intermediate
+   * tools provided by the Tron library.
+   *
+   * Note: Information on ghost lines is lost, they are converted to regular lines.
+   */
+  // ----------------------------------------------------------------------
+
+  NFmiPath NFmiPath::PacificView(bool pacific) const
+  {
+	if(!pacific)
+	  return *this;
+	if(itsElements.empty())
+	  return *this;
+
+	NFmiContourTree newtree(kFloatMissing,kFloatMissing);
+
+	double lastX = kFloatMissing;
+	double lastY = kFloatMissing;
+
+	for(NFmiPathData::const_iterator iter = Elements().begin(), end = Elements().end();
+		iter != end;
+		++iter)
+	  {
+		double X = iter->x;
+		double Y = iter->y;
+		NFmiPathOperation op = iter->op;
+		
+		switch( op )
+		  {
+		  case kFmiLineTo:
+		  case kFmiGhostLineTo:
+			{
+			  NFmiContourTree::VertexExactness exact = (op == kFmiLineTo ? NFmiContourTree::kLoLimit : NFmiContourTree::kNeither );
+			  if(lastX <= 0 && X <= 0)
+				{
+				  newtree.Add(NFmiEdge(lastX+360,lastY,X+360,Y,exact));
+				}
+			  else if(lastX >= 0 && X >= 0)
+				{
+				  newtree.Add(NFmiEdge(lastX,lastY,X,Y,exact));
+				}
+			  else if(lastX < X)
+				{
+				  // now lastX < 0 and X >= 0
+				  double s = (0-lastX)/(X-lastX);
+				  double ymid = lastY + s*(Y-lastY);
+				  newtree.Add(NFmiEdge(lastX+360,lastY,360,ymid,exact));
+				  newtree.Add(NFmiEdge(0,ymid,X,Y,exact));
+				}
+			  else
+				{
+				  // now lastX >= 0 and X < 0
+				  double s = (0-X)/(lastX-X);
+				  double ymid = Y + s*(lastY-Y);
+				  newtree.Add(NFmiEdge(lastX,lastY,0,ymid,exact));
+				  newtree.Add(NFmiEdge(360,ymid,X+360,Y,exact));
+				}
+			}
+		  default:
+			break;
+		  }
+
+		lastX = X;
+		lastY = Y;
+
+	  }
+	
+	return newtree.Path();
+  }
+
 
 } // namespace Imagine
   
