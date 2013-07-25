@@ -1,18 +1,13 @@
 // ======================================================================
 //
 // Definition of a PostScript style path, with a ghostline extension.
-//
-// History:
-//
-//	12.08.2001 Mika Heiskanen
-//
-//	Implemented
-//
 // ======================================================================
 
 #include "NFmiPath.h"
+#include "NFmiContourTree.h"
 #include "NFmiCounter.h"
 #include "NFmiEsriBox.h"
+
 #include <NFmiGrid.h>
 #include <NFmiValueString.h>
 
@@ -1266,6 +1261,162 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	return outPath;
   }
 #endif
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Utility subroutine for PacificView
+   */
+  // ----------------------------------------------------------------------
+
+  void make_pacific(const NFmiPath & thePath,
+					const NFmiEsriBox & theBox,
+					NFmiPath & theOutPath,
+					NFmiContourTree & theTree,
+					bool theDateLine)
+  {
+	if(thePath.Empty())
+	  return;
+	
+	if(theBox.Xmin() >= 0 && !theDateLine)
+	  {
+		theOutPath.Add(thePath);	// already in range 0-360
+		return;
+	  }
+	
+	if(theBox.Xmax() < 0 && !theDateLine)
+	  {
+		// Only shift from Atlantic to Pacific
+		for(NFmiPathData::const_iterator iter = thePath.Elements().begin(), end = thePath.Elements().end();
+			iter != end;
+			++iter)
+		  {
+			theOutPath.Add(NFmiPathElement(iter->op,iter->x+360,iter->y));
+		  }
+		return;
+	  }
+
+	// Now splitting some lines in half may be necessary. We also omit vertical lines
+	// at the dateline boundary (-180 or 180) except near the poles, where they are
+	// needed to include the poles themselves in the path.
+
+	double lastX = kFloatMissing;
+	double lastY = kFloatMissing;
+	
+	for(NFmiPathData::const_iterator iter = thePath.Elements().begin(), end = thePath.Elements().end();
+		iter != end;
+		++iter)
+	  {
+		double X = iter->x;
+		double Y = iter->y;
+		NFmiPathOperation op = iter->op;
+		
+		switch( op )
+		  {
+		  case kFmiMoveTo:
+			{
+			  break;
+			}
+		  case kFmiLineTo:
+		  case kFmiGhostLineTo:
+			{
+			  // Omit vertical lines at the dateline boundary
+			  if( (lastX==-180 || lastX==180) &&
+				  (X==-180 || X==180) &&
+				  (lastY>-80 && lastY<75 && Y>-80 && Y<75))	// works for the Antarctic and Chukotski Peninsula
+				break;
+
+			  NFmiContourTree::VertexExactness exact = (op == kFmiLineTo ? NFmiContourTree::kLoLimit : NFmiContourTree::kNeither );
+			  if(lastX <= 0 && X <= 0)
+				{
+				  theTree.Add(NFmiEdge(lastX+360,lastY,X+360,Y,exact));
+				}
+			  else if(lastX >= 0 && X >= 0)
+				{
+				  theTree.Add(NFmiEdge(lastX,lastY,X,Y,exact));
+				}
+			  else if(lastX < X)
+				{
+				  // now lastX < 0 and X >= 0
+				  double s = (0-lastX)/(X-lastX);
+				  double ymid = lastY + s*(Y-lastY);
+				  theTree.Add(NFmiEdge(lastX+360,lastY,360,ymid,exact));
+					  theTree.Add(NFmiEdge(0,ymid,X,Y,exact));
+				}
+			  else
+				{
+				  // now lastX >= 0 and X < 0
+				  double s = (0-X)/(lastX-X);
+				  double ymid = Y + s*(lastY-Y);
+				  theTree.Add(NFmiEdge(lastX,lastY,0,ymid,exact));
+				  theTree.Add(NFmiEdge(360,ymid,X+360,Y,exact));
+				}
+			  break;
+			}
+		  default:
+			;
+		  }
+		
+		lastX = X;
+		lastY = Y;
+	  }
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Rebuild the path into a Pacific view if so requested
+   *
+   * At this point there is no known need to convert a Pacific path
+   * into Atlantic (if the input flag is false), hence we just return
+   * the path back as is.
+   *
+   * Since the path is already mostly built, we do not rebuild the
+   * path from scratch as when contouring, but utilize the intermediate
+   * tools provided by the Tron library.
+   *
+   * Note: Information on ghost lines is lost, they are converted to regular lines.
+   */
+  // ----------------------------------------------------------------------
+
+  NFmiPath NFmiPath::PacificView(bool pacific) const
+  {
+	if(!pacific)
+	  return *this;
+	if(itsElements.empty())
+	  return *this;
+
+	NFmiPath outpath;
+	NFmiPath currentpath;
+
+	NFmiContourTree tree(kFloatMissing,kFloatMissing);
+	NFmiEsriBox box;
+	bool dateline = false;
+
+	// Iterate over subsegments, calculating the bounding box simultaneously
+
+	for(NFmiPathData::const_iterator iter = Elements().begin(), end = Elements().end();
+		iter != end;
+		++iter)
+	  {
+		if(iter->op == kFmiMoveTo)
+		  {
+			make_pacific(currentpath,box,outpath,tree,dateline);
+			currentpath.Clear();
+			box = NFmiEsriBox();
+			dateline = false;
+		  }
+
+		currentpath.Add(*iter);
+		box.Update(iter->x,iter->y);
+
+		if(iter->x == -180 || iter->x == 180)
+		  dateline = true;
+
+	  }
+
+	make_pacific(currentpath,box,outpath,tree,dateline);
+	outpath.Add(tree.Path());
+	return outpath;
+  }
 
 } // namespace Imagine
   

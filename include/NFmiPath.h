@@ -214,6 +214,10 @@ namespace Imagine
 	// Return SVG-string description
 	
 	std::string SVG(bool relative_moves=false, bool removeghostlines=true) const;
+
+	// Make Pacific if so requested
+
+	NFmiPath PacificView(bool pacific) const;
 	
 	// Add the path to a fill map
 	
