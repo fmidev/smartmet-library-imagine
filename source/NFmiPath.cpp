@@ -1271,18 +1271,19 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
   void make_pacific(const NFmiPath & thePath,
 					const NFmiEsriBox & theBox,
 					NFmiPath & theOutPath,
-					NFmiContourTree & theTree)
+					NFmiContourTree & theTree,
+					bool theDateLine)
   {
 	if(thePath.Empty())
 	  return;
-
-	if(theBox.Xmin() >= 0)
+	
+	if(theBox.Xmin() >= 0 && !theDateLine)
 	  {
 		theOutPath.Add(thePath);	// already in range 0-360
 		return;
 	  }
-
-	if(theBox.Xmax() < 0)
+	
+	if(theBox.Xmax() < 0 && !theDateLine)
 	  {
 		// Only shift from Atlantic to Pacific
 		for(NFmiPathData::const_iterator iter = thePath.Elements().begin(), end = thePath.Elements().end();
@@ -1294,7 +1295,10 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 		return;
 	  }
 
-	// Now clipping is needed
+	// Now splitting some lines in half may be necessary. We also omit vertical lines
+	// at the dateline boundary (-180 or 180) except near the poles, where they are
+	// needed to include the poles themselves in the path.
+
 	double lastX = kFloatMissing;
 	double lastY = kFloatMissing;
 	
@@ -1315,6 +1319,12 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 		  case kFmiLineTo:
 		  case kFmiGhostLineTo:
 			{
+			  // Omit vertical lines at the dateline boundary
+			  if( (lastX==-180 || lastX==180) &&
+				  (X==-180 || X==180) &&
+				  (lastY>-80 && lastY<75 && Y>-80 && Y<75))	// works for the Antarctic and Chukotski Peninsula
+				break;
+
 			  NFmiContourTree::VertexExactness exact = (op == kFmiLineTo ? NFmiContourTree::kLoLimit : NFmiContourTree::kNeither );
 			  if(lastX <= 0 && X <= 0)
 				{
@@ -1379,6 +1389,7 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 
 	NFmiContourTree tree(kFloatMissing,kFloatMissing);
 	NFmiEsriBox box;
+	bool dateline = false;
 
 	// Iterate over subsegments, calculating the bounding box simultaneously
 
@@ -1388,16 +1399,21 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	  {
 		if(iter->op == kFmiMoveTo)
 		  {
-			make_pacific(currentpath,box,outpath,tree);
+			make_pacific(currentpath,box,outpath,tree,dateline);
 			currentpath.Clear();
 			box = NFmiEsriBox();
+			dateline = false;
 		  }
 
 		currentpath.Add(*iter);
 		box.Update(iter->x,iter->y);
+
+		if(iter->x == -180 || iter->x == 180)
+		  dateline = true;
+
 	  }
 
-	make_pacific(currentpath,box,outpath,tree);
+	make_pacific(currentpath,box,outpath,tree,dateline);
 	outpath.Add(tree.Path());
 	return outpath;
   }
