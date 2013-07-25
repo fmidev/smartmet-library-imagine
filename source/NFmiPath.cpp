@@ -1,13 +1,6 @@
 // ======================================================================
 //
 // Definition of a PostScript style path, with a ghostline extension.
-//
-// History:
-//
-//	12.08.2001 Mika Heiskanen
-//
-//	Implemented
-//
 // ======================================================================
 
 #include "NFmiPath.h"
@@ -1271,6 +1264,95 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 
   // ----------------------------------------------------------------------
   /*!
+   * \brief Utility subroutine for PacificView
+   */
+  // ----------------------------------------------------------------------
+
+  void make_pacific(const NFmiPath & thePath,
+					const NFmiEsriBox & theBox,
+					NFmiPath & theOutPath,
+					NFmiContourTree & theTree)
+  {
+	if(thePath.Empty())
+	  return;
+
+	if(theBox.Xmin() >= 0)
+	  {
+		theOutPath.Add(thePath);	// already in range 0-360
+		return;
+	  }
+
+	if(theBox.Xmax() < 0)
+	  {
+		// Only shift from Atlantic to Pacific
+		for(NFmiPathData::const_iterator iter = thePath.Elements().begin(), end = thePath.Elements().end();
+			iter != end;
+			++iter)
+		  {
+			theOutPath.Add(NFmiPathElement(iter->op,iter->x+360,iter->y));
+		  }
+		return;
+	  }
+
+	// Now clipping is needed
+	double lastX = kFloatMissing;
+	double lastY = kFloatMissing;
+	
+	for(NFmiPathData::const_iterator iter = thePath.Elements().begin(), end = thePath.Elements().end();
+		iter != end;
+		++iter)
+	  {
+		double X = iter->x;
+		double Y = iter->y;
+		NFmiPathOperation op = iter->op;
+		
+		switch( op )
+		  {
+		  case kFmiMoveTo:
+			{
+			  break;
+			}
+		  case kFmiLineTo:
+		  case kFmiGhostLineTo:
+			{
+			  NFmiContourTree::VertexExactness exact = (op == kFmiLineTo ? NFmiContourTree::kLoLimit : NFmiContourTree::kNeither );
+			  if(lastX <= 0 && X <= 0)
+				{
+				  theTree.Add(NFmiEdge(lastX+360,lastY,X+360,Y,exact));
+				}
+			  else if(lastX >= 0 && X >= 0)
+				{
+				  theTree.Add(NFmiEdge(lastX,lastY,X,Y,exact));
+				}
+			  else if(lastX < X)
+				{
+				  // now lastX < 0 and X >= 0
+				  double s = (0-lastX)/(X-lastX);
+				  double ymid = lastY + s*(Y-lastY);
+				  theTree.Add(NFmiEdge(lastX+360,lastY,360,ymid,exact));
+					  theTree.Add(NFmiEdge(0,ymid,X,Y,exact));
+				}
+			  else
+				{
+				  // now lastX >= 0 and X < 0
+				  double s = (0-X)/(lastX-X);
+				  double ymid = Y + s*(lastY-Y);
+				  theTree.Add(NFmiEdge(lastX,lastY,0,ymid,exact));
+				  theTree.Add(NFmiEdge(360,ymid,X+360,Y,exact));
+				}
+			  break;
+			}
+		  default:
+			;
+		  }
+		
+		lastX = X;
+		lastY = Y;
+	  }
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
    * \brief Rebuild the path into a Pacific view if so requested
    *
    * At this point there is no known need to convert a Pacific path
@@ -1292,62 +1374,33 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	if(itsElements.empty())
 	  return *this;
 
-	NFmiContourTree newtree(kFloatMissing,kFloatMissing);
+	NFmiPath outpath;
+	NFmiPath currentpath;
 
-	double lastX = kFloatMissing;
-	double lastY = kFloatMissing;
+	NFmiContourTree tree(kFloatMissing,kFloatMissing);
+	NFmiEsriBox box;
+
+	// Iterate over subsegments, calculating the bounding box simultaneously
 
 	for(NFmiPathData::const_iterator iter = Elements().begin(), end = Elements().end();
 		iter != end;
 		++iter)
 	  {
-		double X = iter->x;
-		double Y = iter->y;
-		NFmiPathOperation op = iter->op;
-		
-		switch( op )
+		if(iter->op == kFmiMoveTo)
 		  {
-		  case kFmiLineTo:
-		  case kFmiGhostLineTo:
-			{
-			  NFmiContourTree::VertexExactness exact = (op == kFmiLineTo ? NFmiContourTree::kLoLimit : NFmiContourTree::kNeither );
-			  if(lastX <= 0 && X <= 0)
-				{
-				  newtree.Add(NFmiEdge(lastX+360,lastY,X+360,Y,exact));
-				}
-			  else if(lastX >= 0 && X >= 0)
-				{
-				  newtree.Add(NFmiEdge(lastX,lastY,X,Y,exact));
-				}
-			  else if(lastX < X)
-				{
-				  // now lastX < 0 and X >= 0
-				  double s = (0-lastX)/(X-lastX);
-				  double ymid = lastY + s*(Y-lastY);
-				  newtree.Add(NFmiEdge(lastX+360,lastY,360,ymid,exact));
-				  newtree.Add(NFmiEdge(0,ymid,X,Y,exact));
-				}
-			  else
-				{
-				  // now lastX >= 0 and X < 0
-				  double s = (0-X)/(lastX-X);
-				  double ymid = Y + s*(lastY-Y);
-				  newtree.Add(NFmiEdge(lastX,lastY,0,ymid,exact));
-				  newtree.Add(NFmiEdge(360,ymid,X+360,Y,exact));
-				}
-			}
-		  default:
-			break;
+			make_pacific(currentpath,box,outpath,tree);
+			currentpath.Clear();
+			box = NFmiEsriBox();
 		  }
 
-		lastX = X;
-		lastY = Y;
-
+		currentpath.Add(*iter);
+		box.Update(iter->x,iter->y);
 	  }
-	
-	return newtree.Path();
-  }
 
+	make_pacific(currentpath,box,outpath,tree);
+	outpath.Add(tree.Path());
+	return outpath;
+  }
 
 } // namespace Imagine
   
