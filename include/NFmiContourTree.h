@@ -319,6 +319,10 @@ namespace Imagine
 	
 	NFmiPath Path(void) const;
 	
+	/// Possible equality conditions of a value with respect to contour limits.
+	
+	enum VertexExactness   { kLoLimit, kHiLimit, kNeither };
+
   private:
 	
 	/// Disabled default constructor.
@@ -333,9 +337,6 @@ namespace Imagine
 	
 	enum VertexInsidedness { kBelow, kInside, kAbove };
 	
-	/// Possible equality conditions of a value with respect to contour limits.
-	
-	enum VertexExactness   { kLoLimit, kHiLimit, kNeither };
 	
 	/// A help function definition for vertex insidedness combinations
 	
