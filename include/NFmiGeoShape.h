@@ -90,7 +90,7 @@ namespace Imagine
 	
 	// Create a path from the map data
 	
-	const NFmiPath Path(bool doZeroTo360Fix = false) const;
+	const NFmiPath Path() const;
 	
 	// Add the data to a fill map
 #ifndef IMAGINE_WITH_CAIRO
@@ -162,7 +162,7 @@ namespace Imagine
 	
 	// Path creation
 	
-	const NFmiPath PathEsri(bool doZeroTo360Fix = false) const;
+	const NFmiPath PathEsri() const;
 	
 	// Stroking
 	

@@ -91,13 +91,13 @@ namespace Imagine
   // an empty path is returned.
   // ----------------------------------------------------------------------
   
-  const NFmiPath NFmiGeoShape::Path(bool doZeroTo360Fix) const
+  const NFmiPath NFmiGeoShape::Path() const
   {
 	NFmiPath out;
 	switch(Type())
 	  {
 	  case kFmiGeoShapeEsri:
-		out = PathEsri(doZeroTo360Fix);
+		out = PathEsri();
 		break;
 	  case kFmiGeoShapeShoreLine:
 		throw NFmiGeoShapeError("NFmiGeoShape::Path() kFmiGeoShapeShoreLine not implemented");
@@ -190,7 +190,7 @@ namespace Imagine
 		throw NFmiGeoShapeError("NFmiGeoShape::WriteImageMap() kFmiGeoShapeGMT not implemented");
 	  }
   }
-  
+
   // ----------------------------------------------------------------------
   // Build a path from ESRI shape data. Depending on the data element type,
   // the returned data is:
@@ -206,7 +206,7 @@ namespace Imagine
   //
   // ----------------------------------------------------------------------
   
-  const NFmiPath NFmiGeoShape::PathEsri(bool doZeroTo360Fix) const
+  const NFmiPath NFmiGeoShape::PathEsri() const
   {
 	// The result is a single path containing all the moves
 	
@@ -267,26 +267,12 @@ namespace Imagine
 				  
 				  if(i2>=i1)
 					{
-                      double lastLongitude = elem->Points()[i1].X();
 					  outpath.MoveTo(elem->Points()[i1].X(),
 									 elem->Points()[i1].Y());
 					  for(int i=i1+1; i<=i2; i++)
                       {
-                          if(doZeroTo360Fix)
-                          {
-                              double currentLongitude = elem->Points()[i].X();
-                              if(lastLongitude <= 0 && currentLongitude > 0 || lastLongitude > 0 && currentLongitude <= 0)
-                              {
-                                  outpath.MoveTo(elem->Points()[i].X(),
-							                     elem->Points()[i].Y());
-                                  lastLongitude = currentLongitude;
-                                  continue;
-                              }
-                          }
-
                           outpath.LineTo(elem->Points()[i].X(),
 							             elem->Points()[i].Y());
-                          lastLongitude = elem->Points()[i].X();
                       }
 					}
 				}
@@ -311,8 +297,10 @@ namespace Imagine
 					  outpath.MoveTo(elem->Points()[i1].X(),
 									 elem->Points()[i1].Y());
 					  for(int i=i1+1; i<=i2; i++)
+					  {
 						outpath.LineTo(elem->Points()[i].X(),
 									   elem->Points()[i].Y());
+					  }
 					}
 				}
 			  break;
