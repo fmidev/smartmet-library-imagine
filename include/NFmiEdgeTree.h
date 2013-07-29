@@ -24,10 +24,11 @@
 # include "NFmiFillMap.h"	// Fill map generation and rendering
 #endif
 
-#include <utility>	// pairs
-#include <set>		// sets
-#include <vector>	// vectors
-#include <algorithm>	// insert
+#include <algorithm>
+#include <list>
+#include <set>
+#include <utility>
+#include <vector>
 
 namespace Imagine
 {
@@ -45,7 +46,7 @@ namespace Imagine
 	
 	// Constructors
 	
-	NFmiEdgeTree(void)
+	NFmiEdgeTree()
 	  : itsLinesOnly(false)
 	  , itsConvertGhostLines(false)
 	  , itsEdges()
@@ -53,7 +54,7 @@ namespace Imagine
 	
 	// Destructors
 	
-	virtual ~NFmiEdgeTree(void) {}
+	virtual ~NFmiEdgeTree() {}
 	
 	// Adding a single edge
 	
@@ -63,8 +64,7 @@ namespace Imagine
 	void Add(const NFmiEdgeTree & theTree);
 	
 	// Build a path from the tree.
-	
-	const NFmiPath Path(void) const;
+	NFmiPath Path() const;
 	
 	// Add the tree to a fill map
 #ifndef IMAGINE_WITH_CAIRO
@@ -76,13 +76,15 @@ namespace Imagine
 	
   protected:
 
+	NFmiPath Path(std::list<NFmiPath> & thePaths) const;
+
 	typedef std::set<NFmiEdge> EdgeTreeType;
 	typedef std::multiset<NFmiEdge> MultiEdgeTreeType;
 	
 	// Access to edge-data for iterating through the data, not for
 	// modifying it.
 	
-	const EdgeTreeType & Edges(void) const { return itsEdges; };
+	const EdgeTreeType & Edges() const { return itsEdges; };
 
 	bool itsLinesOnly;
 	bool itsConvertGhostLines;
