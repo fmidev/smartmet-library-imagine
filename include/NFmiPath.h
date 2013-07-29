@@ -279,9 +279,9 @@ namespace Imagine
 #endif
 	// Return the bounding box
 	
-	const NFmiEsriBox BoundingBox() const;
+	NFmiEsriBox BoundingBox() const;
 	
-	const NFmiPath Clip(double theX1, double theY1, double theX2, double theY2, double theMargin = 0) const;
+	NFmiPath Clip(double theX1, double theY1, double theX2, double theY2, double theMargin = 0) const;
 
 	void InsideOut() { itsInsideOut = !itsInsideOut; }
 	bool IsInsideOut() const { return itsInsideOut; }

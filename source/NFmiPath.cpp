@@ -469,19 +469,20 @@ namespace Imagine
   
   // ----------------------------------------------------------------------
   // Apply a projection to a path
+  // Note: The path and the area may be in different views
   // ----------------------------------------------------------------------
 
   void NFmiPath::Project(const NFmiArea * const theArea)
   {
-	if(theArea!=0)
+	if(!theArea)
+	  return;
+
+	NFmiPathData::iterator iter;
+	for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
 	  {
-		NFmiPathData::iterator iter;
-		for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
-		  {
-			NFmiPoint pt = theArea->ToXY( NFmiPoint( iter->x, iter->y ));
-			iter->x= pt.X();
-			iter->y= pt.Y();
-		  }
+		NFmiPoint pt = theArea->ToXY( NFmiPoint( iter->x, iter->y ));
+		iter->x= pt.X();
+		iter->y= pt.Y();
 	  }
   }
   
@@ -526,7 +527,7 @@ namespace Imagine
   // Note: Bezier curve bounding boxes not implemented yet
   // ----------------------------------------------------------------------
   
-  const NFmiEsriBox NFmiPath::BoundingBox(void) const
+  NFmiEsriBox NFmiPath::BoundingBox(void) const
   {
 	NFmiEsriBox box;
 	
@@ -1102,7 +1103,7 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
   }
 
 #ifndef IMAGINE_WITH_CAIRO
-  const NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, double theMargin) const
+  NFmiPath NFmiPath::Clip(double theX1, double theY1, double theX2, double theY2, double theMargin) const
   {
 	if(itsElements.empty())
 	  return *this;
