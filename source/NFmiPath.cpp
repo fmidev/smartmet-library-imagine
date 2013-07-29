@@ -1325,30 +1325,31 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 				  (lastY>-80 && lastY<75 && Y>-80 && Y<75))	// works for the Antarctic and Chukotski Peninsula
 				break;
 
-			  NFmiContourTree::VertexExactness exact = (op == kFmiLineTo ? NFmiContourTree::kLoLimit : NFmiContourTree::kNeither );
+			  bool exact = (op == kFmiLineTo);
+
 			  if(lastX <= 0 && X <= 0)
 				{
-				  theTree.Add(NFmiEdge(lastX+360,lastY,X+360,Y,exact));
+				  theTree.Add(NFmiEdge(lastX+360,lastY,X+360,Y,exact,true));
 				}
 			  else if(lastX >= 0 && X >= 0)
 				{
-				  theTree.Add(NFmiEdge(lastX,lastY,X,Y,exact));
+				  theTree.Add(NFmiEdge(lastX,lastY,X,Y,exact,true));
 				}
 			  else if(lastX < X)
 				{
 				  // now lastX < 0 and X >= 0
 				  double s = (0-lastX)/(X-lastX);
 				  double ymid = lastY + s*(Y-lastY);
-				  theTree.Add(NFmiEdge(lastX+360,lastY,360,ymid,exact));
-					  theTree.Add(NFmiEdge(0,ymid,X,Y,exact));
+				  theTree.Add(NFmiEdge(lastX+360,lastY,360,ymid,exact,true));
+				  theTree.Add(NFmiEdge(0,ymid,X,Y,exact,true));
 				}
 			  else
 				{
 				  // now lastX >= 0 and X < 0
 				  double s = (0-X)/(lastX-X);
 				  double ymid = Y + s*(lastY-Y);
-				  theTree.Add(NFmiEdge(lastX,lastY,0,ymid,exact));
-				  theTree.Add(NFmiEdge(360,ymid,X+360,Y,exact));
+				  theTree.Add(NFmiEdge(lastX,lastY,0,ymid,exact,true));
+				  theTree.Add(NFmiEdge(360,ymid,X+360,Y,exact,true));
 				}
 			  break;
 			}
@@ -1414,6 +1415,7 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	  }
 
 	make_pacific(currentpath,box,outpath,tree,dateline);
+
 	outpath.Add(tree.Path());
 	return outpath;
   }
@@ -1421,6 +1423,3 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 } // namespace Imagine
   
 // ======================================================================
-  
-  
-  

@@ -32,17 +32,19 @@ namespace Imagine
 	
 	if(theEdge.GetX1() != theEdge.GetX2() || theEdge.GetY1() != theEdge.GetY2())
 	  {
-		// Insert operator returns an iterator, bool pair
+		if(theEdge.Fixed())
+		  itsMultiEdges.insert(theEdge);
+		else
+		  {
+			pair<EdgeTreeType::iterator, bool> result = itsEdges.insert(theEdge);
 		
-		pair<EdgeTreeType::iterator, bool> result = itsEdges.insert(theEdge);
+			// If insertion was unsuccessful, the element already existed,
+			// and we wish to delete it. We no longer need to find the element,
+			// it is pointed to by the earlier find iterator.
 		
-		// If insertion was unsuccessful, the element already existed,
-		// and we wish to delete it. We no longer need to find the element,
-		// it is pointed to by the earlier find iterator. Hence this is
-		// an optimally fast log(N) operation for balanced trees.
-		
-		if(!result.second)
-		  itsEdges.erase(result.first);
+			if(!result.second)
+			  itsEdges.erase(result.first);
+		  }
 	  }  
   }
   
@@ -76,7 +78,7 @@ namespace Imagine
 	
 	// Handle empty path
 	
-	if(itsEdges.empty()) return outpath;
+	if(itsEdges.empty() && itsMultiEdges.empty()) return outpath;
 	
 	// The workhorse is a list of open paths. As soon as one
 	// becomes closed, it is moved into outpath. Since outpath
@@ -86,11 +88,16 @@ namespace Imagine
 	
 	list<NFmiPath> paths;
 	
-	// The line segments of the tree are for convenience
-	// assigned to a shorthand variable
-	
-	const EdgeTreeType edges(Edges());
-	
+	// Build from multiedges & edges
+
+	MultiEdgeTreeType edges(itsMultiEdges);
+	for(EdgeTreeType::const_iterator iter = itsEdges.begin(), end = itsEdges.end();
+		iter != end;
+		++iter)
+	  {
+		edges.insert(*iter);
+	  }
+
 	// An iterator for the open paths, we go through it again
 	// for each edge in the tree. Note that there most likely
 	// are only a couple open paths in the list, unless the

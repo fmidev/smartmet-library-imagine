@@ -77,6 +77,7 @@ namespace Imagine
   protected:
 
 	typedef std::set<NFmiEdge> EdgeTreeType;
+	typedef std::multiset<NFmiEdge> MultiEdgeTreeType;
 	
 	// Access to edge-data for iterating through the data, not for
 	// modifying it.
@@ -86,6 +87,7 @@ namespace Imagine
 	bool itsLinesOnly;
 	bool itsConvertGhostLines;
 	EdgeTreeType itsEdges;
+	MultiEdgeTreeType itsMultiEdges;
 
   };
 
