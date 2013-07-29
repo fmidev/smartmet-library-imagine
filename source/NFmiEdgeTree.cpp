@@ -70,7 +70,19 @@ namespace Imagine
   //
   // ----------------------------------------------------------------------
   
-  const NFmiPath NFmiEdgeTree::Path(void) const
+  NFmiPath NFmiEdgeTree::Path() const
+  {
+	// The workhorse is a list of open paths. As soon as one
+	// becomes closed, it is moved into outpath. Since outpath
+	// is always closed, having the new path begin with a moveto
+	// makes it simple to add the new (closed) path segment - we
+	// just append the moves to the end.
+	
+	list<NFmiPath> paths;
+	return Path(paths);
+  }
+
+  NFmiPath NFmiEdgeTree::Path(list<NFmiPath> & paths) const
   {
 	// The result is a path containing only closed subpaths
 	
@@ -79,14 +91,6 @@ namespace Imagine
 	// Handle empty path
 	
 	if(itsEdges.empty() && itsMultiEdges.empty()) return outpath;
-	
-	// The workhorse is a list of open paths. As soon as one
-	// becomes closed, it is moved into outpath. Since outpath
-	// is always closed, having the new path begin with a moveto
-	// makes it simple to add the new (closed) path segment - we
-	// just append the moves to the end.
-	
-	list<NFmiPath> paths;
 	
 	// Build from multiedges & edges
 
