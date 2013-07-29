@@ -569,10 +569,10 @@ namespace Imagine
 	
 	if(ContouringMissing())
 	  {
-		Add(NFmiEdge(x1,y1,x2,y2,false));
-		Add(NFmiEdge(x2,y2,x3,y3,false));
-		Add(NFmiEdge(x3,y3,x4,y4,false));
-		Add(NFmiEdge(x4,y4,x1,y1,false));
+		Add(NFmiEdge(x1,y1,x2,y2,false,false));
+		Add(NFmiEdge(x2,y2,x3,y3,false,false));
+		Add(NFmiEdge(x3,y3,x4,y4,false,false));
+		Add(NFmiEdge(x4,y4,x1,y1,false,false));
 		return;
 	  }
 	
@@ -600,10 +600,10 @@ namespace Imagine
 		// the rectangle edges are exact or not. An edge is exact, if the
 		// values on the edge are exactly equal to one of the range limits.
 		
-		Add(NFmiEdge(x1,y1,x2,y2,z1==z2 && (z1==LoLimit() || z1==HiLimit())));
-		Add(NFmiEdge(x2,y2,x3,y3,z2==z3 && (z2==LoLimit() || z2==HiLimit())));
-		Add(NFmiEdge(x3,y3,x4,y4,z3==z4 && (z3==LoLimit() || z3==HiLimit())));
-		Add(NFmiEdge(x4,y4,x1,y1,z4==z1 && (z4==LoLimit() || z4==HiLimit())));
+		Add(NFmiEdge(x1,y1,x2,y2,z1==z2 && (z1==LoLimit() || z1==HiLimit()),false));
+		Add(NFmiEdge(x2,y2,x3,y3,z2==z3 && (z2==LoLimit() || z2==HiLimit()),false));
+		Add(NFmiEdge(x3,y3,x4,y4,z3==z4 && (z3==LoLimit() || z3==HiLimit()),false));
+		Add(NFmiEdge(x4,y4,x1,y1,z4==z1 && (z4==LoLimit() || z4==HiLimit()),false));
 		
 		return;
 	  }
@@ -730,7 +730,7 @@ namespace Imagine
 			  {
 			  case kFmiMoveTo:
 				if(it!=elements.begin())
-				  Add(NFmiEdge(firstx,firsty,lastx,lasty,true));
+				  Add(NFmiEdge(firstx,firsty,lastx,lasty,true,false));
 				firstx = it->x;
 				firsty = it->y;
 				lastx = firstx;
@@ -740,7 +740,7 @@ namespace Imagine
 				lastx = it->x;
 				lasty = it->y;
 				if(it == --elements.end())
-				  Add(NFmiEdge(firstx,firsty,lastx,lasty,true));
+				  Add(NFmiEdge(firstx,firsty,lastx,lasty,true,false));
 				break;
 			  default:
 				throw runtime_error("NFmiContourTree encountered bad path element");
@@ -834,10 +834,10 @@ namespace Imagine
 	
 	if(ContouringMissing())
 	  {
-		Add(NFmiEdge(x1,y1,x2,y2,false));
-		Add(NFmiEdge(x2,y2,x3,y3,false));
-		Add(NFmiEdge(x3,y3,x4,y4,false));
-		Add(NFmiEdge(x4,y4,x1,y1,false));
+		Add(NFmiEdge(x1,y1,x2,y2,false,false));
+		Add(NFmiEdge(x2,y2,x3,y3,false,false));
+		Add(NFmiEdge(x3,y3,x4,y4,false,false));
+		Add(NFmiEdge(x4,y4,x1,y1,false,false));
 		return;
 	  }
 	
@@ -873,32 +873,32 @@ namespace Imagine
 	
 	if(c1==kInside)
 	  {
-		Add(NFmiEdge(x41,y41,x1,y1,true));
-		Add(NFmiEdge(x1,y1,x12,y12,true));
+		Add(NFmiEdge(x41,y41,x1,y1,true,false));
+		Add(NFmiEdge(x1,y1,x12,y12,true,false));
 	  }
 	if(c2==kInside)
 	  {
-		Add(NFmiEdge(x12,y12,x2,y2,true));
-		Add(NFmiEdge(x2,y2,x23,y23,true));
+		Add(NFmiEdge(x12,y12,x2,y2,true,false));
+		Add(NFmiEdge(x2,y2,x23,y23,true,false));
 	  }
 	if(c3==kInside)
 	  {
-		Add(NFmiEdge(x23,y23,x3,y3,true));
-		Add(NFmiEdge(x3,y3,x34,y34,true));
+		Add(NFmiEdge(x23,y23,x3,y3,true,false));
+		Add(NFmiEdge(x3,y3,x34,y34,true,false));
 	  }
 	if(c4==kInside)
 	  {
-		Add(NFmiEdge(x34,y34,x4,y4,true));
-		Add(NFmiEdge(x4,y4,x41,y41,true));
+		Add(NFmiEdge(x34,y34,x4,y4,true,false));
+		Add(NFmiEdge(x4,y4,x41,y41,true,false));
 	  }
 	if( (c1==kInside) ^ (c2==kInside) )
-	  Add(NFmiEdge(x12,y12,x0,y0,true));
+	  Add(NFmiEdge(x12,y12,x0,y0,true,false));
 	if( (c2==kInside) ^ (c3==kInside) )
-	  Add(NFmiEdge(x23,y23,x0,y0,true));
+	  Add(NFmiEdge(x23,y23,x0,y0,true,false));
 	if( (c3==kInside) ^ (c4==kInside) )
-	  Add(NFmiEdge(x34,y34,x0,y0,true));
+	  Add(NFmiEdge(x34,y34,x0,y0,true,false));
 	if( (c4==kInside) ^ (c1==kInside) )
-	  Add(NFmiEdge(x41,y41,x0,y0,true));
+	  Add(NFmiEdge(x41,y41,x0,y0,true,false));
 	
   }
 
@@ -958,10 +958,10 @@ namespace Imagine
 	
 	if(ContouringMissing())
 	  {
-		Add(NFmiEdge(x1,y1,x2,y2,false));
-		Add(NFmiEdge(x2,y2,x3,y3,false));
-		Add(NFmiEdge(x3,y3,x4,y4,false));
-		Add(NFmiEdge(x4,y4,x1,y1,false));
+		Add(NFmiEdge(x1,y1,x2,y2,false,false));
+		Add(NFmiEdge(x2,y2,x3,y3,false,false));
+		Add(NFmiEdge(x3,y3,x4,y4,false,false));
+		Add(NFmiEdge(x4,y4,x1,y1,false,false));
 		return;
 	  }
 
@@ -1045,9 +1045,9 @@ namespace Imagine
 	
 	if(ContouringMissing())
 	  {
-		Add(NFmiEdge(x1,y1,x2,y2,false));
-		Add(NFmiEdge(x2,y2,x3,y3,false));
-		Add(NFmiEdge(x3,y3,x1,y1,false));
+		Add(NFmiEdge(x1,y1,x2,y2,false,false));
+		Add(NFmiEdge(x2,y2,x3,y3,false,false));
+		Add(NFmiEdge(x3,y3,x1,y1,false,false));
 		return;
 	  }
 	
@@ -1093,9 +1093,9 @@ namespace Imagine
 		// The edges must be recursed to full depth though to guarantee
 		// matching line segments!
 		
-		Add(NFmiEdge(x1,y1,x2,y2,z1==z2 && (z1==LoLimit() || z1==HiLimit())));
-		Add(NFmiEdge(x2,y2,x3,y3,z2==z3 && (z2==LoLimit() || z2==HiLimit())));
-		Add(NFmiEdge(x3,y3,x1,y1,z3==z1 && (z3==LoLimit() || z3==HiLimit())));
+		Add(NFmiEdge(x1,y1,x2,y2,z1==z2 && (z1==LoLimit() || z1==HiLimit()),false));
+		Add(NFmiEdge(x2,y2,x3,y3,z2==z3 && (z2==LoLimit() || z2==HiLimit()),false));
+		Add(NFmiEdge(x3,y3,x1,y1,z3==z1 && (z3==LoLimit() || z3==HiLimit()),false));
 		return;
 	  }
 	
@@ -1165,9 +1165,9 @@ namespace Imagine
 	
 	if(ContouringMissing())
 	  {
-		Add(NFmiEdge(x1,y1,x2,y2,false));
-		Add(NFmiEdge(x2,y2,x3,y3,false));
-		Add(NFmiEdge(x3,y3,x1,y1,false));
+		Add(NFmiEdge(x1,y1,x2,y2,false,false));
+		Add(NFmiEdge(x2,y2,x3,y3,false,false));
+		Add(NFmiEdge(x3,y3,x1,y1,false,false));
 		return;
 	  }
 	
@@ -1200,25 +1200,25 @@ namespace Imagine
 	
 	if(c1==kInside)
 	  {
-		Add(NFmiEdge(x31,y31,x1,y1,true));
-		Add(NFmiEdge(x1,y1,x12,y12,true));
+		Add(NFmiEdge(x31,y31,x1,y1,true,false));
+		Add(NFmiEdge(x1,y1,x12,y12,true,false));
 	  }
 	if(c2==kInside)
 	  {
-		Add(NFmiEdge(x12,y12,x2,y2,true));
-		Add(NFmiEdge(x2,y2,x23,y23,true));
+		Add(NFmiEdge(x12,y12,x2,y2,true,false));
+		Add(NFmiEdge(x2,y2,x23,y23,true,false));
 	  }
 	if(c3==kInside)
 	  {
-		Add(NFmiEdge(x23,y23,x3,y3,true));
-		Add(NFmiEdge(x3,y3,x31,y31,true));
+		Add(NFmiEdge(x23,y23,x3,y3,true,false));
+		Add(NFmiEdge(x3,y3,x31,y31,true,false));
 	  }
 	if( (c1==kInside) ^ (c2==kInside) )
-	  Add(NFmiEdge(x12,y12,x0,y0,true));
+	  Add(NFmiEdge(x12,y12,x0,y0,true,false));
 	if( (c2==kInside) ^ (c3==kInside) )
-	  Add(NFmiEdge(x23,y23,x0,y0,true));
+	  Add(NFmiEdge(x23,y23,x0,y0,true,false));
 	if( (c3==kInside) ^ (c1==kInside) )
-	  Add(NFmiEdge(x31,y31,x0,y0,true));
+	  Add(NFmiEdge(x31,y31,x0,y0,true,false));
 	
   }
 
@@ -1409,7 +1409,8 @@ namespace Imagine
 	  {
 		unsigned int j = (i+1) % X.size();
 		Add(NFmiEdge(X[i],Y[i],X[j],Y[j],
-					 B[i]==B[j] && B[i]!=kNeither));
+					 B[i]==B[j] && B[i]!=kNeither,
+					 false));
 	  }
   }
   

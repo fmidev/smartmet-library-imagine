@@ -29,12 +29,13 @@ namespace Imagine
 	
 	// The constructor will sort the vertices
 	
-	NFmiEdge(float theX1,float theY1, float theX2, float theY2, bool exact)
+	NFmiEdge(float theX1,float theY1, float theX2, float theY2, bool exact, bool fixed)
 	  : itsX1(theX1)
 	  , itsY1(theY1)
 	  , itsX2(theX2)
 	  , itsY2(theY2)
 	  , fExact(exact)
+	  , fFixed(fixed)
 	{
 	  if(itsX2<itsX1 || (itsX2==itsX1 && itsY2<itsY1))
 		{
@@ -47,11 +48,12 @@ namespace Imagine
 	
 	// Getting data values
 	
-	float GetX1(void) const		{ return itsX1; }
-	float GetY1(void) const		{ return itsY1; }
-	float GetX2(void) const		{ return itsX2; }
-	float GetY2(void) const		{ return itsY2; }
-	bool Exact(void) const	{ return fExact; }
+	float GetX1() const		{ return itsX1; }
+	float GetY1() const		{ return itsY1; }
+	float GetX2() const		{ return itsX2; }
+	float GetY2() const		{ return itsY2; }
+	bool Exact() const	{ return fExact; }
+	bool Fixed() const { return fFixed; }
 	
 	// Setting data values
 	
@@ -68,7 +70,8 @@ namespace Imagine
 			  itsY1==theEdge.itsY1 &&
 			  itsX2==theEdge.itsX2 &&
 			  itsY2==theEdge.itsY2 && 
-			  fExact==theEdge.fExact);
+			  fExact==theEdge.fExact &&
+			  fFixed==theEdge.fFixed);
 	}
 	
 	// Less-than comparison needed for set<NFmiEdge>
@@ -88,7 +91,7 @@ namespace Imagine
 	
 	// Protect from misuse
 	
-	NFmiEdge(void);
+	NFmiEdge();
 	
 	// Data elements
 	
@@ -97,6 +100,7 @@ namespace Imagine
 	float itsX2;		// End point coordinates
 	float itsY2;
 	bool  fExact;		// Is the edge exactly on a contour?
+	bool  fFixed;		// False if edge may be deleted when it is a duplicate
   };
   
 } // namespace Imagine
