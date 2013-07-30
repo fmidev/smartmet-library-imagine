@@ -19,6 +19,7 @@
 #include <iostream>
 #include <algorithm>
 #include <stdexcept>
+#include <set>
 #include <sstream>
 
 // ======================================================================
@@ -458,7 +459,7 @@ namespace Imagine
   
   void NFmiPath::Align(NFmiAlignment theAlignment, double theX, double theY)
   {
-	NFmiEsriBox box(BoundingBox());
+	NFmiEsriBox box = BoundingBox();
 	
 	double xfactor = XAlignmentFactor(theAlignment);
 	double yfactor = YAlignmentFactor(theAlignment);
@@ -476,6 +477,20 @@ namespace Imagine
   {
 	if(!theArea)
 	  return;
+
+	bool path_is_pacific = IsPacificView();
+	bool area_is_pacific = theArea->PacificView();
+
+	if(path_is_pacific && !area_is_pacific)
+	  {
+		NFmiPath p = AtlanticView(true);
+		itsElements.swap(p.itsElements);
+	  }
+	else if(!path_is_pacific && area_is_pacific)
+	  {
+		NFmiPath p = PacificView(true);
+		itsElements.swap(p.itsElements);
+	  }
 
 	NFmiPathData::iterator iter;
 	for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
@@ -527,7 +542,7 @@ namespace Imagine
   // Note: Bezier curve bounding boxes not implemented yet
   // ----------------------------------------------------------------------
   
-  NFmiEsriBox NFmiPath::BoundingBox(void) const
+  NFmiEsriBox NFmiPath::BoundingBox() const
   {
 	NFmiEsriBox box;
 	
@@ -1263,6 +1278,28 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
   }
 #endif
 
+
+  void add_cuts(NFmiContourTree & theTree,
+				std::set<double> & theCuts,
+				double theLon1,
+				double theLon2)
+  {
+	std::set<double>::const_iterator iter = theCuts.begin();
+	std::set<double>::const_iterator end = theCuts.end();
+
+	while(iter != end)
+	  {
+		double lat1 = *iter;
+		if(++iter != end)
+		  {
+			double lat2 = *iter;
+			++iter;
+			theTree.Add(NFmiEdge(theLon1,lat1,theLon1,lat2,true,false));
+			theTree.Add(NFmiEdge(theLon2,lat1,theLon2,lat2,true,false));
+		  }
+	  }
+  }
+
   // ----------------------------------------------------------------------
   /*!
    * \brief Utility subroutine for PacificView
@@ -1273,11 +1310,12 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 					const NFmiEsriBox & theBox,
 					NFmiPath & theOutPath,
 					NFmiContourTree & theTree,
+					std::set<double> & theCuts,
 					bool theDateLine)
   {
 	if(thePath.Empty())
 	  return;
-	
+
 	if(theBox.Xmin() >= 0 && !theDateLine)
 	  {
 		theOutPath.Add(thePath);	// already in range 0-360
@@ -1298,6 +1336,116 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 
 	// Now splitting some lines in half may be necessary. We also omit vertical lines
 	// at the dateline boundary (-180 or 180) except near the poles, where they are
+	// needed to include the poles themselves in the path. We also need to create
+	// the lines at 0 and 360 to reconnect the polygons
+
+	double lastX = kFloatMissing;
+	double lastY = kFloatMissing;
+
+	for(NFmiPathData::const_iterator iter = thePath.Elements().begin(), end = thePath.Elements().end();
+		iter != end;
+		++iter)
+	  {
+		double X = iter->x;
+		double Y = iter->y;
+		NFmiPathOperation op = iter->op;
+		
+		switch( op )
+		  {
+		  case kFmiMoveTo:
+			{
+			  break;
+			}
+		  case kFmiLineTo:
+		  case kFmiGhostLineTo:
+			{
+			  // Omit vertical lines at the dateline boundary
+
+			  if( (lastX==-180 || lastX==180) &&
+				  (X==-180 || X==180) &&
+				  (lastY>-80 && lastY<75 && Y>-80 && Y<75))	// works for the Antarctic and Chukotski Peninsula
+				break;
+
+			  bool exact = (op == kFmiLineTo);
+
+			  if(lastX < 0 && X < 0)
+				{
+				  theTree.Add(NFmiEdge(lastX+360,lastY,X+360,Y,exact,true));
+				}
+			  else if(lastX > 0 && X > 0)
+				{
+				  theTree.Add(NFmiEdge(lastX,lastY,X,Y,exact,true));
+				}
+			  else if(lastX==X)
+				{
+				  theTree.Add(NFmiEdge(lastX,lastY,X,Y,exact,true));
+				}
+			  else if(lastX < X)
+				{
+				  // now lastX < 0 and X >= 0
+				  double s = (0-lastX)/(X-lastX);
+				  double ymid = lastY + s*(Y-lastY);
+				  theTree.Add(NFmiEdge(lastX+360,lastY,360,ymid,exact,true));
+				  theTree.Add(NFmiEdge(0,ymid,X,Y,exact,true));
+				  theCuts.insert(ymid);
+				}
+			  else
+				{
+				  // now lastX >= 0 and X < 0
+				  double s = (0-X)/(lastX-X);
+				  double ymid = Y + s*(lastY-Y);
+				  theTree.Add(NFmiEdge(lastX,lastY,0,ymid,exact,true));
+				  theTree.Add(NFmiEdge(360,ymid,X+360,Y,exact,true));
+				  theCuts.insert(ymid);
+				}
+			  break;
+			}
+		  default:
+			;
+		  }
+		
+		lastX = X;
+		lastY = Y;
+	  }
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Utility subroutine for AtlanticView
+   */
+  // ----------------------------------------------------------------------
+
+  void make_atlantic(const NFmiPath & thePath,
+					const NFmiEsriBox & theBox,
+					NFmiPath & theOutPath,
+					NFmiContourTree & theTree,
+					std::set<double> & theCuts,
+					bool theDateLine)
+  {
+	if(thePath.Empty())
+	  return;
+
+
+	if(theBox.Xmax() <= 180 && !theDateLine)
+	  {
+		theOutPath.Add(thePath);	// already in range -180...180
+		return;
+	  }
+	
+	if(theBox.Xmin() >= 180 && !theDateLine)
+	  {
+		// Only shift from Pacific to Atlantic
+		for(NFmiPathData::const_iterator iter = thePath.Elements().begin(), end = thePath.Elements().end();
+			iter != end;
+			++iter)
+		  {
+			theOutPath.Add(NFmiPathElement(iter->op,iter->x-360,iter->y));
+		  }
+		return;
+	  }
+
+	// Now splitting some lines in half may be necessary. We also omit vertical lines
+	// at the dateline boundary (0 or 360) except near the poles, where they are
 	// needed to include the poles themselves in the path.
 
 	double lastX = kFloatMissing;
@@ -1321,36 +1469,43 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 		  case kFmiGhostLineTo:
 			{
 			  // Omit vertical lines at the dateline boundary
-			  if( (lastX==-180 || lastX==180) &&
-				  (X==-180 || X==180) &&
+
+			  if( (lastX==0 || lastX==360) &&
+				  (X==0 || X==360) &&
 				  (lastY>-80 && lastY<75 && Y>-80 && Y<75))	// works for the Antarctic and Chukotski Peninsula
 				break;
 
 			  bool exact = (op == kFmiLineTo);
 
-			  if(lastX <= 0 && X <= 0)
+			  if(lastX > 180 && X > 180)
 				{
-				  theTree.Add(NFmiEdge(lastX+360,lastY,X+360,Y,exact,true));
+				  theTree.Add(NFmiEdge(lastX-360,lastY,X-360,Y,exact,true));
 				}
-			  else if(lastX >= 0 && X >= 0)
+			  else if(lastX < 180 && X < 180)
+				{
+				  theTree.Add(NFmiEdge(lastX,lastY,X,Y,exact,true));
+				}
+			  else if(lastX == X)
 				{
 				  theTree.Add(NFmiEdge(lastX,lastY,X,Y,exact,true));
 				}
 			  else if(lastX < X)
 				{
-				  // now lastX < 0 and X >= 0
-				  double s = (0-lastX)/(X-lastX);
+				  // now lastX < 180 and X >= 180
+				  double s = (180-lastX)/(X-lastX);
 				  double ymid = lastY + s*(Y-lastY);
-				  theTree.Add(NFmiEdge(lastX+360,lastY,360,ymid,exact,true));
-				  theTree.Add(NFmiEdge(0,ymid,X,Y,exact,true));
+				  theTree.Add(NFmiEdge(lastX,lastY,180,ymid,exact,true));
+				  theTree.Add(NFmiEdge(-180,ymid,X-360,Y,exact,true));
+				  theCuts.insert(ymid);
 				}
 			  else
 				{
-				  // now lastX >= 0 and X < 0
-				  double s = (0-X)/(lastX-X);
+				  // now lastX >= 180 and X < 180
+				  double s = (180-X)/(lastX-X);
 				  double ymid = Y + s*(lastY-Y);
-				  theTree.Add(NFmiEdge(lastX,lastY,0,ymid,exact,true));
-				  theTree.Add(NFmiEdge(360,ymid,X+360,Y,exact,true));
+				  theTree.Add(NFmiEdge(lastX-360,lastY,-180,ymid,exact,true));
+				  theTree.Add(NFmiEdge(180,ymid,X,Y,exact,true));
+				  theCuts.insert(ymid);
 				}
 			  break;
 			}
@@ -1366,16 +1521,6 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
   // ----------------------------------------------------------------------
   /*!
    * \brief Rebuild the path into a Pacific view if so requested
-   *
-   * At this point there is no known need to convert a Pacific path
-   * into Atlantic (if the input flag is false), hence we just return
-   * the path back as is.
-   *
-   * Since the path is already mostly built, we do not rebuild the
-   * path from scratch as when contouring, but utilize the intermediate
-   * tools provided by the Tron library.
-   *
-   * Note: Information on ghost lines is lost, they are converted to regular lines.
    */
   // ----------------------------------------------------------------------
 
@@ -1385,13 +1530,17 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	  return *this;
 	if(itsElements.empty())
 	  return *this;
-
+	if(IsPacificView())
+	  return *this;
+	
 	NFmiPath outpath;
 	NFmiPath currentpath;
 
-	NFmiContourTree tree(kFloatMissing,kFloatMissing);
+	NFmiContourTree tree(0,0);
 	NFmiEsriBox box;
 	bool dateline = false;
+
+	std::set<double> cuts;
 
 	// Iterate over subsegments, calculating the bounding box simultaneously
 
@@ -1401,7 +1550,7 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	  {
 		if(iter->op == kFmiMoveTo)
 		  {
-			make_pacific(currentpath,box,outpath,tree,dateline);
+			make_pacific(currentpath,box,outpath,tree,cuts,dateline);
 			currentpath.Clear();
 			box = NFmiEsriBox();
 			dateline = false;
@@ -1415,10 +1564,101 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 
 	  }
 
-	make_pacific(currentpath,box,outpath,tree,dateline);
+	make_pacific(currentpath,box,outpath,tree,cuts,dateline);
+
+	add_cuts(tree,cuts,0,360);
 
 	outpath.Add(tree.Path());
 	return outpath;
+  }
+
+  // ----------------------------------------------------------------------
+  /*!
+   * \brief Rebuild the path into a Atlantic view if so requested
+   */
+  // ----------------------------------------------------------------------
+
+  NFmiPath NFmiPath::AtlanticView(bool atlantic) const
+  {
+	if(!atlantic)
+	  return *this;
+	if(itsElements.empty())
+	  return *this;
+	if(!IsPacificView())
+	  return *this;
+	
+	NFmiPath outpath;
+	NFmiPath currentpath;
+
+	NFmiContourTree tree(0,0);
+	NFmiEsriBox box;
+	bool dateline = false;
+
+	std::set<double> cuts;
+
+	// Iterate over subsegments, calculating the bounding box simultaneously
+
+	for(NFmiPathData::const_iterator iter = Elements().begin(), end = Elements().end();
+		iter != end;
+		++iter)
+	  {
+		if(iter->op == kFmiMoveTo)
+		  {
+			make_atlantic(currentpath,box,outpath,tree,cuts,dateline);
+			currentpath.Clear();
+			box = NFmiEsriBox();
+			dateline = false;
+		  }
+
+		currentpath.Add(*iter);
+		box.Update(iter->x,iter->y);
+
+		if(iter->x == 0 || iter->x == 360)
+		  dateline = true;
+
+	  }
+
+	make_atlantic(currentpath,box,outpath,tree,cuts,dateline);
+
+	add_cuts(tree,cuts,-180,180);
+
+	outpath.Add(tree.Path());
+	return outpath;
+  }
+
+  // ----------------------------------------------------------------------
+  // Test whether any path segment looks like the data comes from a Pacific view
+  // ----------------------------------------------------------------------
+
+  bool NFmiPath::IsPacificView() const
+  {
+	if(Empty())
+	  return false;
+
+	double lastX = kFloatMissing;
+
+	NFmiPathData::const_iterator iter;
+
+	for(iter=itsElements.begin(); iter!=itsElements.end(); ++iter)
+	  {
+		switch(iter->op)
+		  {
+		  case kFmiLineTo:
+		  case kFmiGhostLineTo:
+			{
+			  if(lastX < 180 && iter->x > 180)
+				return true;
+			  if(lastX > 180 && iter->x < 180)
+				return true;
+			  break;
+			}
+		  default:
+			break;
+		  }
+		lastX = iter->x;
+	  }
+
+	return false;
   }
 
 } // namespace Imagine
