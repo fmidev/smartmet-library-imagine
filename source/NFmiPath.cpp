@@ -1425,10 +1425,13 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	if(thePath.Empty())
 	  return;
 
+	// Note: We require Xmin to be >=0 in this easy cases since some paths
+	// may look Pacific even though the coordinates are not. Example: Chuchki data
 
-	if(theBox.Xmax() <= 180 && !theDateLine)
+
+	if(theBox.Xmin() >= 0 && theBox.Xmax() <= 180 && !theDateLine)
 	  {
-		theOutPath.Add(thePath);	// already in range -180...180
+		theOutPath.Add(thePath);	// already in range 0...180
 		return;
 	  }
 	
@@ -1481,13 +1484,35 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 				{
 				  theTree.Add(NFmiEdge(lastX-360,lastY,X-360,Y,exact,true));
 				}
-			  else if(lastX < 180 && X < 180)
+			  else if(lastX>=0 && lastX < 180 && X>=0 && X < 180)
+				{
+				  theTree.Add(NFmiEdge(lastX,lastY,X,Y,exact,true));
+				}
+			  else if(lastX>=-180 && lastX<=0 && X>=-180 && X<=0)
 				{
 				  theTree.Add(NFmiEdge(lastX,lastY,X,Y,exact,true));
 				}
 			  else if(lastX == X)
 				{
 				  theTree.Add(NFmiEdge(lastX,lastY,X,Y,exact,true));
+				}
+			  else if(lastX < -90 && X > 90)
+				{
+				  double x = lastX+360;
+				  double s = (180-x)/(X-x);
+				  double ymid = lastY + s*(Y-lastY);
+				  theTree.Add(NFmiEdge(lastX,lastY,-180,ymid,exact,true));
+				  theTree.Add(NFmiEdge(180,ymid,X,Y,exact,true));
+				  theCuts.insert(ymid);
+				}
+			  else if(lastX > 90 && X < -90)
+				{
+				  double x = x+360;
+				  double s = (180-lastX)/(x-lastX);
+				  double ymid = lastY + s*(Y-lastY);
+				  theTree.Add(NFmiEdge(lastX,lastY,180,ymid,exact,true));
+				  theTree.Add(NFmiEdge(-180,ymid,X,Y,exact,true));
+				  theCuts.insert(ymid);
 				}
 			  else if(lastX < X)
 				{
@@ -1649,6 +1674,12 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 			  if(lastX < 180 && iter->x > 180)
 				return true;
 			  if(lastX > 180 && iter->x < 180)
+				return true;
+			  // Or looks like it should be made into a Pacific view
+			  // when there are lines longer than half the world
+			  if(lastX < -90 && iter->x > 90)
+				return true;
+			  if(lastX > 90 && iter->x < -90)
 				return true;
 			  break;
 			}
