@@ -1507,7 +1507,7 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 				}
 			  else if(lastX > 90 && X < -90)
 				{
-				  double x = X+360;
+				  double x = x+360;
 				  double s = (180-lastX)/(x-lastX);
 				  double ymid = lastY + s*(Y-lastY);
 				  theTree.Add(NFmiEdge(lastX,lastY,180,ymid,exact,true));
@@ -1657,6 +1657,9 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 
   bool NFmiPath::IsPacificView() const
   {
+	// cntry06 data has longitudes such as 180.00000033527612686
+	const double eps = 0.001;
+
 	if(Empty())
 	  return false;
 
@@ -1671,9 +1674,9 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 		  case kFmiLineTo:
 		  case kFmiGhostLineTo:
 			{
-			  if(lastX < 180 && iter->x > 180)
+			  if(lastX < 180 && iter->x > 180+eps)
 				return true;
-			  if(lastX > 180 && iter->x < 180)
+			  if(lastX > 180+eps && iter->x < 180)
 				return true;
 			  // Or looks like it should be made into a Pacific view
 			  // when there are lines longer than half the world

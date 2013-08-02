@@ -2,7 +2,7 @@
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
 Version: 13.8.2
-Release: 2%{?dist}.fmi
+Release: 3%{?dist}.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
@@ -43,6 +43,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Fri Aug  2 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.8.2-3.fmi
+- Fixed a problem with some shapes the have longitudes slightly beyond 180
 * Fri Aug  2 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.8.2-2.fmi
 - Bug fix to forcing Pacific paths into Atlantic mode
 * Fri Aug  2 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.8.2-1.fmi
