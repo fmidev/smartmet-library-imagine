@@ -2,7 +2,7 @@
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
 Version: 13.8.2
-Release: 3%{?dist}.fmi
+Release: 4%{?dist}.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
@@ -43,6 +43,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Fri Aug  2 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.8.2-4.fmi
+- Permit very long line segments at the poles, they are really of length zero
 * Fri Aug  2 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.8.2-3.fmi
 - Fixed a problem with some shapes the have longitudes slightly beyond 180
 * Fri Aug  2 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.8.2-2.fmi

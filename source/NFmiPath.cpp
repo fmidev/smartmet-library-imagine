@@ -1674,17 +1674,21 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 		  case kFmiLineTo:
 		  case kFmiGhostLineTo:
 			{
-			  if(lastX < 180 && iter->x > 180+eps)
-				return true;
-			  if(lastX > 180+eps && iter->x < 180)
-				return true;
-			  // Or looks like it should be made into a Pacific view
-			  // when there are lines longer than half the world
-			  if(lastX < -90 && iter->x > 90)
-				return true;
-			  if(lastX > 90 && iter->x < -90)
-				return true;
-			  break;
+			  // Ignore long lines at the poles
+			  if(iter->y != -90 && iter->y != 90)
+				{
+				  if(lastX < 180 && iter->x > 180+eps)
+					return true;
+				  if(lastX > 180+eps && iter->x < 180)
+					return true;
+				  // Or looks like it should be made into a Pacific view
+				  // when there are lines longer than half the world
+				  if(lastX < -90 && iter->x > 90)
+					return true;
+				  if(lastX > 90 && iter->x < -90)
+					return true;
+				  break;
+				}
 			}
 		  default:
 			break;
