@@ -1507,7 +1507,7 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 				}
 			  else if(lastX > 90 && X < -90)
 				{
-				  double x = x+360;
+				  double x = X+360;
 				  double s = (180-lastX)/(x-lastX);
 				  double ymid = lastY + s*(Y-lastY);
 				  theTree.Add(NFmiEdge(lastX,lastY,180,ymid,exact,true));

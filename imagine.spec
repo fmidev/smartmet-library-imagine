@@ -1,8 +1,8 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 13.7.3
-Release: 1%{?dist}.fmi
+Version: 13.8.2
+Release: 2%{?dist}.fmi
 License: FMI
 Group: Development/Libraries
 URL: http://www.weatherproof.fi
@@ -12,7 +12,7 @@ BuildRequires: boost-devel >= 1.53
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: libsmartmet-newbase >= 13.7.3-1
+BuildRequires: libsmartmet-newbase >= 13.8.2-1
 BuildRequires: zlib-devel
 Requires: freetype
 Requires: libjpeg
@@ -43,6 +43,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Fri Aug  2 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.8.2-2.fmi
+- Bug fix to forcing Pacific paths into Atlantic mode
+* Fri Aug  2 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.8.2-1.fmi
+- Added code to enable Pacific views of data
+- Added contouring of automatically detected global data with wrap-around at the edges
 * Wed Jul  3 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.7.3-1.fmi
 - Update to boost 1.54
 * Thu Mar 21 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.3.21-1.fmi
