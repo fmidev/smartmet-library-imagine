@@ -1,7 +1,5 @@
 PROG = $(patsubst %.cpp,%,$(wildcard *Test.cpp))
 
-BOOST_SUFFIX := $(shell rpm -qs boost-thread | grep -q "not installed" || echo "-mt")
-
 MAINFLAGS = -Wall -W -Wno-unused-parameter
 
 EXTRAFLAGS = \
@@ -57,11 +55,11 @@ INCLUDES = \
 
 LIBS =  -L .. -lsmartmet_imagine \
 	-lsmartmet_newbase \
-	-lboost_regex$(BOOST_SUFFIX) \
-	-lboost_filesystem$(BOOST_SUFFIX) \
-        -lboost_iostreams$(BOOST_SUFFIX) \
-        -lboost_thread$(BOOST_SUFFIX) \
-        -lboost_system$(BOOST_SUFFIX) \
+	-lboost_regex-mt \
+	-lboost_filesystem-mt \
+        -lboost_iostreams-mt \
+        -lboost_thread-mt \
+        -lboost_system-mt \
 	$(FT2_LIBS) \
 	$(CAIRO_LIBS) \
 	-lpng -ljpeg -lz -lbz2 -lpthread
