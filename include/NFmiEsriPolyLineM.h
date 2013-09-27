@@ -54,7 +54,7 @@ namespace Imagine
 
 	NFmiEsriPolyLineM & operator=(const NFmiEsriPolyLineM & theLine);
 
-	virtual boost::shared_ptr<NFmiEsriElement> Clone() const;
+	virtual NFmiEsriElement * Clone() const;
 
 	// Data access
 	

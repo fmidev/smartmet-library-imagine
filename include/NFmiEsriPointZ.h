@@ -50,7 +50,7 @@ namespace Imagine
 
 	NFmiEsriPointZ & operator=(const NFmiEsriPointZ & thePoint);
 
-	virtual boost::shared_ptr<NFmiEsriElement> Clone() const;
+	virtual NFmiEsriElement * Clone() const;
 
 	// Data access
 	

@@ -52,7 +52,7 @@ namespace Imagine
 
 	NFmiEsriPolygonM & operator=(const NFmiEsriPolygonM & thePolygon);
 
-	virtual boost::shared_ptr<NFmiEsriElement> Clone() const;
+	virtual NFmiEsriElement * Clone() const;
 
 	// Data access
 	

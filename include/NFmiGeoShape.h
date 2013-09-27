@@ -17,6 +17,7 @@
 #include "imagine-config.h"
 
 #include "NFmiEsriShape.h"
+#include "NFmiEsriTools.h"
 #include "NFmiPath.h"
 
 #ifdef IMAGINE_WITH_CAIRO
@@ -66,11 +67,12 @@ namespace Imagine
 	
 	
 	NFmiGeoShape(const std::string & theFilename,
-				 NFmiGeoShapeType theType = kFmiGeoShapeEsri)
+				 NFmiGeoShapeType theType = kFmiGeoShapeEsri,
+				 const std::string & theFilter = "")
 	  : itsType(theType)
-		, itsEsriShape(0)
+	  , itsEsriShape(0)
 	{
-	  Read(theFilename, theType);
+	  Read(theFilename, theType, theFilter);
 	}
 	
 	// Destructor
@@ -129,7 +131,9 @@ namespace Imagine
 	
 	void WriteImageMap(std::ostream & os, const std::string & theFieldName) const;
 	
-	void Read(const std::string & theFilename, NFmiGeoShapeType theType)
+	void Read(const std::string & theFilename,
+			  NFmiGeoShapeType theType,
+			  const std::string & theFilter)
 	{
 	  delete itsEsriShape;
 	  itsEsriShape = 0;
@@ -140,6 +144,13 @@ namespace Imagine
 		  itsEsriShape = new NFmiEsriShape();
 		  if(!itsEsriShape->Read(theFilename))
 			throw NFmiGeoShapeError(std::string("Failed to read shape ")+theFilename);
+		  if(!theFilter.empty())
+			{
+			  NFmiEsriShape * tmp = NFmiEsriTools::filter(*itsEsriShape,theFilter);
+			  delete itsEsriShape;
+			  itsEsriShape = tmp;
+			}
+
 		  break;
 		case kFmiGeoShapeShoreLine:
 		  throw NFmiGeoShapeError("kFmiGeoShapeShoreLine not implemented");

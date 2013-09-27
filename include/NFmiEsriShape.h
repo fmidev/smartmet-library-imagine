@@ -22,6 +22,8 @@
 //
 // ======================================================================
 
+#pragma once
+
 // ESRI Shapefile Technical Description, page 4
 //
 // These are the element types, which can be in a shapefile

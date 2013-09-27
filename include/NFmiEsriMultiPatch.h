@@ -77,7 +77,7 @@ namespace Imagine
 
 	// Copying
 
-	virtual boost::shared_ptr<NFmiEsriElement> Clone() const;
+	virtual NFmiEsriElement * Clone() const;
 	
 	// Data access
 	

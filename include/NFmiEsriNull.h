@@ -44,9 +44,9 @@ namespace Imagine
 	  return *this;
 	}
 
-	virtual boost::shared_ptr<NFmiEsriElement> Clone() const
+	virtual NFmiEsriElement * Clone() const
 	{
-	  return boost::shared_ptr<NFmiEsriElement>(new NFmiEsriNull(*this));
+	  return new NFmiEsriNull(*this);
 	}
 
 	// Updating bounding boxes
