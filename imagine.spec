@@ -1,7 +1,7 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 13.9.27
+Version: 13.10.17
 Release: 1%{?dist}.fmi
 License: FMI
 Group: Development/Libraries
@@ -12,7 +12,7 @@ BuildRequires: boost-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: libsmartmet-newbase >= 13.9.26
+BuildRequires: libsmartmet-newbase >= 13.10.17
 BuildRequires: zlib-devel
 Requires: freetype
 Requires: libjpeg
@@ -43,6 +43,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Thu Oct 17 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.10.17-1.fmi
+- Recompiled due to newbase API changes
 * Fri Sep 27 2013 Mika Heiskanen <mika.heiskanen@fmi.fi> - 13.9.27-1.fmi
 - Added NFmiEsriTools for filtering shapes
 - Fixed shapefilter and shapepoints segmentation faults
