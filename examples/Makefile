@@ -18,9 +18,12 @@ INCLUDES = -I ../include \
 	-I /usr/include/freetype2
 LIBS =  -L .. -lsmartmet_imagine \
 	-L /usr/lib/smartmet -lsmartmet_newbase \
+	-lboost_iostreams-mt \
 	-lboost_regex-mt \
 	-lboost_filesystem-mt \
-	-lfreetype -lpng -ljpeg -lz
+	-lboost_thread-mt \
+	-lboost_system-mt \
+	-lfreetype -lpng -ljpeg -lz -lbz2 -lrt
 
 all: $(PROG)
 clean:
