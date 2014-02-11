@@ -536,7 +536,7 @@ namespace Imagine
 		  }
 	  }
   }
-  
+
   // ----------------------------------------------------------------------
   // Return the bounding box of the path.
   // Note: Bezier curve bounding boxes not implemented yet
@@ -1277,6 +1277,77 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
 	return outPath;
   }
 #endif
+
+  static bool IsInside(const NFmiArea * const theArea, const NFmiPathElement &theElement)
+  {
+      return theArea->IsInside(NFmiPoint(theElement.x, theElement.y));
+  }
+
+  static void AddElementToCutPath(NFmiPath &thePath, bool prevInside, bool currentInside, const NFmiPathElement &theElem, NFmiPathOperation oper, bool lastOperation)
+  {
+    if(oper == kFmiMoveTo)
+    {
+        if(prevInside == false && currentInside) // ulkoa sisälle
+            ; // moveto sisältä ulos, ei lisätä uuteen path:iin
+        else if(prevInside && currentInside == false) // sisältä ulos
+            thePath.Add(theElem);
+        else if(prevInside && currentInside) // sisällä kokonaan
+            thePath.Add(theElem);
+        else // ulkona
+            ; // moveto ulkona, ei lisätä uuteen path:iin
+
+    }
+    else
+    { // joku viiva tyyppi, oletetaan että lineto (ei oikeastaan väliä)
+        if(prevInside == false && currentInside) // ulkoa sisälle
+        {
+            if(lastOperation) // tämä on ainoa poikkeus käsittely, kun kyseessä on viimeisestä viivan pätkästä
+                thePath.Add(theElem);
+            else
+            {
+                NFmiPathElement elem(theElem);
+                elem.op = kFmiMoveTo; // pitää muuttaa moveto-tyypiksi
+                thePath.Add(elem);
+            }
+        }
+        else if(prevInside && currentInside == false) // sisältä ulos
+            thePath.Add(theElem);
+        else if(prevInside && currentInside) // sisällä kokonaan
+            thePath.Add(theElem);
+        else // ulkona
+            ; // moveto ulkona, ei lisätä uuteen path:iin
+    }
+  }
+
+  // ----------------------------------------------------------------------
+  // Create new path that is cut inside the given area. But so that the lines
+  // at the edges goes out of area (by one point along the polyline).
+  // HUOM! Tämä on raakile versio ja toimii vain rajojen katkaisijana,
+  // pitäisi tehdä sellainen versio joka osaisi tehdä alue leikkaukset 
+  // ghost-viivojen kanssa.
+  // ----------------------------------------------------------------------
+
+    NFmiPath NFmiPath::Clip(const NFmiArea * const theArea) const
+    {
+        NFmiPath path;
+        if(theArea && itsElements.size() > 1)
+        {
+            NFmiPathData::const_iterator iter = itsElements.begin();
+            NFmiPathData::const_iterator prevIter = iter++;
+            bool prevInside = IsInside(theArea, *prevIter);
+            bool currentInside = prevInside;
+            for( ; iter!=itsElements.end(); ++iter)
+            {
+                prevInside = currentInside; // tämä pitää tehdä loopin alussa, jotta loopin lopuksi on tiedot kahden viimeisen pisteen tilasta
+                currentInside = IsInside(theArea, *iter);
+                AddElementToCutPath(path, prevInside, currentInside, *prevIter, iter->op, false);
+                prevIter = iter;
+            }
+            // lopuksi pitää lisätä tarvittaessa vielä viimeinen piste
+            AddElementToCutPath(path, prevInside, currentInside, *prevIter, prevIter->op, true); // huom! tässä on prevIter->op
+        }
+        return path;
+    }
 
 
   void add_cuts(NFmiContourTree & theTree,
