@@ -94,7 +94,7 @@ namespace Imagine
 	
 	const NFmiSimplifierMethod	itsMethod;
 	const double			itsTolerance;
-	const NFmiCounter		itsCounter;
+	const NFmiCounter<T>		itsCounter;
 	
   public:
 	
@@ -119,11 +119,11 @@ namespace Imagine
 	// Access to data members
 	
 	NFmiSimplifierMethod Method(void)	{ return itsMethod; }
-	double Tolerance(void)		{ return itsTolerance; }
+	double Tolerance(void) const		{ return itsTolerance; }
 	
 	// Actual simplification methods
 	
-	const vector<T> Simplify(const vector<T> & theData) const
+	const std::vector<T> Simplify(const std::vector<T> & theData) const
 	{
 	  switch(itsMethod)
 		{
@@ -148,7 +148,7 @@ namespace Imagine
 	// Simplify straight line segments into one segment only
 	// ------------------------------------------------------------
 	
-	const vector<T> SimplifyStraight(const vector<T> & theData)
+	const std::vector<T> SimplifyStraight(const std::vector<T> & theData) const
 	{
 	  return theData;
 	}
@@ -160,7 +160,7 @@ namespace Imagine
 	// the tolerance.
 	// ------------------------------------------------------------
 	
-	const vector<T> SimplifyMinDistance(const vector<T> & theData)
+	const std::vector<T> SimplifyMinDistance(const std::vector<T> & theData) const
 	{
 	  return theData;
 	}
@@ -171,11 +171,11 @@ namespace Imagine
 	// This is the Douglas-Peucker algorithm.
 	// ------------------------------------------------------------
 	
-	const vector<T> SimplifyMaxDistance(const vector<T> & theData)
+	const std::vector<T> SimplifyMaxDistance(const std::vector<T> & theData) const
 	{
 	  // The output data
 	  
-	  vector<T> out;
+	  std::vector<T> out;
 	  
 	  // Special case of no line:
 	  
@@ -189,8 +189,8 @@ namespace Imagine
 	  
 	  // Stack of vector indices for recursion, initialized with N-1
 	  
-	  stack<int> stk;
-	  stk.push(theData.size()-1);
+	  std::stack<int> stk;
+	  stk.push(static_cast<int>(theData.size()-1));
 	  
 	  // Using squared distances in comparisons is faster
 	  
@@ -258,7 +258,8 @@ namespace Imagine
 		  else
 			{
 			  out.push_back(theData[stk.top()]);
-			  i = stk.pop();
+			  i = stk.top();
+			  stk.pop();
 			}
 		}
 	  while(!stk.empty());
@@ -288,9 +289,9 @@ namespace Imagine
 	// 1/2*abs((x2y1-x1y2)+(x3y2-x2y3)+(x1y3-x3y1))
 	// ------------------------------------------------------------
 	
-	const vector<T> SimplifyMinTriangle(const vector<T> & theData)
+	const std::vector<T> SimplifyMinTriangle(const std::vector<T> & theData) const
 	{
-	  vector<T> out;
+	  std::vector<T> out;
 	  
 	  out = theData;
 	  
@@ -308,7 +309,7 @@ namespace Imagine
 		{
 		  // Output from work to out
 		  
-		  vector<T> work = out;
+		  std::vector<T> work = out;
 		  out.clear();
 		  
 		  out.push_back(work[0]);
@@ -372,11 +373,11 @@ namespace Imagine
 	//
 	// ------------------------------------------------------------
 	
-	const vector<T> SimplifyMaxTriangle(const vector<T> & theData)
+	const std::vector<T> SimplifyMaxTriangle(const std::vector<T> & theData) const
 	{
 	  // The output data
 	  
-	  vector<T> out;
+	  std::vector<T> out;
 	  
 	  // Special case of no line:
 	  
@@ -390,8 +391,8 @@ namespace Imagine
 	  
 	  // Stack of vector indices for recursion, initialized with N-1
 	  
-	  stack<int> stk;
-	  stk.push(theData.size()-1);
+	  std::stack<int> stk;
+	  stk.push(static_cast<int>(theData.size()-1));
 	  
 	  int i=0;
 	  do
@@ -440,7 +441,8 @@ namespace Imagine
 		  else
 			{
 			  out.push_back(theData[stk.top()]);
-			  i = stk.pop();
+			  i = stk.top();
+			  stk.pop();
 			}
 		}
 	  while(!stk.empty());
