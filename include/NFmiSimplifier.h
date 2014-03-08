@@ -139,6 +139,8 @@ namespace Imagine
 		  return SimplifyMinTriangle(theData);
 		case kFmiSimplifierMaxTriangle:
 		  return SimplifyMaxTriangle(theData);
+        default:
+          return std::vector<T>();
 		}
 	}
 	
