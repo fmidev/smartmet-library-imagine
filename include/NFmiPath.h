@@ -265,7 +265,7 @@ namespace Imagine
 	void InvProject(const NFmiArea * const theArea);
 
 	void InvGrid(const NFmiGrid * const theGrid);
-	
+
 	// Stroke onto given image using various Porter-Duff rules
 
 	void Stroke( ImagineXr_or_NFmiImage &img,
@@ -289,6 +289,7 @@ namespace Imagine
 	NFmiEsriBox BoundingBox() const;
 	
 	NFmiPath Clip(double theX1, double theY1, double theX2, double theY2, double theMargin = 0) const;
+	NFmiPath Clip(const NFmiArea * const theArea) const; // HUOM! toimii vain rajaviivoille oikein, ei alueille
 
 	void InsideOut() { itsInsideOut = !itsInsideOut; }
 	bool IsInsideOut() const { return itsInsideOut; }
