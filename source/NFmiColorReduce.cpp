@@ -26,6 +26,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <iostream>
+#include <iomanip>
 #include <list>
 #include <map>
 #include <memory>
@@ -34,11 +35,6 @@
 // std version not available in RHEL5, must use boost instead
 
 #include <boost/unordered_map.hpp>
-
-#ifdef UNIX
-using namespace __gnu_cxx;
-#endif
-
 using namespace std;
 
 // The actual public interfaces
@@ -53,9 +49,24 @@ namespace Imagine
   namespace
   {
 
-	//! Histogram information
+	//! Histogram data
+	struct ColorInfo
+	{
+	  ColorInfo(NFmiColorTools::Color c) : color(c), count(0), keeper(false) { }
+	  NFmiColorTools::Color color;
+	  int count;
+	  bool keeper;
 
-	typedef boost::unordered_map<NFmiColorTools::Color,int> Counter;
+	  ColorInfo & operator++() { ++count; return *this; }
+	  void keep() { keeper = true; }
+
+	};
+
+	//! Histogram information
+	typedef boost::unordered_map<NFmiColorTools::Color,ColorInfo> Counter;
+
+	//! Internal histogram
+	typedef std::vector<ColorInfo> ColorHistogram;
 
 	//! Colormap transformation
 	typedef map<NFmiColorTools::Color,NFmiColorTools::Color> ColorMap;
@@ -87,7 +98,7 @@ namespace Imagine
 	 */
 	// ----------------------------------------------------------------------
 
-	const Counter calc_counts(const NFmiImage & theImage)
+	Counter calc_counts(const NFmiImage & theImage)
 	{
 	  // The default bucket size in SGI is 100, which is quite
 	  // small for the typical number of colours we encounter
@@ -108,7 +119,7 @@ namespace Imagine
 	  // Insert the first color so that we can initialize the iterator cache
 	  // Note that we insert count 0, but the first loop will fix the number
 
-	  counter.insert(Counter::value_type(theImage(0,0),0));
+	  counter.insert(Counter::value_type(theImage(0,0),ColorInfo(theImage(0,0))));
 
 	  Counter::iterator last1 = counter.begin();
 	  Counter::iterator last2 = counter.begin();
@@ -119,7 +130,24 @@ namespace Imagine
 			NFmiColorTools::Color color = theImage(i,j);
 			
 			if(last1->first == color)
-			  ++last1->second;
+			  {
+				++last1->second;
+				// test if the color is the same in a 3x3 box and is hence a new color to be kept
+				if(!last1->second.keeper && i>1 && j>1)
+				  {
+					// Note: theImage(i-1,j) is already known to have the same color (last1 points to it)
+					if(theImage(i-2,j  ) == color &&
+					   theImage(i  ,j-1) == color &&
+					   theImage(i-1,j-1) == color &&
+					   theImage(i-2,j-1) == color &&
+					   theImage(i  ,j-2) == color &&
+					   theImage(i-1,j-2) == color &&
+					   theImage(i-2,j-2) == color)
+					  {
+						last1->second.keep();
+					  }
+				  }
+			  }
 			else if(last2->first == color)
 			  {
 				++last2->second;
@@ -127,7 +155,7 @@ namespace Imagine
 			  }
 			else
 			  {
-				pair<Counter::iterator,bool> result = counter.insert(Counter::value_type(color,0));
+				pair<Counter::iterator,bool> result = counter.insert(Counter::value_type(color,ColorInfo(color)));
 				last2 = last1;
 				last1 = result.first;
 				++last1->second;
@@ -453,35 +481,39 @@ namespace Imagine
 	// ----------------------------------------------------------------------
 
 	void build_tree(const NFmiImage & theImage,
-					const NFmiColorReduce::Histogram & theHistogram,
+					const ColorHistogram & theHistogram,
 					ColorTree & theTree,
 					ColorMap & theMap,
 					float theQuality)
 	  {
+
 		const float ratio = static_cast<float>(1.0/(theImage.Width() * theImage.Height()));
 		const float factor = -theQuality/log(10.0f);
 
-		for(NFmiColorReduce::Histogram::const_iterator it = theHistogram.begin();
+		for(ColorHistogram::const_iterator it = theHistogram.begin();
 			it != theHistogram.end();
 			++it)
 		  {
-			if(theTree.empty())
+			if(theTree.empty() || it->keeper)
 			  {
-				theTree.insert(it->second);
-				theMap.insert(ColorMap::value_type(it->second,it->second));
+				theTree.insert(it->color);
+				theMap.insert(ColorMap::value_type(it->color,it->color));
 			  }
 			else
 			  {
-				NFmiColorTools::Color nearest = theTree.nearest(it->second);
-				float dist = theTree.distance(nearest,it->second);
+				NFmiColorTools::Color nearest = theTree.nearest(it->color);
+				float dist = theTree.distance(nearest,it->color);
 				
-				const float limit = factor*log(ratio*it->first);
+				float limit = factor*log(ratio*it->count);
+
 				if(dist < limit)
-				  theMap.insert(ColorMap::value_type(it->second,nearest));
+				  {
+					theMap.insert(ColorMap::value_type(it->color,nearest));
+				  }
 				else
 				  {
-					theTree.insert(it->second);
-					theMap.insert(ColorMap::value_type(it->second,it->second));
+					theTree.insert(it->color);
+					theMap.insert(ColorMap::value_type(it->color,it->color));
 				  }
 			  }
 		  }
@@ -494,7 +526,7 @@ namespace Imagine
 	// ----------------------------------------------------------------------
 
 	void build_tree(const NFmiImage & theImage,
-					const NFmiColorReduce::Histogram & theHistogram,
+					const ColorHistogram & theHistogram,
 					ColorTree & theTree,
 					ColorMap & theMap,
 					float theQuality,
@@ -508,62 +540,77 @@ namespace Imagine
 		  done = true;
 		  const float factor = -theQuality/log(10.0f);
 
-		  for(NFmiColorReduce::Histogram::const_iterator it = theHistogram.begin();
+		  for(ColorHistogram::const_iterator it = theHistogram.begin();
 			  it != theHistogram.end();
 			  ++it)
 			{
-			  if(theTree.empty())
+			  if(theTree.empty() || it->keeper)
 				{
-				  theTree.insert(it->second);
-				  theMap.insert(ColorMap::value_type(it->second,it->second));
+				  theTree.insert(it->color);
+				  theMap.insert(ColorMap::value_type(it->color,it->color));
 				}
 			  else
 				{
-				  NFmiColorTools::Color nearest = theTree.nearest(it->second);
-				  float dist = theTree.distance(nearest,it->second);
+				  NFmiColorTools::Color nearest = theTree.nearest(it->color);
+				  float dist = theTree.distance(nearest,it->color);
 				
-				  const float limit = factor*log(ratio*it->first);
+				  const float limit = factor*log(ratio*it->count);
 				  if(dist < limit)
-					theMap.insert(ColorMap::value_type(it->second,nearest));
+					theMap.insert(ColorMap::value_type(it->color,nearest));
 				  else if(theTree.size() < theMaxCount) 
 					{
-					  theTree.insert(it->second);
-					  theMap.insert(ColorMap::value_type(it->second,it->second));
+					  theTree.insert(it->color);
+					  theMap.insert(ColorMap::value_type(it->color,it->color));
 					} 
-				  else {
-					theTree.clear();
-					theMap.clear();
-					done = false;
-					theQuality *= theErrorFactor;
-					break;
+				  else
+					{
+					  theTree.clear();
+					  theMap.clear();
+					  done = false;
+					  theQuality *= theErrorFactor;
+					  break;
 				  }
 			  }
 		  }
 		}
 
-  } // namespace anonymous
+	  } // namespace anonymous
 
-  }
+	bool colorcmp(const ColorInfo & c1, const ColorInfo & c2)
+	{
+	  if(c1.keeper == c2.keeper)
+		return (c2.count < c1.count);
+      return c1.keeper;
+	}
+
 	// ----------------------------------------------------------------------
 	/*!
-	 * \brief Convert counts to a histogram
+	 * \brief Calculate the histogram for color reduction
+	 *
+	 * \param theImage The image
+	 * \return The histogram object
 	 */
 	// ----------------------------------------------------------------------
-
-	const NFmiColorReduce::Histogram counts_to_histogram(const Counter & theCounter)
+	
+	const ColorHistogram CalcColorHistogram(const NFmiImage & theImage)
 	{
-	  NFmiColorReduce::Histogram histogram;
+	  Counter counter = calc_counts(theImage);
 	  
-	  Counter::const_iterator end = theCounter.end();
-	  for(Counter::const_iterator it = theCounter.begin();
+	  ColorHistogram histogram;
+	  
+	  Counter::const_iterator end = counter.end();
+	  for(Counter::const_iterator it = counter.begin();
 		  it!=end;
 		  ++it)
 		{
-		  histogram.insert(NFmiColorReduce::Histogram::value_type(it->second,it->first));
+		  histogram.push_back(it->second);
 		}
-
+	  sort(histogram.begin(), histogram.end(), &colorcmp);
+	  
 	  return histogram;
 	}
+	
+  }
 
 
   // ======================================================================
@@ -584,9 +631,21 @@ namespace Imagine
 	
 	const Histogram CalcHistogram(const NFmiImage & theImage)
 	{
-	  return counts_to_histogram(calc_counts(theImage));
-  
+	  Counter counter = calc_counts(theImage);
+	  
+	  NFmiColorReduce::Histogram histogram;
+	  
+	  Counter::const_iterator end = counter.end();
+	  for(Counter::const_iterator it = counter.begin();
+		  it!=end;
+		  ++it)
+		{
+		  histogram.insert(NFmiColorReduce::Histogram::value_type(it->second.count,it->first));
+		}
+	  
+	  return histogram;
 	}
+
 
 	// ----------------------------------------------------------------------
 	/*!
@@ -638,7 +697,7 @@ namespace Imagine
 	  
 	  // Calculate the histogram
 	  
-	  Histogram histogram = CalcHistogram(theImage);
+	  ColorHistogram histogram = CalcColorHistogram(theImage);
 
 	  // Select the colors
 
@@ -664,7 +723,7 @@ namespace Imagine
 
 	  // Calculate the histogram
 	  
-	  Histogram histogram = CalcHistogram(theImage);
+	  ColorHistogram histogram = CalcColorHistogram(theImage);
 
 	  // Select the colors
 
