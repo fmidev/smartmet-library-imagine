@@ -1294,7 +1294,7 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
         else if(prevInside && currentInside) // sisällä kokonaan
             thePath.Add(theElem);
         else // ulkona
-            ; // moveto ulkona, ei lisätä uuteen path:iin
+		  {} // moveto ulkona, ei lisätä uuteen path:iin
 
     }
     else
@@ -1315,7 +1315,7 @@ void NFmiPath::Stroke( ImagineXr_or_NFmiImage &img,
         else if(prevInside && currentInside) // sisällä kokonaan
             thePath.Add(theElem);
         else // ulkona
-            ; // moveto ulkona, ei lisätä uuteen path:iin
+		  {} // moveto ulkona, ei lisätä uuteen path:iin
     }
   }
 
