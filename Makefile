@@ -1,19 +1,14 @@
 LIB = imagine
 
+# Installation directories
+
+processor := $(shell uname -p)
+
 ifeq ($(origin PREFIX), undefined)
   PREFIX = /usr
 else
   PREFIX = $(PREFIX)
 endif
-
-#
-# To build serially (helps get the error messages right): make debug SCONS_FLAGS=""
-#
-SCONS_FLAGS=-j 4
-
-# Installation directories
-
-processor := $(shell uname -p)
 
 ifeq ($(processor), x86_64)
   libdir = $(PREFIX)/lib64
@@ -22,93 +17,159 @@ else
 endif
 
 bindir = $(PREFIX)/bin
-includedir = $(PREFIX)/include/smartmet
+includedir = $(PREFIX)/include
+datadir = $(PREFIX)/share
 objdir = obj
+
+# Compiler options
+
+DEFINES = -DUNIX -D_REENTRANT -DFMI_COMPRESSION -DBOOST -DBOOST_IOSTREAMS_NO_LIB
+
+ifeq ($(CXX), clang++)
+
+ FLAGS = \
+	-std=c++11 -fPIC -MD \
+	-Weverything \
+	-Wno-c++98-compat \
+	-Wno-float-equal \
+	-Wno-padded \
+	-Wno-missing-prototypes
+
+ INCLUDES = \
+	-isystem $(includedir) \
+	-isystem $(includedir)/smartmet \
+	-isystem $(includedir)/smartmet/newbase \
+	`freetype-config --cflags`
+
+else
+
+ FLAGS = -std=c++0x -fPIC -MD -Wall -W -Wno-unused-parameter
+
+ FLAGS_DEBUG = \
+	-Wcast-align \
+	-Winline \
+	-Wno-multichar \
+	-Wno-pmf-conversions \
+	-Woverloaded-virtual  \
+	-Wpointer-arith \
+	-Wcast-qual \
+	-Wredundant-decls \
+	-Wwrite-strings \
+	-Wsign-promo
+
+ FLAGS_RELEASE = -Wuninitialized
+
+ INCLUDES = \
+	-I$(includedir) \
+	-I$(includedir)/smartmet \
+	-I$(includedir)/smartmet/newbase \
+	`freetype-config --cflags`
+
+endif
+
+# Compile options in detault, debug and profile modes
+
+CFLAGS         = $(DEFINES) $(FLAGS) $(FLAGS_RELEASE) -DNDEBUG -O2
+CFLAGS_DEBUG   = $(DEFINES) $(FLAGS) $(FLAGS_DEBUG)   -Werror  -O0 -g
+CFLAGS_PROFILE = $(DEFINES) $(FLAGS) $(FLAGS_PROFILE) -DNDEBUG -O2 -g -pg
+
+LIBS = -L$(libdir) \
+	-lboost_filesystem \
+	-lboost_regex \
+	-lboost_thread \
+	-lgdal \
+	`freetype-config --libs` \
+	-ljpeg -lpng -lz
 
 # rpm variables
 
-rpmsourcedir=/tmp/$(shell whoami)/rpmbuild
+rpmsourcedir = /tmp/$(shell whoami)/rpmbuild
 
-rpmerr = "There's no spec file ($(LIB).spec). RPM wasn't created. Please make a spec file or copy and rename it into $(LIB).spec"
-
-rpmversion := $(shell grep "^Version:" $(LIB).spec  | cut -d\  -f 2 | tr . _)
-rpmrelease := $(shell grep "^Release:" $(LIB).spec  | cut -d\  -f 2 | tr . _)
-
-rpmexcludevcs := $(shell tar --help | grep -m 1 -o -- '--exclude-vcs')
+rpmerr = "There's no spec file (imagine.spec). RPM wasn't created. Please make a spec file or copy and rename it into imagine.spec"
 
 # What to install
 
-LIBFILE = libsmartmet_$(LIB).a
+LIBFILE = libsmartmet_$(LIB).so
 
 # How to install
 
 INSTALL_PROG = install -m 775
 INSTALL_DATA = install -m 664
 
+# Compile option overrides
+
+ifneq (,$(findstring debug,$(MAKECMDGOALS)))
+  CFLAGS = $(CFLAGS_DEBUG)
+endif
+
+ifneq (,$(findstring profile,$(MAKECMDGOALS)))
+  CFLAGS = $(CFLAGS_PROFILE)
+endif
+
+# Compilation directories
+
+vpath %.cpp source
+vpath %.h include
+
+# The files to be compiled
+
+SRCS = $(wildcard source/*.cpp)
+HDRS = $(wildcard include/*.h)
+OBJS = $(patsubst %.cpp, obj/%.o, $(notdir $(SRCS)))
+
+INCLUDES := -Iinclude $(INCLUDES)
+
 .PHONY: test rpm
 
-#
 # The rules
-#
-SCONS_FLAGS += objdir=$(objdir) prefix=$(PREFIX) libdir=$(libdir)
 
-all release $(LIBFILE):
-	scons $(SCONS_FLAGS) $(LIBFILE)
+all: objdir $(LIBFILE)
+debug: all
+release: all
+profile: all
 
-debug:
-	scons $(SCONS_FLAGS) debug=1 $(LIBFILE)
-
-profile:
-	scons $(SCONS_FLAGS) profile=1 $(LIBFILE)
+$(LIBFILE): $(OBJS)
+	$(CXX) $(CFLAGS) -shared -rdynamic -o $(LIBFILE) $(OBJS) $(LIBS)
 
 clean:
-	@#scons -c objdir=$(objdir)
-	-rm -f $(LIBFILE) *~ source/*~ include/*~
-	-rm -rf $(objdir)
+	rm -f $(LIBFILE) *~ source/*~ include/*~
+	rm -rf $(objdir)
 
 install:
-	@mkdir -p $(includedir)/$(LIB)
-	 @list=`cd include && ls -1 *.h`; \
+	@mkdir -p $(includedir)/smartmet/$(LIB)
+	@list='$(HDRS)'; \
 	for hdr in $$list; do \
-	  echo $(INSTALL_DATA) include/$$hdr $(includedir)/$(LIB)/$$hdr; \
-	  $(INSTALL_DATA) include/$$hdr $(includedir)/$(LIB)/$$hdr; \
+	  HDR=$$(basename $$hdr); \
+	  echo $(INSTALL_DATA) $$hdr $(includedir)/smartmet/$(LIB)/$$HDR; \
+	  $(INSTALL_DATA) $$hdr $(includedir)/smartmet/$(LIB)/$$HDR; \
 	done
 	@mkdir -p $(libdir)
-	$(INSTALL_DATA) $(LIBFILE) $(libdir)/$(LIBFILE)
+	$(INSTALL_PROG) $(LIBFILE) $(libdir)/$(LIBFILE)
 
 test:
 	cd test && make test
 
-html:
-	mkdir -p /data/local/html/lib/$(LIB)
-	doxygen $(LIB).dox
+objdir:
+	@mkdir -p $(objdir)
 
 rpm: clean
-	if [ -e $(LIB).spec ]; \
+	if [ -e imagine.spec ]; \
 	then \
+	  smartspecupdate imagine.spec ; \
 	  mkdir -p $(rpmsourcedir) ; \
-	  tar $(rpmexcludevcs) -C ../ -cf $(rpmsourcedir)/libsmartmet-$(LIB).tar $(LIB) ; \
+	  tar -C ../ -cf $(rpmsourcedir)/libsmartmet-$(LIB).tar imagine ; \
 	  gzip -f $(rpmsourcedir)/libsmartmet-$(LIB).tar ; \
-	  TAR_OPTIONS=--wildcards rpmbuild -ta $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
+	  TAR_OPTIONS=--wildcards rpmbuild -v -ta $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
 	  rm -f $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
 	else \
 	  echo $(rpmerr); \
 	fi;
 
-tag:
-	cvs -f tag 'libsmartmet_$(LIB)_$(rpmversion)-$(rpmrelease)' .
+.SUFFIXES: $(SUFFIXES) .cpp
 
-cppcheck:
-	cppcheck -DUNIX -I include -I $(includedir) source
+obj/%.o: %.cpp
+	$(CXX) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
-headertest:
-	@echo "Checking self-sufficiency of each header:"
-	@echo
-	@for hdr in `cd include && ls -1 *.h`; do \
-	echo $$hdr; \
-	echo "#include \"$$hdr\"" > /tmp/$(LIB).cpp; \
-	echo "int main() { return 0; }" >> /tmp/$(LIB).cpp; \
-	$(CC) $(CFLAGS) $(INCLUDES) -o /dev/null /tmp/$(LIB).cpp $(LIBS); \
-	done
-
-# DO NOT DELETE
+ifneq ($(wildcard obj/*.d),)
+-include $(wildcard obj/*.d)
+endif

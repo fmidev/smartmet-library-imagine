@@ -1,7 +1,7 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 15.2.6
+Version: 15.3.30
 Release: 1%{?dist}.fmi
 License: FMI
 Group: Development/Libraries
@@ -12,8 +12,11 @@ BuildRequires: boost-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: libsmartmet-newbase >= 13.11.27
+BuildRequires: libsmartmet-newbase-devel >= 15.3.30
 BuildRequires: zlib-devel
+BuildRequires: cairomm-devel
+Requires: libsmartmet-newbase >= 15.3.30
+Requires: cairomm
 Requires: freetype
 Requires: libjpeg
 Requires: libpng
@@ -26,23 +29,38 @@ FMI imagine library
 %prep
 rm -rf $RPM_BUILD_ROOT
 
-%setup -q -n %{LIBNAME}
+%setup -q -n imagine
  
 %build
 make %{_smp_mflags}
 
 %install
-%makeinstall includedir=%{buildroot}%{_includedir}/smartmet
+%makeinstall includedir=%{buildroot}%{_includedir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,0775)
+%{_libdir}/libsmartmet_%{LIBNAME}.so
+
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+
+%package -n libsmartmet-%{LIBNAME}-devel
+Summary: FMI %{LIBNAME} development files
+Provides: %{LIBNAME}-devel
+
+%description -n libsmartmet-%{LIBNAME}-devel
+FMI %{LIBNAME} development files
+
+%files -n libsmartmet-%{LIBNAME}-devel
+%defattr(0664,root,root,-)
 %{_includedir}/smartmet/%{LIBNAME}
-%{_libdir}/libsmartmet_%{LIBNAME}.a
 
 %changelog
+* Mon Mar 30 2015 Mika Heiskanen <mika.heiskanen@fmi.fi> - 15.3.30-1.fmi
+- Switched to dynamic linkage
 * Fri Feb  6 2015 Mika Heiskanen <mika.heiskanen@fmi.fi> - 15.2.6-1.fmi
 - Recompiled with the latest newbase
 * Thu Sep 25 2014 Mika Heiskanen <mika.heiskanen@fmi.fi> - 14.9.25-1.fmi
