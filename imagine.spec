@@ -1,7 +1,7 @@
 %define LIBNAME imagine
 Summary: imagine library
 Name: libsmartmet-%{LIBNAME}
-Version: 15.4.9
+Version: 15.4.15
 Release: 1%{?dist}.fmi
 License: FMI
 Group: Development/Libraries
@@ -12,10 +12,10 @@ BuildRequires: boost-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: libsmartmet-newbase-devel >= 15.4.9
+BuildRequires: libsmartmet-newbase-devel >= 15.4.15
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
-Requires: libsmartmet-newbase >= 15.4.9
+Requires: libsmartmet-newbase >= 15.4.15
 Requires: cairomm
 Requires: freetype
 Requires: libjpeg
@@ -59,6 +59,8 @@ FMI %{LIBNAME} development files
 %{_includedir}/smartmet/%{LIBNAME}
 
 %changelog
+* Wed Apr 15 2015 Mika Heiskanen <mika.heiskanen@fmi.fi> - 15.4.15-1.fmi
+- newbase API changed
 * Thu Apr  9 2015 Mika Heiskanen <mika.heiskanen@fmi.fi> - 15.4.9-1.fmi
 - newbase API changed
 * Mon Mar 30 2015 Mika Heiskanen <mika.heiskanen@fmi.fi> - 15.3.30-1.fmi
