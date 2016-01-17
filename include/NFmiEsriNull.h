@@ -17,72 +17,47 @@
 
 namespace Imagine
 {
-  using namespace NFmiEsriBuffer;	// Conversion tools
+using namespace NFmiEsriBuffer;  // Conversion tools
 
-  class _FMI_DLL NFmiEsriNull : public NFmiEsriElement
+class _FMI_DLL NFmiEsriNull : public NFmiEsriElement
+{
+ public:
+  // Constructors, destructors
+
+  ~NFmiEsriNull(void) {}
+  NFmiEsriNull(const NFmiEsriNull& theNull) : NFmiEsriElement(theNull) {}
+  NFmiEsriNull(int theNumber = 0) : NFmiEsriElement(kFmiEsriNull, theNumber) {}
+  // Copying
+
+  NFmiEsriNull& operator=(const NFmiEsriNull& theNull)
   {
-  public:
-	
-	// Constructors, destructors
-	
-	~NFmiEsriNull(void) {}
+    if (this != &theNull) NFmiEsriElement::operator=(theNull);
+    return *this;
+  }
 
-	NFmiEsriNull(const NFmiEsriNull & theNull)
-	  : NFmiEsriElement(theNull)
-	{ }
-	
-	NFmiEsriNull(int theNumber=0)
-	  : NFmiEsriElement(kFmiEsriNull,theNumber)
-	{}
-	
-	// Copying
+  virtual NFmiEsriElement* Clone() const { return new NFmiEsriNull(*this); }
+  // Updating bounding boxes
 
-	NFmiEsriNull & operator=(const NFmiEsriNull & theNull)
-	{
-	  if(this != &theNull)
-		NFmiEsriElement::operator=(theNull);
-	  return *this;
-	}
+  void Update(NFmiEsriBox& theBox) const {}
+  void Project(const NFmiEsriProjector& theProjector) {}
+  // Writing string buffer
 
-	virtual NFmiEsriElement * Clone() const
-	{
-	  return new NFmiEsriNull(*this);
-	}
+  std::ostream& Write(std::ostream& os) const
+  {
+    os << LittleEndianInt(kFmiEsriNull);
+    return os;
+  }
 
-	// Updating bounding boxes
-	
-	void Update(NFmiEsriBox & theBox) const
-	{
-	}
+  // Conversion to string buffer
 
-	void Project(const NFmiEsriProjector & theProjector)
-	{
-	}
-	
-	// Writing string buffer
-	
-	std::ostream & Write(std::ostream & os) const
-	{
-	  os << LittleEndianInt(kFmiEsriNull);
-	  return os;
-	}
-	
-	// Conversion to string buffer
-	
-	const std::string ToString(void) const
-	{
-	  return LittleEndianInt(kFmiEsriNull);
-	}
-	
-	// Calculating string buffer size
-	
-	int StringSize(void) const	{ return 4; }	// the type takes 4
-	
-  };
+  const std::string ToString(void) const { return LittleEndianInt(kFmiEsriNull); }
+  // Calculating string buffer size
 
-} // namespace Imagine
-  
-#endif // IMAGINE_NFMIESRINULL_H
-  
+  int StringSize(void) const { return 4; }  // the type takes 4
+};
+
+}  // namespace Imagine
+
+#endif  // IMAGINE_NFMIESRINULL_H
+
 // ======================================================================
-  

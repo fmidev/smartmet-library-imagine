@@ -41,114 +41,111 @@
 #include "imagine-config.h"
 
 #ifdef IMAGINE_WITH_CAIRO
-# error "Either Cairo or us"
+#error "Either Cairo or us"
 #endif
 
 #ifndef UNIX
-#pragma warning(disable : 4786) // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
+#pragma warning(disable : 4786)  // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
 #endif
 
-#include <algorithm>	// vector sorting
-#include <map>		// maps
-#include <set>		// sets
-#include <vector>	// vectors
-#include <utility>	// pairs
-#include <cmath>	// abs,min,max
+#include <algorithm>  // vector sorting
+#include <map>        // maps
+#include <set>        // sets
+#include <vector>     // vectors
+#include <utility>    // pairs
+#include <cmath>      // abs,min,max
 
 #include "NFmiImage.h"
 
 namespace Imagine
 {
+// Typedefs to ease things
 
-  // Typedefs to ease things
-  
-  typedef std::vector<float>			NFmiFillMapElement;
-  typedef std::map<float,NFmiFillMapElement>	NFmiFillMapData;
-  
-  class _FMI_DLL NFmiFillMap : public NFmiDrawable
+typedef std::vector<float> NFmiFillMapElement;
+typedef std::map<float, NFmiFillMapElement> NFmiFillMapData;
+
+class _FMI_DLL NFmiFillMap : public NFmiDrawable
+{
+ public:
+  // Constructors, destructors:
+
+  NFmiFillMap(float theLoLimit = kFloatMissing, float theHiLimit = kFloatMissing)
+      : itsData(), itsLoLimit(theLoLimit), itsHiLimit(theHiLimit)
   {
-	
-  public:
-	
-	// Constructors, destructors:
-	
-	NFmiFillMap(float theLoLimit=kFloatMissing, float theHiLimit=kFloatMissing)
-	  : itsData()
-	  , itsLoLimit(theLoLimit)
-	  , itsHiLimit(theHiLimit)
-	{ }
-	
-	virtual ~NFmiFillMap(void) {};
-	
-	// Data access
-	
-	const NFmiFillMapData & MapData(void) const		{ return itsData; }
-	
-	// Adding a line, conic or cubic segment
-	
-	using NFmiDrawable::Add;
-	
-	void Add(float theX1, float theY1,
-			 float theX2, float theY2);
-	
-	void AddConic(float theX1, float theY1,
-				  float theX2, float theY2,
-				  float theX3, float theY3);
-	
-	void AddCubic(float theX1, float theY1,
-				  float theX2, float theY2,
-				  float theX3, float theY3,
-				  float theX4, float theY4);
-	
-	// Logical operations with another fillmap
-	
-	void Or(const NFmiFillMap & theMap);			// union
-	void And(const NFmiFillMap & theMap);			// intersection
-	// void Xor(const NFmiFillMap & theMap);		// exclusive or
-	// void Substract(const NFmiFillMap & theMap);	// difference
-	
-	// Filling
-	
-	using NFmiDrawable::Fill;
-	
-	void Fill(NFmiImage & theImage,
-			  NFmiColorTools::Color theColor,
-			  NFmiColorTools::NFmiBlendRule theRule);
-	
-	void Fill(NFmiImage & theImage,
-			  const NFmiImage & thePattern,
-			  NFmiColorTools::NFmiBlendRule theRule,
-			  float theAlpha=1.0,
-			  int theX=0, int theY=0);
-	
-  private:
-	
-	// Fast low-level specializations for each blending rule:
-	
-	//  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
-	//  void Fill(NFmiImage & theImage,NFmiColorTools::Color theColor);
-	
-	//  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
-	//  void Fill(NFmiImage & theImage,int r, int g, int b, int a);
-	
-	// Fast low-level pattern filling for each blending rule
-	
-	//  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
-	//  void Fill(NFmiImage & theImage,
-	//	    const NFmiImage & thePattern,
-	//	    float theAlpha, int theX, int theY);
-	
-	// Data-elements
-	
-	NFmiFillMapData	itsData;
-	float			itsLoLimit;
-	float			itsHiLimit;
-	
-  };
+  }
 
-} // namespace Imagine
-  
-#endif // IMAGINE_NFMIFILLMAP_H
-  
+  virtual ~NFmiFillMap(void){};
+
+  // Data access
+
+  const NFmiFillMapData& MapData(void) const { return itsData; }
+  // Adding a line, conic or cubic segment
+
+  using NFmiDrawable::Add;
+
+  void Add(float theX1, float theY1, float theX2, float theY2);
+
+  void AddConic(float theX1, float theY1, float theX2, float theY2, float theX3, float theY3);
+
+  void AddCubic(float theX1,
+                float theY1,
+                float theX2,
+                float theY2,
+                float theX3,
+                float theY3,
+                float theX4,
+                float theY4);
+
+  // Logical operations with another fillmap
+
+  void Or(const NFmiFillMap& theMap);   // union
+  void And(const NFmiFillMap& theMap);  // intersection
+  // void Xor(const NFmiFillMap & theMap);		// exclusive or
+  // void Substract(const NFmiFillMap & theMap);	// difference
+
+  // Filling
+
+  using NFmiDrawable::Fill;
+
+  void Fill(NFmiImage& theImage,
+            NFmiColorTools::Color theColor,
+            NFmiColorTools::NFmiBlendRule theRule);
+
+  void Fill(NFmiImage& theImage,
+            const NFmiImage& thePattern,
+            NFmiColorTools::NFmiBlendRule theRule,
+            float theAlpha = 1.0,
+            int theX = 0,
+            int theY = 0);
+
+ private:
+  // Fast low-level specializations for each blending rule:
+
+  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n
+  //  virheen takia.
+  //  void Fill(NFmiImage & theImage,NFmiColorTools::Color theColor);
+
+  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n
+  //  virheen takia.
+  //  void Fill(NFmiImage & theImage,int r, int g, int b, int a);
+
+  // Fast low-level pattern filling for each blending rule
+
+  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n
+  //  virheen takia.
+  //  void Fill(NFmiImage & theImage,
+  //	    const NFmiImage & thePattern,
+  //	    float theAlpha, int theX, int theY);
+
+  // Data-elements
+
+  NFmiFillMapData itsData;
+  float itsLoLimit;
+  float itsHiLimit;
+};
+
+}  // namespace Imagine
+
+#endif  // IMAGINE_NFMIFILLMAP_H
+
 // ======================================================================
-  

@@ -30,75 +30,61 @@
 
 namespace Imagine
 {
-  class _FMI_DLL NFmiEsriMultiPointZ : public NFmiEsriMultiPointM
+class _FMI_DLL NFmiEsriMultiPointZ : public NFmiEsriMultiPointM
+{
+ public:
+  // Constructors, destructors
+
+  ~NFmiEsriMultiPointZ(void) {}
+  NFmiEsriMultiPointZ(const NFmiEsriMultiPointZ& thePoints);
+
+  NFmiEsriMultiPointZ(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriMultiPointZ)
+      : NFmiEsriMultiPointM(theNumber, theType), itsBox(), itsPoints()
   {
-  public:
-	
-	// Constructors, destructors
-	
-	~NFmiEsriMultiPointZ(void) {}
-	
-	NFmiEsriMultiPointZ(const NFmiEsriMultiPointZ & thePoints);
+  }
 
-	NFmiEsriMultiPointZ(int theNumber=0,
-						NFmiEsriElementType theType=kFmiEsriMultiPointZ)
-	  : NFmiEsriMultiPointM(theNumber,theType)
-	  , itsBox()
-	  , itsPoints()
-	{}
-	
-	NFmiEsriMultiPointZ(const std::string & theBuffer,
-						int thePos=0,
-						int theNumber=0);
-	
-	// Copying
+  NFmiEsriMultiPointZ(const std::string& theBuffer, int thePos = 0, int theNumber = 0);
 
-	NFmiEsriMultiPointZ & operator=(const NFmiEsriMultiPointZ & thePoints);
+  // Copying
 
-	virtual NFmiEsriElement * Clone() const;
+  NFmiEsriMultiPointZ& operator=(const NFmiEsriMultiPointZ& thePoints);
 
-	// Data access
-	
-	const NFmiEsriBox & Box(void) const		{ return itsBox; }
-	int NumPoints(void) const			{ return itsPoints.size(); }
-	const std::vector<NFmiEsriPointZ> & Points(void) const	{ return itsPoints; }
-	
-	// This is intended to be used by projection etc methods
-	
-	void Points(const std::vector<NFmiEsriPointZ> & pts) { itsPoints = pts; }
-	
-	// Adding a point
-	
-	void Add(const NFmiEsriPointZ & thePoint)
-	{
-	  itsPoints.push_back(thePoint);
-	  itsBox.Update(thePoint.X(),thePoint.Y(),thePoint.Z(),thePoint.M());
-	}
-	
-	// Updating bounding boxes
-	
-	void Update(NFmiEsriBox & theBox) const
-	{
-	  theBox.Update(itsBox);
-	}
-	
-	// String buffer size, write and string
-	
-	int StringSize(void) const;
-	std::ostream & Write(std::ostream & os) const;
-	
-  private:
-	
-	NFmiEsriBox	itsBox;		// Bounding box
-	
-	// int	itsNumPoints;	// Number of points = size of itsPoints
-	
-	std::vector<NFmiEsriPointZ>	itsPoints;
-  };
+  virtual NFmiEsriElement* Clone() const;
 
-} // namespace Imagine
-  
-#endif // IMAGINE_NFMIESRIMULTIPOINTZ_H
-  
+  // Data access
+
+  const NFmiEsriBox& Box(void) const { return itsBox; }
+  int NumPoints(void) const { return itsPoints.size(); }
+  const std::vector<NFmiEsriPointZ>& Points(void) const { return itsPoints; }
+  // This is intended to be used by projection etc methods
+
+  void Points(const std::vector<NFmiEsriPointZ>& pts) { itsPoints = pts; }
+  // Adding a point
+
+  void Add(const NFmiEsriPointZ& thePoint)
+  {
+    itsPoints.push_back(thePoint);
+    itsBox.Update(thePoint.X(), thePoint.Y(), thePoint.Z(), thePoint.M());
+  }
+
+  // Updating bounding boxes
+
+  void Update(NFmiEsriBox& theBox) const { theBox.Update(itsBox); }
+  // String buffer size, write and string
+
+  int StringSize(void) const;
+  std::ostream& Write(std::ostream& os) const;
+
+ private:
+  NFmiEsriBox itsBox;  // Bounding box
+
+  // int	itsNumPoints;	// Number of points = size of itsPoints
+
+  std::vector<NFmiEsriPointZ> itsPoints;
+};
+
+}  // namespace Imagine
+
+#endif  // IMAGINE_NFMIESRIMULTIPOINTZ_H
+
 // ======================================================================
-  

@@ -5,9 +5,8 @@
 
 namespace Imagine
 {
-  namespace NFmiEsriTools
-  {
-	NFmiEsriShape * filter(const NFmiEsriShape & theShape,
-						   const std::string & theCondition);
-  }
+namespace NFmiEsriTools
+{
+NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondition);
+}
 }

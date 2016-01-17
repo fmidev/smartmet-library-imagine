@@ -20,32 +20,31 @@ class NFmiPoint;
 
 namespace Imagine
 {
-  template<class T> class NFmiCounter;
-  class NFmiPath;
+template <class T>
+class NFmiCounter;
+class NFmiPath;
 
-  namespace NFmiBezierTools
-  {
+namespace NFmiBezierTools
+{
+typedef std::list<std::pair<NFmiPath, bool> > Segments;
+typedef std::vector<NFmiPath> NFmiPaths;
+typedef std::list<NFmiPath> PathList;
 
-	typedef std::list<std::pair<NFmiPath,bool> > Segments;
-	typedef std::vector<NFmiPath> NFmiPaths;
-	typedef std::list<NFmiPath> PathList;
+bool IsClosed(const NFmiPath& thePath);
 
-	bool IsClosed(const NFmiPath & thePath);
+const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths& thePaths);
 
-	const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths & thePaths);
+const Segments SplitSegments(const NFmiPath& thePath);
 
-	const Segments SplitSegments(const NFmiPath & thePath);
+const PathList SplitPath(const NFmiPath& thePath);
 
-	const PathList SplitPath(const NFmiPath & thePath);
+const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& theCounts);
 
-	const PathList SplitPath(const NFmiPath & thePath,
-							 const NFmiCounter<NFmiPoint> & theCounts);
+double BezierLength(const NFmiPath& thePath, double theRelativeAccuracy);
 
-	double BezierLength(const NFmiPath & thePath, double theRelativeAccuracy);
+}  // namespace NFmiBezierTools
+}  // namespace Imagine
 
-  } // namespace NFmiBezierTools
-} // namespace Imagine
-
-#endif // IMAGINE_NFMIBEZIERTOOLS_H
+#endif  // IMAGINE_NFMIBEZIERTOOLS_H
 
 // ======================================================================

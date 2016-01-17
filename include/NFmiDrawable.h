@@ -25,7 +25,7 @@
 #include "imagine-config.h"
 
 #ifdef IMAGINE_WITH_CAIRO
-# error "Either Cairo or this"
+#error "Either Cairo or this"
 #endif
 
 // Note: Any drawable must invariably know how to handle colour,
@@ -36,57 +36,50 @@
 
 namespace Imagine
 {
+class NFmiImage;    // Derived class, hence cannot simply include header
+class NFmiFillMap;  // Derived class, ...
 
-  class NFmiImage;	// Derived class, hence cannot simply include header
-  class NFmiFillMap;	// Derived class, ...
+//! Abstract base class for objects that can render themselves.
 
-  //! Abstract base class for objects that can render themselves.
-  
-  class _FMI_DLL NFmiDrawable
-  {
-  public:
+class _FMI_DLL NFmiDrawable
+{
+ public:
+  virtual ~NFmiDrawable() {}
+  //! Constructor
+  /*!
+   * In the future this might take as input a CSS style sheet,
+   * and the class would have a data member storing it.
+   */
 
-	virtual ~NFmiDrawable() {}
-	
-	//! Constructor
-	/*!
-	 * In the future this might take as input a CSS style sheet,
-	 * and the class would have a data member storing it.
-	 */
-	
-	NFmiDrawable(void) {}
-	
-	//! Add the drawable into a fill map.
-	
-	virtual void Add(NFmiFillMap & /* theMap */) const { }
-	
-	//! Fill onto given image using various colour blending rules.
-	
-	virtual void Fill(NFmiImage & theImage,
-					  NFmiColorTools::Color theColor,
-					  NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
-	
-	//! Fill onto given image with given pattern.
-	
-	virtual void Fill(NFmiImage & theImage,
-					  const NFmiImage & thePattern,
-					  NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy,
-					  float theAlphaFactor=1.0) const;
-	
-	//! Stroke onto given image using various colour blending rules.
-	
-	virtual void Stroke(NFmiImage & theImage,
-						NFmiColorTools::Color theColor,
-						NFmiColorTools::NFmiBlendRule theRule=NFmiColorTools::kFmiColorCopy) const;
-	
-  private:
-	
-	// In the future here might be a style sheet data element.
-	
-  };
+  NFmiDrawable(void) {}
+  //! Add the drawable into a fill map.
 
-} // namespace Imagine
-  
-#endif // IMAGINE_NFMIDRAWABLE_H
-  
+  virtual void Add(NFmiFillMap& /* theMap */) const {}
+  //! Fill onto given image using various colour blending rules.
+
+  virtual void Fill(NFmiImage& theImage,
+                    NFmiColorTools::Color theColor,
+                    NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const;
+
+  //! Fill onto given image with given pattern.
+
+  virtual void Fill(NFmiImage& theImage,
+                    const NFmiImage& thePattern,
+                    NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy,
+                    float theAlphaFactor = 1.0) const;
+
+  //! Stroke onto given image using various colour blending rules.
+
+  virtual void Stroke(NFmiImage& theImage,
+                      NFmiColorTools::Color theColor,
+                      NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const;
+
+ private:
+  // In the future here might be a style sheet data element.
+};
+
+}  // namespace Imagine
+
+#endif  // IMAGINE_NFMIDRAWABLE_H
+
 // ======================================================================

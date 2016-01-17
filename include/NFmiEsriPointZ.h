@@ -21,64 +21,52 @@
 
 namespace Imagine
 {
+class _FMI_DLL NFmiEsriPointZ : public NFmiEsriPointM
+{
+ public:
+  // Constructors, destructors
 
-  class _FMI_DLL NFmiEsriPointZ : public NFmiEsriPointM
+  ~NFmiEsriPointZ(void) {}
+  NFmiEsriPointZ(const NFmiEsriPointZ& thePoint);
+
+  NFmiEsriPointZ(double theX,
+                 double theY,
+                 double theZ,
+                 double theM,
+                 int theNumber = 0,
+                 NFmiEsriElementType theType = kFmiEsriPointZ)
+      : NFmiEsriPointM(theX, theY, theM, theNumber, theType), itsZ(theZ)
   {
-  public:
-	
-	// Constructors, destructors
-	
-	~NFmiEsriPointZ(void) {}
-	
-	NFmiEsriPointZ(const NFmiEsriPointZ & thePoint);
+  }
 
-	NFmiEsriPointZ(double theX,
-				   double theY,
-				   double theZ,
-				   double theM,
-				   int theNumber=0,
-				   NFmiEsriElementType theType=kFmiEsriPointZ)
-	  : NFmiEsriPointM(theX,theY,theM,theNumber,theType)
-	  , itsZ(theZ)
-	{ }
-	
-	NFmiEsriPointZ(const std::string & theBuffer,
-				   int thePos=0,
-				   int theNumber=0);
-	
-	// Copying
+  NFmiEsriPointZ(const std::string& theBuffer, int thePos = 0, int theNumber = 0);
 
-	NFmiEsriPointZ & operator=(const NFmiEsriPointZ & thePoint);
+  // Copying
 
-	virtual NFmiEsriElement * Clone() const;
+  NFmiEsriPointZ& operator=(const NFmiEsriPointZ& thePoint);
 
-	// Data access
-	
-	double Z(void) const	{ return itsZ; }
-	void Z(double theZ)	{ itsZ = theZ; }
-	
-	// Updating bounding boxes
-	
-	void Update(NFmiEsriBox & theBox) const
-	{
-	  theBox.Update(X(),Y(),Z(),M());
-	}
-	
-	// String buffer size, write and string
-	
-	int StringSize(void) const;
-	std::ostream & Write(std::ostream & os) const;
-	
-  private:
-	
-	NFmiEsriPointZ(void);
-	
-	double	itsZ;	// Z-coordinate
-  };
+  virtual NFmiEsriElement* Clone() const;
 
-} // namespace Imagine
-  
-#endif // IMAGINE_NFMIESRIPOINTZ_H
-  
+  // Data access
+
+  double Z(void) const { return itsZ; }
+  void Z(double theZ) { itsZ = theZ; }
+  // Updating bounding boxes
+
+  void Update(NFmiEsriBox& theBox) const { theBox.Update(X(), Y(), Z(), M()); }
+  // String buffer size, write and string
+
+  int StringSize(void) const;
+  std::ostream& Write(std::ostream& os) const;
+
+ private:
+  NFmiEsriPointZ(void);
+
+  double itsZ;  // Z-coordinate
+};
+
+}  // namespace Imagine
+
+#endif  // IMAGINE_NFMIESRIPOINTZ_H
+
 // ======================================================================
-  

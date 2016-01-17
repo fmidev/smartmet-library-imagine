@@ -10,7 +10,7 @@
 #define IMAGINE_CONFIG_H
 
 #ifdef IMAGINE_WITH_CAIRO
-# error "Do NOT define IMAGINE_WITH_CAIRO in a Makefile"
+#error "Do NOT define IMAGINE_WITH_CAIRO in a Makefile"
 #endif
 
 // Comment this out for original (self made) rendering
@@ -20,15 +20,14 @@
 // made a class of its own, but this is how it ended in summer-08) --AKa
 //
 #ifdef IMAGINE_WITH_CAIRO
-  class ImagineXr;
-  typedef ImagineXr ImagineXr_or_NFmiImage;
+class ImagineXr;
+typedef ImagineXr ImagineXr_or_NFmiImage;
 #else
-  namespace Imagine
-  {
-    class NFmiImage;
-  }
-  typedef Imagine::NFmiImage ImagineXr_or_NFmiImage;
+namespace Imagine
+{
+class NFmiImage;
+}
+typedef Imagine::NFmiImage ImagineXr_or_NFmiImage;
 #endif
 
 #endif
-

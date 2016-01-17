@@ -29,22 +29,21 @@
 
 namespace Imagine
 {
+class NFmiPath;
 
-  class NFmiPath;
-  
-  namespace NFmiGshhsTools
-  {
-	const NFmiPath ReadPath(const std::string & theFilename,
-							double theMinLongitude,
-							double theMinLatitude,
-							double theMaxLongitude,
-							double theMaxLatitude,
-							double theMinArea=-1);
-	
-  } // namespace NFmiGshhsTools
+namespace NFmiGshhsTools
+{
+const NFmiPath ReadPath(const std::string& theFilename,
+                        double theMinLongitude,
+                        double theMinLatitude,
+                        double theMaxLongitude,
+                        double theMaxLatitude,
+                        double theMinArea = -1);
 
-} // namespace Imagine
-  
-#endif // NFMIGSHHSTOOLS_H
-  
+}  // namespace NFmiGshhsTools
+
+}  // namespace Imagine
+
+#endif  // NFMIGSHHSTOOLS_H
+
 // ======================================================================

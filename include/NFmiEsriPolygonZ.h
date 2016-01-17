@@ -33,94 +33,75 @@
 
 namespace Imagine
 {
+class _FMI_DLL NFmiEsriPolygonZ : public NFmiEsriPolygonM
+{
+ public:
+  // Constructors, destructors
 
-  class _FMI_DLL NFmiEsriPolygonZ : public NFmiEsriPolygonM
+  ~NFmiEsriPolygonZ(void) {}
+  NFmiEsriPolygonZ(const NFmiEsriPolygonZ& thePolygon);
+
+  NFmiEsriPolygonZ(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriPolygonZ)
+      : NFmiEsriPolygonM(theNumber, kFmiEsriPolygonZ), itsBox(), itsParts(), itsPoints()
   {
-  public:
-	
-	// Constructors, destructors
-	
-	~NFmiEsriPolygonZ(void) {}
-	
-	NFmiEsriPolygonZ(const NFmiEsriPolygonZ & thePolygon);
+  }
 
-	NFmiEsriPolygonZ(int theNumber=0,
-					 NFmiEsriElementType theType=kFmiEsriPolygonZ)
-	  : NFmiEsriPolygonM(theNumber,kFmiEsriPolygonZ)
-	  , itsBox()
-	  , itsParts()
-	  , itsPoints()
-	{}
-	
-	NFmiEsriPolygonZ(const std::string & theBuffer,
-					 int thePos=0,
-					 int theNumber=0);
-	
-	// Copying
+  NFmiEsriPolygonZ(const std::string& theBuffer, int thePos = 0, int theNumber = 0);
 
-	NFmiEsriPolygonZ & operator=(const NFmiEsriPolygonZ & thePolygon);
+  // Copying
 
-	virtual NFmiEsriElement * Clone() const;
+  NFmiEsriPolygonZ& operator=(const NFmiEsriPolygonZ& thePolygon);
 
-	// Data access
-	
-	const NFmiEsriBox & Box(void) const	{ return itsBox; }
-	
-	int NumPoints(void) const		{ return itsPoints.size(); }
-	int NumParts(void) const		{ return itsParts.size(); }
-	
-	const std::vector<int> & Parts(void) const 		{ return itsParts; }
-	const std::vector<NFmiEsriPointZ> & Points(void) const	{ return itsPoints; }
-	
-	// This is intended to be used by projection etc methods
-	
-	void Points(const std::vector<NFmiEsriPointZ> & pts) { itsPoints = pts; }
-	
-	// Adding a new data point to the current part, or the first
-	// one if this is the first point
-	
-	void Add(const NFmiEsriPointZ & thePoint)
-	{
-	  itsPoints.push_back(thePoint);
-	  itsBox.Update(thePoint.X(),thePoint.Y(),thePoint.Z(),thePoint.M());
-	  if(NumParts()==0)			// user should have used AddPart,
-		itsParts.push_back(0);		// this will fix things
-	}
-	
-	// Add a new data point and a new part
-	
-	void AddPart(const NFmiEsriPointZ & thePoint)
-	{
-	  itsParts.push_back(NumPoints());	// index of next free location
-	  Add(thePoint);
-	}
-	
-	// Updating bounding boxes
-	
-	void Update(NFmiEsriBox & theBox) const
-	{
-	  theBox.Update(itsBox);
-	}
-	
-	// String buffer size, write and string
-	
-	int StringSize(void) const;
-	std::ostream & Write(std::ostream & os) const;
-	
-  private:
-	
-	NFmiEsriBox	itsBox;		// Bounding Box, xmin,ymin,xmax,ymax
-	// int	itsNumParts;	// Number of parts = size of itsParts
-	// int	itsNumPoints;	// Number of points = size of itsPoints
-	
-	std::vector<int>			itsParts;	// Index to first point in part
-	std::vector<NFmiEsriPointZ>	itsPoints;	// Points for all parts
-	
-  };
+  virtual NFmiEsriElement* Clone() const;
 
-} // namespace Imagine
-  
-#endif // IMAGINE_NFMIESRIPOLYGONZ_H
-  
+  // Data access
+
+  const NFmiEsriBox& Box(void) const { return itsBox; }
+  int NumPoints(void) const { return itsPoints.size(); }
+  int NumParts(void) const { return itsParts.size(); }
+  const std::vector<int>& Parts(void) const { return itsParts; }
+  const std::vector<NFmiEsriPointZ>& Points(void) const { return itsPoints; }
+  // This is intended to be used by projection etc methods
+
+  void Points(const std::vector<NFmiEsriPointZ>& pts) { itsPoints = pts; }
+  // Adding a new data point to the current part, or the first
+  // one if this is the first point
+
+  void Add(const NFmiEsriPointZ& thePoint)
+  {
+    itsPoints.push_back(thePoint);
+    itsBox.Update(thePoint.X(), thePoint.Y(), thePoint.Z(), thePoint.M());
+    if (NumParts() == 0)      // user should have used AddPart,
+      itsParts.push_back(0);  // this will fix things
+  }
+
+  // Add a new data point and a new part
+
+  void AddPart(const NFmiEsriPointZ& thePoint)
+  {
+    itsParts.push_back(NumPoints());  // index of next free location
+    Add(thePoint);
+  }
+
+  // Updating bounding boxes
+
+  void Update(NFmiEsriBox& theBox) const { theBox.Update(itsBox); }
+  // String buffer size, write and string
+
+  int StringSize(void) const;
+  std::ostream& Write(std::ostream& os) const;
+
+ private:
+  NFmiEsriBox itsBox;  // Bounding Box, xmin,ymin,xmax,ymax
+  // int	itsNumParts;	// Number of parts = size of itsParts
+  // int	itsNumPoints;	// Number of points = size of itsPoints
+
+  std::vector<int> itsParts;              // Index to first point in part
+  std::vector<NFmiEsriPointZ> itsPoints;  // Points for all parts
+};
+
+}  // namespace Imagine
+
+#endif  // IMAGINE_NFMIESRIPOLYGONZ_H
+
 // ======================================================================
-  

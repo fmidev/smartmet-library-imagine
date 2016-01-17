@@ -17,61 +17,54 @@
 
 namespace Imagine
 {
+class _FMI_DLL NFmiEsriBox
+{
+ public:
+  // Constructors, destructors
 
-  class _FMI_DLL NFmiEsriBox
-  {
-  public:
-	
-	// Constructors, destructors
-
-	NFmiEsriBox(void);
+  NFmiEsriBox(void);
 
 #ifdef NO_COMPILER_OPTIMIZED
-	~NFmiEsriBox(void);
-	NFmiEsriBox(const NFmiEsriBox & theBox);
-	NFmiEsriBox & operator=(const NFmiEsriBox & theBox);
+  ~NFmiEsriBox(void);
+  NFmiEsriBox(const NFmiEsriBox& theBox);
+  NFmiEsriBox& operator=(const NFmiEsriBox& theBox);
 #endif
-	
-	void Init(void);
 
-	// Data access
+  void Init(void);
 
-	bool IsValid(void) const { return itsValidity; }
+  // Data access
 
-	double Xmin(void) const { return itsXmin; }
-	double Xmax(void) const { return itsXmax; }
-	double Ymin(void) const { return itsYmin; }
-	double Ymax(void) const { return itsYmax; }
-	double Mmin(void) const { return itsMmin; }
-	double Mmax(void) const { return itsMmax; }
-	double Zmin(void) const { return itsZmin; }
-	double Zmax(void) const { return itsZmax; }
-	
-	// Update utilities
-	
-	void Update(double theX, double theY, double theM, double theZ);
-	void Update(double theX, double theY, double theM);
-	void Update(double theX, double theY);
+  bool IsValid(void) const { return itsValidity; }
+  double Xmin(void) const { return itsXmin; }
+  double Xmax(void) const { return itsXmax; }
+  double Ymin(void) const { return itsYmin; }
+  double Ymax(void) const { return itsYmax; }
+  double Mmin(void) const { return itsMmin; }
+  double Mmax(void) const { return itsMmax; }
+  double Zmin(void) const { return itsZmin; }
+  double Zmax(void) const { return itsZmax; }
+  // Update utilities
 
-	void Update(const NFmiEsriBox & theBox);
-	
-  private:
-	
-	bool itsValidity;
-	double itsXmin;
-	double itsXmax;
-	double itsYmin;
-	double itsYmax;
-	double itsMmin;
-	double itsMmax;
-	double itsZmin;
-	double itsZmax;
-	
-  };
-  
-} // namespace Imagine
+  void Update(double theX, double theY, double theM, double theZ);
+  void Update(double theX, double theY, double theM);
+  void Update(double theX, double theY);
 
-#endif // IMAGINE_NFMIESRIBOX_H
-  
+  void Update(const NFmiEsriBox& theBox);
+
+ private:
+  bool itsValidity;
+  double itsXmin;
+  double itsXmax;
+  double itsYmin;
+  double itsYmax;
+  double itsMmin;
+  double itsMmax;
+  double itsZmin;
+  double itsZmax;
+};
+
+}  // namespace Imagine
+
+#endif  // IMAGINE_NFMIESRIBOX_H
+
 // ======================================================================
-  

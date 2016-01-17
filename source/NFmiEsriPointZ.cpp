@@ -15,81 +15,73 @@
 
 #include "NFmiEsriPointZ.h"
 
-using namespace Imagine::NFmiEsriBuffer;	// Conversion tools
+using namespace Imagine::NFmiEsriBuffer;  // Conversion tools
 using namespace std;
 
 namespace Imagine
 {
+// ----------------------------------------------------------------------
+// Copy constructor
+// ----------------------------------------------------------------------
 
-  // ----------------------------------------------------------------------
-  // Copy constructor
-  // ----------------------------------------------------------------------
+NFmiEsriPointZ::NFmiEsriPointZ(const NFmiEsriPointZ& thePoint)
+    : NFmiEsriPointM(thePoint), itsZ(thePoint.itsZ)
+{
+}
 
-  NFmiEsriPointZ::NFmiEsriPointZ(const NFmiEsriPointZ & thePoint)
-	: NFmiEsriPointM(thePoint)
-	, itsZ(thePoint.itsZ)
+// ----------------------------------------------------------------------
+// Copying
+// ----------------------------------------------------------------------
+
+NFmiEsriPointZ& NFmiEsriPointZ::operator=(const NFmiEsriPointZ& thePoint)
+{
+  if (this != &thePoint)
   {
+    NFmiEsriPointM::operator=(thePoint);
+    itsZ = thePoint.itsZ;
   }
+  return *this;
+}
 
-  // ----------------------------------------------------------------------
-  // Copying
-  // ----------------------------------------------------------------------
+// ----------------------------------------------------------------------
+// Cloning
+// ----------------------------------------------------------------------
 
-  NFmiEsriPointZ & NFmiEsriPointZ::operator=(const NFmiEsriPointZ & thePoint)
-  {
-	if(this != &thePoint)
-	  {
-		NFmiEsriPointM::operator=(thePoint);
-		itsZ = thePoint.itsZ;
-	  }
-	return *this;
-  }
+NFmiEsriElement* NFmiEsriPointZ::Clone() const { return new NFmiEsriPointZ(*this); }
+// ----------------------------------------------------------------------
+// Constructor based on a character buffer
+// ----------------------------------------------------------------------
 
-  // ----------------------------------------------------------------------
-  // Cloning
-  // ----------------------------------------------------------------------
+NFmiEsriPointZ::NFmiEsriPointZ(const string& theBuffer, int thePos, int theNumber)
+    : NFmiEsriPointM(LittleEndianDouble(theBuffer, thePos + 4),
+                     LittleEndianDouble(theBuffer, thePos + 12),
+                     LittleEndianDouble(theBuffer, thePos + 28),
+                     theNumber,
+                     kFmiEsriPointZ),
+      itsZ(LittleEndianDouble(theBuffer, thePos + 20))
+{
+}
 
-  NFmiEsriElement * NFmiEsriPointZ::Clone() const
-  {
-	return new NFmiEsriPointZ(*this);
-  }
+// ----------------------------------------------------------------------
+// Calculating string buffer size
+// ----------------------------------------------------------------------
 
-  // ----------------------------------------------------------------------
-  // Constructor based on a character buffer
-  // ----------------------------------------------------------------------
-  
-  NFmiEsriPointZ::NFmiEsriPointZ(const string & theBuffer, int thePos, int theNumber)
-	: NFmiEsriPointM(LittleEndianDouble(theBuffer,thePos+4),
-					 LittleEndianDouble(theBuffer,thePos+12),
-					 LittleEndianDouble(theBuffer,thePos+28),
-					 theNumber,kFmiEsriPointZ)
-	, itsZ(LittleEndianDouble(theBuffer,thePos+20))
-  {
-  }
-  
-  // ----------------------------------------------------------------------
-  // Calculating string buffer size
-  // ----------------------------------------------------------------------
-  
-  int NFmiEsriPointZ::StringSize(void) const
-  {
-	return (4+4*8);	// int + 4 doubles
-  }
-  
-  // ----------------------------------------------------------------------
-  // Writing element
-  // ----------------------------------------------------------------------
-  
-  std::ostream & NFmiEsriPointZ::Write(ostream & os) const
-  {
-	os << LittleEndianInt(Type())
-	   << LittleEndianDouble(X())
-	   << LittleEndianDouble(Y())
-	   << LittleEndianDouble(Z())
-	   << LittleEndianDouble(M());
-	return os;
-  }
+int NFmiEsriPointZ::StringSize(void) const
+{
+  return (4 + 4 * 8);  // int + 4 doubles
+}
 
-} // namespace Imagine
-  
+// ----------------------------------------------------------------------
+// Writing element
+// ----------------------------------------------------------------------
+
+std::ostream& NFmiEsriPointZ::Write(ostream& os) const
+{
+  os << LittleEndianInt(Type()) << LittleEndianDouble(X()) << LittleEndianDouble(Y())
+     << LittleEndianDouble(Z()) << LittleEndianDouble(M());
+  return os;
+}
+
+}  // namespace Imagine
+
 // ======================================================================

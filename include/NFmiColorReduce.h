@@ -15,22 +15,21 @@
 
 namespace Imagine
 {
-  class NFmiImage;
+class NFmiImage;
 
-  namespace NFmiColorReduce
-  {
-	//! A Histogram container
-	typedef std::multimap<int,NFmiColorTools::Color, std::greater<int> > Histogram;
+namespace NFmiColorReduce
+{
+//! A Histogram container
+typedef std::multimap<int, NFmiColorTools::Color, std::greater<int> > Histogram;
 
-	const Histogram CalcHistogram(const NFmiImage & theImage);
-	void AdaptiveReduce(NFmiImage & theImage, float theQuality = 10);
-	void AdaptiveReduce(NFmiImage & theImage, float theQuality, int theMaxColors, float theErrorFactor);
+const Histogram CalcHistogram(const NFmiImage& theImage);
+void AdaptiveReduce(NFmiImage& theImage, float theQuality = 10);
+void AdaptiveReduce(NFmiImage& theImage, float theQuality, int theMaxColors, float theErrorFactor);
 
-  } // namespace NFmiColorReduce
+}  // namespace NFmiColorReduce
 
-} // namespace Imagine
+}  // namespace Imagine
 
-#endif // IMAGINE_NFMICOLORREDUCE_H
+#endif  // IMAGINE_NFMICOLORREDUCE_H
 
 // ======================================================================
-

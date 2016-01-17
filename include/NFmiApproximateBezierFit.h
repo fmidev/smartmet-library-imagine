@@ -12,19 +12,18 @@
 
 namespace Imagine
 {
-  class NFmiPath;
-  
-  namespace NFmiApproximateBezierFit
-  {
+class NFmiPath;
 
-	const NFmiPath Fit(const NFmiPath & thePath, double theMaxError);
+namespace NFmiApproximateBezierFit
+{
+const NFmiPath Fit(const NFmiPath& thePath, double theMaxError);
 
-	typedef NFmiBezierTools::NFmiPaths NFmiPaths;
-	const NFmiPaths Fit(const NFmiPaths & thePaths, double theMaxError);
+typedef NFmiBezierTools::NFmiPaths NFmiPaths;
+const NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError);
 
-  } // namespace NFmiApproximateBezierFit
-} // namespace Imagine
+}  // namespace NFmiApproximateBezierFit
+}  // namespace Imagine
 
-#endif // IMAGINE_NFMIAPPROXIMATEBEZIERFIT_H
+#endif  // IMAGINE_NFMIAPPROXIMATEBEZIERFIT_H
 
 // ======================================================================

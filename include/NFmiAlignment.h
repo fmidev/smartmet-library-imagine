@@ -24,35 +24,37 @@
 
 namespace Imagine
 {
+//! Enumeration of possible alignments.
 
-  //! Enumeration of possible alignments.
-  
-  enum NFmiAlignment { kFmiAlignMissing,
-					   kFmiAlignCenter,
-					 kFmiAlignNorthWest,
-					   kFmiAlignNorth,
-					   kFmiAlignNorthEast,
-					   kFmiAlignEast,
-					   kFmiAlignSouthEast,
-					   kFmiAlignSouth,
-					   kFmiAlignSouthWest,
-					   kFmiAlignWest };
-  
-  //! Convert string to enumerated value
-  
-  NFmiAlignment AlignmentValue(const std::string & theName);
-  
-  //! Convert enumerated value to string
-  const std::string AlignmentName(const NFmiAlignment theAlignment);
-  
-  //! The linear interpolation coefficient for X-direction in range 0-1.
-  double XAlignmentFactor(NFmiAlignment theAlignment);
-  
-  //! The linear interpolation coefficient for Y-direction in range 0-1.
-  double YAlignmentFactor(NFmiAlignment theAlignment);
+enum NFmiAlignment
+{
+  kFmiAlignMissing,
+  kFmiAlignCenter,
+  kFmiAlignNorthWest,
+  kFmiAlignNorth,
+  kFmiAlignNorthEast,
+  kFmiAlignEast,
+  kFmiAlignSouthEast,
+  kFmiAlignSouth,
+  kFmiAlignSouthWest,
+  kFmiAlignWest
+};
 
-} // namespace Imagine
+//! Convert string to enumerated value
 
-#endif // IMAGINE_NFMIALIGNMENT_H
+NFmiAlignment AlignmentValue(const std::string& theName);
+
+//! Convert enumerated value to string
+const std::string AlignmentName(const NFmiAlignment theAlignment);
+
+//! The linear interpolation coefficient for X-direction in range 0-1.
+double XAlignmentFactor(NFmiAlignment theAlignment);
+
+//! The linear interpolation coefficient for Y-direction in range 0-1.
+double YAlignmentFactor(NFmiAlignment theAlignment);
+
+}  // namespace Imagine
+
+#endif  // IMAGINE_NFMIALIGNMENT_H
 
 // ======================================================================

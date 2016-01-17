@@ -50,78 +50,71 @@
 
 namespace Imagine
 {
+//! An unique object counter.
+template <class T>
+class _FMI_DLL NFmiCounter
+{
+ protected:
+  //! The counted data is held in this type containers.
+  typedef std::map<T, unsigned long> NFmiCounterData;
 
-  //! An unique object counter.
-  template<class T>
-  class _FMI_DLL NFmiCounter
+  //! The data counted so far, along with the counts.
+  NFmiCounterData itsData;
+
+ public:
+  typedef typename NFmiCounterData::const_iterator const_iterator;
+
+  //! Constructor
+  NFmiCounter(void) {}
+  //! Destructor
+  ~NFmiCounter(void) {}
+  //! Reset the counter to contain no data
+  void Clear(void) { itsData.clear(); }
+  //! Add a new object to the counter.
+  /*!
+   * This adds the object to a map with the object as a key.
+   * If the object already exists in the map, its counter is increased.
+   * The count of the object after insertion is returned, hence it
+   * is always atleast one.
+   */
+
+  long Add(T theElement)
   {
-	
-  protected:
-	
-	//! The counted data is held in this type containers.
-	typedef std::map<T,unsigned long> NFmiCounterData;
-	
-	//! The data counted so far, along with the counts.
-	NFmiCounterData itsData;
-	
-  public:
-
-	typedef typename NFmiCounterData::const_iterator const_iterator;
-	
-	//! Constructor
-	NFmiCounter(void) {}
-	
-	//! Destructor
-	~NFmiCounter(void) {}
-	
-	//! Reset the counter to contain no data
-	void Clear(void) { itsData.clear(); }
-	
-	//! Add a new object to the counter.
-	/*!
-	 * This adds the object to a map with the object as a key.
-	 * If the object already exists in the map, its counter is increased.
-	 * The count of the object after insertion is returned, hence it
-	 * is always atleast one.
-	 */
-	
-	long Add(T theElement)
-	{
 #ifndef UNIX
-		std::pair<NFmiCounterData::iterator, bool> result = itsData.insert(std::make_pair(theElement,1));
+    std::pair<NFmiCounterData::iterator, bool> result =
+        itsData.insert(std::make_pair(theElement, 1));
 #else
-	  std::pair<typename NFmiCounterData::iterator, bool> result = itsData.insert(typename NFmiCounterData::value_type(theElement,1));
+    std::pair<typename NFmiCounterData::iterator, bool> result =
+        itsData.insert(typename NFmiCounterData::value_type(theElement, 1));
 #endif
-	  if(result.second)
-		return 1;
-	  else
-		return ++(result.first->second);
-	}
-	
-	//! Query the count of an object.
-	/*!
-	 * The count of the object is the number of times Add has been used
-	 * to add the object into the counter. The count is zero if the
-	 * object has not been added into the counter.
-	 */
-	
-	long Count(T theElement) const
-	{
-	  typename NFmiCounterData::const_iterator iter = itsData.find(theElement);
-	  if(iter==itsData.end())
-		return 0L;
-	  else
-		return iter->second;
-	}
+    if (result.second)
+      return 1;
+    else
+      return ++(result.first->second);
+  }
 
-	const_iterator begin() const { return itsData.begin(); }
-	const_iterator end() const { return itsData.end(); }
+  //! Query the count of an object.
+  /*!
+   * The count of the object is the number of times Add has been used
+   * to add the object into the counter. The count is zero if the
+   * object has not been added into the counter.
+   */
 
-  };
+  long Count(T theElement) const
+  {
+    typename NFmiCounterData::const_iterator iter = itsData.find(theElement);
+    if (iter == itsData.end())
+      return 0L;
+    else
+      return iter->second;
+  }
 
-} // namespace Imagine
-  
+  const_iterator begin() const { return itsData.begin(); }
+  const_iterator end() const { return itsData.end(); }
+};
+
+}  // namespace Imagine
+
 #endif
-  
+
 // ======================================================================
-  

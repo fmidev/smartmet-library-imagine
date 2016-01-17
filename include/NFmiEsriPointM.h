@@ -20,63 +20,51 @@
 
 namespace Imagine
 {
+class _FMI_DLL NFmiEsriPointM : public NFmiEsriPoint
+{
+ public:
+  // Constructors, destructors
 
-  class _FMI_DLL NFmiEsriPointM : public NFmiEsriPoint
+  ~NFmiEsriPointM(void) {}
+  NFmiEsriPointM(const NFmiEsriPointM& thePoint);
+
+  NFmiEsriPointM(double theX,
+                 double theY,
+                 double theM,
+                 int theNumber = 0,
+                 NFmiEsriElementType theType = kFmiEsriPointM)
+      : NFmiEsriPoint(theX, theY, theNumber, theType), itsM(theM)
   {
-  public:
-	
-	// Constructors, destructors
-	
-	~NFmiEsriPointM(void) {}
+  }
 
-	NFmiEsriPointM(const NFmiEsriPointM & thePoint);
-	
-	NFmiEsriPointM(double theX,
-				   double theY,
-				   double theM,
-				   int theNumber=0,
-				   NFmiEsriElementType theType=kFmiEsriPointM)
-	  : NFmiEsriPoint(theX,theY,theNumber,theType)
-	  , itsM(theM)
-	{ }
-	
-	NFmiEsriPointM(const std::string & theBuffer,
-				   int thePos=0,
-				   int theNumber=0);
-	
-	// Copying
+  NFmiEsriPointM(const std::string& theBuffer, int thePos = 0, int theNumber = 0);
 
-	NFmiEsriPointM & operator=(const NFmiEsriPointM & thePoint);
+  // Copying
 
-	virtual NFmiEsriElement * Clone() const;
+  NFmiEsriPointM& operator=(const NFmiEsriPointM& thePoint);
 
-	// Data access
-	
-	double M(void) const	{ return itsM; }
-	void M(double theM)	{ itsM = theM; }
-	
-	// Updating bounding boxes
-	
-	void Update(NFmiEsriBox & theBox) const
-	{
-	  theBox.Update(X(),Y(),M());
-	}
-	
-	// String buffer size, write and string
-	
-	int StringSize(void) const;
-	std::ostream & Write(std::ostream & os) const;
-	
-  private:
-	
-	NFmiEsriPointM(void);
+  virtual NFmiEsriElement* Clone() const;
 
-	double itsM;	// measure
-  };
+  // Data access
 
-} // namespace Imagine
-  
-#endif // IMAGINE_NFMIESRIPOINTM_H
-  
+  double M(void) const { return itsM; }
+  void M(double theM) { itsM = theM; }
+  // Updating bounding boxes
+
+  void Update(NFmiEsriBox& theBox) const { theBox.Update(X(), Y(), M()); }
+  // String buffer size, write and string
+
+  int StringSize(void) const;
+  std::ostream& Write(std::ostream& os) const;
+
+ private:
+  NFmiEsriPointM(void);
+
+  double itsM;  // measure
+};
+
+}  // namespace Imagine
+
+#endif  // IMAGINE_NFMIESRIPOINTM_H
+
 // ======================================================================
-  

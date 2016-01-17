@@ -135,6 +135,9 @@ clean:
 	rm -f $(LIBFILE) *~ source/*~ include/*~
 	rm -rf $(objdir)
 
+format:
+	clang-format -i -style=file include/*.h source/*.cpp test/*.cpp
+
 install:
 	@mkdir -p $(includedir)/smartmet/$(LIB)
 	@list='$(HDRS)'; \
