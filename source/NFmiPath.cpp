@@ -1733,12 +1733,15 @@ bool NFmiPath::IsPacificView() const
         // Ignore long lines at the poles
         if (iter->y != -90 && iter->y != 90)
         {
+          // if line is all together over 180 + eps, its pacific
+          if (lastX > 180 + eps && iter->x > 180 + eps) return true;
           if (lastX < 180 && iter->x > 180 + eps) return true;
           if (lastX > 180 + eps && iter->x < 180) return true;
           // Or looks like it should be made into a Pacific view
           // when there are lines longer than half the world
           if (lastX < -90 && iter->x > 90) return true;
           if (lastX > 90 && iter->x < -90) return true;
+
           break;
         }
       }
