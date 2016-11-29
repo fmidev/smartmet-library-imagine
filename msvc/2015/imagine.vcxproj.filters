@@ -1,305 +1,305 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{88f92889-a174-4e05-96a4-f7453d7ad365}</UniqueIdentifier>
-      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
+    <Filter Include="include">
       <UniqueIdentifier>{f4f01180-fcaa-4242-8147-150d3d755524}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{88f92889-a174-4e05-96a4-f7453d7ad365}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\imagine\include\dox.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\dox.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\imagine-config.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\imagine-config.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\ImagineXr.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\ImagineXr.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiAffine.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiAffine.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiAlignment.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiAlignment.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiApproximateBezierFit.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiApproximateBezierFit.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiBezierTools.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiBezierTools.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiCardinalBezierFit.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiCardinalBezierFit.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiColorBlend.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiColorBlend.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiColorReduce.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiColorReduce.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiColorTools.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiColorTools.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiContourTree.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiContourTree.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiCounter.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiCounter.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiDataHints.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiDataHints.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiDrawable.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiDrawable.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEdge.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEdge.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEdgeTree.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEdgeTree.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriAttribute.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriAttribute.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriAttributeName.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriAttributeName.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriBox.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriBox.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriBuffer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriBuffer.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriElement.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriElement.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriMultiPatch.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriMultiPatch.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriMultiPoint.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriMultiPoint.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriMultiPointM.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriMultiPointM.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriMultiPointZ.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriMultiPointZ.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriNull.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriNull.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriPoint.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriPoint.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriPointM.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriPointM.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriPointZ.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriPointZ.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriPolygon.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriPolygon.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriPolygonM.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriPolygonM.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriPolygonZ.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriPolygonZ.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriPolyLine.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriPolyLine.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriPolyLineM.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriPolyLineM.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriPolyLineZ.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriPolyLineZ.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriProjector.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriProjector.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriShape.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriShape.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiEsriTools.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiEsriTools.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiFace.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiFace.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiFillMap.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiFillMap.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiFreeType.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiFreeType.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiGeoShape.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiGeoShape.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiGshhsTools.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiGshhsTools.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiImage.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiImage.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiImageTools.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiImageTools.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiNearTree.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiNearTree.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiPath.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiPath.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiPathElement.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiPathElement.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiSimplifier.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiSimplifier.h">
+      <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\imagine\include\NFmiTightBezierFit.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\include\NFmiTightBezierFit.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\imagine\source\ImagineXr.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\ImagineXr.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiAffine.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiAffine.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiAlignment.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiAlignment.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiApproximateBezierFit.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiApproximateBezierFit.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiBezierTools.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiBezierTools.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiCardinalBezierFit.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiCardinalBezierFit.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiColorReduce.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiColorReduce.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiColorTools.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiColorTools.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiContourTree.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiContourTree.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiDataHints.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiDataHints.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiDrawable.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiDrawable.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEdgeTree.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEdgeTree.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriBox.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriBox.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriBuffer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriBuffer.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriElement.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriElement.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriMultiPatch.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriMultiPatch.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriMultiPoint.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriMultiPoint.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriMultiPointM.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriMultiPointM.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriMultiPointZ.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriMultiPointZ.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriPoint.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriPoint.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriPointM.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriPointM.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriPointZ.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriPointZ.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriPolygon.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriPolygon.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriPolygonM.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriPolygonM.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriPolygonZ.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriPolygonZ.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriPolyLine.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriPolyLine.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriPolyLineM.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriPolyLineM.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriPolyLineZ.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriPolyLineZ.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriShape.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriShape.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiEsriTools.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiEsriTools.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiFace.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiFace.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiFillMap.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiFillMap.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiFreeType.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiFreeType.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiGeoShape.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiGeoShape.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiGshhsTools.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiGshhsTools.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiImage.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiImage.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiImageGif.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiImageGif.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiImageJpeg.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiImageJpeg.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiImagePgm.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiImagePgm.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiImagePng.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiImagePng.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiImagePnm.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiImagePnm.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiImageTools.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiImageTools.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiImageWbmp.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiImageWbmp.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiPath.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiPath.cpp">
+      <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\imagine\source\NFmiTightBezierFit.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\source\NFmiTightBezierFit.cpp">
+      <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
