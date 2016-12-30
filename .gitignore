@@ -1,0 +1,8 @@
+*~
+*.a
+.sconsign.dblite
+._*
+.DS_Store
+*.lib
+obj/
+*Test

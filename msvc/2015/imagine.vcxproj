@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\dox.h" />
+    <ClInclude Include="..\..\include\imagine-config.h" />
+    <ClInclude Include="..\..\include\ImagineXr.h" />
+    <ClInclude Include="..\..\include\NFmiAffine.h" />
+    <ClInclude Include="..\..\include\NFmiAlignment.h" />
+    <ClInclude Include="..\..\include\NFmiApproximateBezierFit.h" />
+    <ClInclude Include="..\..\include\NFmiBezierTools.h" />
+    <ClInclude Include="..\..\include\NFmiCardinalBezierFit.h" />
+    <ClInclude Include="..\..\include\NFmiColorBlend.h" />
+    <ClInclude Include="..\..\include\NFmiColorReduce.h" />
+    <ClInclude Include="..\..\include\NFmiColorTools.h" />
+    <ClInclude Include="..\..\include\NFmiContourTree.h" />
+    <ClInclude Include="..\..\include\NFmiCounter.h" />
+    <ClInclude Include="..\..\include\NFmiDataHints.h" />
+    <ClInclude Include="..\..\include\NFmiDrawable.h" />
+    <ClInclude Include="..\..\include\NFmiEdge.h" />
+    <ClInclude Include="..\..\include\NFmiEdgeTree.h" />
+    <ClInclude Include="..\..\include\NFmiEsriAttribute.h" />
+    <ClInclude Include="..\..\include\NFmiEsriAttributeName.h" />
+    <ClInclude Include="..\..\include\NFmiEsriBox.h" />
+    <ClInclude Include="..\..\include\NFmiEsriBuffer.h" />
+    <ClInclude Include="..\..\include\NFmiEsriElement.h" />
+    <ClInclude Include="..\..\include\NFmiEsriMultiPatch.h" />
+    <ClInclude Include="..\..\include\NFmiEsriMultiPoint.h" />
+    <ClInclude Include="..\..\include\NFmiEsriMultiPointM.h" />
+    <ClInclude Include="..\..\include\NFmiEsriMultiPointZ.h" />
+    <ClInclude Include="..\..\include\NFmiEsriNull.h" />
+    <ClInclude Include="..\..\include\NFmiEsriPoint.h" />
+    <ClInclude Include="..\..\include\NFmiEsriPointM.h" />
+    <ClInclude Include="..\..\include\NFmiEsriPointZ.h" />
+    <ClInclude Include="..\..\include\NFmiEsriPolygon.h" />
+    <ClInclude Include="..\..\include\NFmiEsriPolygonM.h" />
+    <ClInclude Include="..\..\include\NFmiEsriPolygonZ.h" />
+    <ClInclude Include="..\..\include\NFmiEsriPolyLine.h" />
+    <ClInclude Include="..\..\include\NFmiEsriPolyLineM.h" />
+    <ClInclude Include="..\..\include\NFmiEsriPolyLineZ.h" />
+    <ClInclude Include="..\..\include\NFmiEsriProjector.h" />
+    <ClInclude Include="..\..\include\NFmiEsriShape.h" />
+    <ClInclude Include="..\..\include\NFmiEsriTools.h" />
+    <ClInclude Include="..\..\include\NFmiFace.h" />
+    <ClInclude Include="..\..\include\NFmiFillMap.h" />
+    <ClInclude Include="..\..\include\NFmiFreeType.h" />
+    <ClInclude Include="..\..\include\NFmiGeoShape.h" />
+    <ClInclude Include="..\..\include\NFmiGshhsTools.h" />
+    <ClInclude Include="..\..\include\NFmiImage.h" />
+    <ClInclude Include="..\..\include\NFmiImageTools.h" />
+    <ClInclude Include="..\..\include\NFmiNearTree.h" />
+    <ClInclude Include="..\..\include\NFmiPath.h" />
+    <ClInclude Include="..\..\include\NFmiPathElement.h" />
+    <ClInclude Include="..\..\include\NFmiSimplifier.h" />
+    <ClInclude Include="..\..\include\NFmiTightBezierFit.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\ImagineXr.cpp" />
+    <ClCompile Include="..\..\source\NFmiAffine.cpp" />
+    <ClCompile Include="..\..\source\NFmiAlignment.cpp" />
+    <ClCompile Include="..\..\source\NFmiApproximateBezierFit.cpp" />
+    <ClCompile Include="..\..\source\NFmiBezierTools.cpp" />
+    <ClCompile Include="..\..\source\NFmiCardinalBezierFit.cpp" />
+    <ClCompile Include="..\..\source\NFmiColorReduce.cpp" />
+    <ClCompile Include="..\..\source\NFmiColorTools.cpp" />
+    <ClCompile Include="..\..\source\NFmiContourTree.cpp" />
+    <ClCompile Include="..\..\source\NFmiDataHints.cpp" />
+    <ClCompile Include="..\..\source\NFmiDrawable.cpp" />
+    <ClCompile Include="..\..\source\NFmiEdgeTree.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriBox.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriBuffer.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriElement.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriMultiPatch.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriMultiPoint.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriMultiPointM.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriMultiPointZ.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriPoint.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriPointM.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriPointZ.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriPolygon.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriPolygonM.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriPolygonZ.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriPolyLine.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriPolyLineM.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriPolyLineZ.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriShape.cpp" />
+    <ClCompile Include="..\..\source\NFmiEsriTools.cpp" />
+    <ClCompile Include="..\..\source\NFmiFace.cpp" />
+    <ClCompile Include="..\..\source\NFmiFillMap.cpp" />
+    <ClCompile Include="..\..\source\NFmiFreeType.cpp" />
+    <ClCompile Include="..\..\source\NFmiGeoShape.cpp" />
+    <ClCompile Include="..\..\source\NFmiGshhsTools.cpp" />
+    <ClCompile Include="..\..\source\NFmiImage.cpp" />
+    <ClCompile Include="..\..\source\NFmiImageGif.cpp" />
+    <ClCompile Include="..\..\source\NFmiImageJpeg.cpp" />
+    <ClCompile Include="..\..\source\NFmiImagePgm.cpp" />
+    <ClCompile Include="..\..\source\NFmiImagePng.cpp" />
+    <ClCompile Include="..\..\source\NFmiImagePnm.cpp" />
+    <ClCompile Include="..\..\source\NFmiImageTools.cpp" />
+    <ClCompile Include="..\..\source\NFmiImageWbmp.cpp" />
+    <ClCompile Include="..\..\source\NFmiPath.cpp" />
+    <ClCompile Include="..\..\source\NFmiTightBezierFit.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7B0AFDAF-345C-4918-A55D-3961FD9B520C}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.60315.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(BUILD_DIR)\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(BUILD_DIR)\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(BUILD_DIR)\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(BUILD_DIR)\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_DIR);..\..\Src\imagine\include;..\..\Src\newbase\include;..\..\libs\freetype2\include\;..\..\libs\freetype2\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;IMAGINE_IGNORE_FORMATS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation />
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc90.pdb</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x040b</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_DIR);$(LIBS_FMI)\imagine\include;$(LIBS_FMI)\newbase\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN64;NDEBUG;_LIB;IMAGINE_IGNORE_FORMATS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation />
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc90.pdb</ProgramDataBaseFileName>
+      <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x040b</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_DIR);..\..\Src\imagine\include;..\..\Src\newbase\include;..\..\libs\freetype2\include\;..\..\libs\freetype2\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IMAGINE_IGNORE_FORMATS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation />
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc90.pdb</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x040b</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_DIR);$(LIBS_FMI)\imagine\include;$(LIBS_FMI)\newbase\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN64;_DEBUG;_LIB;IMAGINE_IGNORE_FORMATS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation />
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc90.pdb</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x040b</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
