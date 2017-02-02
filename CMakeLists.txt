@@ -10,9 +10,9 @@ add_definitions(
     )
 
 include_directories( 
-    $ENV{BOOST_INCLUDE_DIR}
-    $ENV{LIBS_FMI}/imagine/include
-    $ENV{LIBS_FMI}/newbase/include
+    ${BOOST_INCLUDE_DIR}
+    ${LIBS_FMI}/imagine/include
+    ${LIBS_FMI}/newbase/include
     )
 
 file( GLOB CPP_FILES source/*.cpp )
