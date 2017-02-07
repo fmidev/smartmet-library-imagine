@@ -21,15 +21,11 @@
 #include "NFmiColorReduce.h"
 #include "NFmiImage.h"
 #include "NFmiColorTools.h"
-#include "NFmiNearTree.h"
 
 #include <boost/shared_ptr.hpp>
 
-#include <iostream>
 #include <iomanip>
-#include <list>
 #include <map>
-#include <memory>
 #include <vector>
 
 // std version not available in RHEL5, must use boost instead

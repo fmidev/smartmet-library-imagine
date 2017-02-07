@@ -19,7 +19,6 @@
 
 #include <cairomm/cairomm.h>
 
-#include <string>
 #include <deque>
 
 using namespace std;

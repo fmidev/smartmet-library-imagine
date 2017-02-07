@@ -8,7 +8,6 @@
  *
  */
 
-#include <map>
 #include "NFmiAlignment.h"
 
 using namespace std;

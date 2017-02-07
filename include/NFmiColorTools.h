@@ -26,7 +26,6 @@
 
 #include <NFmiDef.h>
 
-#include <cmath>   // max,abs etc
 #include <string>  // for color name definitions
 
 namespace Imagine

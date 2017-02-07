@@ -48,12 +48,8 @@
 #pragma warning(disable : 4786)  // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
 #endif
 
-#include <algorithm>  // vector sorting
 #include <map>        // maps
-#include <set>        // sets
 #include <vector>     // vectors
-#include <utility>    // pairs
-#include <cmath>      // abs,min,max
 
 #include "NFmiImage.h"
 

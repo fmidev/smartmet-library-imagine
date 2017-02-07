@@ -16,6 +16,7 @@
 
 #include "NFmiEsriPolygon.h"
 #include <iostream>
+#include "NFmiEsriBuffer.h"
 
 using namespace Imagine::NFmiEsriBuffer;  // Conversion tools
 using namespace std;

@@ -10,14 +10,11 @@
 
 #include "NFmiEsriProjector.h"
 #include "NFmiEsriAttribute.h"
-#include "NFmiEsriBuffer.h"
 
 #include <boost/shared_ptr.hpp>
 
 #include <iostream>
 #include <list>
-#include <string>
-#include <vector>
 
 namespace Imagine
 {

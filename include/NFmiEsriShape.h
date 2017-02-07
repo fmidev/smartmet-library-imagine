@@ -32,7 +32,6 @@
 #include "NFmiEsriBox.h"
 #include "NFmiEsriAttributeName.h"
 
-#include <string>
 #include <vector>
 
 namespace Imagine

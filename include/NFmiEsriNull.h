@@ -14,6 +14,7 @@
 
 #include "NFmiEsriElement.h"
 #include "NFmiEsriBox.h"
+#include "NFmiEsriBuffer.h"
 
 namespace Imagine
 {

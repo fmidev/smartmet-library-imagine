@@ -46,17 +46,12 @@
 #define CAIRO_NORMAL_LINE_WIDTH (0.4)  // 2.0 is normal Cairo default
 #else
 #include "NFmiDrawable.h"
-#include "NFmiFillMap.h"
 #include "NFmiAffine.h"
 #endif
 
 #include <NFmiArea.h>
 
-#include <string>
 #include <deque>
-#include <algorithm>
-#include <cmath>   // for sqrt
-#include <cstdio>  // for sprintf in ftoa
 
 #include <iostream>  // << is overloaded
 

@@ -16,7 +16,6 @@
 #define CAIRO_LINE_WIDTH (1.0)
 #endif
 
-#include <iostream>
 #include <algorithm>
 #include <stdexcept>
 #include <set>

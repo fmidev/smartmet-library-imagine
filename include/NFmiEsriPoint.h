@@ -10,14 +10,11 @@
 // Byte 12	Y	Y	double	1	little
 //
 // ======================================================================
-
 #ifndef IMAGINE_NFMIESRIPOINT_H
 #define IMAGINE_NFMIESRIPOINT_H
 
 #include "NFmiEsriElement.h"
 #include "NFmiEsriBox.h"
-
-#include <string>
 
 namespace Imagine
 {

@@ -14,7 +14,6 @@
 #define IMAGINE_NFMIEDGE_H
 
 #include <NFmiGlobals.h>
-#include <cmath>
 
 namespace Imagine
 {

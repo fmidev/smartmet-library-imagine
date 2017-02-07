@@ -32,7 +32,6 @@
 #include "NFmiEsriPointZ.h"
 #include "NFmiEsriBox.h"
 
-#include <string>
 #include <vector>
 
 namespace Imagine

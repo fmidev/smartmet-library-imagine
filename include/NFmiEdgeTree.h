@@ -13,8 +13,6 @@
 #ifndef IMAGINE_NFMIEDGETREE_H
 #define IMAGINE_NFMIEDGETREE_H
 
-#include "imagine-config.h"
-
 // Essential includes:
 
 #include "NFmiEdge.h"  // Input edges
@@ -24,11 +22,8 @@
 #include "NFmiFillMap.h"  // Fill map generation and rendering
 #endif
 
-#include <algorithm>
 #include <list>
 #include <set>
-#include <utility>
-#include <vector>
 
 namespace Imagine
 {

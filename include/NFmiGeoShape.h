@@ -14,8 +14,6 @@
 #ifndef IMAGINE_NFMIGEOSHAPE_H
 #define IMAGINE_NFMIGEOSHAPE_H
 
-#include "imagine-config.h"
-
 #include "NFmiEsriShape.h"
 #include "NFmiEsriTools.h"
 #include "NFmiPath.h"
@@ -31,7 +29,6 @@
 
 #include <NFmiArea.h>
 
-#include <string>
 #include <stdexcept>
 
 namespace Imagine

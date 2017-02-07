@@ -6,10 +6,7 @@
 #include "NFmiImage.h"
 #include <NFmiStringTools.h>
 
-#include <set>
-#include <map>
 #include <iostream>
-#include <algorithm>
 #include <sstream>
 
 using namespace std;
