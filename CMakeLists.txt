@@ -2,11 +2,8 @@ cmake_minimum_required(VERSION 3.7.1)
 project(Imagine)
 
 set(CMAKE_MFC_FLAG 0)
-add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
 
 add_definitions( 
-    -D_UNICODE 
-    -DUNICODE
     -DIMAGINE_IGNORE_FORMATS
     )
 
