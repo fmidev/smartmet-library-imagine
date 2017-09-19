@@ -1,4 +1,7 @@
-LIB = imagine
+SUBNAME = imagine
+LIB = smartmet-$(SUBNAME)
+SPEC = smartmet-library-$(SUBNAME)
+INCDIR = smartmet/$(SUBNAME)
 
 # Installation directories
 
@@ -38,7 +41,6 @@ ifeq ($(CXX), clang++)
  INCLUDES = \
 	-isystem $(includedir) \
 	-isystem $(includedir)/smartmet \
-	-isystem $(includedir)/smartmet/newbase \
 	`freetype-config --cflags`
 
 else
@@ -62,7 +64,6 @@ else
  INCLUDES = \
 	-I$(includedir) \
 	-I$(includedir)/smartmet \
-	-I$(includedir)/smartmet/newbase \
 	`freetype-config --cflags`
 
 endif
@@ -81,15 +82,9 @@ LIBS = -L$(libdir) \
 	`freetype-config --libs` \
 	-ljpeg -lpng -lz
 
-# rpm variables
-
-rpmsourcedir = /tmp/$(shell whoami)/rpmbuild
-
-rpmerr = "There's no spec file (imagine.spec). RPM wasn't created. Please make a spec file or copy and rename it into imagine.spec"
-
 # What to install
 
-LIBFILE = libsmartmet_$(LIB).so
+LIBFILE = lib$(LIB).so
 
 # How to install
 
@@ -108,13 +103,13 @@ endif
 
 # Compilation directories
 
-vpath %.cpp source
-vpath %.h include
+vpath %.cpp $(SUBNAME)
+vpath %.h $(SUBNAME)
 
 # The files to be compiled
 
-SRCS = $(wildcard source/*.cpp)
-HDRS = $(wildcard include/*.h)
+SRCS = $(wildcard $(SUBNAME)/*.cpp)
+HDRS = $(wildcard $(SUBNAME)/*.h)
 OBJS = $(patsubst %.cpp, obj/%.o, $(notdir $(SRCS)))
 
 INCLUDES := -Iinclude $(INCLUDES)
@@ -132,19 +127,19 @@ $(LIBFILE): $(OBJS)
 	$(CXX) $(CFLAGS) -shared -rdynamic -o $(LIBFILE) $(OBJS) $(LIBS)
 
 clean:
-	rm -f $(LIBFILE) *~ source/*~ include/*~
+	rm -f $(LIBFILE) *~ $(SUBNAME)/*~
 	rm -rf $(objdir)
 
 format:
-	clang-format -i -style=file include/*.h source/*.cpp test/*.cpp
+	clang-format -i -style=file $(SUBNAME)/*.h $(SUBNAME)/*.cpp test/*.cpp
 
 install:
-	@mkdir -p $(includedir)/smartmet/$(LIB)
+	@mkdir -p $(includedir)/$(INCDIR)
 	@list='$(HDRS)'; \
 	for hdr in $$list; do \
 	  HDR=$$(basename $$hdr); \
-	  echo $(INSTALL_DATA) $$hdr $(includedir)/smartmet/$(LIB)/$$HDR; \
-	  $(INSTALL_DATA) $$hdr $(includedir)/smartmet/$(LIB)/$$HDR; \
+	  echo $(INSTALL_DATA) $$hdr $(includedir)/$(INCDIR)/$$HDR; \
+	  $(INSTALL_DATA) $$hdr $(includedir)/$(INCDIR)/$$HDR; \
 	done
 	@mkdir -p $(libdir)
 	$(INSTALL_PROG) $(LIBFILE) $(libdir)/$(LIBFILE)
@@ -156,16 +151,13 @@ objdir:
 	@mkdir -p $(objdir)
 
 rpm: clean
-	if [ -e imagine.spec ]; \
+	@if [ -e $(SPEC).spec ]; \
 	then \
-	  smartspecupdate imagine.spec ; \
-	  mkdir -p $(rpmsourcedir) ; \
-	  tar -C ../ -cf $(rpmsourcedir)/libsmartmet-$(LIB).tar imagine ; \
-	  gzip -f $(rpmsourcedir)/libsmartmet-$(LIB).tar ; \
-	  TAR_OPTIONS=--wildcards rpmbuild -v -ta $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
-	  rm -f $(rpmsourcedir)/libsmartmet-$(LIB).tar.gz ; \
+	  tar -czvf $(SPEC).tar.gz --transform "s,^,$(SPEC)/," * ; \
+	  rpmbuild -ta $(SPEC).tar.gz ; \
+	  rm -f $(SPEC).tar.gz ; \
 	else \
-	  echo $(rpmerr); \
+	  echo $(SPEC).spec file missing; \
 	fi;
 
 .SUFFIXES: $(SUFFIXES) .cpp

@@ -46,20 +46,20 @@ CC = g++
 CFLAGS = -DUNIX -O0 -g $(MAINFLAGS)
 
 INCLUDES = \
-	-I ../include \
-	-I /usr/include/ \
+	-I ../imagine \
+	-I /usr/include/smartmet/ \
 	-I /usr/include/smartmet/newbase \
 	-I /usr/include/smartmet/regression \
 	$(FT2_CFLAGS) \
 	$(CAIRO_CFLAGS)
 
-LIBS =  -L .. -lsmartmet_imagine \
-	-lsmartmet_newbase \
-	-lboost_regex-mt \
-	-lboost_filesystem-mt \
-        -lboost_iostreams-mt \
-        -lboost_thread-mt \
-        -lboost_system-mt \
+LIBS =  ../libsmartmet-imagine.so \
+	-lsmartmet-newbase \
+	-lboost_regex \
+	-lboost_filesystem \
+        -lboost_iostreams \
+        -lboost_thread \
+        -lboost_system \
 	$(FT2_LIBS) \
 	$(CAIRO_LIBS) \
 	-lpng -ljpeg -lz -lbz2 -lpthread -lrt
@@ -74,6 +74,6 @@ test: $(PROG)
 	./$$prog; \
 	done
 
-$(PROG) : % : %.cpp ../libsmartmet_imagine.a
+$(PROG) : % : %.cpp ../libsmartmet-imagine.so
 	$(CC) $(CFLAGS) -o $@ $@.cpp $(INCLUDES) $(LIBS)
 
