@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 20.8.25
+Version: 20.8.26
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -18,11 +18,11 @@ BuildRequires: boost169-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: smartmet-library-newbase-devel >= 20.8.25
+BuildRequires: smartmet-library-newbase-devel >= 20.8.26
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal30-devel
-Requires: smartmet-library-newbase >= 20.8.25
+Requires: smartmet-library-newbase >= 20.8.26
 Requires: boost169-filesystem
 Requires: boost169-regex
 Requires: boost169-thread
@@ -83,6 +83,9 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Wed Aug 26 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.8.26-1.fmi
+- Numerous newbase API changes
+
 * Tue Aug 25 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.8.25-1.fmi
 - Repackaged since NFmiGrid API changed
 
