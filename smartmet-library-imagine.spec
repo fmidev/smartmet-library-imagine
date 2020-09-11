@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 20.8.21
+Version: 20.9.11
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -18,11 +18,11 @@ BuildRequires: boost169-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: smartmet-library-newbase-devel >= 20.8.21
+BuildRequires: smartmet-library-newbase-devel >= 20.9.11
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal-devel
-Requires: smartmet-library-newbase >= 20.8.21
+Requires: smartmet-library-newbase >= 20.9.11
 Requires: boost169-filesystem
 Requires: boost169-regex
 Requires: boost169-thread
@@ -83,6 +83,9 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Fri Sep 11 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.9.11-1.fmi
+- Removed obsolete FMI_DLL export declarations
+
 * Fri Aug 21 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.8.21-1.fmi
 - Upgrade to fmt 6.2
 

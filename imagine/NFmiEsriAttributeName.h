@@ -28,7 +28,7 @@ enum NFmiEsriAttributeType
   kFmiEsriDate
 };
 
-class _FMI_DLL NFmiEsriAttributeName
+class NFmiEsriAttributeName
 {
  public:
   // Constructor, destructor

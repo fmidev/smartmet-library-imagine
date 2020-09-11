@@ -41,205 +41,205 @@ struct Blend2Type
 
 //! Utilities for dealing with RGBA colours.
 
-namespace _FMI_DLL NFmiColorTools
+namespace NFmiColorTools
 {
-  //! An RGBA colour is internally represented as an integer of the form 0xaarrggbb
+//! An RGBA colour is internally represented as an integer of the form 0xaarrggbb
 
-  typedef int Color;
+typedef int Color;
 
-  // -------------------- special colors --------------------
+// -------------------- special colors --------------------
 
-  //! A missing color means the color is unknown.
+//! A missing color means the color is unknown.
 
-  const Color MissingColor = -1;
+const Color MissingColor = -1;
 
-  //! A "no-color" means no color is to be used. Strokes and fills are cancelled.
+//! A "no-color" means no color is to be used. Strokes and fills are cancelled.
 
-  const Color NoColor = -2;
+const Color NoColor = -2;
 
-  //! Helper variable to identify a transparent color.
+//! Helper variable to identify a transparent color.
 
-  const Color TransparentColor = 0x7F000000;
+const Color TransparentColor = 0x7F000000;
 
-  //! Helper variable to identify a black color
+//! Helper variable to identify a black color
 
-  const Color Black = 0;
+const Color Black = 0;
 
-  // -------------------- range definitions --------------------
+// -------------------- range definitions --------------------
 
-  //! RGB values are in range 0-255.
+//! RGB values are in range 0-255.
 
-  const int MaxRGB = 255;
+const int MaxRGB = 255;
 
-  //! Alpha values are in range 0-127, as in the GD library.
+//! Alpha values are in range 0-127, as in the GD library.
 
-  const int MaxAlpha = 127;
+const int MaxAlpha = 127;
 
-  // -------------------- opacity definitions --------------------
+// -------------------- opacity definitions --------------------
 
-  //! A color is opaque when its alpha value is zero.
+//! A color is opaque when its alpha value is zero.
 
-  const int Opaque = 0;
+const int Opaque = 0;
 
-  //! A color is transparent when its alpha value is 127.
+//! A color is transparent when its alpha value is 127.
 
-  const int Transparent = 127;
+const int Transparent = 127;
 
-  // -------------------- extracting color components --------------------
+// -------------------- extracting color components --------------------
 
-  int GetAlpha(Color c);
-  int GetRed(Color c);
-  int GetGreen(Color c);
-  int GetBlue(Color c);
-  Color GetRGB(Color c);
+int GetAlpha(Color c);
+int GetRed(Color c);
+int GetGreen(Color c);
+int GetBlue(Color c);
+Color GetRGB(Color c);
 
-  // -------------------- building color from components --------------------
+// -------------------- building color from components --------------------
 
-  Color MakeColor(int r, int g, int b, int a = Opaque);
-  Color SafeColor(int r, int g, int b, int a = Opaque);
-  Color SafestColor(int r, int g, int b, int a = Opaque);
+Color MakeColor(int r, int g, int b, int a = Opaque);
+Color SafeColor(int r, int g, int b, int a = Opaque);
+Color SafestColor(int r, int g, int b, int a = Opaque);
 
-  // ------------ replacing individual color components -----------------
+// ------------ replacing individual color components -----------------
 
-  Color ReplaceAlpha(Color c, int alpha);
-  Color ReplaceRed(Color c, int red);
-  Color ReplaceGreen(Color c, int green);
-  Color ReplaceBlue(Color c, int blue);
+Color ReplaceAlpha(Color c, int alpha);
+Color ReplaceRed(Color c, int red);
+Color ReplaceGreen(Color c, int green);
+Color ReplaceBlue(Color c, int blue);
 
-  // -------------------- color intensity tools --------------------
+// -------------------- color intensity tools --------------------
 
-  //! Intensity range is 0-255.
+//! Intensity range is 0-255.
 
-  const int MaxIntensity = 255;
+const int MaxIntensity = 255;
 
-  int Intensity(int r, int g, int b);
-  inline int Intensity(Color c);
+int Intensity(int r, int g, int b);
+inline int Intensity(Color c);
 
-  // -------------------- color contrast tools --------------------
+// -------------------- color contrast tools --------------------
 
-  // Adding contrast = increasing difference between light and dark colors
-  // Reducing contrast = decreasing difference between light and dark colors
+// Adding contrast = increasing difference between light and dark colors
+// Reducing contrast = decreasing difference between light and dark colors
 
-  //! Modify contrast into the given direction
+//! Modify contrast into the given direction
 
-  Color Contrast(Color theColor, int theSign);
+Color Contrast(Color theColor, int theSign);
 
-  Color AddContrast(Color theColor);
-  Color ReduceContrast(Color theColor);
+Color AddContrast(Color theColor);
+Color ReduceContrast(Color theColor);
 
-  // -------------------- colour blending --------------------
+// -------------------- colour blending --------------------
 
-  // Don't forget to update BlendNamesInit() when updating!
+// Don't forget to update BlendNamesInit() when updating!
 
-  //! All available colour blending rules.
+//! All available colour blending rules.
 
-  enum NFmiBlendRule
-  {
-    kFmiColorRuleMissing,
-    kFmiColorClear,
-    kFmiColorCopy,
-    kFmiColorKeep,
-    kFmiColorOver,
-    kFmiColorUnder,
-    kFmiColorIn,
-    kFmiColorKeepIn,
-    kFmiColorOut,
-    kFmiColorKeepOut,
-    kFmiColorAtop,
-    kFmiColorKeepAtop,
-    kFmiColorXor,
+enum NFmiBlendRule
+{
+  kFmiColorRuleMissing,
+  kFmiColorClear,
+  kFmiColorCopy,
+  kFmiColorKeep,
+  kFmiColorOver,
+  kFmiColorUnder,
+  kFmiColorIn,
+  kFmiColorKeepIn,
+  kFmiColorOut,
+  kFmiColorKeepOut,
+  kFmiColorAtop,
+  kFmiColorKeepAtop,
+  kFmiColorXor,
 
-    kFmiColorPlus,
+  kFmiColorPlus,
 #ifndef IMAGINE_WITH_CAIRO
-    kFmiColorMinus,
-    kFmiColorAdd,
-    kFmiColorSubstract,
-    kFmiColorMultiply,
-    kFmiColorDifference,
-    kFmiColorCopyRed,
-    kFmiColorCopyGreen,
-    kFmiColorCopyBlue,
-    kFmiColorCopyMatte,
-    kFmiColorCopyHue,
-    kFmiColorCopyLightness,
-    kFmiColorCopySaturation,
-    kFmiColorKeepMatte,
-    kFmiColorKeepHue,
-    kFmiColorKeepLightness,
-    kFmiColorKeepSaturation,
-    kFmiColorBumpmap,
-    kFmiColorDentmap,
-    kFmiColorAddContrast,
-    kFmiColorReduceContrast,
-    kFmiColorOnOpaque,
-    kFmiColorOnTransparent
+  kFmiColorMinus,
+  kFmiColorAdd,
+  kFmiColorSubstract,
+  kFmiColorMultiply,
+  kFmiColorDifference,
+  kFmiColorCopyRed,
+  kFmiColorCopyGreen,
+  kFmiColorCopyBlue,
+  kFmiColorCopyMatte,
+  kFmiColorCopyHue,
+  kFmiColorCopyLightness,
+  kFmiColorCopySaturation,
+  kFmiColorKeepMatte,
+  kFmiColorKeepHue,
+  kFmiColorKeepLightness,
+  kFmiColorKeepSaturation,
+  kFmiColorBumpmap,
+  kFmiColorDentmap,
+  kFmiColorAddContrast,
+  kFmiColorReduceContrast,
+  kFmiColorOnOpaque,
+  kFmiColorOnTransparent
 #endif
-  };
+};
 
-  // -------------------- colour name conversion --------------------
+// -------------------- colour name conversion --------------------
 
-  // Color name <-> color conversion.
+// Color name <-> color conversion.
 
-  //! Convert colour name to colour.
+//! Convert colour name to colour.
 
-  Color ColorValue(const std::string &theName);
+Color ColorValue(const std::string &theName);
 
-  //! Convert colour to colour name.
+//! Convert colour to colour name.
 
-  const std::string ColorName(const Color &theColor);
+const std::string ColorName(const Color &theColor);
 
-  //! Initialize colour name table.
+//! Initialize colour name table.
 
-  void ColorNamesInit(void);
+void ColorNamesInit(void);
 
-  //! A general purpose string to colour conversion
+//! A general purpose string to colour conversion
 
-  Color ToColor(const std::string &theColor);
+Color ToColor(const std::string &theColor);
 
-  //! Utility used by ToColor for converting hex to dec
+//! Utility used by ToColor for converting hex to dec
 
-  Color HexToColor(const std::string &theHex);
+Color HexToColor(const std::string &theHex);
 
-  // -------------------- blend name conversion --------------------
+// -------------------- blend name conversion --------------------
 
-  //! Convert blending rule name to enum.
+//! Convert blending rule name to enum.
 
-  NFmiBlendRule BlendValue(const std::string &theName);
+NFmiBlendRule BlendValue(const std::string &theName);
 
-  //! Convert blending rule to string name.
+//! Convert blending rule to string name.
 
-  const std::string BlendName(const NFmiBlendRule &theRule);
+const std::string BlendName(const NFmiBlendRule &theRule);
 
-  //! Initialize blending rule name table .
+//! Initialize blending rule name table .
 
-  void BlendNamesInit(void);
+void BlendNamesInit(void);
 
-  // -------------------- color space conversion --------------------
+// -------------------- color space conversion --------------------
 
-  //! Convert RGB values to HLS values.
+//! Convert RGB values to HLS values.
 
-  void RGBtoHLS(int red, int green, int blue, double *h, double *l, double *s);
+void RGBtoHLS(int red, int green, int blue, double *h, double *l, double *s);
 
-  //! Convert HLS values to RGB values
+//! Convert HLS values to RGB values
 
-  void HLStoRGB(double h, double l, double s, int *r, int *g, int *b);
+void HLStoRGB(double h, double l, double s, int *r, int *g, int *b);
 
-  //! Utility used by HLS -- RGB conversion functions.
+//! Utility used by HLS -- RGB conversion functions.
 
-  double hls_to_rgb_util(double m1, double m2, double h);
+double hls_to_rgb_util(double m1, double m2, double h);
 
-  // -------------------- miscellaneous --------------------
+// -------------------- miscellaneous --------------------
 
-  //! Simplify a blending rule given the source color alpha value
+//! Simplify a blending rule given the source color alpha value
 
-  NFmiBlendRule Simplify(NFmiBlendRule theRule, int alpha);
+NFmiBlendRule Simplify(NFmiBlendRule theRule, int alpha);
 
-  //! Interpolate linearly in HLS space between 2 colors.
+//! Interpolate linearly in HLS space between 2 colors.
 
-  int Interpolate(Color c1, Color c2, float fraction);
+int Interpolate(Color c1, Color c2, float fraction);
 
-  Color Simplify(Color c, int opaquethreshold, bool ignorealpha);
-}
+Color Simplify(Color c, int opaquethreshold, bool ignorealpha);
+}  // namespace NFmiColorTools
 
 // ----------------------------------------------------------------------
 /*!
@@ -445,6 +445,5 @@ inline NFmiColorTools::Color NFmiColorTools::Simplify(Color c,
 }
 
 }  // namespace Imagine
-
 
 // ----------------------------------------------------------------------
