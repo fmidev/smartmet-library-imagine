@@ -21,7 +21,11 @@ BuildRequires: libpng-devel
 BuildRequires: smartmet-library-newbase-devel >= 20.9.11
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
+%if 0%{rhel} >= 8
+BuildRequires: gdal30-devel
+%else
 BuildRequires: gdal-devel
+%endif
 Requires: smartmet-library-newbase >= 20.9.11
 Requires: boost169-filesystem
 Requires: boost169-regex
