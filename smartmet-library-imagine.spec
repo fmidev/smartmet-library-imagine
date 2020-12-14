@@ -22,7 +22,7 @@ BuildRequires: smartmet-library-newbase-devel >= 20.9.11
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 %if 0%{rhel} >= 8
-BuildRequires: gdal30-devel
+BuildRequires: gdal32-devel
 %else
 BuildRequires: gdal-devel
 %endif
