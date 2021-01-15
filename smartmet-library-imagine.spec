@@ -18,6 +18,7 @@ BuildRequires: boost169-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
+BuildRequires: smartmet-library-macgyver-devel >= 21.1.14
 BuildRequires: smartmet-library-newbase-devel >= 21.1.14
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
@@ -34,6 +35,7 @@ Requires: zlib
 #TestRequires: make
 #TestRequires: gcc-c++
 #TestRequires: smartmet-library-regression
+#TestRequires: smartmet-library-macgyver-devel
 #TestRequires: smartmet-library-newbase-devel
 #TestRequires: boost169-devel
 #TestRequires: freetype-devel
