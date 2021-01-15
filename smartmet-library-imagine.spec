@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 21.1.14
+Version: 21.1.15
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -83,6 +83,9 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Thu Jan 15 2021 Andris Pavēnis <andris.pavenis@fmi.fi> - 21.1.15-1.fmi
+- Use makefile.inc in Makefile
+
 * Thu Jan 14 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.1.14-1.fmi
 - Repackaged smartmet to resolve debuginfo issues
 
