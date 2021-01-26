@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 21.1.14
+Version: 21.1.15
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -18,6 +18,7 @@ BuildRequires: boost169-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
+BuildRequires: smartmet-library-macgyver-devel >= 21.1.14
 BuildRequires: smartmet-library-newbase-devel >= 21.1.14
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
@@ -34,6 +35,7 @@ Requires: zlib
 #TestRequires: make
 #TestRequires: gcc-c++
 #TestRequires: smartmet-library-regression
+#TestRequires: smartmet-library-macgyver-devel
 #TestRequires: smartmet-library-newbase-devel
 #TestRequires: boost169-devel
 #TestRequires: freetype-devel
@@ -83,6 +85,9 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Fri Jan 15 2021 Andris Pavēnis <andris.pavenis@fmi.fi> - 21.1.15-1.fmi
+- Use makefile.inc in Makefile
+
 * Thu Jan 14 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.1.14-1.fmi
 - Repackaged smartmet to resolve debuginfo issues
 
