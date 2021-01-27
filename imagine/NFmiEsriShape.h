@@ -92,7 +92,7 @@ static const char kFmixBaseFieldFloat = 'F';
 static const char kFmixBaseFieldChar = 'C';
 static const char kFmixBaseFieldInt = 'I';
 
-class _FMI_DLL NFmiEsriShape
+class NFmiEsriShape
 {
  public:
   // Typedefs to aid iterating

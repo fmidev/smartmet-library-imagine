@@ -728,7 +728,7 @@ bool NFmiImage::IsFullyOpaqueOrTransparent(int threshold) const
 
   for (int i = 0; i < itsWidth * itsHeight; i++)
   {
-    register int alpha = NFmiColorTools::GetAlpha(itsPixels[i]);
+    int alpha = NFmiColorTools::GetAlpha(itsPixels[i]);
     if (!(alpha == NFmiColorTools::Opaque || alpha == NFmiColorTools::Transparent)) return false;
   }
   return true;
