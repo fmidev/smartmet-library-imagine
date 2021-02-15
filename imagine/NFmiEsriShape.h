@@ -28,9 +28,11 @@
 //
 // These are the element types, which can be in a shapefile
 
-#include "NFmiEsriElement.h"
-#include "NFmiEsriBox.h"
 #include "NFmiEsriAttributeName.h"
+#include "NFmiEsriBox.h"
+#include "NFmiEsriElement.h"
+
+#include <ogr_spatialref.h>
 
 #include <vector>
 
@@ -137,6 +139,9 @@ class NFmiEsriShape
 
   NFmiEsriAttributeName *AttributeName(const std::string &theFieldName) const;
 
+  OGRSpatialReference *SpatialReference() { return &itsSpatialReference; }
+  const OGRSpatialReference *SpatialReference() const { return &itsSpatialReference; }
+
  private:
   NFmiEsriShape(const NFmiEsriShape &theShape);
   NFmiEsriShape &operator=(const NFmiEsriShape);
@@ -170,7 +175,7 @@ class NFmiEsriShape
 
   attributes_type itsAttributeNames;
 
-  // Constants related to headers:
+  OGRSpatialReference itsSpatialReference{nullptr};
 };
 
 }  // namespace Imagine

@@ -12,10 +12,12 @@
 // ======================================================================
 
 #include "NFmiGeoShape.h"
+#include "NFmiEsriMultiPatch.h"
 #include "NFmiEsriMultiPointZ.h"
 #include "NFmiEsriPolyLineZ.h"
 #include "NFmiEsriPolygonZ.h"
-#include "NFmiEsriMultiPatch.h"
+#include <gis/CoordinateTransformation.h>
+#include <gis/SpatialReference.h>
 
 using namespace std;
 
@@ -31,12 +33,27 @@ bool overlaps(double min1, double max1, double min2, double max2)
 class ProjectXYEsriPoint : public NFmiEsriProjector
 {
  public:
-  ProjectXYEsriPoint(const NFmiArea *theArea) : itsArea(theArea), itsXshift(0) {}
+  ProjectXYEsriPoint(OGRSpatialReference *theShapeReference, NFmiArea *theArea)
+      : itsArea(theArea),
+        itsXshift(0),
+#ifdef NEW_NFMIAREA
+        itsTransformation(*theShapeReference, theArea->SpatialReference())
+#else
+        itsTransformation(*theShapeReference, theArea->WKT())
+#endif
+  {
+  }
+
   NFmiEsriPoint operator()(const NFmiEsriPoint &thePoint) const
   {
-    NFmiPoint tmp(thePoint.X() + itsXshift, thePoint.Y());
-    tmp = itsArea->ToXY(tmp);
-    return NFmiEsriPoint(tmp.X(), tmp.Y());
+    double x = thePoint.X() + itsXshift;
+    double y = thePoint.Y();
+
+    if (!itsTransformation.transform(x, y))
+      throw std::runtime_error("Failed to project shape coordinates");
+
+    auto xy = itsArea->WorldXYToXY(NFmiPoint(x, y));
+    return NFmiEsriPoint(xy.X(), xy.Y());
   }
 
   void SetBox(const NFmiEsriBox &theBox) const
@@ -46,7 +63,8 @@ class ProjectXYEsriPoint : public NFmiEsriProjector
 
     double x1 = itsArea->BottomLeftLatLon().X();
     double x2 = itsArea->TopRightLatLon().X();
-    if (x2 < x1) x2 += 360;
+    if (x2 < x1)
+      x2 += 360;
 
     if (overlaps(x1, x2, theBox.Xmin(), theBox.Xmax()))
       itsXshift = 0;
@@ -59,18 +77,20 @@ class ProjectXYEsriPoint : public NFmiEsriProjector
  private:
   const NFmiArea *itsArea;
   mutable double itsXshift;
+  Fmi::CoordinateTransformation itsTransformation;
 };
 
 // ----------------------------------------------------------------------
 // Project the data to XY-coordinates
 // ----------------------------------------------------------------------
 
-void NFmiGeoShape::ProjectXY(const NFmiArea &theArea)
+void NFmiGeoShape::ProjectXY(NFmiArea &theArea)
 {
   switch (Type())
   {
     case kFmiGeoShapeEsri:
-      if (itsEsriShape != nullptr) itsEsriShape->Project(ProjectXYEsriPoint(&theArea));
+      if (itsEsriShape != nullptr)
+        itsEsriShape->Project(ProjectXYEsriPoint(itsEsriShape->SpatialReference(), &theArea));
       break;
     case kFmiGeoShapeShoreLine:
       throw NFmiGeoShapeError("NFmiGeoShape::Project() kFmiGeoShapeShoreLine not implemented");
@@ -130,7 +150,8 @@ void NFmiGeoShape::Stroke(ImagineXr_or_NFmiImage &img,
 {
   // Quick exit if color is not real
 
-  if (theColor == NFmiColorTools::NoColor) return;
+  if (theColor == NFmiColorTools::NoColor)
+    return;
 
   switch (Type())
   {
@@ -208,7 +229,8 @@ const NFmiPath NFmiGeoShape::PathEsri() const
 
   // Just a safety, should not happen
 
-  if (itsEsriShape == nullptr) return outpath;
+  if (itsEsriShape == nullptr)
+    return outpath;
 
   // Iterate through all elements
 
@@ -218,7 +240,8 @@ const NFmiPath NFmiGeoShape::PathEsri() const
   {
     // There may be deleted elements in the shape, which are to be ignored
 
-    if (*iter == nullptr) continue;
+    if (*iter == nullptr)
+      continue;
 
     switch ((*iter)->Type())
     {
@@ -375,7 +398,8 @@ void NFmiGeoShape::AddEsri(NFmiFillMap &theMap) const
 {
   // Just a safety, should not happen
 
-  if (itsEsriShape == nullptr) return;
+  if (itsEsriShape == nullptr)
+    return;
 
   // Iterate through all elements
 
@@ -385,7 +409,8 @@ void NFmiGeoShape::AddEsri(NFmiFillMap &theMap) const
   {
     // There may be deleted elements in the shape, which are to be ignored
 
-    if (*iter == nullptr) continue;
+    if (*iter == nullptr)
+      continue;
 
     switch ((*iter)->Type())
     {
@@ -531,7 +556,8 @@ void NFmiGeoShape::MarkEsri(ImagineXr_or_NFmiImage &img,
 {
   // Just a safety, should not happen
 
-  if (itsEsriShape == nullptr) return;
+  if (itsEsriShape == nullptr)
+    return;
 
   // Iterate through all elements
 
@@ -541,7 +567,8 @@ void NFmiGeoShape::MarkEsri(ImagineXr_or_NFmiImage &img,
   {
     // There may be deleted elements in the shape, which are to be ignored
 
-    if (*iter == nullptr) continue;
+    if (*iter == nullptr)
+      continue;
 
     switch ((*iter)->Type())
     {
@@ -619,7 +646,8 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
 {
   // Just a safety, should not happen
 
-  if (itsEsriShape == nullptr) return;
+  if (itsEsriShape == nullptr)
+    return;
 
   // Make sure the attribute exists
 
@@ -627,7 +655,8 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
 
   // Return if the shape has no such field. Maybe should error instead?
 
-  if (attribute == nullptr) return;
+  if (attribute == nullptr)
+    return;
 
   // Iterate through all elements
 
@@ -637,7 +666,8 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
   {
     // There may be deleted elements in the shape, which are to be ignored
 
-    if (*iter == nullptr) continue;
+    if (*iter == nullptr)
+      continue;
 
     // The attribute value
 
@@ -705,7 +735,8 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
 
               // Do not output point if no move in pixel resolution
 
-              if (i != i1 && x == lastx && y == lasty) continue;
+              if (i != i1 && x == lastx && y == lasty)
+                continue;
               lastx = x;
               lasty = y;
               points.push_back(make_pair(x, y));
@@ -718,7 +749,8 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
             for (vector<pair<int, int> >::const_iterator it = points.begin(); it != points.end();
                  ++it)
             {
-              if (it != points.begin()) os << ' ';
+              if (it != points.begin())
+                os << ' ';
               os << it->first << "," << it->second;
             }
             os << '"' << endl;

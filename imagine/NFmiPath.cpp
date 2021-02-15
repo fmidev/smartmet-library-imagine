@@ -461,6 +461,16 @@ void NFmiPath::Project(const NFmiArea *const theArea)
 {
   if (!theArea) return;
 
+#ifdef WGS84
+  NFmiPathData::iterator iter;
+  for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)
+  {
+    NFmiPoint pt = theArea->ToXY(NFmiPoint(iter->x, iter->y));
+    iter->x = pt.X();
+    iter->y = pt.Y();
+  }
+#else
+
   bool path_is_pacific = IsPacificView();
   bool area_is_pacific = theArea->PacificView();
 
@@ -482,6 +492,7 @@ void NFmiPath::Project(const NFmiArea *const theArea)
     iter->x = pt.X();
     iter->y = pt.Y();
   }
+#endif
 }
 
 // ----------------------------------------------------------------------

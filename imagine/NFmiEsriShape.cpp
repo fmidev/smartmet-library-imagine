@@ -137,6 +137,7 @@
 #endif
 
 #include "NFmiEsriShape.h"
+
 #include "NFmiEsriMultiPatch.h"
 #include "NFmiEsriMultiPointZ.h"
 #include "NFmiEsriNull.h"
@@ -144,6 +145,7 @@
 #include "NFmiEsriPolyLineZ.h"
 #include "NFmiEsriPolygonZ.h"
 
+#include <fmt/format.h>
 #include <newbase/NFmiFileSystem.h>
 #include <newbase/NFmiSettings.h>
 #include <newbase/NFmiTime.h>
@@ -335,6 +337,23 @@ bool NFmiEsriShape::Read(const string &theFilename, bool fDBF)
 
     pos += reclen * 2;  // Esri sizes are in 16-bit units!
   }
+
+  // We do not parse .proj files. We assume WGS84, unless one of the following files exists:
+  string fmifilename = NFmiFileSystem::FileComplete(theFilename + ".fmi", shapes_path);
+  string ykjfilename = NFmiFileSystem::FileComplete(theFilename + ".ykj", shapes_path);
+
+  std::string proj4 = "WGS84";
+  if (NFmiFileSystem::FileExists(fmifilename))
+    proj4 = fmt::format("+proj=longlat +R={:.0f} +over +no_defs +towgs84=0,0,0", kRearth);
+  else if (NFmiFileSystem::FileExists(ykjfilename))
+    proj4 =
+        "+proj=tmerc +lat_0=0 +lon_0=27 +k=1 +x_0=3500000 +y_0=0 +ellps=intl +units=m +wktext "
+        "+towgs84=-96.0617,-82.4278,-121.7535,4.80107,0.34543,-1.37646,1.4964 +no_defs";
+
+  auto err = itsSpatialReference.SetFromUserInput(proj4.c_str());
+
+  if (err != OGRERR_NONE)
+    throw std::runtime_error("Failed to create spatial reference from '" + proj4 + "'");
 
   // We're done if the DBF file is not desired
 
@@ -577,7 +596,7 @@ bool NFmiEsriShape::Add(int theRecordNumber, const string &theBuffer, int thePos
       Add(new NFmiEsriPolygonZ(theBuffer, thePos, theRecordNumber));
       break;
 
-    // Return false for unknown types
+      // Return false for unknown types
 
     default:
       return false;

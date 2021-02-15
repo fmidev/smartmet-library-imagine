@@ -97,11 +97,47 @@ FMI %{DIRNAME} development files
 * Fri Sep 11 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.9.11-1.fmi
 - Removed obsolete FMI_DLL export declarations
 
+* Thu Aug 27 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.8.27-1.fmi
+- NFmiGrid API changed
+
+* Wed Aug 26 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.8.26-1.fmi
+- Numerous newbase API changes
+
+* Tue Aug 25 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.8.25-1.fmi
+- Repackaged since NFmiGrid API changed
+
 * Fri Aug 21 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.8.21-1.fmi
 - Upgrade to fmt 6.2
 
+* Wed Jul  1 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.7.1-1.fmi
+- Repackaged
+
+* Fri Apr 24 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.4.24-1.fmi
+- Repackaged
+
 * Sat Apr 18 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.4.18-1.fmi
 - Upgrade to Boost 1.69
+
+* Fri Apr 17 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.4.17-1.fmi
+- Use Fmi::CoordinateMatrix from gis-library
+
+* Wed Apr  1 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.4.1-1.fmi
+- Use NFmiCoordinateMatrix instead of NFmiDataMatrix<NFmiPoint>
+
+* Thu Mar 26 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.3.26-1.fmi
+- Repackaged since NFmiArea API changed
+
+* Wed Feb 12 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.2.12-1.fmi
+- Fixed NFmiGeoShape::Project to handle EPSGTreatsAsLatLong
+
+* Thu Feb  6 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.2.6-1.fmi
+- NFmiPoint Z-coordinate removed from the ABI
+
+* Fri Dec 13 2019 Mika Heiskanen <mika.heiskanen@fmi.fi> - 19.12.13-1.fmi
+- Repackaged due to NFmiArea API changes
+
+* Wed Dec 11 2019 Mika Heiskanen <mika.heiskanen@fmi.fi> - 19.12.11-1.fmi
+- Upgrade to GDAL 3.0
 
 * Wed Dec  4 2019 Mika Heiskanen <mika.heiskanen@fmi.fi> - 19.12.4-1.fmi
 - Use -fno-omit-frame-pointer for a better profiling and debugging experience                                                                                              
