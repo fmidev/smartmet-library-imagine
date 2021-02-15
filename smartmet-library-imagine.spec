@@ -23,6 +23,7 @@ BuildRequires: smartmet-library-newbase-devel >= 21.2.15
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal32-devel
+BuildRequires: smartmet-library-gis >= 21.2.11
 Requires: smartmet-library-newbase >= 21.2.15
 Requires: boost169-filesystem
 Requires: boost169-regex
