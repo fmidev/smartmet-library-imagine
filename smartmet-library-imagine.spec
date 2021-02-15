@@ -46,6 +46,7 @@ Requires: zlib
 #TestRequires: libpng
 #TestRequires: zlib
 #TestRequires: bzip2-libs
+#TestRequires: smartmet-library-gis-devel >= 21.2.11
 Provides: %{LIBNAME}
 Obsoletes: libsmartmet-imagine < 17.1.4
 Obsoletes: libsmartmet-imagine-debuginfo < 17.1.4
