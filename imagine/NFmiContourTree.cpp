@@ -27,6 +27,7 @@
 // ======================================================================
 
 #include "NFmiContourTree.h"
+#include <gis/CoordinateMatrix.h>
 #include <stdexcept>
 
 #ifndef square
@@ -51,7 +52,8 @@ NFmiPath NFmiContourTree::Path(void) const
 {
   NFmiPath path = NFmiEdgeTree::Path();
 
-  if (path.Size() != 0 && ContouringMissing()) path.InsideOut();
+  if (path.Size() != 0 && ContouringMissing())
+    path.InsideOut();
 
   return path;
 }
@@ -810,7 +812,8 @@ void NFmiContourTree::ContourLinear4(float x1,
       switch (it->op)
       {
         case kFmiMoveTo:
-          if (it != elements.begin()) Add(NFmiEdge(firstx, firsty, lastx, lasty, true, false));
+          if (it != elements.begin())
+            Add(NFmiEdge(firstx, firsty, lastx, lasty, true, false));
           firstx = it->x;
           firsty = it->y;
           lastx = firstx;
@@ -819,7 +822,8 @@ void NFmiContourTree::ContourLinear4(float x1,
         case kFmiLineTo:
           lastx = it->x;
           lasty = it->y;
-          if (it == --elements.end()) Add(NFmiEdge(firstx, firsty, lastx, lasty, true, false));
+          if (it == --elements.end())
+            Add(NFmiEdge(firstx, firsty, lastx, lasty, true, false));
           break;
         default:
           throw runtime_error("NFmiContourTree encountered bad path element");
@@ -970,10 +974,14 @@ void NFmiContourTree::ContourNearest4(float x1,
     Add(NFmiEdge(x34, y34, x4, y4, true, false));
     Add(NFmiEdge(x4, y4, x41, y41, true, false));
   }
-  if ((c1 == kInside) ^ (c2 == kInside)) Add(NFmiEdge(x12, y12, x0, y0, true, false));
-  if ((c2 == kInside) ^ (c3 == kInside)) Add(NFmiEdge(x23, y23, x0, y0, true, false));
-  if ((c3 == kInside) ^ (c4 == kInside)) Add(NFmiEdge(x34, y34, x0, y0, true, false));
-  if ((c4 == kInside) ^ (c1 == kInside)) Add(NFmiEdge(x41, y41, x0, y0, true, false));
+  if ((c1 == kInside) ^ (c2 == kInside))
+    Add(NFmiEdge(x12, y12, x0, y0, true, false));
+  if ((c2 == kInside) ^ (c3 == kInside))
+    Add(NFmiEdge(x23, y23, x0, y0, true, false));
+  if ((c3 == kInside) ^ (c4 == kInside))
+    Add(NFmiEdge(x34, y34, x0, y0, true, false));
+  if ((c4 == kInside) ^ (c1 == kInside))
+    Add(NFmiEdge(x41, y41, x0, y0, true, false));
 }
 
 // ----------------------------------------------------------------------
@@ -1282,9 +1290,12 @@ void NFmiContourTree::ContourNearest3(
     Add(NFmiEdge(x23, y23, x3, y3, true, false));
     Add(NFmiEdge(x3, y3, x31, y31, true, false));
   }
-  if ((c1 == kInside) ^ (c2 == kInside)) Add(NFmiEdge(x12, y12, x0, y0, true, false));
-  if ((c2 == kInside) ^ (c3 == kInside)) Add(NFmiEdge(x23, y23, x0, y0, true, false));
-  if ((c3 == kInside) ^ (c1 == kInside)) Add(NFmiEdge(x31, y31, x0, y0, true, false));
+  if ((c1 == kInside) ^ (c2 == kInside))
+    Add(NFmiEdge(x12, y12, x0, y0, true, false));
+  if ((c2 == kInside) ^ (c3 == kInside))
+    Add(NFmiEdge(x23, y23, x0, y0, true, false));
+  if ((c3 == kInside) ^ (c1 == kInside))
+    Add(NFmiEdge(x31, y31, x0, y0, true, false));
 }
 
 // ----------------------------------------------------------------------
