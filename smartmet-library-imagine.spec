@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 21.2.15
+Version: 21.2.16
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -19,13 +19,13 @@ BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
 BuildRequires: smartmet-library-macgyver-devel >= 21.1.25
-BuildRequires: smartmet-library-newbase-devel >= 21.2.15
+BuildRequires: smartmet-library-newbase-devel >= 21.2.16
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal32-devel
 BuildRequires: smartmet-library-gis-devel >= 21.2.11
 BuildRequires: fmt-devel >= 7.1.3
-Requires: smartmet-library-newbase >= 21.2.15
+Requires: smartmet-library-newbase >= 21.2.16
 Requires: boost169-filesystem
 Requires: boost169-regex
 Requires: boost169-thread
@@ -89,6 +89,9 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Tue Feb 16 2021 Andris Pavēnis <andris.pavenis@fmi.fi> - 21.2.16-1.fmi
+- Repackaged due to newbase ABI changes
+
 * Mon Feb 15 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.2.15-1.fmi
 - Merged WGS84 branch
 
