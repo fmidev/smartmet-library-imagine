@@ -36,11 +36,7 @@ class ProjectXYEsriPoint : public NFmiEsriProjector
   ProjectXYEsriPoint(OGRSpatialReference *theShapeReference, NFmiArea *theArea)
       : itsArea(theArea),
         itsXshift(0),
-#ifdef NEW_NFMIAREA
         itsTransformation(*theShapeReference, theArea->SpatialReference())
-#else
-        itsTransformation(*theShapeReference, theArea->WKT())
-#endif
   {
   }
 
