@@ -3,6 +3,7 @@
 // ======================================================================
 
 #include "NFmiEsriBox.h"
+#include <macgyver/Exception.h>
 
 #include <algorithm>
 
@@ -35,15 +36,22 @@ NFmiEsriBox::NFmiEsriBox(void)
 
 void NFmiEsriBox::Init(void)
 {
-  itsXmin = 0.0;
-  itsXmax = 0.0;
-  itsYmin = 0.0;
-  itsYmax = 0.0;
-  itsMmin = 0.0;
-  itsMmax = 0.0;
-  itsZmin = 0.0;
-  itsZmax = 0.0;
-  itsValidity = false;
+  try
+  {
+    itsXmin = 0.0;
+    itsXmax = 0.0;
+    itsYmin = 0.0;
+    itsYmax = 0.0;
+    itsMmin = 0.0;
+    itsMmax = 0.0;
+    itsZmin = 0.0;
+    itsZmax = 0.0;
+    itsValidity = false;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -54,24 +62,31 @@ void NFmiEsriBox::Init(void)
 
 void NFmiEsriBox::Update(double theX, double theY, double theM, double theZ)
 {
-  if (itsValidity)
+  try
   {
-    itsXmin = std::min(itsXmin, theX);
-    itsXmax = std::max(itsXmax, theX);
-    itsYmin = std::min(itsYmin, theY);
-    itsYmax = std::max(itsYmax, theY);
-    itsMmin = std::min(itsMmin, theM);
-    itsMmax = std::max(itsMmax, theM);
-    itsZmin = std::min(itsZmin, theZ);
-    itsZmax = std::max(itsZmax, theZ);
+    if (itsValidity)
+    {
+      itsXmin = std::min(itsXmin, theX);
+      itsXmax = std::max(itsXmax, theX);
+      itsYmin = std::min(itsYmin, theY);
+      itsYmax = std::max(itsYmax, theY);
+      itsMmin = std::min(itsMmin, theM);
+      itsMmax = std::max(itsMmax, theM);
+      itsZmin = std::min(itsZmin, theZ);
+      itsZmax = std::max(itsZmax, theZ);
+    }
+    else
+    {
+      itsXmin = itsXmax = theX;
+      itsYmin = itsYmax = theY;
+      itsMmin = itsMmax = theM;
+      itsZmin = itsZmax = theZ;
+      itsValidity = true;
+    }
   }
-  else
+  catch (...)
   {
-    itsXmin = itsXmax = theX;
-    itsYmin = itsYmax = theY;
-    itsMmin = itsMmax = theM;
-    itsZmin = itsZmax = theZ;
-    itsValidity = true;
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -83,21 +98,28 @@ void NFmiEsriBox::Update(double theX, double theY, double theM, double theZ)
 
 void NFmiEsriBox::Update(double theX, double theY, double theM)
 {
-  if (itsValidity)
+  try
   {
-    itsXmin = std::min(itsXmin, theX);
-    itsXmax = std::max(itsXmax, theX);
-    itsYmin = std::min(itsYmin, theY);
-    itsYmax = std::max(itsYmax, theY);
-    itsMmin = std::min(itsMmin, theM);
-    itsMmax = std::max(itsMmax, theM);
+    if (itsValidity)
+    {
+      itsXmin = std::min(itsXmin, theX);
+      itsXmax = std::max(itsXmax, theX);
+      itsYmin = std::min(itsYmin, theY);
+      itsYmax = std::max(itsYmax, theY);
+      itsMmin = std::min(itsMmin, theM);
+      itsMmax = std::max(itsMmax, theM);
+    }
+    else
+    {
+      itsXmin = itsXmax = theX;
+      itsYmin = itsYmax = theY;
+      itsMmin = itsMmax = theM;
+      itsValidity = true;
+    }
   }
-  else
+  catch (...)
   {
-    itsXmin = itsXmax = theX;
-    itsYmin = itsYmax = theY;
-    itsMmin = itsMmax = theM;
-    itsValidity = true;
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -109,18 +131,25 @@ void NFmiEsriBox::Update(double theX, double theY, double theM)
 
 void NFmiEsriBox::Update(double theX, double theY)
 {
-  if (itsValidity)
+  try
   {
-    itsXmin = std::min(itsXmin, theX);
-    itsXmax = std::max(itsXmax, theX);
-    itsYmin = std::min(itsYmin, theY);
-    itsYmax = std::max(itsYmax, theY);
+    if (itsValidity)
+    {
+      itsXmin = std::min(itsXmin, theX);
+      itsXmax = std::max(itsXmax, theX);
+      itsYmin = std::min(itsYmin, theY);
+      itsYmax = std::max(itsYmax, theY);
+    }
+    else
+    {
+      itsXmin = itsXmax = theX;
+      itsYmin = itsYmax = theY;
+      itsValidity = true;
+    }
   }
-  else
+  catch (...)
   {
-    itsXmin = itsXmax = theX;
-    itsYmin = itsYmax = theY;
-    itsValidity = true;
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -132,10 +161,17 @@ void NFmiEsriBox::Update(double theX, double theY)
 
 void NFmiEsriBox::Update(const NFmiEsriBox& theBox)
 {
-  if (theBox.IsValid())
+  try
   {
-    Update(theBox.Xmin(), theBox.Ymin(), theBox.Mmin(), theBox.Zmin());
-    Update(theBox.Xmax(), theBox.Ymax(), theBox.Mmax(), theBox.Zmax());
+    if (theBox.IsValid())
+    {
+      Update(theBox.Xmin(), theBox.Ymin(), theBox.Mmin(), theBox.Zmin());
+      Update(theBox.Xmax(), theBox.Ymax(), theBox.Mmax(), theBox.Zmax());
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 

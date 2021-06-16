@@ -21,6 +21,7 @@
 #include "NFmiColorReduce.h"
 #include "NFmiImage.h"
 #include "NFmiColorTools.h"
+#include <macgyver/Exception.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -76,13 +77,20 @@ typedef map<NFmiColorTools::Color, NFmiColorTools::Color> ColorMap;
 
 void init_gamma_table(vector<float>& theTable, bool& theFlag)
 {
-  const float gamma = 2.2f;
-  const float coeff = 255 / (pow(255.f, gamma));
+  try
+  {
+    const float gamma = 2.2f;
+    const float coeff = 255 / (pow(255.f, gamma));
 
-  for (int i = 0; i < 256; i++)
-    theTable[i] = coeff * pow(static_cast<float>(i), gamma);
+    for (int i = 0; i < 256; i++)
+      theTable[i] = coeff * pow(static_cast<float>(i), gamma);
 
-  theFlag = true;
+    theFlag = true;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -96,66 +104,75 @@ void init_gamma_table(vector<float>& theTable, bool& theFlag)
 
 Counter calc_counts(const NFmiImage& theImage)
 {
-// The default bucket size in SGI is 100, which is quite
-// small for the typical number of colours we encounter
-// in images.
+  try
+  {
+  // The default bucket size in SGI is 100, which is quite
+  // small for the typical number of colours we encounter
+  // in images.
 
 #ifdef UNIX
-  Counter counter(4096);
-#else  // #ifdef _MSC_VER  // MSVisualC++ kääntäjän mukana tulleessa hash_map -koodissa
-  // ei ollut buckettien määrän säätö mahdollisuutta.
-  Counter counter;
+    Counter counter(4096);
+#else  // #ifdef _MSC_VER  // MSVisualC++ kï¿½ï¿½ntï¿½jï¿½n mukana tulleessa hash_map -koodissa
+    // ei ollut buckettien mï¿½ï¿½rï¿½n sï¿½ï¿½tï¿½ mahdollisuutta.
+    Counter counter;
 #endif
 
-  // Safety check
+    // Safety check
 
-  if (theImage.Height() * theImage.Width() == 0) return counter;
+    if (theImage.Height() * theImage.Width() == 0)
+      return counter;
 
-  // Insert the first color so that we can initialize the iterator cache
-  // Note that we insert count 0, but the first loop will fix the number
+    // Insert the first color so that we can initialize the iterator cache
+    // Note that we insert count 0, but the first loop will fix the number
 
-  counter.insert(Counter::value_type(theImage(0, 0), ColorInfo(theImage(0, 0))));
+    counter.insert(Counter::value_type(theImage(0, 0), ColorInfo(theImage(0, 0))));
 
-  Counter::iterator last1 = counter.begin();
-  Counter::iterator last2 = counter.begin();
+    Counter::iterator last1 = counter.begin();
+    Counter::iterator last2 = counter.begin();
 
-  for (int j = 0; j < theImage.Height(); j++)
-    for (int i = 0; i < theImage.Width(); i++)
+    for (int j = 0; j < theImage.Height(); j++)
     {
-      NFmiColorTools::Color color = theImage(i, j);
-
-      if (last1->first == color)
+      for (int i = 0; i < theImage.Width(); i++)
       {
-        ++last1->second;
-        // test if the color is the same in a 3x3 box and is hence a new color to be kept
-        if (!last1->second.keeper && i > 1 && j > 1)
+        NFmiColorTools::Color color = theImage(i, j);
+
+        if (last1->first == color)
         {
-          // Note: theImage(i-1,j) is already known to have the same color (last1 points to it)
-          if (theImage(i - 2, j) == color && theImage(i, j - 1) == color &&
-              theImage(i - 1, j - 1) == color && theImage(i - 2, j - 1) == color &&
-              theImage(i, j - 2) == color && theImage(i - 1, j - 2) == color &&
-              theImage(i - 2, j - 2) == color)
+          ++last1->second;
+          // test if the color is the same in a 3x3 box and is hence a new color to be kept
+          if (!last1->second.keeper && i > 1 && j > 1)
           {
-            last1->second.keep();
+            // Note: theImage(i-1,j) is already known to have the same color (last1 points to it)
+            if (theImage(i - 2, j) == color && theImage(i, j - 1) == color &&
+                theImage(i - 1, j - 1) == color && theImage(i - 2, j - 1) == color &&
+                theImage(i, j - 2) == color && theImage(i - 1, j - 2) == color &&
+                theImage(i - 2, j - 2) == color)
+            {
+              last1->second.keep();
+            }
           }
         }
-      }
-      else if (last2->first == color)
-      {
-        ++last2->second;
-        swap(last1, last2);
-      }
-      else
-      {
-        pair<Counter::iterator, bool> result =
-            counter.insert(Counter::value_type(color, ColorInfo(color)));
-        last2 = last1;
-        last1 = result.first;
-        ++last1->second;
+        else if (last2->first == color)
+        {
+          ++last2->second;
+          swap(last1, last2);
+        }
+        else
+        {
+          pair<Counter::iterator, bool> result =
+              counter.insert(Counter::value_type(color, ColorInfo(color)));
+          last2 = last1;
+          last1 = result.first;
+          ++last1->second;
+        }
       }
     }
-
-  return counter;
+    return counter;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -224,21 +241,28 @@ ColorTree::ColorTree()
 
 float ColorTree::distance(ColorTree::value_type theColor1, ColorTree::value_type theColor2)
 {
-  static vector<float> gamma(256, 0);
-  static bool initialized = false;
+  try
+  {
+    static vector<float> gamma(256, 0);
+    static bool initialized = false;
 
-  if (!initialized) init_gamma_table(gamma, initialized);
+    if (!initialized) init_gamma_table(gamma, initialized);
 
-  const float r =
-      (gamma[NFmiColorTools::GetRed(theColor1)] - gamma[NFmiColorTools::GetRed(theColor2)]);
-  const float g =
-      (gamma[NFmiColorTools::GetGreen(theColor1)] - gamma[NFmiColorTools::GetGreen(theColor2)]);
-  const float b =
-      (gamma[NFmiColorTools::GetBlue(theColor1)] - gamma[NFmiColorTools::GetBlue(theColor2)]);
-  const float a =
-      static_cast<float>(NFmiColorTools::GetAlpha(theColor1) - NFmiColorTools::GetAlpha(theColor2));
+    const float r =
+        (gamma[NFmiColorTools::GetRed(theColor1)] - gamma[NFmiColorTools::GetRed(theColor2)]);
+    const float g =
+        (gamma[NFmiColorTools::GetGreen(theColor1)] - gamma[NFmiColorTools::GetGreen(theColor2)]);
+    const float b =
+        (gamma[NFmiColorTools::GetBlue(theColor1)] - gamma[NFmiColorTools::GetBlue(theColor2)]);
+    const float a =
+        static_cast<float>(NFmiColorTools::GetAlpha(theColor1) - NFmiColorTools::GetAlpha(theColor2));
 
-  return sqrt(3.0f * r * r + 4.0f * g * g + 2.0f * b * b + a * a);
+    return sqrt(3.0f * r * r + 4.0f * g * g + 2.0f * b * b + a * a);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -247,19 +271,40 @@ float ColorTree::distance(ColorTree::value_type theColor1, ColorTree::value_type
  */
 // ----------------------------------------------------------------------
 
-bool ColorTree::empty() const { return (itsLeftObject.get() == 0); }
+bool ColorTree::empty() const
+{
+  try
+  {
+    return (itsLeftObject.get() == 0);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
+}
 // ----------------------------------------------------------------------
 /*!
  * \brief Return number of colours in the tree.
  */
 // ----------------------------------------------------------------------
 
-int ColorTree::size() const { return itsCount; }
+int ColorTree::size() const
+{
+  return itsCount;
+}
+
 void ColorTree::clear()
 {
-  itsRightBranch.reset(new ColorTree);
-  itsLeftBranch.reset(new ColorTree);
-  itsCount = 0;
+  try
+  {
+    itsRightBranch.reset(new ColorTree);
+    itsLeftBranch.reset(new ColorTree);
+    itsCount = 0;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -276,39 +321,46 @@ void ColorTree::clear()
 
 void ColorTree::insert(ColorTree::value_type theColor)
 {
-  if (itsLeftObject.get() == 0)
-    itsLeftObject.reset(new value_type(theColor));
-
-  else if (itsRightObject.get() == 0)
-    itsRightObject.reset(new value_type(theColor));
-
-  else
+  try
   {
-    const float dist_left = distance(theColor, *itsLeftObject);
-    const float dist_right = distance(theColor, *itsRightObject);
+    if (itsLeftObject.get() == 0)
+      itsLeftObject.reset(new value_type(theColor));
 
-    if (dist_left > dist_right)
-    {
-      if (itsRightBranch.get() == 0) itsRightBranch.reset(new ColorTree);
+    else if (itsRightObject.get() == 0)
+      itsRightObject.reset(new value_type(theColor));
 
-      // note that constructor sets itsMaxRight to be negative
-
-      itsMaxRight = max(itsMaxRight, dist_right);
-
-      itsRightBranch->insert(theColor);
-      itsCount++;
-    }
     else
     {
-      if (itsLeftBranch.get() == 0) itsLeftBranch.reset(new ColorTree);
+      const float dist_left = distance(theColor, *itsLeftObject);
+      const float dist_right = distance(theColor, *itsRightObject);
 
-      // note that constructor sets itsMaxLeft to be negative
+      if (dist_left > dist_right)
+      {
+        if (itsRightBranch.get() == 0) itsRightBranch.reset(new ColorTree);
 
-      itsMaxLeft = max(itsMaxLeft, dist_left);
+        // note that constructor sets itsMaxRight to be negative
 
-      itsLeftBranch->insert(theColor);
-      itsCount++;
+        itsMaxRight = max(itsMaxRight, dist_right);
+
+        itsRightBranch->insert(theColor);
+        itsCount++;
+      }
+      else
+      {
+        if (itsLeftBranch.get() == 0) itsLeftBranch.reset(new ColorTree);
+
+        // note that constructor sets itsMaxLeft to be negative
+
+        itsMaxLeft = max(itsMaxLeft, dist_left);
+
+        itsLeftBranch->insert(theColor);
+        itsCount++;
+      }
     }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -323,11 +375,19 @@ void ColorTree::insert(ColorTree::value_type theColor)
 
 ColorTree::value_type ColorTree::nearest(ColorTree::value_type theColor)
 {
-  value_type bestcolor;
-  float radius = -1;
-  if (!nearest(theColor, bestcolor, radius))
-    throw runtime_error("Invalid use of color reduction tables");
-  return bestcolor;
+  try
+  {
+    value_type bestcolor;
+    float radius = -1;
+    if (!nearest(theColor, bestcolor, radius))
+      throw Fmi::Exception(BCP,"Invalid use of color reduction tables");
+
+    return bestcolor;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -342,61 +402,69 @@ bool ColorTree::nearest(ColorTree::value_type theColor,
                         ColorTree::value_type& theNearest,
                         float& theRadius) const
 {
-  float left_dist = -1;
-  float right_dist = -1;
-  bool found = false;
-
-  // first test each of the left and right positions to see if
-  // one holds a color nearer than the nearest so far discovered
-
-  if (itsLeftObject.get() != 0)
+  try
   {
-    left_dist = distance(theColor, *itsLeftObject);
-    if (theRadius < 0 || left_dist <= theRadius)
-    {
-      theRadius = left_dist;
-      theNearest = *itsLeftObject;
-      found = true;
-    }
-  }
+    float left_dist = -1;
+    float right_dist = -1;
+    bool found = false;
 
-  if (itsRightObject.get() != 0)
+    // first test each of the left and right positions to see if
+    // one holds a color nearer than the nearest so far discovered
+
+    if (itsLeftObject.get() != 0)
+    {
+      left_dist = distance(theColor, *itsLeftObject);
+      if (theRadius < 0 || left_dist <= theRadius)
+      {
+        theRadius = left_dist;
+        theNearest = *itsLeftObject;
+        found = true;
+      }
+    }
+
+    if (itsRightObject.get() != 0)
+    {
+      right_dist = distance(theColor, *itsRightObject);
+      if (theRadius < 0 || right_dist <= theRadius)
+      {
+        theRadius = right_dist;
+        theNearest = *itsRightObject;
+        found = true;
+      }
+    }
+
+    // if theRadius is negative at this point, the tree is empty
+    // on the other hand, if the radius is zero, we found a match
+
+    if (theRadius <= 0)
+      return found;
+
+    // Now we test to see if the branches below might hold an object
+    // nearer than the best so far found. The triangle rule is used
+    // to test whether it's even necessary to descend. We may be
+    // able to skip skanning both branches if we can guess which
+    // branch is most likely to contain the nearest match. We simply
+    // guess, that it is the branch which is nearer. Note that
+    // the first and third if-clauses are mutually exclusive,
+    // hence only parts 1-2 or 2-3 will be executed.
+
+    const bool left_closer = (left_dist < right_dist);
+
+    if (!left_closer && (itsRightBranch.get() != 0) && ((theRadius + itsMaxRight) >= right_dist))
+      found |= itsRightBranch->nearest(theColor, theNearest, theRadius);
+
+    if ((itsLeftBranch.get() != 0) && ((theRadius + itsMaxLeft) >= left_dist))
+      found |= itsLeftBranch->nearest(theColor, theNearest, theRadius);
+
+    if (left_closer && (itsRightBranch.get() != 0) && ((theRadius + itsMaxRight) >= right_dist))
+      found |= itsRightBranch->nearest(theColor, theNearest, theRadius);
+
+    return found;
+  }
+  catch (...)
   {
-    right_dist = distance(theColor, *itsRightObject);
-    if (theRadius < 0 || right_dist <= theRadius)
-    {
-      theRadius = right_dist;
-      theNearest = *itsRightObject;
-      found = true;
-    }
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
-
-  // if theRadius is negative at this point, the tree is empty
-  // on the other hand, if the radius is zero, we found a match
-
-  if (theRadius <= 0) return found;
-
-  // Now we test to see if the branches below might hold an object
-  // nearer than the best so far found. The triangle rule is used
-  // to test whether it's even necessary to descend. We may be
-  // able to skip skanning both branches if we can guess which
-  // branch is most likely to contain the nearest match. We simply
-  // guess, that it is the branch which is nearer. Note that
-  // the first and third if-clauses are mutually exclusive,
-  // hence only parts 1-2 or 2-3 will be executed.
-
-  const bool left_closer = (left_dist < right_dist);
-
-  if (!left_closer && (itsRightBranch.get() != 0) && ((theRadius + itsMaxRight) >= right_dist))
-    found |= itsRightBranch->nearest(theColor, theNearest, theRadius);
-
-  if ((itsLeftBranch.get() != 0) && ((theRadius + itsMaxLeft) >= left_dist))
-    found |= itsLeftBranch->nearest(theColor, theNearest, theRadius);
-
-  if (left_closer && (itsRightBranch.get() != 0) && ((theRadius + itsMaxRight) >= right_dist))
-    found |= itsRightBranch->nearest(theColor, theNearest, theRadius);
-
-  return found;
 }
 
 // ----------------------------------------------------------------------
@@ -407,38 +475,47 @@ bool ColorTree::nearest(ColorTree::value_type theColor,
 
 void replace_colors(NFmiImage& theImage, const ColorMap& theMap)
 {
-  boost::unordered_map<NFmiColorTools::Color, NFmiColorTools::Color> colormap(256);
-
-  for (ColorMap::const_iterator it = theMap.begin(); it != theMap.end(); ++it)
+  try
   {
-    colormap[it->first] = it->second;
-  }
+    boost::unordered_map<NFmiColorTools::Color, NFmiColorTools::Color> colormap(256);
 
-  NFmiColorTools::Color last_color1 = NFmiColorTools::NoColor;
-  NFmiColorTools::Color last_choice1 = NFmiColorTools::NoColor;
-  NFmiColorTools::Color last_color2 = NFmiColorTools::NoColor;
-  NFmiColorTools::Color last_choice2 = NFmiColorTools::NoColor;
-
-  for (int j = 0; j < theImage.Height(); j++)
-    for (int i = 0; i < theImage.Width(); i++)
+    for (ColorMap::const_iterator it = theMap.begin(); it != theMap.end(); ++it)
     {
-      if (theImage(i, j) == last_color1)
-        theImage(i, j) = last_choice1;
-      else if (theImage(i, j) == last_color2)
+      colormap[it->first] = it->second;
+    }
+
+    NFmiColorTools::Color last_color1 = NFmiColorTools::NoColor;
+    NFmiColorTools::Color last_choice1 = NFmiColorTools::NoColor;
+    NFmiColorTools::Color last_color2 = NFmiColorTools::NoColor;
+    NFmiColorTools::Color last_choice2 = NFmiColorTools::NoColor;
+
+    for (int j = 0; j < theImage.Height(); j++)
+    {
+      for (int i = 0; i < theImage.Width(); i++)
       {
-        theImage(i, j) = last_choice2;
-        swap(last_color1, last_color2);
-        swap(last_choice1, last_choice2);
-      }
-      else
-      {
-        last_color2 = last_color1;
-        last_choice2 = last_choice1;
-        last_color1 = theImage(i, j);
-        last_choice1 = colormap[theImage(i, j)];
-        theImage(i, j) = last_choice1;
+        if (theImage(i, j) == last_color1)
+          theImage(i, j) = last_choice1;
+        else if (theImage(i, j) == last_color2)
+        {
+          theImage(i, j) = last_choice2;
+          swap(last_color1, last_color2);
+          swap(last_choice1, last_choice2);
+        }
+        else
+        {
+          last_color2 = last_color1;
+          last_choice2 = last_choice1;
+          last_color1 = theImage(i, j);
+          last_choice1 = colormap[theImage(i, j)];
+          theImage(i, j) = last_choice1;
+        }
       }
     }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -453,33 +530,40 @@ void build_tree(const NFmiImage& theImage,
                 ColorMap& theMap,
                 float theQuality)
 {
-  const float ratio = static_cast<float>(1.0 / (theImage.Width() * theImage.Height()));
-  const float factor = -theQuality / log(10.0f);
-
-  for (ColorHistogram::const_iterator it = theHistogram.begin(); it != theHistogram.end(); ++it)
+  try
   {
-    if (theTree.empty() || it->keeper)
-    {
-      theTree.insert(it->color);
-      theMap.insert(ColorMap::value_type(it->color, it->color));
-    }
-    else
-    {
-      NFmiColorTools::Color nearest = theTree.nearest(it->color);
-      float dist = theTree.distance(nearest, it->color);
+    const float ratio = static_cast<float>(1.0 / (theImage.Width() * theImage.Height()));
+    const float factor = -theQuality / log(10.0f);
 
-      float limit = factor * log(ratio * it->count);
-
-      if (dist < limit)
-      {
-        theMap.insert(ColorMap::value_type(it->color, nearest));
-      }
-      else
+    for (ColorHistogram::const_iterator it = theHistogram.begin(); it != theHistogram.end(); ++it)
+    {
+      if (theTree.empty() || it->keeper)
       {
         theTree.insert(it->color);
         theMap.insert(ColorMap::value_type(it->color, it->color));
       }
+      else
+      {
+        NFmiColorTools::Color nearest = theTree.nearest(it->color);
+        float dist = theTree.distance(nearest, it->color);
+
+        float limit = factor * log(ratio * it->count);
+
+        if (dist < limit)
+        {
+          theMap.insert(ColorMap::value_type(it->color, nearest));
+        }
+        else
+        {
+          theTree.insert(it->color);
+          theMap.insert(ColorMap::value_type(it->color, it->color));
+        }
+      }
     }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -497,52 +581,67 @@ void build_tree(const NFmiImage& theImage,
                 int theMaxCount,
                 float theErrorFactor)
 {
-  const float ratio = static_cast<float>(1.0 / (theImage.Width() * theImage.Height()));
-
-  bool done = false;
-  while (!done)
+  try
   {
-    done = true;
-    const float factor = -theQuality / log(10.0f);
+    const float ratio = static_cast<float>(1.0 / (theImage.Width() * theImage.Height()));
 
-    for (ColorHistogram::const_iterator it = theHistogram.begin(); it != theHistogram.end(); ++it)
+    bool done = false;
+    while (!done)
     {
-      if (theTree.empty() || it->keeper)
-      {
-        theTree.insert(it->color);
-        theMap.insert(ColorMap::value_type(it->color, it->color));
-      }
-      else
-      {
-        NFmiColorTools::Color nearest = theTree.nearest(it->color);
-        float dist = theTree.distance(nearest, it->color);
+      done = true;
+      const float factor = -theQuality / log(10.0f);
 
-        const float limit = factor * log(ratio * it->count);
-        if (dist < limit)
-          theMap.insert(ColorMap::value_type(it->color, nearest));
-        else if (theTree.size() < theMaxCount)
+      for (ColorHistogram::const_iterator it = theHistogram.begin(); it != theHistogram.end(); ++it)
+      {
+        if (theTree.empty() || it->keeper)
         {
           theTree.insert(it->color);
           theMap.insert(ColorMap::value_type(it->color, it->color));
         }
         else
         {
-          theTree.clear();
-          theMap.clear();
-          done = false;
-          theQuality *= theErrorFactor;
-          break;
+          NFmiColorTools::Color nearest = theTree.nearest(it->color);
+          float dist = theTree.distance(nearest, it->color);
+
+          const float limit = factor * log(ratio * it->count);
+          if (dist < limit)
+            theMap.insert(ColorMap::value_type(it->color, nearest));
+          else if (theTree.size() < theMaxCount)
+          {
+            theTree.insert(it->color);
+            theMap.insert(ColorMap::value_type(it->color, it->color));
+          }
+          else
+          {
+            theTree.clear();
+            theMap.clear();
+            done = false;
+            theQuality *= theErrorFactor;
+            break;
+          }
         }
       }
     }
   }
-
-}  // namespace anonymous
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
+}
 
 bool colorcmp(const ColorInfo& c1, const ColorInfo& c2)
 {
-  if (c1.keeper == c2.keeper) return (c2.count < c1.count);
-  return c1.keeper;
+  try
+  {
+    if (c1.keeper == c2.keeper)
+      return (c2.count < c1.count);
+
+    return c1.keeper;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -556,20 +655,28 @@ bool colorcmp(const ColorInfo& c1, const ColorInfo& c2)
 
 const ColorHistogram CalcColorHistogram(const NFmiImage& theImage)
 {
-  Counter counter = calc_counts(theImage);
-
-  ColorHistogram histogram;
-
-  Counter::const_iterator end = counter.end();
-  for (Counter::const_iterator it = counter.begin(); it != end; ++it)
+  try
   {
-    histogram.push_back(it->second);
-  }
-  sort(histogram.begin(), histogram.end(), &colorcmp);
+    Counter counter = calc_counts(theImage);
 
-  return histogram;
+    ColorHistogram histogram;
+
+    Counter::const_iterator end = counter.end();
+    for (Counter::const_iterator it = counter.begin(); it != end; ++it)
+    {
+      histogram.push_back(it->second);
+    }
+    sort(histogram.begin(), histogram.end(), &colorcmp);
+
+    return histogram;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
-}
+
+} // namespace anonymous
 
 // ======================================================================
 // The actual public interfaces
@@ -588,17 +695,24 @@ namespace NFmiColorReduce
 
 const Histogram CalcHistogram(const NFmiImage& theImage)
 {
-  Counter counter = calc_counts(theImage);
-
-  NFmiColorReduce::Histogram histogram;
-
-  Counter::const_iterator end = counter.end();
-  for (Counter::const_iterator it = counter.begin(); it != end; ++it)
+  try
   {
-    histogram.insert(NFmiColorReduce::Histogram::value_type(it->second.count, it->first));
-  }
+    Counter counter = calc_counts(theImage);
 
-  return histogram;
+    NFmiColorReduce::Histogram histogram;
+
+    Counter::const_iterator end = counter.end();
+    for (Counter::const_iterator it = counter.begin(); it != end; ++it)
+    {
+      histogram.insert(NFmiColorReduce::Histogram::value_type(it->second.count, it->first));
+    }
+
+    return histogram;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -642,52 +756,67 @@ const Histogram CalcHistogram(const NFmiImage& theImage)
 
 void AdaptiveReduce(NFmiImage& theImage, float theQuality)
 {
-  using namespace Imagine::NFmiColorTools;
+  try
+  {
+    using namespace Imagine::NFmiColorTools;
 
-  // A sanity check on the maximum error
+    // A sanity check on the maximum error
 
-  if (theQuality < 1) return;
+    if (theQuality < 1) return;
 
-  // Calculate the histogram
+    // Calculate the histogram
 
-  ColorHistogram histogram = CalcColorHistogram(theImage);
+    ColorHistogram histogram = CalcColorHistogram(theImage);
 
-  // Select the colors
+    // Select the colors
 
-  ColorTree tree;
-  ColorMap colormap;
+    ColorTree tree;
+    ColorMap colormap;
 
-  build_tree(theImage, histogram, tree, colormap, theQuality);
+    build_tree(theImage, histogram, tree, colormap, theQuality);
 
-  // Now perform the replacements. Since we expect to encounter
-  // sequences of color, we speed of the searches by caching
-  // the last replacement.
+    // Now perform the replacements. Since we expect to encounter
+    // sequences of color, we speed of the searches by caching
+    // the last replacement.
 
-  replace_colors(theImage, colormap);
+    replace_colors(theImage, colormap);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 void AdaptiveReduce(NFmiImage& theImage, float theQuality, int theMaxColors, float theErrorFactor)
 {
-  using namespace Imagine::NFmiColorTools;
+  try
+  {
+    using namespace Imagine::NFmiColorTools;
 
-  if (theQuality < 1) throw runtime_error("Quality was too low.");
+    if (theQuality < 1)
+      throw Fmi::Exception(BCP,"Quality was too low.");
 
-  // Calculate the histogram
+    // Calculate the histogram
 
-  ColorHistogram histogram = CalcColorHistogram(theImage);
+    ColorHistogram histogram = CalcColorHistogram(theImage);
 
-  // Select the colors
+    // Select the colors
 
-  ColorTree tree;
-  ColorMap colormap;
+    ColorTree tree;
+    ColorMap colormap;
 
-  build_tree(theImage, histogram, tree, colormap, theQuality, theMaxColors, theErrorFactor);
+    build_tree(theImage, histogram, tree, colormap, theQuality, theMaxColors, theErrorFactor);
 
-  // Now perform the replacements. Since we expect to encounter
-  // sequences of color, we speed of the searches by caching
-  // the last replacement.
+    // Now perform the replacements. Since we expect to encounter
+    // sequences of color, we speed of the searches by caching
+    // the last replacement.
 
-  replace_colors(theImage, colormap);
+    replace_colors(theImage, colormap);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace NFmiColorReduce

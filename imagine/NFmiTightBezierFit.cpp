@@ -22,6 +22,7 @@
 #include "NFmiCounter.h"
 #include "NFmiPath.h"
 
+#include <macgyver/Exception.h>
 #include <newbase/NFmiGeoTools.h>
 
 #include <list>
@@ -55,17 +56,24 @@ void SubdivideLine(NFmiPath& thePath,
                    double theY2,
                    double theMaxLength)
 {
-  const double len = NFmiGeoTools::Distance(theX1, theY1, theX2, theY2);
-  if (len <= theMaxLength || theMaxLength <= 0)
+  try
   {
-    thePath.Add(theOper, theX2, theY2);
+    const double len = NFmiGeoTools::Distance(theX1, theY1, theX2, theY2);
+    if (len <= theMaxLength || theMaxLength <= 0)
+    {
+      thePath.Add(theOper, theX2, theY2);
+    }
+    else
+    {
+      const double midX = (theX1 + theX2) / 2;
+      const double midY = (theY1 + theY2) / 2;
+      SubdivideLine(thePath, theOper, theX1, theY1, midX, midY, theMaxLength);
+      SubdivideLine(thePath, theOper, midX, midY, theX2, theY2, theMaxLength);
+    }
   }
-  else
+  catch (...)
   {
-    const double midX = (theX1 + theX2) / 2;
-    const double midY = (theY1 + theY2) / 2;
-    SubdivideLine(thePath, theOper, theX1, theY1, midX, midY, theMaxLength);
-    SubdivideLine(thePath, theOper, midX, midY, theX2, theY2, theMaxLength);
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -81,33 +89,40 @@ void SubdivideLine(NFmiPath& thePath,
 
 NFmiPath SubdividePath(const NFmiPath& thePath, double theMaxLength)
 {
-  // safety check
-  if (theMaxLength <= 0) return thePath;
-
-  NFmiPath out;
-
-  double lastx = 0;
-  double lasty = 0;
-  for (NFmiPathData::const_iterator it = thePath.Elements().begin(); it != thePath.Elements().end();
-       ++it)
+  try
   {
-    switch (it->op)
-    {
-      case kFmiMoveTo:
-      case kFmiConicTo:
-      case kFmiCubicTo:
-        out.Add(*it);
-        break;
-      case kFmiGhostLineTo:
-      case kFmiLineTo:
-        SubdivideLine(out, it->op, lastx, lasty, it->x, it->y, theMaxLength);
-        break;
-    }
-    lastx = it->x;
-    lasty = it->y;
-  }
+    // safety check
+    if (theMaxLength <= 0) return thePath;
 
-  return out;
+    NFmiPath out;
+
+    double lastx = 0;
+    double lasty = 0;
+    for (NFmiPathData::const_iterator it = thePath.Elements().begin(); it != thePath.Elements().end();
+         ++it)
+    {
+      switch (it->op)
+      {
+        case kFmiMoveTo:
+        case kFmiConicTo:
+        case kFmiCubicTo:
+          out.Add(*it);
+          break;
+        case kFmiGhostLineTo:
+        case kFmiLineTo:
+          SubdivideLine(out, it->op, lastx, lasty, it->x, it->y, theMaxLength);
+          break;
+      }
+      lastx = it->x;
+      lasty = it->y;
+    }
+
+    return out;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 }
 
@@ -130,8 +145,15 @@ namespace NFmiTightBezierFit
 
 const NFmiPath Fit(const NFmiPath& thePath, double theMaxError)
 {
-  NFmiPath subpath = SubdividePath(thePath, theMaxError);
-  return NFmiApproximateBezierFit::Fit(subpath, theMaxError);
+  try
+  {
+    NFmiPath subpath = SubdividePath(thePath, theMaxError);
+    return NFmiApproximateBezierFit::Fit(subpath, theMaxError);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -165,26 +187,33 @@ const NFmiPath Fit(const NFmiPath& thePath, double theMaxError)
 
 const NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError)
 {
-  using namespace NFmiBezierTools;
-
-  // Calculate the points
-
-  NFmiCounter<NFmiPoint> counts = VertexCounts(thePaths);
-
-  NFmiPaths outpaths;
-  for (NFmiPaths::const_iterator it = thePaths.begin(); it != thePaths.end(); ++it)
+  try
   {
-    PathList pathlist = SplitPath(*it, counts);
-    NFmiPath outpath;
-    for (PathList::const_iterator jt = pathlist.begin(); jt != pathlist.end(); ++jt)
-    {
-      NFmiPath fitpath = Fit(*jt, theMaxError);
-      outpath.Add(fitpath);
-    }
-    outpaths.push_back(outpath);
-  }
+    using namespace NFmiBezierTools;
 
-  return outpaths;
+    // Calculate the points
+
+    NFmiCounter<NFmiPoint> counts = VertexCounts(thePaths);
+
+    NFmiPaths outpaths;
+    for (NFmiPaths::const_iterator it = thePaths.begin(); it != thePaths.end(); ++it)
+    {
+      PathList pathlist = SplitPath(*it, counts);
+      NFmiPath outpath;
+      for (PathList::const_iterator jt = pathlist.begin(); jt != pathlist.end(); ++jt)
+      {
+        NFmiPath fitpath = Fit(*jt, theMaxError);
+        outpath.Add(fitpath);
+      }
+      outpaths.push_back(outpath);
+    }
+
+    return outpaths;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace NFmiTightBezierFit

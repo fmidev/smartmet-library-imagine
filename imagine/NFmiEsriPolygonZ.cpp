@@ -26,6 +26,7 @@
 
 #include "NFmiEsriPolygonZ.h"
 #include "NFmiEsriBuffer.h"
+#include <macgyver/Exception.h>
 
 using namespace Imagine::NFmiEsriBuffer;  // Conversion tools
 using namespace std;
@@ -50,21 +51,39 @@ NFmiEsriPolygonZ::NFmiEsriPolygonZ(const NFmiEsriPolygonZ& thePolygon)
 
 NFmiEsriPolygonZ& NFmiEsriPolygonZ::operator=(const NFmiEsriPolygonZ& thePolygon)
 {
-  if (this != &thePolygon)
+  try
   {
-    NFmiEsriPolygonM::operator=(thePolygon);
-    itsBox = thePolygon.itsBox;
-    itsParts = thePolygon.itsParts;
-    itsPoints = thePolygon.itsPoints;
+    if (this != &thePolygon)
+    {
+      NFmiEsriPolygonM::operator=(thePolygon);
+      itsBox = thePolygon.itsBox;
+      itsParts = thePolygon.itsParts;
+      itsPoints = thePolygon.itsPoints;
+    }
+    return *this;
   }
-  return *this;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
 // Cloning
 // ----------------------------------------------------------------------
 
-NFmiEsriElement* NFmiEsriPolygonZ::Clone() const { return new NFmiEsriPolygonZ(*this); }
+NFmiEsriElement* NFmiEsriPolygonZ::Clone() const
+{
+  try
+  {
+    return new NFmiEsriPolygonZ(*this);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
+}
+
 // ----------------------------------------------------------------------
 // Constructor based on a character buffer
 // ----------------------------------------------------------------------
@@ -72,31 +91,38 @@ NFmiEsriElement* NFmiEsriPolygonZ::Clone() const { return new NFmiEsriPolygonZ(*
 NFmiEsriPolygonZ::NFmiEsriPolygonZ(const string& theBuffer, int thePos, int theNumber)
     : NFmiEsriPolygonM(theNumber, kFmiEsriPolygonZ), itsBox(), itsParts(), itsPoints()
 {
-  int nparts = LittleEndianInt(theBuffer, thePos + 36);
-  int npoints = LittleEndianInt(theBuffer, thePos + 40);
-
-  // Speed up by reserving enough space already
-
-  itsParts.reserve(itsParts.size() + nparts);
-  itsPoints.reserve(itsPoints.size() + npoints);
-
-  // Establish the parts
-
-  int i = 0;
-  for (i = 0; i < nparts; i++)
-    itsParts.push_back(LittleEndianInt(theBuffer, thePos + 44 + 4 * i));
-
-  // And the points
-
-  for (i = 0; i < npoints; i++)
+  try
   {
-    int pointpos = thePos + 44 + 4 * nparts + 16 * i;
-    int zpos = thePos + 44 + 4 * nparts + 16 * npoints + 16 + 8 * i;
-    int mpos = zpos + 8 * npoints + 16;
-    Add(NFmiEsriPointZ(LittleEndianDouble(theBuffer, pointpos),
-                       LittleEndianDouble(theBuffer, pointpos + 8),
-                       LittleEndianDouble(theBuffer, zpos),
-                       LittleEndianDouble(theBuffer, mpos)));
+    int nparts = LittleEndianInt(theBuffer, thePos + 36);
+    int npoints = LittleEndianInt(theBuffer, thePos + 40);
+
+    // Speed up by reserving enough space already
+
+    itsParts.reserve(itsParts.size() + nparts);
+    itsPoints.reserve(itsPoints.size() + npoints);
+
+    // Establish the parts
+
+    int i = 0;
+    for (i = 0; i < nparts; i++)
+      itsParts.push_back(LittleEndianInt(theBuffer, thePos + 44 + 4 * i));
+
+    // And the points
+
+    for (i = 0; i < npoints; i++)
+    {
+      int pointpos = thePos + 44 + 4 * nparts + 16 * i;
+      int zpos = thePos + 44 + 4 * nparts + 16 * npoints + 16 + 8 * i;
+      int mpos = zpos + 8 * npoints + 16;
+      Add(NFmiEsriPointZ(LittleEndianDouble(theBuffer, pointpos),
+                         LittleEndianDouble(theBuffer, pointpos + 8),
+                         LittleEndianDouble(theBuffer, zpos),
+                         LittleEndianDouble(theBuffer, mpos)));
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -106,26 +132,33 @@ NFmiEsriPolygonZ::NFmiEsriPolygonZ(const string& theBuffer, int thePos, int theN
 
 int NFmiEsriPolygonZ::StringSize(void) const
 {
-  return (4  // the type	: 1 int
-          +
-          4 * 8  // bounding box : 4 doubles
-          +
-          4  // numparts	: 1 int
-          +
-          4  // numpoints	: 1 int
-          +
-          NumParts() * 4  // parts	: np ints
-          +
-          NumPoints() * 2 * 8  // points	: 2n doubles
-          +
-          2 * 8  // zbox		: 2 doubles
-          +
-          NumPoints() * 8  // zvalues	: n doubles
-          +
-          2 * 8  // mbox		: 2 doubles
-          +
-          NumPoints() * 8  // mvalues	: n doubles
-          );
+  try
+  {
+    return (4  // the type	: 1 int
+            +
+            4 * 8  // bounding box : 4 doubles
+            +
+            4  // numparts	: 1 int
+            +
+            4  // numpoints	: 1 int
+            +
+            NumParts() * 4  // parts	: np ints
+            +
+            NumPoints() * 2 * 8  // points	: 2n doubles
+            +
+            2 * 8  // zbox		: 2 doubles
+            +
+            NumPoints() * 8  // zvalues	: n doubles
+            +
+            2 * 8  // mbox		: 2 doubles
+            +
+            NumPoints() * 8  // mvalues	: n doubles
+            );
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -134,31 +167,38 @@ int NFmiEsriPolygonZ::StringSize(void) const
 
 std::ostream& NFmiEsriPolygonZ::Write(ostream& os) const
 {
-  os << LittleEndianInt(Type()) << LittleEndianDouble(Box().Xmin())
-     << LittleEndianDouble(Box().Ymin()) << LittleEndianDouble(Box().Xmax())
-     << LittleEndianDouble(Box().Ymax()) << LittleEndianInt(NumParts())
-     << LittleEndianInt(NumPoints());
-
-  int i = 0;
-  for (i = 0; i < NumParts(); i++)
-    os << LittleEndianInt(Parts()[i]);
-
-  for (i = 0; i < NumPoints(); i++)
+  try
   {
-    os << LittleEndianDouble(Points()[i].X()) << LittleEndianDouble(Points()[i].Y());
+    os << LittleEndianInt(Type()) << LittleEndianDouble(Box().Xmin())
+       << LittleEndianDouble(Box().Ymin()) << LittleEndianDouble(Box().Xmax())
+       << LittleEndianDouble(Box().Ymax()) << LittleEndianInt(NumParts())
+       << LittleEndianInt(NumPoints());
+
+    int i = 0;
+    for (i = 0; i < NumParts(); i++)
+      os << LittleEndianInt(Parts()[i]);
+
+    for (i = 0; i < NumPoints(); i++)
+    {
+      os << LittleEndianDouble(Points()[i].X()) << LittleEndianDouble(Points()[i].Y());
+    }
+
+    os << LittleEndianDouble(Box().Zmin()) << LittleEndianDouble(Box().Zmax());
+
+    for (i = 0; i < NumPoints(); i++)
+      os << LittleEndianDouble(Points()[i].Z());
+
+    os << LittleEndianDouble(Box().Mmin()) << LittleEndianDouble(Box().Mmax());
+
+    for (i = 0; i < NumPoints(); i++)
+      os << LittleEndianDouble(Points()[i].M());
+
+    return os;
   }
-
-  os << LittleEndianDouble(Box().Zmin()) << LittleEndianDouble(Box().Zmax());
-
-  for (i = 0; i < NumPoints(); i++)
-    os << LittleEndianDouble(Points()[i].Z());
-
-  os << LittleEndianDouble(Box().Mmin()) << LittleEndianDouble(Box().Mmax());
-
-  for (i = 0; i < NumPoints(); i++)
-    os << LittleEndianDouble(Points()[i].M());
-
-  return os;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace Imagine

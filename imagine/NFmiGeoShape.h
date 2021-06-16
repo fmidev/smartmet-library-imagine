@@ -42,10 +42,14 @@ enum NFmiGeoShapeType
 };
 
 //! Generic shape error
+#if 0
+// koskelam: Replaced by Fmi::Exception
+
 struct NFmiGeoShapeError : public std::runtime_error
 {
   NFmiGeoShapeError(const std::string &s) : std::runtime_error(s) {}
 };
+#endif
 
 class NFmiGeoShape
 #ifndef IMAGINE_WITH_CAIRO
@@ -124,7 +128,8 @@ class NFmiGeoShape
       case kFmiGeoShapeEsri:
         itsEsriShape = new NFmiEsriShape();
         if (!itsEsriShape->Read(theFilename))
-          throw NFmiGeoShapeError(std::string("Failed to read shape ") + theFilename);
+          throw Fmi::Exception(BCP,std::string("Failed to read shape ") + theFilename);
+
         if (!theFilter.empty())
         {
           NFmiEsriShape *tmp = NFmiEsriTools::filter(*itsEsriShape, theFilter);
@@ -134,9 +139,9 @@ class NFmiGeoShape
 
         break;
       case kFmiGeoShapeShoreLine:
-        throw NFmiGeoShapeError("kFmiGeoShapeShoreLine not implemented");
+        throw Fmi::Exception(BCP,"kFmiGeoShapeShoreLine not implemented");
       case kFmiGeoShapeGMT:
-        throw NFmiGeoShapeError("kFmiGeoShapeFMT not implemented");
+        throw Fmi::Exception(BCP,"kFmiGeoShapeFMT not implemented");
     }
   }
 

@@ -6,6 +6,7 @@
 // ======================================================================
 
 #include "NFmiEsriElement.h"
+#include <macgyver/Exception.h>
 
 using namespace std;
 
@@ -17,13 +18,20 @@ namespace Imagine
 
 NFmiEsriElement& NFmiEsriElement::operator=(const NFmiEsriElement& theElement)
 {
-  if (this != &theElement)
+  try
   {
-    itsType = theElement.itsType;
-    itsNumber = theElement.itsNumber;
-    itsAttributes = theElement.itsAttributes;
+    if (this != &theElement)
+    {
+      itsType = theElement.itsType;
+      itsNumber = theElement.itsNumber;
+      itsAttributes = theElement.itsAttributes;
+    }
+    return *this;
   }
-  return *this;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -32,18 +40,25 @@ NFmiEsriElement& NFmiEsriElement::operator=(const NFmiEsriElement& theElement)
 
 NFmiEsriAttributeType NFmiEsriElement::GetType(const string& theName) const
 {
-  list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
-  list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
-  list<NFmiEsriAttribute>::const_iterator iter;
-
-  for (iter = begin; iter != end; ++iter)
+  try
   {
-    if ((*iter).GetName() == theName) return (*iter).GetType();
+    list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
+    list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
+    list<NFmiEsriAttribute>::const_iterator iter;
+
+    for (iter = begin; iter != end; ++iter)
+    {
+      if ((*iter).GetName() == theName) return (*iter).GetType();
+    }
+
+    // Just some default value, maybe we should throw?
+
+    return kFmiEsriString;
   }
-
-  // Just some default value, maybe we should throw?
-
-  return kFmiEsriString;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -52,20 +67,27 @@ NFmiEsriAttributeType NFmiEsriElement::GetType(const string& theName) const
 
 const std::string NFmiEsriElement::GetString(const string& theName) const
 {
-  list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
-  list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
-  list<NFmiEsriAttribute>::const_iterator iter;
-
-  for (iter = begin; iter != end; ++iter)
+  try
   {
-    if ((*iter).GetName() == theName)
-      if ((*iter).GetType() == kFmiEsriString) return (*iter).GetString();
+    list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
+    list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
+    list<NFmiEsriAttribute>::const_iterator iter;
+
+    for (iter = begin; iter != end; ++iter)
+    {
+      if ((*iter).GetName() == theName)
+        if ((*iter).GetType() == kFmiEsriString) return (*iter).GetString();
+    }
+
+    // Return empty string if field not found
+
+    static const string tmp = "";
+    return tmp;
   }
-
-  // Return empty string if field not found
-
-  static const string tmp = "";
-  return tmp;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -74,17 +96,24 @@ const std::string NFmiEsriElement::GetString(const string& theName) const
 
 const NFmiMetTime& NFmiEsriElement::GetDate(const std::string& theName) const
 {
-  list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
-  list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
-  list<NFmiEsriAttribute>::const_iterator iter;
-
-  for (iter = begin; iter != end; ++iter)
+  try
   {
-    if ((*iter).GetName() == theName)
-      if ((*iter).GetType() == kFmiEsriDate) return (*iter).GetDate();
-  }
+    list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
+    list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
+    list<NFmiEsriAttribute>::const_iterator iter;
 
-  throw std::runtime_error("Date field " + theName + " not found");
+    for (iter = begin; iter != end; ++iter)
+    {
+      if ((*iter).GetName() == theName)
+        if ((*iter).GetType() == kFmiEsriDate) return (*iter).GetDate();
+    }
+
+    throw Fmi::Exception(BCP,"Date field " + theName + " not found");
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -93,19 +122,26 @@ const NFmiMetTime& NFmiEsriElement::GetDate(const std::string& theName) const
 
 int NFmiEsriElement::GetInteger(const string& theName) const
 {
-  list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
-  list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
-  list<NFmiEsriAttribute>::const_iterator iter;
-
-  for (iter = begin; iter != end; ++iter)
+  try
   {
-    if ((*iter).GetName() == theName)
-      if ((*iter).GetType() == kFmiEsriInteger) return (*iter).GetInteger();
+    list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
+    list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
+    list<NFmiEsriAttribute>::const_iterator iter;
+
+    for (iter = begin; iter != end; ++iter)
+    {
+      if ((*iter).GetName() == theName)
+        if ((*iter).GetType() == kFmiEsriInteger) return (*iter).GetInteger();
+    }
+
+    // Maybe should error instead..
+
+    return 0;
   }
-
-  // Maybe should error instead..
-
-  return 0;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -114,26 +150,40 @@ int NFmiEsriElement::GetInteger(const string& theName) const
 
 double NFmiEsriElement::GetDouble(const string& theName) const
 {
-  list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
-  list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
-  list<NFmiEsriAttribute>::const_iterator iter;
-
-  for (iter = begin; iter != end; ++iter)
+  try
   {
-    if ((*iter).GetName() == theName)
-      if ((*iter).GetType() == kFmiEsriDouble) return (*iter).GetDouble();
+    list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
+    list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
+    list<NFmiEsriAttribute>::const_iterator iter;
+
+    for (iter = begin; iter != end; ++iter)
+    {
+      if ((*iter).GetName() == theName)
+        if ((*iter).GetType() == kFmiEsriDouble) return (*iter).GetDouble();
+    }
+
+    // Maybe should error instead..
+
+    return 0.0;
   }
-
-  // Maybe should error instead..
-
-  return 0.0;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace Imagine
 
 std::ostream& operator<<(std::ostream& os, const Imagine::NFmiEsriElement& theElement)
 {
-  return theElement.Write(os);
+  try
+  {
+    return theElement.Write(os);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
