@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 21.5.6
+Version: 21.6.16
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -18,14 +18,15 @@ BuildRequires: boost169-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: smartmet-library-macgyver-devel >= 21.2.25
-BuildRequires: smartmet-library-newbase-devel >= 21.5.6
+BuildRequires: smartmet-library-macgyver-devel >= 21.6.16
+BuildRequires: smartmet-library-newbase-devel >= 21.6.16
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal32-devel
-BuildRequires: smartmet-library-gis-devel >= 21.5.5
+BuildRequires: smartmet-library-gis-devel >= 21.6.16
 BuildRequires: fmt-devel >= 7.1.3
-Requires: smartmet-library-newbase >= 21.5.6
+Requires: smartmet-library-macgyver >= 21.6.16
+Requires: smartmet-library-newbase >= 21.6.16
 Requires: boost169-filesystem
 Requires: boost169-regex
 Requires: boost169-thread
@@ -39,6 +40,7 @@ Requires: zlib
 #TestRequires: gcc-c++
 #TestRequires: smartmet-library-regression
 #TestRequires: smartmet-library-macgyver-devel
+#TestRequires: smartmet-library-macgyver
 #TestRequires: smartmet-library-newbase-devel
 #TestRequires: boost169-devel
 #TestRequires: freetype-devel
@@ -46,7 +48,7 @@ Requires: zlib
 #TestRequires: libpng
 #TestRequires: zlib
 #TestRequires: bzip2-libs
-#TestRequires: smartmet-library-gis-devel >= 21.5.5
+#TestRequires: smartmet-library-gis-devel >= 21.6.16
 Provides: %{LIBNAME}
 Obsoletes: libsmartmet-imagine < 17.1.4
 Obsoletes: libsmartmet-imagine-debuginfo < 17.1.4
@@ -89,6 +91,9 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Wed Jun 16 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.6.16-1.fmi
+- Use Fmi::Exception
+
 * Thu May  6 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.5.6-1.fmi
 - Repackaged due to NFmiAzimuthalArea ABI changes
 
