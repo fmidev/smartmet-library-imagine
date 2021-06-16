@@ -20,6 +20,7 @@
 #include "NFmiBezierTools.h"
 #include "NFmiCounter.h"
 #include "NFmiPath.h"
+#include <macgyver/Exception.h>
 
 #include <newbase/NFmiGeoTools.h>
 
@@ -41,24 +42,32 @@ namespace
 
 void AppendSplits(PathList& theList, const NFmiPath& thePath, const std::vector<long>& theCounts)
 {
-  NFmiPath outpath;
-  const NFmiPathData& path = thePath.Elements();
-  const unsigned long n = path.size();
-  for (unsigned long i = 0; i < n; i++)
+  try
   {
-    outpath.Add(path[i]);
-
-    if (i > 0 && i < n - 1 && (theCounts[i - 1] < theCounts[i] || theCounts[i + 1] < theCounts[i]))
+    NFmiPath outpath;
+    const NFmiPathData& path = thePath.Elements();
+    const unsigned long n = path.size();
+    for (unsigned long i = 0; i < n; i++)
     {
-      theList.push_back(outpath);
-      outpath.Clear();
-    }
-    // prepend a leading moveto to all new path segments
-    if (i > 0 && outpath.Empty() && path[i].op != Imagine::kFmiMoveTo)
-      outpath.MoveTo(path[i].x, path[i].y);
-  }
+      outpath.Add(path[i]);
 
-  if (!outpath.Empty()) theList.push_back(outpath);
+      if (i > 0 && i < n - 1 && (theCounts[i - 1] < theCounts[i] || theCounts[i + 1] < theCounts[i]))
+      {
+        theList.push_back(outpath);
+        outpath.Clear();
+      }
+      // prepend a leading moveto to all new path segments
+      if (i > 0 && outpath.Empty() && path[i].op != Imagine::kFmiMoveTo)
+        outpath.MoveTo(path[i].x, path[i].y);
+    }
+
+    if (!outpath.Empty())
+      theList.push_back(outpath);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -79,76 +88,84 @@ void AppendSplits(PathList& theList, const NFmiPath& thePath, const std::vector<
 
 std::pair<NFmiPath, NFmiPath> BezierSplit(const NFmiPath& thePath)
 {
-  const NFmiPathData& path = thePath.Elements();
-
-  if (path.size() == 3)
+  try
   {
-    const double x1 = path[0].x;
-    const double y1 = path[0].y;
-    double cx = path[1].x;
-    double cy = path[1].y;
-    const double x2 = path[2].x;
-    const double y2 = path[2].y;
+    const NFmiPathData& path = thePath.Elements();
 
-    const double cx1 = (x1 + cx) / 2.0;
-    const double cy1 = (y1 + cy) / 2.0;
-    const double cx2 = (x2 + cx) / 2.0;
-    const double cy2 = (y2 + cy) / 2.0;
-    cx = (cx1 + cx2) / 2.0;
-    cy = (cy1 + cy2) / 2.0;
+    if (path.size() == 3)
+    {
+      const double x1 = path[0].x;
+      const double y1 = path[0].y;
+      double cx = path[1].x;
+      double cy = path[1].y;
+      const double x2 = path[2].x;
+      const double y2 = path[2].y;
 
-    NFmiPath left;
-    left.MoveTo(x1, y1);
-    left.ConicTo(cx1, cy1);
-    left.ConicTo(cx, cy);
+      const double cx1 = (x1 + cx) / 2.0;
+      const double cy1 = (y1 + cy) / 2.0;
+      const double cx2 = (x2 + cx) / 2.0;
+      const double cy2 = (y2 + cy) / 2.0;
+      cx = (cx1 + cx2) / 2.0;
+      cy = (cy1 + cy2) / 2.0;
 
-    NFmiPath right;
-    right.MoveTo(cx, cy);
-    right.ConicTo(cx2, cy2);
-    right.ConicTo(x2, y2);
+      NFmiPath left;
+      left.MoveTo(x1, y1);
+      left.ConicTo(cx1, cy1);
+      left.ConicTo(cx, cy);
 
-    return std::make_pair(left, right);
+      NFmiPath right;
+      right.MoveTo(cx, cy);
+      right.ConicTo(cx2, cy2);
+      right.ConicTo(x2, y2);
+
+      return std::make_pair(left, right);
+    }
+
+    if (path.size() == 4)
+    {
+      const double x1 = path[0].x;
+      const double y1 = path[0].y;
+      double cx1 = path[1].x;
+      double cy1 = path[1].y;
+      double cx2 = path[2].x;
+      double cy2 = path[2].y;
+      const double x2 = path[3].x;
+      const double y2 = path[3].y;
+
+      double cx = (cx1 + cx2) / 2.0;
+      double cy = (cy1 + cy2) / 2.0;
+      cx1 = (x1 + cx1) / 2.0;
+      cy1 = (y1 + cy1) / 2.0;
+      cx2 = (x2 + cx2) / 2.0;
+      cy2 = (y2 + cy2) / 2.0;
+      const double cx12 = (cx1 + cx) / 2.0;
+      const double cy12 = (cy1 + cy) / 2.0;
+      const double cx21 = (cx2 + cx) / 2.0;
+      const double cy21 = (cy2 + cy) / 2.0;
+      cx = (cx12 + cx21) / 2.0;
+      cy = (cy12 + cy21) / 2.0;
+
+      NFmiPath left;
+      left.MoveTo(x1, y1);
+      left.CubicTo(cx1, cy1);
+      left.CubicTo(cx12, cy12);
+      left.CubicTo(cx, cy);
+
+      NFmiPath right;
+      right.MoveTo(cx, cy);
+      right.CubicTo(cx21, cy21);
+      right.CubicTo(cx2, cy2);
+      right.CubicTo(x2, y2);
+
+      return std::make_pair(left, right);
+    }
+
+    throw Fmi::Exception(BCP,"BezierSplit does not support arbitrary Bezier degrees");
   }
-  else if (path.size() == 4)
+  catch (...)
   {
-    const double x1 = path[0].x;
-    const double y1 = path[0].y;
-    double cx1 = path[1].x;
-    double cy1 = path[1].y;
-    double cx2 = path[2].x;
-    double cy2 = path[2].y;
-    const double x2 = path[3].x;
-    const double y2 = path[3].y;
-
-    double cx = (cx1 + cx2) / 2.0;
-    double cy = (cy1 + cy2) / 2.0;
-    cx1 = (x1 + cx1) / 2.0;
-    cy1 = (y1 + cy1) / 2.0;
-    cx2 = (x2 + cx2) / 2.0;
-    cy2 = (y2 + cy2) / 2.0;
-    const double cx12 = (cx1 + cx) / 2.0;
-    const double cy12 = (cy1 + cy) / 2.0;
-    const double cx21 = (cx2 + cx) / 2.0;
-    const double cy21 = (cy2 + cy) / 2.0;
-    cx = (cx12 + cx21) / 2.0;
-    cy = (cy12 + cy21) / 2.0;
-
-    NFmiPath left;
-    left.MoveTo(x1, y1);
-    left.CubicTo(cx1, cy1);
-    left.CubicTo(cx12, cy12);
-    left.CubicTo(cx, cy);
-
-    NFmiPath right;
-    right.MoveTo(cx, cy);
-    right.CubicTo(cx21, cy21);
-    right.CubicTo(cx2, cy2);
-    right.CubicTo(x2, y2);
-
-    return std::make_pair(left, right);
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
-  else
-    throw std::runtime_error("BezierSplit does not support arbitrary Bezier degrees");
 }
 
 // ----------------------------------------------------------------------
@@ -159,32 +176,35 @@ std::pair<NFmiPath, NFmiPath> BezierSplit(const NFmiPath& thePath)
 
 double BezierLengthRecursion(const NFmiPath& thePath, double theRelativeAccuracy)
 {
-  const int n = thePath.Size() - 1;
-  double arclength = 0;
-  for (int i = 0; i < n; i++)
-    arclength += NFmiGeoTools::Distance(thePath.Elements()[i].x,
-                                        thePath.Elements()[i].y,
-                                        thePath.Elements()[i + 1].x,
-                                        thePath.Elements()[i + 1].y);
-
-  const double chordlength = NFmiGeoTools::Distance(thePath.Elements().front().x,
-                                                    thePath.Elements().front().y,
-                                                    thePath.Elements().back().x,
-                                                    thePath.Elements().back().y);
-
-  const double len = (2 * chordlength + (n - 1) * arclength) / (n + 1);
-  const double err = arclength - chordlength;
-
-  if (len == 0 || err / len <= theRelativeAccuracy)
+  try
   {
-    return len;
-  }
-  else
-  {
+    const int n = thePath.Size() - 1;
+    double arclength = 0;
+    for (int i = 0; i < n; i++)
+      arclength += NFmiGeoTools::Distance(thePath.Elements()[i].x,
+                                          thePath.Elements()[i].y,
+                                          thePath.Elements()[i + 1].x,
+                                          thePath.Elements()[i + 1].y);
+
+    const double chordlength = NFmiGeoTools::Distance(thePath.Elements().front().x,
+                                                      thePath.Elements().front().y,
+                                                      thePath.Elements().back().x,
+                                                      thePath.Elements().back().y);
+
+    const double len = (2 * chordlength + (n - 1) * arclength) / (n + 1);
+    const double err = arclength - chordlength;
+
+    if (len == 0 || err / len <= theRelativeAccuracy)
+      return len;
+
     std::pair<NFmiPath, NFmiPath> parts = BezierSplit(thePath);
     double l1 = BezierLengthRecursion(parts.first, 2 * theRelativeAccuracy);
     double l2 = BezierLengthRecursion(parts.second, 2 * theRelativeAccuracy);
     return l1 + l2;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -204,12 +224,20 @@ double BezierLengthRecursion(const NFmiPath& thePath, double theRelativeAccuracy
 
 bool IsClosed(const NFmiPath& thePath)
 {
-  if (thePath.Size() < 2) return false;
+  try
+  {
+    if (thePath.Size() < 2)
+      return false;
 
-  const NFmiPathElement& first = thePath.Elements().front();
-  const NFmiPathElement& last = thePath.Elements().back();
+    const NFmiPathElement& first = thePath.Elements().front();
+    const NFmiPathElement& last = thePath.Elements().back();
 
-  return (first.x == last.x && first.y == last.y);
+    return (first.x == last.x && first.y == last.y);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -225,38 +253,45 @@ bool IsClosed(const NFmiPath& thePath)
 
 const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths& thePaths)
 {
-  NFmiCounter<NFmiPoint> counts;
-
-  for (NFmiPaths::const_iterator pt = thePaths.begin(); pt != thePaths.end(); ++pt)
+  try
   {
-    const NFmiPathData& path = pt->Elements();
+    NFmiCounter<NFmiPoint> counts;
 
-    // end coordinate of previous moveto
-    NFmiPoint previous_moveto(kFloatMissing, kFloatMissing);
-
-    for (NFmiPathData::const_iterator it = path.begin(); it != path.end(); ++it)
+    for (NFmiPaths::const_iterator pt = thePaths.begin(); pt != thePaths.end(); ++pt)
     {
-      NFmiPoint p(it->x, it->y);
-      switch (it->op)
+      const NFmiPathData& path = pt->Elements();
+
+      // end coordinate of previous moveto
+      NFmiPoint previous_moveto(kFloatMissing, kFloatMissing);
+
+      for (NFmiPathData::const_iterator it = path.begin(); it != path.end(); ++it)
       {
-        case kFmiMoveTo:
-          counts.Add(p);
-          previous_moveto = p;
-          break;
-        case kFmiLineTo:
-        case kFmiGhostLineTo:
-          // ignore moves which close a subpath
-          if (p != previous_moveto) counts.Add(p);
-          break;
-        case kFmiCubicTo:
-        case kFmiConicTo:
-          throw std::runtime_error(
-              "Cubic and conic elements not supported in multiple path Bezier fitting");
+        NFmiPoint p(it->x, it->y);
+        switch (it->op)
+        {
+          case kFmiMoveTo:
+            counts.Add(p);
+            previous_moveto = p;
+            break;
+          case kFmiLineTo:
+          case kFmiGhostLineTo:
+            // ignore moves which close a subpath
+            if (p != previous_moveto) counts.Add(p);
+            break;
+          case kFmiCubicTo:
+          case kFmiConicTo:
+            throw Fmi::Exception(BCP,
+                "Cubic and conic elements not supported in multiple path Bezier fitting");
+        }
       }
     }
-  }
 
-  return counts;
+    return counts;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -276,55 +311,65 @@ const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths& thePaths)
 
 const Segments SplitSegments(const NFmiPath& thePath)
 {
-  Segments out;
-
-  bool isregular = false;
-  NFmiPath outpath;
-
-  for (NFmiPathData::const_iterator it = thePath.Elements().begin(); it != thePath.Elements().end();
-       ++it)
+  try
   {
-    // current outpath must be flushed if
-    // a) operator is moveto
-    // b) type changes from regular to nonregular
+    Segments out;
 
-    bool flush =
-        (!outpath.Empty() && (it->op == kFmiMoveTo || (it->op == kFmiLineTo && !isregular)));
+    bool isregular = false;
+    NFmiPath outpath;
 
-    if (flush)
+    for (NFmiPathData::const_iterator it = thePath.Elements().begin(); it != thePath.Elements().end();
+         ++it)
     {
-      // must have sufficiently many lineto cmds to be regular
-      if (outpath.Size() <= 3) isregular = false;
-      // flush
-      out.push_back(std::make_pair(outpath, isregular));
-      outpath.Clear();
-    }
+      // current outpath must be flushed if
+      // a) operator is moveto
+      // b) type changes from regular to nonregular
 
-    // add the element, but remove zero-length line segments
-    switch (it->op)
-    {
-      case kFmiMoveTo:
-      case kFmiConicTo:
-      case kFmiCubicTo:
-        outpath.Add(*it);
-        break;
-      case kFmiGhostLineTo:
-      case kFmiLineTo:
+      bool flush =
+          (!outpath.Empty() && (it->op == kFmiMoveTo || (it->op == kFmiLineTo && !isregular)));
+
+      if (flush)
       {
-        if (outpath.Empty())
-          outpath.Add(*it);
-        else if (outpath.Elements().back().x != it->x || outpath.Elements().back().y != it->y)
-          outpath.Add(*it);
+        // must have sufficiently many lineto cmds to be regular
+        if (outpath.Size() <= 3)
+          isregular = false;
+        // flush
+        out.push_back(std::make_pair(outpath, isregular));
+        outpath.Clear();
       }
+
+      // add the element, but remove zero-length line segments
+      switch (it->op)
+      {
+        case kFmiMoveTo:
+        case kFmiConicTo:
+        case kFmiCubicTo:
+          outpath.Add(*it);
+          break;
+        case kFmiGhostLineTo:
+        case kFmiLineTo:
+        {
+          if (outpath.Empty())
+            outpath.Add(*it);
+          else if (outpath.Elements().back().x != it->x || outpath.Elements().back().y != it->y)
+            outpath.Add(*it);
+        }
+      }
+
+      // lineto cannot start a new regular segment!
+      if (outpath.Size() == 1)
+        isregular = (it->op == kFmiMoveTo);
     }
 
-    // lineto cannot start a new regular segment!
-    if (outpath.Size() == 1) isregular = (it->op == kFmiMoveTo);
+    if (!outpath.Empty())
+      out.push_back(std::make_pair(outpath, isregular));
+
+    return out;
   }
-
-  if (!outpath.Empty()) out.push_back(std::make_pair(outpath, isregular));
-
-  return out;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -341,23 +386,31 @@ const Segments SplitSegments(const NFmiPath& thePath)
 
 const PathList SplitPath(const NFmiPath& thePath)
 {
-  PathList out;
-
-  NFmiPath outpath;
-  for (NFmiPathData::const_iterator it = thePath.Elements().begin(); it != thePath.Elements().end();
-       ++it)
+  try
   {
-    if (it->op == kFmiMoveTo && !outpath.Empty())
+    PathList out;
+
+    NFmiPath outpath;
+    for (NFmiPathData::const_iterator it = thePath.Elements().begin(); it != thePath.Elements().end();
+         ++it)
     {
-      out.push_back(outpath);
-      outpath.Clear();
+      if (it->op == kFmiMoveTo && !outpath.Empty())
+      {
+        out.push_back(outpath);
+        outpath.Clear();
+      }
+      outpath.Add(*it);
     }
-    outpath.Add(*it);
+
+    if (!outpath.Empty())
+      out.push_back(outpath);
+
+    return out;
   }
-
-  if (!outpath.Empty()) out.push_back(outpath);
-
-  return out;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -382,75 +435,82 @@ const PathList SplitPath(const NFmiPath& thePath)
 
 const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& theCounts)
 {
-  PathList out;
-
-  // we process all individual connected segments separately
-  // to detect closed subsegments more easily
-
-  PathList input = SplitPath(thePath);
-
-  for (PathList::const_iterator it = input.begin(); it != input.end(); ++it)
+  try
   {
-    const bool isclosed = IsClosed(*it);
-    const NFmiPathData& path = it->Elements();
+    PathList out;
 
-    // establish the counts for each element
+    // we process all individual connected segments separately
+    // to detect closed subsegments more easily
 
-    std::vector<long> counts;
-    counts.reserve(path.size());
+    PathList input = SplitPath(thePath);
 
-    for (NFmiPathData::const_iterator jt = path.begin(); jt != path.end(); ++jt)
+    for (PathList::const_iterator it = input.begin(); it != input.end(); ++it)
     {
-      const NFmiPoint point(jt->x, jt->y);
-      const long count = theCounts.Count(point);
-      counts.push_back(count);
-    }
+      const bool isclosed = IsClosed(*it);
+      const NFmiPathData& path = it->Elements();
 
-    // Split the path at points where count is greater than
-    // the count at an adjacent point. Note that if the path is closed,
-    // we usually do NOT want the path to be split at the closure,
-    // but only at the real split points. To accomplish this, we rotate
-    // the path so that it starts at the first split point.
+      // establish the counts for each element
 
-    if (!isclosed)
-      AppendSplits(out, *it, counts);
-    else
-    {
-      const unsigned long n = path.size();
-      unsigned long i;
-      for (i = 0; i < n; i++)
+      std::vector<long> counts;
+      counts.reserve(path.size());
+
+      for (NFmiPathData::const_iterator jt = path.begin(); jt != path.end(); ++jt)
       {
-        const size_t c0 = (i > 0 ? counts[i - 1] : counts[n - 2]);
-        const size_t c1 = counts[i];
-        const size_t c2 = (i + 1 < n ? counts[i + 1] : counts[1]);
-        if (c0 < c1 || c2 < c1) break;
+        const NFmiPoint point(jt->x, jt->y);
+        const long count = theCounts.Count(point);
+        counts.push_back(count);
       }
-      // Now if 0<i<n we found a split point to rotate to
-      if (i > 0 && i < n)
-      {
-        NFmiPath tmppath;
-        std::vector<long> tmpcounts;
-        unsigned long j;
-        tmppath.MoveTo(path[i].x, path[i].y);
-        tmpcounts.push_back(counts[i]);
-        for (j = i + 1; j < n; j++)
-        {
-          tmppath.Add(path[j]);
-          tmpcounts.push_back(counts[j]);
-        }
-        for (j = 1; j <= i; j++)
-        {
-          tmppath.Add(path[j]);
-          tmpcounts.push_back(counts[j]);
-        }
-        AppendSplits(out, tmppath, tmpcounts);
-      }
-      else
+
+      // Split the path at points where count is greater than
+      // the count at an adjacent point. Note that if the path is closed,
+      // we usually do NOT want the path to be split at the closure,
+      // but only at the real split points. To accomplish this, we rotate
+      // the path so that it starts at the first split point.
+
+      if (!isclosed)
         AppendSplits(out, *it, counts);
+      else
+      {
+        const unsigned long n = path.size();
+        unsigned long i;
+        for (i = 0; i < n; i++)
+        {
+          const size_t c0 = (i > 0 ? counts[i - 1] : counts[n - 2]);
+          const size_t c1 = counts[i];
+          const size_t c2 = (i + 1 < n ? counts[i + 1] : counts[1]);
+          if (c0 < c1 || c2 < c1) break;
+        }
+        // Now if 0<i<n we found a split point to rotate to
+        if (i > 0 && i < n)
+        {
+          NFmiPath tmppath;
+          std::vector<long> tmpcounts;
+          unsigned long j;
+          tmppath.MoveTo(path[i].x, path[i].y);
+          tmpcounts.push_back(counts[i]);
+          for (j = i + 1; j < n; j++)
+          {
+            tmppath.Add(path[j]);
+            tmpcounts.push_back(counts[j]);
+          }
+          for (j = 1; j <= i; j++)
+          {
+            tmppath.Add(path[j]);
+            tmpcounts.push_back(counts[j]);
+          }
+          AppendSplits(out, tmppath, tmpcounts);
+        }
+        else
+          AppendSplits(out, *it, counts);
+      }
     }
-  }
 
-  return out;
+    return out;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -471,24 +531,31 @@ const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& 
 
 double BezierLength(const NFmiPath& thePath, double theRelativeAccuracy)
 {
-  switch (thePath.Size())
+  try
   {
-    case 0:
-    case 1:
-      return 0;
-    case 2:
-      return NFmiGeoTools::Distance(thePath.Elements().front().x,
-                                    thePath.Elements().front().y,
-                                    thePath.Elements().back().x,
-                                    thePath.Elements().back().y);
-    case 3:
-    case 4:
+    switch (thePath.Size())
     {
-      return BezierLengthRecursion(thePath, theRelativeAccuracy);
+      case 0:
+      case 1:
+        return 0;
+      case 2:
+        return NFmiGeoTools::Distance(thePath.Elements().front().x,
+                                      thePath.Elements().front().y,
+                                      thePath.Elements().back().x,
+                                      thePath.Elements().back().y);
+      case 3:
+      case 4:
+      {
+        return BezierLengthRecursion(thePath, theRelativeAccuracy);
+      }
+      default:
+        throw Fmi::Exception(BCP,
+            "NFmiBezierTools::BezierLength not implemented for high degree basis");
     }
-    default:
-      throw std::runtime_error(
-          "NFmiBezierTools::BezierLength not implemented for high degree basis");
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 

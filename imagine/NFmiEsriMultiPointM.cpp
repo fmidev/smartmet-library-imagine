@@ -18,6 +18,7 @@
 
 #include "NFmiEsriMultiPointM.h"
 #include "NFmiEsriBuffer.h"
+#include <macgyver/Exception.h>
 
 using namespace Imagine::NFmiEsriBuffer;  // Conversion tools
 using namespace std;
@@ -39,20 +40,38 @@ NFmiEsriMultiPointM::NFmiEsriMultiPointM(const NFmiEsriMultiPointM& thePoints)
 
 NFmiEsriMultiPointM& NFmiEsriMultiPointM::operator=(const NFmiEsriMultiPointM& thePoints)
 {
-  if (this != &thePoints)
+  try
   {
-    NFmiEsriMultiPoint::operator=(thePoints);
-    itsBox = thePoints.itsBox;
-    itsPoints = thePoints.itsPoints;
+    if (this != &thePoints)
+    {
+      NFmiEsriMultiPoint::operator=(thePoints);
+      itsBox = thePoints.itsBox;
+      itsPoints = thePoints.itsPoints;
+    }
+    return *this;
   }
-  return *this;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
 // Cloning
 // ----------------------------------------------------------------------
 
-NFmiEsriElement* NFmiEsriMultiPointM::Clone() const { return new NFmiEsriMultiPointM(*this); }
+NFmiEsriElement* NFmiEsriMultiPointM::Clone() const
+{
+  try
+  {
+    return new NFmiEsriMultiPointM(*this);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
+}
+
 // ----------------------------------------------------------------------
 // Constructor based on a character buffer
 // ----------------------------------------------------------------------
@@ -60,25 +79,32 @@ NFmiEsriElement* NFmiEsriMultiPointM::Clone() const { return new NFmiEsriMultiPo
 NFmiEsriMultiPointM::NFmiEsriMultiPointM(const string& theBuffer, int thePos, int theNumber)
     : NFmiEsriMultiPoint(theNumber, kFmiEsriMultiPointM), itsBox(), itsPoints()
 {
-  int npoints = LittleEndianInt(theBuffer, thePos + 36);
-
-  // Speed up by reserving enough space already
-
-  itsPoints.reserve(itsPoints.size() + npoints);
-
-  for (int i = 0; i < npoints; i++)
+  try
   {
-    // Start position 40, then 2 doubles (16) for each point
+    int npoints = LittleEndianInt(theBuffer, thePos + 36);
 
-    int pointpos = thePos + 40 + i * 16;
+    // Speed up by reserving enough space already
 
-    // Start position 40+16*n, then 2 doubles for range, then
-    // 1 double for each measure
+    itsPoints.reserve(itsPoints.size() + npoints);
 
-    int measurepos = thePos + 40 + 16 * npoints + 16 + i * 8;
-    Add(NFmiEsriPointM(LittleEndianDouble(theBuffer, pointpos),
-                       LittleEndianDouble(theBuffer, pointpos + 8),
-                       LittleEndianDouble(theBuffer, measurepos)));
+    for (int i = 0; i < npoints; i++)
+    {
+      // Start position 40, then 2 doubles (16) for each point
+
+      int pointpos = thePos + 40 + i * 16;
+
+      // Start position 40+16*n, then 2 doubles for range, then
+      // 1 double for each measure
+
+      int measurepos = thePos + 40 + 16 * npoints + 16 + i * 8;
+      Add(NFmiEsriPointM(LittleEndianDouble(theBuffer, pointpos),
+                         LittleEndianDouble(theBuffer, pointpos + 8),
+                         LittleEndianDouble(theBuffer, measurepos)));
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -88,18 +114,25 @@ NFmiEsriMultiPointM::NFmiEsriMultiPointM(const string& theBuffer, int thePos, in
 
 int NFmiEsriMultiPointM::StringSize(void) const
 {
-  return (4  // the type	: 1 int
-          +
-          4 * 8  // bounding box : 4 doubles
-          +
-          4  // numpoints	: 1 int
-          +
-          NumPoints() * 2 * 8  // points	: 2n doubles
-          +
-          2 * 8  // mbox		: 2 doubles
-          +
-          NumPoints() * 8  // mvalues	: n doubles
-          );
+  try
+  {
+    return (4  // the type	: 1 int
+            +
+            4 * 8  // bounding box : 4 doubles
+            +
+            4  // numpoints	: 1 int
+            +
+            NumPoints() * 2 * 8  // points	: 2n doubles
+            +
+            2 * 8  // mbox		: 2 doubles
+            +
+            NumPoints() * 8  // mvalues	: n doubles
+            );
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -108,22 +141,29 @@ int NFmiEsriMultiPointM::StringSize(void) const
 
 std::ostream& NFmiEsriMultiPointM::Write(ostream& os) const
 {
-  os << LittleEndianInt(Type()) << LittleEndianDouble(Box().Xmin())
-     << LittleEndianDouble(Box().Ymin()) << LittleEndianDouble(Box().Xmax())
-     << LittleEndianDouble(Box().Ymax()) << LittleEndianInt(NumPoints());
-
-  int i;
-  for (i = 0; i < NumPoints(); i++)
+  try
   {
-    os << LittleEndianDouble(Points()[i].X()) << LittleEndianDouble(Points()[i].Y());
+    os << LittleEndianInt(Type()) << LittleEndianDouble(Box().Xmin())
+       << LittleEndianDouble(Box().Ymin()) << LittleEndianDouble(Box().Xmax())
+       << LittleEndianDouble(Box().Ymax()) << LittleEndianInt(NumPoints());
+
+    int i;
+    for (i = 0; i < NumPoints(); i++)
+    {
+      os << LittleEndianDouble(Points()[i].X()) << LittleEndianDouble(Points()[i].Y());
+    }
+
+    os << LittleEndianDouble(Box().Mmin()) << LittleEndianDouble(Box().Mmax());
+
+    for (i = 0; i < NumPoints(); i++)  // 18.12.2001/Marko Redifinition of i removed.
+      os << LittleEndianDouble(Points()[i].M());
+
+    return os;
   }
-
-  os << LittleEndianDouble(Box().Mmin()) << LittleEndianDouble(Box().Mmax());
-
-  for (i = 0; i < NumPoints(); i++)  // 18.12.2001/Marko Redifinition of i removed.
-    os << LittleEndianDouble(Points()[i].M());
-
-  return os;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace Imagine

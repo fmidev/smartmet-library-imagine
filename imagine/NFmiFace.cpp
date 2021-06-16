@@ -36,6 +36,7 @@
 #include "NFmiFreeType.h"
 #include "NFmiImage.h"
 
+#include <macgyver/Exception.h>
 #include <newbase/NFmiStringTools.h>
 
 #include <stdexcept>
@@ -71,15 +72,25 @@ NFmiFace::NFmiFace(const std::string& theFontSpec)
       itsBackgroundColor(NFmiColorTools::MakeColor(180, 180, 180, 32)),
       itsBackgroundRule(NFmiColorTools::kFmiColorOnOpaque)
 {
-  vector<string> words = NFmiStringTools::Split(theFontSpec, ":");
-  if (words.size() != 2) throw runtime_error("Invalid font specification '" + theFontSpec + "'");
-  itsFile = words[0];
+  try
+  {
+    vector<string> words = NFmiStringTools::Split(theFontSpec, ":");
+    if (words.size() != 2)
+      throw Fmi::Exception(BCP,"Invalid font specification '" + theFontSpec + "'");
 
-  vector<int> sizes = NFmiStringTools::Split<vector<int> >(words[1], "x");
-  if (sizes.size() != 2) throw runtime_error("Invalid font specification '" + theFontSpec + "'");
+    itsFile = words[0];
 
-  itsWidth = sizes[0];
-  itsHeight = sizes[1];
+    vector<int> sizes = NFmiStringTools::Split<vector<int> >(words[1], "x");
+    if (sizes.size() != 2)
+      throw Fmi::Exception(BCP,"Invalid font specification '" + theFontSpec + "'");
+
+    itsWidth = sizes[0];
+    itsHeight = sizes[1];
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -106,7 +117,11 @@ NFmiFace::NFmiFace(const std::string& theFile, int theWidth, int theHeight)
  */
 // ----------------------------------------------------------------------
 
-void NFmiFace::Background(bool theMode) { itsBackgroundOn = theMode; }
+void NFmiFace::Background(bool theMode)
+{
+  itsBackgroundOn = theMode;
+}
+
 // ----------------------------------------------------------------------
 /*!
  * \brief Set background margins
@@ -118,9 +133,18 @@ void NFmiFace::Background(bool theMode) { itsBackgroundOn = theMode; }
 
 void NFmiFace::BackgroundMargin(int theWidth, int theHeight)
 {
-  if (theWidth < 0 || theHeight < 0) throw runtime_error("Background margins must be nonnegative");
-  itsBackgroundWidth = theWidth;
-  itsBackgroundHeight = theHeight;
+  try
+  {
+    if (theWidth < 0 || theHeight < 0)
+      throw Fmi::Exception(BCP,"Background margins must be nonnegative");
+
+    itsBackgroundWidth = theWidth;
+    itsBackgroundHeight = theHeight;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -131,7 +155,18 @@ void NFmiFace::BackgroundMargin(int theWidth, int theHeight)
  */
 // ----------------------------------------------------------------------
 
-void NFmiFace::BackgroundColor(NFmiColorTools::Color theColor) { itsBackgroundColor = theColor; }
+void NFmiFace::BackgroundColor(NFmiColorTools::Color theColor)
+{
+  try
+  {
+    itsBackgroundColor = theColor;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
+}
+
 // ----------------------------------------------------------------------
 /*!
  * \brief Set background blending rule
@@ -142,7 +177,14 @@ void NFmiFace::BackgroundColor(NFmiColorTools::Color theColor) { itsBackgroundCo
 
 void NFmiFace::BackgroundRule(NFmiColorTools::NFmiBlendRule theRule)
 {
-  itsBackgroundRule = theRule;
+  try
+  {
+    itsBackgroundRule = theRule;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -164,21 +206,28 @@ void NFmiFace::Draw(NFmiImage& theImage,
                     NFmiColorTools::Color theColor,
                     NFmiColorTools::NFmiBlendRule theRule) const
 {
-  NFmiFreeType::Instance().Draw(theImage,
-                                itsFile,
-                                itsWidth,
-                                itsHeight,
-                                theX,
-                                theY,
-                                theText,
-                                theAlignment,
-                                theColor,
-                                theRule,
-                                itsBackgroundOn,
-                                itsBackgroundWidth,
-                                itsBackgroundHeight,
-                                itsBackgroundColor,
-                                itsBackgroundRule);
+  try
+  {
+    NFmiFreeType::Instance().Draw(theImage,
+                                  itsFile,
+                                  itsWidth,
+                                  itsHeight,
+                                  theX,
+                                  theY,
+                                  theText,
+                                  theAlignment,
+                                  theColor,
+                                  theRule,
+                                  itsBackgroundOn,
+                                  itsBackgroundWidth,
+                                  itsBackgroundHeight,
+                                  itsBackgroundColor,
+                                  itsBackgroundRule);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace Imagine

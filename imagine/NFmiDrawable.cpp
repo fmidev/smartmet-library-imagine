@@ -17,6 +17,7 @@
 #include "NFmiDrawable.h"
 #include "NFmiImage.h"
 #include "NFmiFillMap.h"
+#include <macgyver/Exception.h>
 
 namespace Imagine
 {
@@ -33,21 +34,29 @@ void NFmiDrawable::Fill(NFmiImage& theImage,
                         NFmiColorTools::Color theColor,
                         NFmiColorTools::NFmiBlendRule theRule) const
 {
-  // Quick exit if color is not real
+  try
+  {
+    // Quick exit if color is not real
 
-  if (theColor == NFmiColorTools::NoColor) return;
+    if (theColor == NFmiColorTools::NoColor)
+      return;
 
-  // Create fillmap, clip it based on image height
+    // Create fillmap, clip it based on image height
 
-  NFmiFillMap fmap(0.0, theImage.Height());
+    NFmiFillMap fmap(0.0, theImage.Height());
 
-  // Add the drawable to the fillmap
+    // Add the drawable to the fillmap
 
-  Add(fmap);
+    Add(fmap);
 
-  // Render the fill map
+    // Render the fill map
 
-  fmap.Fill(theImage, theColor, theRule);
+    fmap.Fill(theImage, theColor, theRule);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -64,17 +73,24 @@ void NFmiDrawable::Fill(NFmiImage& theImage,
                         NFmiColorTools::NFmiBlendRule theRule,
                         float theAlphaFactor) const
 {
-  // Create fillmap, clip it based on image height
+  try
+  {
+    // Create fillmap, clip it based on image height
 
-  NFmiFillMap fmap(0.0, theImage.Height());
+    NFmiFillMap fmap(0.0, theImage.Height());
 
-  // Add the drawable to the fillmap
+    // Add the drawable to the fillmap
 
-  Add(fmap);
+    Add(fmap);
 
-  // Render the fill map
+    // Render the fill map
 
-  fmap.Fill(theImage, thePattern, theRule, theAlphaFactor);
+    fmap.Fill(theImage, thePattern, theRule, theAlphaFactor);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------

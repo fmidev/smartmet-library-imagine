@@ -12,6 +12,7 @@
 // ======================================================================
 
 #include "NFmiImage.h"
+#include <macgyver/Exception.h>
 
 #include <iostream>
 
@@ -27,13 +28,22 @@ namespace Imagine
 
 void writembint(int theValue, FILE *out)
 {
-  int cnt = 0;
-  int accu = 0;
-  while (accu != theValue)
-    accu += theValue & 0x7f << 7 * cnt++;
-  for (int l = cnt - 1; l > 0; l--)
-    fputc(0x80 | (theValue & 0x7f << 7 * l) >> 7 * l, out);
-  fputc(theValue & 0x7f, out);
+  try
+  {
+    int cnt = 0;
+    int accu = 0;
+    while (accu != theValue)
+      accu += theValue & 0x7f << 7 * cnt++;
+
+    for (int l = cnt - 1; l > 0; l--)
+      fputc(0x80 | (theValue & 0x7f << 7 * l) >> 7 * l, out);
+
+    fputc(theValue & 0x7f, out);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -42,28 +52,36 @@ void writembint(int theValue, FILE *out)
 
 void NFmiImage::WriteWBMP(FILE *out) const
 {
-  fputc(0, out);  // multibyteinteger 0 = WBMP type 0
-  fputc(0, out);  // WBMP type 0 extension field is always zero
-
-  writembint(itsWidth, out);
-  writembint(itsHeight, out);
-
-  for (int j = 0; j < itsHeight; j++)
+  try
   {
-    int bitpos = 8;
-    int octet = 0;
-    for (int i = 0; i < itsWidth; i++)
+    fputc(0, out);  // multibyteinteger 0 = WBMP type 0
+    fputc(0, out);  // WBMP type 0 extension field is always zero
+
+    writembint(itsWidth, out);
+    writembint(itsHeight, out);
+
+    for (int j = 0; j < itsHeight; j++)
     {
-      int intensity = NFmiColorTools::Intensity(operator()(i, j));
-      octet |= (intensity > 128 ? 1 : 0) << --bitpos;
-      if (bitpos == 0)
+      int bitpos = 8;
+      int octet = 0;
+      for (int i = 0; i < itsWidth; i++)
       {
-        fputc(octet, out);
-        bitpos = 8;
-        octet = 0;
+        int intensity = NFmiColorTools::Intensity(operator()(i, j));
+        octet |= (intensity > 128 ? 1 : 0) << --bitpos;
+        if (bitpos == 0)
+        {
+          fputc(octet, out);
+          bitpos = 8;
+          octet = 0;
+        }
       }
+      if (bitpos != 8)
+        fputc(octet, out);
     }
-    if (bitpos != 8) fputc(octet, out);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
