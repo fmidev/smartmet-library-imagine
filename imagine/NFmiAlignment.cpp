@@ -9,6 +9,7 @@
  */
 
 #include "NFmiAlignment.h"
+#include <macgyver/Exception.h>
 
 using namespace std;
 
@@ -21,26 +22,33 @@ namespace Imagine
 
 NFmiAlignment AlignmentValue(const string& theName)
 {
-  if (theName == "Center")
-    return kFmiAlignCenter;
-  else if (theName == "NorthWest")
-    return kFmiAlignNorthWest;
-  else if (theName == "North")
-    return kFmiAlignNorth;
-  else if (theName == "NortEast")
-    return kFmiAlignNorthEast;
-  else if (theName == "East")
-    return kFmiAlignEast;
-  else if (theName == "SouthEast")
-    return kFmiAlignSouthEast;
-  else if (theName == "South")
-    return kFmiAlignSouth;
-  else if (theName == "SouthWest")
-    return kFmiAlignSouthWest;
-  else if (theName == "West")
-    return kFmiAlignWest;
-  else
+  try
+  {
+    if (theName == "Center")
+      return kFmiAlignCenter;
+    if (theName == "NorthWest")
+      return kFmiAlignNorthWest;
+    if (theName == "North")
+      return kFmiAlignNorth;
+    if (theName == "NortEast")
+      return kFmiAlignNorthEast;
+    if (theName == "East")
+      return kFmiAlignEast;
+    if (theName == "SouthEast")
+      return kFmiAlignSouthEast;
+    if (theName == "South")
+      return kFmiAlignSouth;
+    if (theName == "SouthWest")
+      return kFmiAlignSouthWest;
+    if (theName == "West")
+      return kFmiAlignWest;
+
     return kFmiAlignMissing;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*!
@@ -50,28 +58,35 @@ NFmiAlignment AlignmentValue(const string& theName)
 
 const string AlignmentName(const NFmiAlignment theAlignment)
 {
-  switch (theAlignment)
+  try
   {
-    case kFmiAlignCenter:
-      return string("Center");
-    case kFmiAlignNorthWest:
-      return string("NorthWest");
-    case kFmiAlignNorth:
-      return string("North");
-    case kFmiAlignNorthEast:
-      return string("NorthEast");
-    case kFmiAlignEast:
-      return string("East");
-    case kFmiAlignSouthEast:
-      return string("SouthEast");
-    case kFmiAlignSouth:
-      return string("South");
-    case kFmiAlignSouthWest:
-      return string("SouthWest");
-    case kFmiAlignWest:
-      return string("West");
-    default:
-      return string("Unknown");
+    switch (theAlignment)
+    {
+      case kFmiAlignCenter:
+        return string("Center");
+      case kFmiAlignNorthWest:
+        return string("NorthWest");
+      case kFmiAlignNorth:
+        return string("North");
+      case kFmiAlignNorthEast:
+        return string("NorthEast");
+      case kFmiAlignEast:
+        return string("East");
+      case kFmiAlignSouthEast:
+        return string("SouthEast");
+      case kFmiAlignSouth:
+        return string("South");
+      case kFmiAlignSouthWest:
+        return string("SouthWest");
+      case kFmiAlignWest:
+        return string("West");
+      default:
+        return string("Unknown");
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -85,18 +100,25 @@ const string AlignmentName(const NFmiAlignment theAlignment)
 
 double XAlignmentFactor(NFmiAlignment theAlignment)
 {
-  switch (theAlignment)
+  try
   {
-    case kFmiAlignNorthEast:
-    case kFmiAlignEast:
-    case kFmiAlignSouthEast:
-      return 1.0;
-    case kFmiAlignCenter:
-    case kFmiAlignNorth:
-    case kFmiAlignSouth:
-      return 0.5;
-    default:
-      return 0.0;
+    switch (theAlignment)
+    {
+      case kFmiAlignNorthEast:
+      case kFmiAlignEast:
+      case kFmiAlignSouthEast:
+        return 1.0;
+      case kFmiAlignCenter:
+      case kFmiAlignNorth:
+      case kFmiAlignSouth:
+        return 0.5;
+      default:
+        return 0.0;
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -110,18 +132,25 @@ double XAlignmentFactor(NFmiAlignment theAlignment)
 
 double YAlignmentFactor(NFmiAlignment theAlignment)
 {
-  switch (theAlignment)
+  try
   {
-    case kFmiAlignSouthWest:
-    case kFmiAlignSouthEast:
-    case kFmiAlignSouth:
-      return 1.0;
-    case kFmiAlignEast:
-    case kFmiAlignCenter:
-    case kFmiAlignWest:
-      return 0.5;
-    default:
-      return 0.0;
+    switch (theAlignment)
+    {
+      case kFmiAlignSouthWest:
+      case kFmiAlignSouthEast:
+      case kFmiAlignSouth:
+        return 1.0;
+      case kFmiAlignEast:
+      case kFmiAlignCenter:
+      case kFmiAlignWest:
+        return 0.5;
+      default:
+        return 0.0;
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 

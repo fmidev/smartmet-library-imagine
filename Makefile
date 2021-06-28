@@ -3,7 +3,7 @@ LIB = smartmet-$(SUBNAME)
 SPEC = smartmet-library-$(SUBNAME)
 INCDIR = smartmet/$(SUBNAME)
 
-REQUIRES = gdal
+REQUIRES = gdal fmt
 
 include $(shell echo $${PREFIX-/usr})/share/smartmet/devel/makefile.inc
 
@@ -71,7 +71,7 @@ install:
 	$(INSTALL_PROG) $(LIBFILE) $(libdir)/$(LIBFILE)
 
 test:
-	cd test && make test
+	$(MAKE) -C test $@
 
 objdir:
 	@mkdir -p $(objdir)

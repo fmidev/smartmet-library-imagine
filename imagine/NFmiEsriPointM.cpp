@@ -14,6 +14,7 @@
 
 #include "NFmiEsriPointM.h"
 #include "NFmiEsriBuffer.h"
+#include <macgyver/Exception.h>
 
 using namespace Imagine::NFmiEsriBuffer;  // Conversion tools
 using namespace std;
@@ -35,12 +36,19 @@ NFmiEsriPointM::NFmiEsriPointM(const NFmiEsriPointM& thePoint)
 
 NFmiEsriPointM& NFmiEsriPointM::operator=(const NFmiEsriPointM& thePoint)
 {
-  if (this != &thePoint)
+  try
   {
-    NFmiEsriPoint::operator=(thePoint);
-    itsM = thePoint.itsM;
+    if (this != &thePoint)
+    {
+      NFmiEsriPoint::operator=(thePoint);
+      itsM = thePoint.itsM;
+    }
+    return *this;
   }
-  return *this;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -49,8 +57,16 @@ NFmiEsriPointM& NFmiEsriPointM::operator=(const NFmiEsriPointM& thePoint)
 
 NFmiEsriElement* NFmiEsriPointM::Clone() const
 {
-  return new NFmiEsriPointM(*this);
+  try
+  {
+    return new NFmiEsriPointM(*this);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
+
 // ----------------------------------------------------------------------
 // Constructor based on a character buffer
 // ----------------------------------------------------------------------
@@ -70,7 +86,14 @@ NFmiEsriPointM::NFmiEsriPointM(const string& theBuffer, int thePos, int theNumbe
 
 int NFmiEsriPointM::StringSize(void) const
 {
-  return (4 + 3 * 8);  // int + 3 doubles
+  try
+  {
+    return (4 + 3 * 8);  // int + 3 doubles
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -79,9 +102,16 @@ int NFmiEsriPointM::StringSize(void) const
 
 std::ostream& NFmiEsriPointM::Write(ostream& os) const
 {
-  os << LittleEndianInt(Type()) << LittleEndianDouble(X()) << LittleEndianDouble(Y())
-     << LittleEndianDouble(M());
-  return os;
+  try
+  {
+    os << LittleEndianInt(Type()) << LittleEndianDouble(X()) << LittleEndianDouble(Y())
+       << LittleEndianDouble(M());
+    return os;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace Imagine

@@ -22,6 +22,7 @@
 #include "NFmiCounter.h"
 #include "NFmiPath.h"
 
+#include <macgyver/Exception.h>
 #include <newbase/NFmiGeoTools.h>
 
 #include <list>
@@ -55,6 +56,8 @@ void SubdivideLine(NFmiPath& thePath,
                    double theY2,
                    double theMaxLength)
 {
+  try
+  {
   const double len = NFmiGeoTools::Distance(theX1, theY1, theX2, theY2);
   if (len <= theMaxLength || theMaxLength <= 0)
   {
@@ -66,6 +69,11 @@ void SubdivideLine(NFmiPath& thePath,
     const double midY = (theY1 + theY2) / 2;
     SubdivideLine(thePath, theOper, theX1, theY1, midX, midY, theMaxLength);
     SubdivideLine(thePath, theOper, midX, midY, theX2, theY2, theMaxLength);
+  }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -81,6 +89,8 @@ void SubdivideLine(NFmiPath& thePath,
 
 NFmiPath SubdividePath(const NFmiPath& thePath, double theMaxLength)
 {
+  try
+  {
   // safety check
   if (theMaxLength <= 0)
     return thePath;
@@ -109,6 +119,11 @@ NFmiPath SubdividePath(const NFmiPath& thePath, double theMaxLength)
   }
 
   return out;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 }  // namespace
 
@@ -131,8 +146,15 @@ namespace NFmiTightBezierFit
 
 const NFmiPath Fit(const NFmiPath& thePath, double theMaxError)
 {
+  try
+  {
   NFmiPath subpath = SubdividePath(thePath, theMaxError);
   return NFmiApproximateBezierFit::Fit(subpath, theMaxError);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -166,6 +188,8 @@ const NFmiPath Fit(const NFmiPath& thePath, double theMaxError)
 
 const NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError)
 {
+  try
+  {
   using namespace NFmiBezierTools;
 
   // Calculate the points
@@ -186,6 +210,11 @@ const NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError)
   }
 
   return outpaths;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace NFmiTightBezierFit

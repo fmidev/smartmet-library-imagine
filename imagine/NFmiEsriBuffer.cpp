@@ -5,6 +5,7 @@
 // ======================================================================
 
 #include "NFmiEsriBuffer.h"
+#include <macgyver/Exception.h>
 #include <algorithm>  // swap()
 #include <cstring>
 #include <iostream>
@@ -31,8 +32,15 @@ namespace Imagine
 
 bool NFmiEsriBuffer::IsCpuLittleEndian(void)
 {
+  try
+  {
   int i = 1;
   return (*reinterpret_cast<unsigned char *>(&i) == 1);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -41,6 +49,8 @@ bool NFmiEsriBuffer::IsCpuLittleEndian(void)
 
 int NFmiEsriBuffer::BigEndianInt(const std::string &theBuffer, int thePos)
 {
+  try
+  {
   if (IsCpuLittleEndian())
   {
     unsigned char tmp[4];
@@ -50,8 +60,13 @@ int NFmiEsriBuffer::BigEndianInt(const std::string &theBuffer, int thePos)
     tmp[3] = theBuffer[thePos];
     return *reinterpret_cast<uint32_t *>(tmp);
   }
-  else
+
     return *reinterpret_cast<const uint32_t *>(theBuffer.data() + thePos);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -60,16 +75,21 @@ int NFmiEsriBuffer::BigEndianInt(const std::string &theBuffer, int thePos)
 
 int NFmiEsriBuffer::LittleEndianInt(const std::string &theBuffer, int thePos)
 {
+  try
+  {
   if (IsCpuLittleEndian())
     return *reinterpret_cast<const int *>(theBuffer.data() + thePos);
-  else
-  {
+
     unsigned char tmp[4];
     tmp[0] = theBuffer[thePos + 3];
     tmp[1] = theBuffer[thePos + 2];
     tmp[2] = theBuffer[thePos + 1];
     tmp[3] = theBuffer[thePos];
     return *reinterpret_cast<uint32_t *>(tmp);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -81,9 +101,16 @@ int NFmiEsriBuffer::LittleEndianInt(const std::string &theBuffer, int thePos)
 
 int NFmiEsriBuffer::LittleEndianShort(const std::string &theBuffer, int thePos)
 {
+  try
+  {
   // The casts are necessary to get unsigned
   return (static_cast<unsigned char>(theBuffer[thePos]) +
           static_cast<unsigned char>(theBuffer[thePos + 1]) * 256);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -94,9 +121,16 @@ int NFmiEsriBuffer::LittleEndianShort(const std::string &theBuffer, int thePos)
 
 int NFmiEsriBuffer::BigEndianShort(const std::string &theBuffer, int thePos)
 {
+  try
+  {
   // The casts are necessary to get unsigned
   return (static_cast<unsigned char>(theBuffer[thePos]) * 256 +
           static_cast<unsigned char>(theBuffer[thePos + 1]));
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -105,6 +139,8 @@ int NFmiEsriBuffer::BigEndianShort(const std::string &theBuffer, int thePos)
 
 double NFmiEsriBuffer::LittleEndianDouble(const std::string &theBuffer, int thePos)
 {
+  try
+  {
   unsigned char tmp[8];
 
   if (IsCpuLittleEndian())
@@ -123,6 +159,11 @@ double NFmiEsriBuffer::LittleEndianDouble(const std::string &theBuffer, int theP
     tmp[7] = theBuffer[thePos];
   }
   return *reinterpret_cast<const double *>(tmp);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -131,6 +172,8 @@ double NFmiEsriBuffer::LittleEndianDouble(const std::string &theBuffer, int theP
 
 const string NFmiEsriBuffer::BigEndianInt(int theValue)
 {
+  try
+  {
   int value = theValue;
 
   // Initialize string by reinterpreting 4 value bytes as characters
@@ -149,6 +192,11 @@ const string NFmiEsriBuffer::BigEndianInt(int theValue)
     swap(tmp[1], tmp[2]);
   }
   return tmp;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -157,6 +205,8 @@ const string NFmiEsriBuffer::BigEndianInt(int theValue)
 
 const string NFmiEsriBuffer::LittleEndianInt(int theValue)
 {
+  try
+  {
   int value = theValue;
 
   // Initialize string by reinterpreting 4 value bytes as characters
@@ -175,6 +225,11 @@ const string NFmiEsriBuffer::LittleEndianInt(int theValue)
     swap(tmp[1], tmp[2]);
   }
   return tmp;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -183,10 +238,17 @@ const string NFmiEsriBuffer::LittleEndianInt(int theValue)
 
 const string NFmiEsriBuffer::LittleEndianShort(int theValue)
 {
+  try
+  {
   string tmp(2, '\0');
   tmp[0] = theValue % 256;
   tmp[1] = theValue / 256;
   return tmp;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -195,6 +257,8 @@ const string NFmiEsriBuffer::LittleEndianShort(int theValue)
 
 const string NFmiEsriBuffer::LittleEndianDouble(double theValue)
 {
+  try
+  {
   double value = theValue;
 
   // Initialize string by reinterpreting 8 value bytes as characters
@@ -215,6 +279,11 @@ const string NFmiEsriBuffer::LittleEndianDouble(double theValue)
     swap(tmp[3], tmp[4]);
   }
   return tmp;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -228,6 +297,8 @@ const string NFmiEsriBuffer::LittleEndianDouble(double theValue)
 
 bool NFmiEsriBuffer::EsriRead(std::istream &is, string &theString, unsigned int theLength)
 {
+  try
+  {
   // Note: Using a sizeable read-buffer for read is *significantly*
   // faster than reading 1 character at a time, the difference is
   // counted in seconds for largish files.
@@ -253,7 +324,13 @@ bool NFmiEsriBuffer::EsriRead(std::istream &is, string &theString, unsigned int 
   }
 
   return (!is.fail() && (theString.size() == theLength));
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
+
 }  // namespace Imagine
 
 // ======================================================================

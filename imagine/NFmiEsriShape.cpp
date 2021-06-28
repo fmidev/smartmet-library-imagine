@@ -145,6 +145,7 @@
 #include "NFmiEsriPolyLineZ.h"
 #include "NFmiEsriPolygonZ.h"
 
+#include <macgyver/Exception.h>
 #include <fmt/format.h>
 #include <newbase/NFmiFileSystem.h>
 #include <newbase/NFmiSettings.h>
@@ -169,6 +170,8 @@ namespace Imagine
 
 void NFmiEsriShape::Init(void)
 {
+  try
+  {
   // Destroy attributename pointees
 
   attributes_type::iterator aiter = itsAttributeNames.begin();
@@ -196,6 +199,11 @@ void NFmiEsriShape::Init(void)
   // Initialize type
 
   itsShapeType = kFmiEsriNull;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -204,8 +212,15 @@ void NFmiEsriShape::Init(void)
 
 void NFmiEsriShape::Add(NFmiEsriElement *theElement)
 {
+  try
+  {
   itsElements.push_back(theElement);
   theElement->Update(itsBox);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -214,7 +229,14 @@ void NFmiEsriShape::Add(NFmiEsriElement *theElement)
 
 void NFmiEsriShape::Add(NFmiEsriAttributeName *theAttributeName)
 {
+  try
+  {
   itsAttributeNames.push_back(theAttributeName);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -226,6 +248,8 @@ void NFmiEsriShape::Add(NFmiEsriAttributeName *theAttributeName)
 
 bool NFmiEsriShape::Read(const string &theFilename, bool fDBF)
 {
+  try
+  {
   // Default search path for shape files
   const string shapes_path = NFmiSettings::Optional<string>("imagine::shapes_path", string("."));
 
@@ -356,7 +380,7 @@ bool NFmiEsriShape::Read(const string &theFilename, bool fDBF)
   auto err = itsSpatialReference.SetFromUserInput(proj4.c_str());
 
   if (err != OGRERR_NONE)
-    throw std::runtime_error("Failed to create spatial reference from '" + proj4 + "'");
+      throw Fmi::Exception(BCP,"Failed to create spatial reference from '" + proj4 + "'");
 
   // We're done if the DBF file is not desired
 
@@ -438,7 +462,7 @@ bool NFmiEsriShape::Read(const string &theFilename, bool fDBF)
     int slen = LittleEndianShort(dbffields, fieldpos + kFmixBaseFieldLengthPos);
 
     if (ftype != 'N' && ftype != 'F' && ftype != 'C' && ftype != 'D')
-      throw runtime_error(string("Unrecognized shape value type '") + ftype + "'");
+        throw Fmi::Exception(BCP,string("Unrecognized shape value type '") + ftype + "'");
 
     if (ftype == 'N' || ftype == 'F')
     {
@@ -545,6 +569,11 @@ bool NFmiEsriShape::Read(const string &theFilename, bool fDBF)
   }
 
   return true;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -553,6 +582,8 @@ bool NFmiEsriShape::Read(const string &theFilename, bool fDBF)
 
 bool NFmiEsriShape::Add(int theRecordNumber, const string &theBuffer, int thePos)
 {
+  try
+  {
   // Establish the type
 
   int shptype = LittleEndianInt(theBuffer, thePos);
@@ -609,6 +640,11 @@ bool NFmiEsriShape::Add(int theRecordNumber, const string &theBuffer, int thePos
   }
 
   return true;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -617,6 +653,8 @@ bool NFmiEsriShape::Add(int theRecordNumber, const string &theBuffer, int thePos
 
 int NFmiEsriShape::CountRecords(const string &theBuffer) const
 {
+  try
+  {
   int num = 0;
   unsigned int pos = 0;
   while (pos < theBuffer.size())
@@ -626,6 +664,11 @@ int NFmiEsriShape::CountRecords(const string &theBuffer) const
     pos += kFmiEsriRecordHeaderSize + reclen * 2;
   }
   return num;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -635,6 +678,8 @@ int NFmiEsriShape::CountRecords(const string &theBuffer) const
 
 bool NFmiEsriShape::Write(const string &theFilename, bool fDBF, bool fSHX) const
 {
+  try
+  {
   // Derived file names
 
   const string shpfilename = theFilename + ".shp";
@@ -658,6 +703,11 @@ bool NFmiEsriShape::Write(const string &theFilename, bool fDBF, bool fSHX) const
     ok |= WriteDBF(dbffilename);
 
   return ok;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -667,6 +717,8 @@ bool NFmiEsriShape::Write(const string &theFilename, bool fDBF, bool fSHX) const
 
 bool NFmiEsriShape::WriteSHP(const string &theFilename) const
 {
+  try
+  {
   // Calculate the size the body will require
 
   int bodysize = 0;
@@ -716,6 +768,11 @@ bool NFmiEsriShape::WriteSHP(const string &theFilename) const
   shpfile.close();
 
   return (!shpfile.fail());
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -725,6 +782,8 @@ bool NFmiEsriShape::WriteSHP(const string &theFilename) const
 
 bool NFmiEsriShape::WriteSHX(const string &theFilename) const
 {
+  try
+  {
   // Open output file
 
   ofstream shxfile(theFilename.c_str(), ios::out | ios::binary);
@@ -761,6 +820,11 @@ bool NFmiEsriShape::WriteSHX(const string &theFilename) const
   shxfile.close();
 
   return (!shxfile.fail());
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -770,6 +834,8 @@ bool NFmiEsriShape::WriteSHX(const string &theFilename) const
 
 bool NFmiEsriShape::WriteDBF(const string &theFilename) const
 {
+  try
+  {
   const int header_size = 32;
   const int field_size = 32;
   const int header_zeros = 20;
@@ -871,7 +937,7 @@ bool NFmiEsriShape::WriteDBF(const string &theFilename) const
                   << static_cast<unsigned char>(attribute->DecimalCount());
           break;
         case kFmiEsriDate:
-          throw std::runtime_error("Writing dates not supported yet");
+            throw Fmi::Exception(BCP,"Writing dates not supported yet");
       }
       dbffile << LittleEndianInt(0);
       for (i = 0; i < field_zeros; i++)
@@ -923,7 +989,7 @@ bool NFmiEsriShape::WriteDBF(const string &theFilename) const
             break;
           }
           case kFmiEsriDate:
-            throw std::runtime_error("Writing dates not supported yet");
+              throw Fmi::Exception(BCP,"Writing dates not supported yet");
         }
       }
     }
@@ -934,6 +1000,11 @@ bool NFmiEsriShape::WriteDBF(const string &theFilename) const
   dbffile.close();
 
   return (!dbffile.fail());
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -942,6 +1013,8 @@ bool NFmiEsriShape::WriteDBF(const string &theFilename) const
 
 void NFmiEsriShape::WriteHeader(ostream &os, int theFileLength) const
 {
+  try
+  {
   // Output the header
 
   os << BigEndianInt(kFmiEsriMagicNumber)  // 0:magic number
@@ -965,6 +1038,11 @@ void NFmiEsriShape::WriteHeader(ostream &os, int theFileLength) const
      << LittleEndianDouble(Box().IsValid() ? Box().Zmax() : 0.0)
      << LittleEndianDouble(Box().IsValid() ? Box().Mmin() : 0.0)
      << LittleEndianDouble(Box().IsValid() ? Box().Mmax() : 0.0);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -973,6 +1051,8 @@ void NFmiEsriShape::WriteHeader(ostream &os, int theFileLength) const
 
 void NFmiEsriShape::Project(const NFmiEsriProjector &theProjector)
 {
+  try
+  {
   // Invalidate the bounding box X-Y limits first
   // Note that we do not initialize the M or Z parts
 
@@ -988,6 +1068,11 @@ void NFmiEsriShape::Project(const NFmiEsriProjector &theProjector)
       (*iter)->Update(itsBox);
     }
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -996,6 +1081,8 @@ void NFmiEsriShape::Project(const NFmiEsriProjector &theProjector)
 
 NFmiEsriAttributeName *NFmiEsriShape::AttributeName(const string &theFieldName) const
 {
+  try
+  {
   attributes_type::const_iterator begin = itsAttributeNames.begin();
   attributes_type::const_iterator end = itsAttributeNames.end();
   attributes_type::const_iterator iter;
@@ -1019,6 +1106,11 @@ NFmiEsriAttributeName *NFmiEsriShape::AttributeName(const string &theFieldName) 
   }
 
   return out;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace Imagine

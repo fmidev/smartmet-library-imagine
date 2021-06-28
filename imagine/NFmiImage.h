@@ -52,6 +52,11 @@ using std::FILE;
 namespace Imagine
 {
 //! Generic NFmiImage exception from which all others are derived
+
+#if 0
+
+// koskelam: These exceptions are replaced by Fmi::Exception -class
+
 struct NFmiImageError : public std::runtime_error
 {
   NFmiImageError(const std::string &s) : std::runtime_error(s) {}
@@ -80,6 +85,7 @@ struct NFmiImageCorruptError : public NFmiImageError
 {
   NFmiImageCorruptError(const std::string &s) : NFmiImageError(s) {}
 };
+#endif
 
 class NFmiImage
 #ifndef IMAGINE_WITH_CAIRO
@@ -270,12 +276,12 @@ class NFmiImage
   // Specializations later on in the code may overload the latter
   // interface below for defining possible optimized versions.
 
-  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-kääntäjän
+  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-kï¿½ï¿½ntï¿½jï¿½n
   //  virheen takia.
   //  void StrokeBasic(float theX1, float theY1, float theX2, float theY2,
   //		   int r, int g, int b, int a);
 
-  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-kääntäjän
+  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-kï¿½ï¿½ntï¿½jï¿½n
   //  virheen takia.
   //  void StrokeBasic(float theX1, float theY1,
   //		   float theX2, float theY2,
@@ -283,7 +289,7 @@ class NFmiImage
 
   // Composite low level drivers for each blending rule
 
-  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-kääntäjän
+  //  template <class T> // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-kï¿½ï¿½ntï¿½jï¿½n
   //  virheen takia.
   //  void Composite(const NFmiImage & theImage,
   //		 int theX, int theY, float theAlpha);

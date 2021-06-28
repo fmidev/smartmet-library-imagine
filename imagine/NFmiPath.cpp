@@ -8,6 +8,7 @@
 #include "NFmiCounter.h"
 #include "NFmiEsriBox.h"
 
+#include <macgyver/Exception.h>
 #include <newbase/NFmiGrid.h>
 #include <newbase/NFmiValueString.h>
 
@@ -36,30 +37,51 @@ const int central_quadrant = 4;
 //! Test the position of given point with respect to a rectangle.
 int quadrant(double x, double y, double x1, double y1, double x2, double y2, double margin)
 {
-  int value = central_quadrant;
-  if (x < x1 - margin)
-    value--;
-  else if (x > x2 + margin)
-    value++;
-  if (y < y1 - margin)
-    value -= 3;
-  else if (y > y2 + margin)
-    value += 3;
-  return value;
+  try
+  {
+    int value = central_quadrant;
+    if (x < x1 - margin)
+      value--;
+    else if (x > x2 + margin)
+      value++;
+    if (y < y1 - margin)
+      value -= 3;
+    else if (y > y2 + margin)
+      value += 3;
+    return value;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 //! Test whether two rectangles intersect
 bool intersects(
     double x1, double y1, double x2, double y2, double X1, double Y1, double X2, double Y2)
 {
-  bool xoutside = (x1 > X2 || x2 < X1);
-  bool youtside = (y1 > Y2 || y2 < Y1);
-  return (!xoutside && !youtside);
+  try
+  {
+    bool xoutside = (x1 > X2 || x2 < X1);
+    bool youtside = (y1 > Y2 || y2 < Y1);
+    return (!xoutside && !youtside);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 std::string numstring(double value, int precision)
 {
-  return NFmiValueString::GetStringWithMaxDecimalsSmartWay(value, precision).CharPtr();
+  try
+  {
+    return NFmiValueString::GetStringWithMaxDecimalsSmartWay(value, precision).CharPtr();
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // anonymous namespace
@@ -72,18 +94,25 @@ namespace Imagine
 
 void NFmiPath::Add(const NFmiPath &thePath, bool fExact)
 {
-  // We cannot simply copy, since we wish to change the first
-  // moveto in the path being appended into a lineto of the
-  // type implied by fExact
-
-  NFmiPathData::const_iterator iter = thePath.itsElements.begin();
-
-  for (; iter != thePath.itsElements.end(); ++iter)
+  try
   {
-    if (iter == thePath.itsElements.begin())
-      Add(fExact ? kFmiLineTo : kFmiGhostLineTo, iter->x, iter->y);
-    else
-      Add(*iter);
+    // We cannot simply copy, since we wish to change the first
+    // moveto in the path being appended into a lineto of the
+    // type implied by fExact
+
+    NFmiPathData::const_iterator iter = thePath.itsElements.begin();
+
+    for (; iter != thePath.itsElements.end(); ++iter)
+    {
+      if (iter == thePath.itsElements.begin())
+        Add(fExact ? kFmiLineTo : kFmiGhostLineTo, iter->x, iter->y);
+      else
+        Add(*iter);
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -96,18 +125,25 @@ void NFmiPath::Add(const NFmiPath &thePath, bool fExact)
 
 void NFmiPath::Insert(const NFmiPath &thePath, bool fExact)
 {
-  // And insert one by one to get correct inverse order
-
-  NFmiPathData::const_iterator iter = thePath.itsElements.begin();
-
-  bool first = true;
-  for (; iter != thePath.itsElements.end(); ++iter)
+  try
   {
-    if ((first && fExact) || (!first && iter->op == kFmiLineTo))
-      InsertLineTo(iter->x, iter->y);
-    else
-      InsertGhostLineTo(iter->x, iter->y);
-    first = false;
+    // And insert one by one to get correct inverse order
+
+    NFmiPathData::const_iterator iter = thePath.itsElements.begin();
+
+    bool first = true;
+    for (; iter != thePath.itsElements.end(); ++iter)
+    {
+      if ((first && fExact) || (!first && iter->op == kFmiLineTo))
+        InsertLineTo(iter->x, iter->y);
+      else
+        InsertGhostLineTo(iter->x, iter->y);
+      first = false;
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -125,17 +161,24 @@ void NFmiPath::Insert(const NFmiPath &thePath, bool fExact)
 
 void NFmiPath::AddReverse(const NFmiPath &thePath, bool fExact)
 {
-  // Holder for the next op to be added
-
-  NFmiPathOperation op = (fExact ? kFmiLineTo : kFmiGhostLineTo);
-
-  // Iterate
-
-  NFmiPathData::const_reverse_iterator iter = thePath.itsElements.rbegin();
-  for (; iter != thePath.itsElements.rend(); ++iter)
+  try
   {
-    Add(op, iter->x, iter->y);
-    op = iter->op;
+    // Holder for the next op to be added
+
+    NFmiPathOperation op = (fExact ? kFmiLineTo : kFmiGhostLineTo);
+
+    // Iterate
+
+    NFmiPathData::const_reverse_iterator iter = thePath.itsElements.rbegin();
+    for (; iter != thePath.itsElements.rend(); ++iter)
+    {
+      Add(op, iter->x, iter->y);
+      op = iter->op;
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -147,21 +190,28 @@ void NFmiPath::AddReverse(const NFmiPath &thePath, bool fExact)
 
 void NFmiPath::DoCloseLineTo(NFmiPathOperation theOper)
 {
-  NFmiPathData::reverse_iterator iter;
-  for (iter = itsElements.rbegin(); iter != itsElements.rend(); ++iter)
+  try
   {
-    if (iter->op == kFmiMoveTo)
+    NFmiPathData::reverse_iterator iter;
+    for (iter = itsElements.rbegin(); iter != itsElements.rend(); ++iter)
     {
-      // The element to be added
+      if (iter->op == kFmiMoveTo)
+      {
+        // The element to be added
 
-      NFmiPathElement tmp(theOper, iter->x, iter->y);
+        NFmiPathElement tmp(theOper, iter->x, iter->y);
 
-      // Don't add if the last element is exactly the same
+        // Don't add if the last element is exactly the same
 
-      if (!(itsElements.back() == tmp))
-        Add(tmp);
-      break;
+        if (!(itsElements.back() == tmp))
+          Add(tmp);
+        break;
+      }
     }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -197,118 +247,125 @@ using namespace std;
 
 void NFmiPath::Add(const string &theString)
 {
-  NFmiPathOperation previous_op = kFmiMoveTo;
-  double previous_x = 0;
-  double previous_y = 0;
-  bool previous_relative = false;
-
-  unsigned int pos = 0;  // parser position
-
-  int phase = 0;  // 0 = op, 1 = x, 2 = y
-
-  double x = 0.0f;
-  double y = 0.0f;
-  bool relative = false;
-  NFmiPathOperation op = kFmiMoveTo;
-
-  while (pos < theString.size())
+  try
   {
-    // Skip leading whitespace
+    NFmiPathOperation previous_op = kFmiMoveTo;
+    double previous_x = 0;
+    double previous_y = 0;
+    bool previous_relative = false;
 
-    if (isspace(theString[pos]))
+    unsigned int pos = 0;  // parser position
+
+    int phase = 0;  // 0 = op, 1 = x, 2 = y
+
+    double x = 0.0f;
+    double y = 0.0f;
+    bool relative = false;
+    NFmiPathOperation op = kFmiMoveTo;
+
+    while (pos < theString.size())
     {
-      pos++;
-      continue;
-    }
+      // Skip leading whitespace
 
-    // Skip comments
-
-    if (theString[pos] == '#')
-    {
-      while (pos < theString.size() && theString[pos] != '\n')
-        pos++;
-      continue;
-    }
-
-    // Parse operator
-
-    if (phase == 0)
-    {
-      // Initialize operator to be the previous one
-
-      relative = previous_relative;
-      op = previous_op;
-
-      // Assume there is an operator to be found
-
-      char ch = theString[pos++];
-
-      switch (toupper(ch))
+      if (isspace(theString[pos]))
       {
-        case 'L':
-          op = kFmiLineTo;
-          relative = (ch != toupper(ch));
-          break;
-        case 'G':
-          op = kFmiGhostLineTo;
-          relative = (ch != toupper(ch));
-          break;
-        case 'M':
-          op = kFmiMoveTo;
-          relative = (ch != toupper(ch));
-          break;
-        case 'Q':
-          op = kFmiConicTo;
-          relative = (ch != toupper(ch));
-          break;
-        case 'C':
-          op = kFmiCubicTo;
-          relative = (ch != toupper(ch));
-          break;
-        default:
-          pos--;  // correct backwards - there was no operator
-      }
-    }
-
-    // Parse coordinates
-
-    else
-    {
-      // Expecting some float, either x or y
-
-      string asciinumber;
-      while (pos < theString.size() && !isspace(theString[pos]) && theString[pos] != ',')
-        asciinumber += theString[pos++];
-
-      // Skip the possible comma we may have found
-
-      if (theString[pos] == ',')
         pos++;
+        continue;
+      }
 
-      double number = atof(asciinumber.c_str());
+      // Skip comments
 
-      if (phase == 1)
-        x = number;
+      if (theString[pos] == '#')
+      {
+        while (pos < theString.size() && theString[pos] != '\n')
+          pos++;
+        continue;
+      }
+
+      // Parse operator
+
+      if (phase == 0)
+      {
+        // Initialize operator to be the previous one
+
+        relative = previous_relative;
+        op = previous_op;
+
+        // Assume there is an operator to be found
+
+        char ch = theString[pos++];
+
+        switch (toupper(ch))
+        {
+          case 'L':
+            op = kFmiLineTo;
+            relative = (ch != toupper(ch));
+            break;
+          case 'G':
+            op = kFmiGhostLineTo;
+            relative = (ch != toupper(ch));
+            break;
+          case 'M':
+            op = kFmiMoveTo;
+            relative = (ch != toupper(ch));
+            break;
+          case 'Q':
+            op = kFmiConicTo;
+            relative = (ch != toupper(ch));
+            break;
+          case 'C':
+            op = kFmiCubicTo;
+            relative = (ch != toupper(ch));
+            break;
+          default:
+            pos--;  // correct backwards - there was no operator
+        }
+      }
+
+      // Parse coordinates
+
       else
-        y = number;
-    }
-
-    // Output movement
-
-    if (phase == 2)
-    {
-      if (relative)
       {
-        x += previous_x;
-        y += previous_y;
+        // Expecting some float, either x or y
+
+        string asciinumber;
+        while (pos < theString.size() && !isspace(theString[pos]) && theString[pos] != ',')
+          asciinumber += theString[pos++];
+
+        // Skip the possible comma we may have found
+
+        if (theString[pos] == ',')
+          pos++;
+
+        double number = atof(asciinumber.c_str());
+
+        if (phase == 1)
+          x = number;
+        else
+          y = number;
       }
-      Add(op, x, y);
-      previous_op = op;
-      previous_x = x;
-      previous_y = y;
-      previous_relative = relative;
+
+      // Output movement
+
+      if (phase == 2)
+      {
+        if (relative)
+        {
+          x += previous_x;
+          y += previous_y;
+        }
+        Add(op, x, y);
+        previous_op = op;
+        previous_x = x;
+        previous_y = y;
+        previous_relative = relative;
+      }
+      phase = (phase + 1) % 3;
     }
-    phase = (phase + 1) % 3;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -330,32 +387,39 @@ void NFmiPath::Add(const string &theString)
 
 void NFmiPath::Simplify(double epsilon)
 {
-  if (epsilon < 0.0)
-    return;
-
-  // Count the important points
-
-  NFmiCounter<pair<double, double> > counter;
-
-  NFmiPathData::const_iterator iter;
-  for (iter = Elements().begin(); iter != Elements().end(); ++iter)
+  try
   {
-    switch (iter->op)
-    {
-      case kFmiMoveTo:
-      case kFmiLineTo:
-      case kFmiGhostLineTo:
-        counter.Add(make_pair(iter->x, iter->y));
-        break;
-      default:
-        break;
-    }
-  }
+    if (epsilon < 0.0)
+      return;
 
-  // Then simplify all linear segments of equal type
-  //
-  // a) Optional one moveto + lineto's
-  // b) Optional one moveto + ghostlineto's
+    // Count the important points
+
+    NFmiCounter<pair<double, double> > counter;
+
+    NFmiPathData::const_iterator iter;
+    for (iter = Elements().begin(); iter != Elements().end(); ++iter)
+    {
+      switch (iter->op)
+      {
+        case kFmiMoveTo:
+        case kFmiLineTo:
+        case kFmiGhostLineTo:
+          counter.Add(make_pair(iter->x, iter->y));
+          break;
+        default:
+          break;
+      }
+    }
+
+    // Then simplify all linear segments of equal type
+    //
+    // a) Optional one moveto + lineto's
+    // b) Optional one moveto + ghostlineto's
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -364,15 +428,22 @@ void NFmiPath::Simplify(double epsilon)
 
 void NFmiPath::Translate(double theX, double theY)
 {
-  NFmiPathData::iterator iter;
-
-  for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)
+  try
   {
-    iter->x += theX;
-    iter->y += theY;
+    NFmiPathData::iterator iter;
 
-    //(*iter).X((*iter).X()+theX);	// X += theX
-    //(*iter).Y((*iter).Y()+theY);	// Y += theY
+    for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)
+    {
+      iter->x += theX;
+      iter->y += theY;
+
+      //(*iter).X((*iter).X()+theX);	// X += theX
+      //(*iter).Y((*iter).Y()+theY);	// Y += theY
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -382,23 +453,38 @@ void NFmiPath::Translate(double theX, double theY)
 
 void NFmiPath::Scale(double theScale)
 {
-  Scale(theScale, theScale);
+  try
+  {
+    Scale(theScale, theScale);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
+
 // ----------------------------------------------------------------------
 // Scale the path by the given amounts in x- and y-directions
 // ----------------------------------------------------------------------
 
 void NFmiPath::Scale(double theXScale, double theYScale)
 {
-  NFmiPathData::iterator iter;
-
-  for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)
+  try
   {
-    iter->x *= theXScale;
-    iter->y *= theYScale;
+    NFmiPathData::iterator iter;
 
-    //(*iter).X((*iter).X()*theXScale);
-    //(*iter).Y((*iter).Y()*theYScale);
+    for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)
+    {
+      iter->x *= theXScale;
+      iter->y *= theYScale;
+
+      //(*iter).X((*iter).X()*theXScale);
+      //(*iter).Y((*iter).Y()*theYScale);
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -408,19 +494,26 @@ void NFmiPath::Scale(double theXScale, double theYScale)
 
 void NFmiPath::Rotate(double theAngle)
 {
-  const double pi = 3.14159265358979f;
-
-  NFmiPathData::iterator iter;
-
-  double cosa = cos(theAngle * pi / 180);
-  double sina = sin(theAngle * pi / 180);
-
-  for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)
+  try
   {
-    double x = iter->x;
-    double y = iter->y;
-    iter->x = x * cosa + y * sina;
-    iter->y = -x * sina + y * cosa;
+    const double pi = 3.14159265358979f;
+
+    NFmiPathData::iterator iter;
+
+    double cosa = cos(theAngle * pi / 180);
+    double sina = sin(theAngle * pi / 180);
+
+    for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)
+    {
+      double x = iter->x;
+      double y = iter->y;
+      iter->x = x * cosa + y * sina;
+      iter->y = -x * sina + y * cosa;
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -449,13 +542,20 @@ void NFmiPath::Rotate(double theAngle)
 
 void NFmiPath::Align(NFmiAlignment theAlignment, double theX, double theY)
 {
-  NFmiEsriBox box = BoundingBox();
+  try
+  {
+    NFmiEsriBox box = BoundingBox();
 
-  double xfactor = XAlignmentFactor(theAlignment);
-  double yfactor = YAlignmentFactor(theAlignment);
+    double xfactor = XAlignmentFactor(theAlignment);
+    double yfactor = YAlignmentFactor(theAlignment);
 
-  Translate(theX - (box.Xmin() * (1 - xfactor) + box.Xmax() * xfactor),
-            theY - (box.Ymin() * (1 - yfactor) + box.Ymax() * yfactor));
+    Translate(theX - (box.Xmin() * (1 - xfactor) + box.Xmax() * xfactor),
+              theY - (box.Ymin() * (1 - yfactor) + box.Ymax() * yfactor));
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -465,17 +565,19 @@ void NFmiPath::Align(NFmiAlignment theAlignment, double theX, double theY)
 
 void NFmiPath::Project(const NFmiArea *const theArea)
 {
-  if (!theArea)
-    return;
+  try
+  {
+    if (!theArea)
+      return;
 
 #ifdef WGS84
-  NFmiPathData::iterator iter;
-  for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)
-  {
-    NFmiPoint pt = theArea->ToXY(NFmiPoint(iter->x, iter->y));
-    iter->x = pt.X();
-    iter->y = pt.Y();
-  }
+    NFmiPathData::iterator iter;
+    for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)
+    {
+      NFmiPoint pt = theArea->ToXY(NFmiPoint(iter->x, iter->y));
+      iter->x = pt.X();
+      iter->y = pt.Y();
+    }
 #else
 
   bool path_is_pacific = IsPacificView();
@@ -499,7 +601,11 @@ void NFmiPath::Project(const NFmiArea *const theArea)
     iter->x = pt.X();
     iter->y = pt.Y();
   }
-#endif
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -508,6 +614,8 @@ void NFmiPath::Project(const NFmiArea *const theArea)
 
 void NFmiPath::InvProject(const NFmiArea *const theArea)
 {
+  try
+  {
   if (theArea != 0)
   {
     NFmiPathData::iterator iter;
@@ -518,6 +626,11 @@ void NFmiPath::InvProject(const NFmiArea *const theArea)
       iter->y = pt.Y();
     }
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -526,6 +639,8 @@ void NFmiPath::InvProject(const NFmiArea *const theArea)
 
 void NFmiPath::InvGrid(const NFmiGrid *const theGrid)
 {
+  try
+  {
   if (theGrid != 0)
   {
     NFmiPathData::iterator iter;
@@ -536,6 +651,11 @@ void NFmiPath::InvGrid(const NFmiGrid *const theGrid)
       iter->y = pt.Y();
     }
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -545,6 +665,8 @@ void NFmiPath::InvGrid(const NFmiGrid *const theGrid)
 
 NFmiEsriBox NFmiPath::BoundingBox() const
 {
+  try
+  {
   NFmiEsriBox box;
 
   if (itsInsideOut)
@@ -570,8 +692,12 @@ NFmiEsriBox NFmiPath::BoundingBox() const
       }
     }
   }
-
   return box;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -592,6 +718,8 @@ NFmiEsriBox NFmiPath::BoundingBox() const
 
 void NFmiPath::SimplifyLines(double theOffset)
 {
+  try
+  {
   NFmiPathData::iterator iter = itsElements.begin();
   NFmiPathData::iterator end = itsElements.end();
 
@@ -682,6 +810,11 @@ void NFmiPath::SimplifyLines(double theOffset)
   }
 
   swap(itsElements, newelements);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -690,6 +823,8 @@ void NFmiPath::SimplifyLines(double theOffset)
 
 std::ostream &operator<<(std::ostream &os, const NFmiPath &thePath)
 {
+  try
+  {
   NFmiPathData::const_iterator iter = thePath.Elements().begin();
 
   if (thePath.IsInsideOut())
@@ -718,6 +853,11 @@ std::ostream &operator<<(std::ostream &os, const NFmiPath &thePath)
     os << iter->x << "," << iter->y;
   }
   return os;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -725,11 +865,13 @@ std::ostream &operator<<(std::ostream &os, const NFmiPath &thePath)
 // If relative_moves=true, relative movements are preferred over
 // absolute moves. This usually generates shorter SVG.
 // Tulostetaan polku vain kolmen desimaalin tarkkuudella (kaksi desimaali
-// ei riittänyt, kun tuli pieni väli maiden välille?).
+// ei riittï¿½nyt, kun tuli pieni vï¿½li maiden vï¿½lille?).
 // ----------------------------------------------------------------------
 
 string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 {
+  try
+  {
   // Note: Do NOT use output string streams, atleast not with
   //       g++ v2.92. The implementation is broken, and will
   //       mess up the output string. Instead we reserve a reasonable
@@ -753,10 +895,9 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
   for (; iter != Elements().end(); ++iter)
   {
 #ifdef _MSC_VER  // MSVC:n stringi on paska kun se täyttyy ei sitä kasvateta tarpeeksi
-    if (os.size() > 0.9 * os.capacity())
-      os.reserve(os.size() * 2);
+      if (os.size() > 0.9 * os.capacity()) os.reserve(os.size() * 2);
 #endif
-    const double x = iter->x;
+      const double x = iter->x;
     const double y = iter->y;
     const NFmiPathOperation op = iter->op;
 
@@ -897,11 +1038,17 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
   if (!removeghostlines && itsInsideOut)
   {
     if (inside_out_limit != 1e8)
-      throw runtime_error("Internal error in NFmiPath inside_out_limit");
+        throw Fmi::Exception(BCP,"Internal error in NFmiPath inside_out_limit");
+
     os += "M -1e8,-1e8 L -1e8,1e8 L 1e8,1e8 L 1e8,-1e8 Z";
   }
 
   return os;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -910,9 +1057,16 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 
 string NFmiPath::ftoa(double theValue) const
 {
+  try
+  {
   ostringstream str;
   str << theValue;
   return str.str();
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -922,6 +1076,8 @@ string NFmiPath::ftoa(double theValue) const
 #ifndef IMAGINE_WITH_CAIRO
 void NFmiPath::Add(NFmiFillMap &theMap) const
 {
+  try
+  {
   // Data holders for moves. 1 is the newest, 4 the oldest
 
   NFmiPathOperation op1 = kFmiMoveTo;
@@ -995,6 +1151,11 @@ void NFmiPath::Add(NFmiFillMap &theMap) const
     theMap.Add(inside_out_limit, inside_out_limit, inside_out_limit, -inside_out_limit);
     theMap.Add(inside_out_limit, -inside_out_limit, -inside_out_limit, -inside_out_limit);
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 #endif
 
@@ -1007,6 +1168,8 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
                       NFmiColorTools::Color theColor,
                       NFmiColorTools::NFmiBlendRule theRule) const
 {
+  try
+  {
   // Quick exit if color is not real
 
   if (theColor == NFmiColorTools::NoColor)
@@ -1027,7 +1190,7 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
     double nextY = iter->y;
 
     if (iter->op == kFmiConicTo || iter->op == kFmiCubicTo)
-      throw std::runtime_error(
+        throw Fmi::Exception(BCP,
           "Conic and Cubic control points not supported in NFmiPath::Stroke()");
 
     // Only LineTo operations get rendered
@@ -1044,6 +1207,11 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
     lastX = nextX;
     lastY = nextY;
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 #endif
 
@@ -1056,6 +1224,8 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
                       NFmiColorTools::Color theColor,
                       NFmiColorTools::NFmiBlendRule theRule) const
 {
+  try
+  {
   // Quick exit if color is not real
 
   if (theColor == NFmiColorTools::NoColor)
@@ -1064,7 +1234,7 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
   if (theWidth <= 0)
     return;
 
-/*
+  /*
  * Important that Cairo drawings are done the whole path at once;
  * cutting to thousands of moveto/lineto segments kills performance,
  * especially when creating PDF output (Cairo 1.6.4).
@@ -1087,7 +1257,7 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
     double nextY = iter->y;
 
     if (iter->op == kFmiConicTo || iter->op == kFmiCubicTo)
-      throw std::runtime_error(
+        throw Fmi::Exception(BCP,
           "Conic and Cubic control points not supported in NFmiPath::Stroke()");
 
     // Only LineTo operations get rendered
@@ -1121,14 +1291,20 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
     lastY = nextY;
   }
 #endif
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 #ifndef IMAGINE_WITH_CAIRO
 NFmiPath NFmiPath::Clip(
     double theX1, double theY1, double theX2, double theY2, double theMargin) const
 {
-  if (itsElements.empty())
-    return *this;
+  try
+  {
+    if (itsElements.empty()) return *this;
 
   NFmiPath outPath;
   NFmiPath tmpPath;
@@ -1299,12 +1475,23 @@ NFmiPath NFmiPath::Clip(
   }
 
   return outPath;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
-#endif
 
 static bool IsInside(const NFmiArea *const theArea, const NFmiPathElement &theElement)
 {
+  try
+  {
   return theArea->IsInside(NFmiPoint(theElement.x, theElement.y));
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 static void AddElementToCutPath(NFmiPath &thePath,
@@ -1314,52 +1501,61 @@ static void AddElementToCutPath(NFmiPath &thePath,
                                 NFmiPathOperation oper,
                                 bool lastOperation)
 {
+  try
+  {
   if (oper == kFmiMoveTo)
   {
-    if (prevInside == false && currentInside)  // ulkoa sisälle
-      ;                                        // moveto sisältä ulos, ei lisätä uuteen path:iin
-    else if (prevInside && currentInside == false)  // sisältä ulos
+      if (prevInside == false && currentInside)  // ulkoa sisï¿½lle
+        ;                                        // moveto sisï¿½ltï¿½ ulos, ei lisï¿½tï¿½ uuteen path:iin
+      else if (prevInside && currentInside == false)  // sisï¿½ltï¿½ ulos
       thePath.Add(theElem);
-    else if (prevInside && currentInside)  // sisällä kokonaan
+      else if (prevInside && currentInside)  // sisï¿½llï¿½ kokonaan
       thePath.Add(theElem);
     else  // ulkona
     {
-    }  // moveto ulkona, ei lisätä uuteen path:iin
+      }  // moveto ulkona, ei lisï¿½tï¿½ uuteen path:iin
   }
   else
-  {  // joku viiva tyyppi, oletetaan että lineto (ei oikeastaan väliä)
-    if (prevInside == false && currentInside)  // ulkoa sisälle
+    {  // joku viiva tyyppi, oletetaan ettï¿½ lineto (ei oikeastaan vï¿½liï¿½)
+      if (prevInside == false && currentInside)  // ulkoa sisï¿½lle
     {
-      if (lastOperation)  // tämä on ainoa poikkeus käsittely, kun kyseessä on viimeisestä viivan
-                          // pätkästä
+        if (lastOperation)  // tï¿½mï¿½ on ainoa poikkeus kï¿½sittely, kun kyseessï¿½ on viimeisestï¿½ viivan
+                            // pï¿½tkï¿½stï¿½
         thePath.Add(theElem);
       else
       {
         NFmiPathElement elem(theElem);
-        elem.op = kFmiMoveTo;  // pitää muuttaa moveto-tyypiksi
+          elem.op = kFmiMoveTo;  // pitï¿½ï¿½ muuttaa moveto-tyypiksi
         thePath.Add(elem);
       }
     }
-    else if (prevInside && currentInside == false)  // sisältä ulos
+      else if (prevInside && currentInside == false)  // sisï¿½ltï¿½ ulos
       thePath.Add(theElem);
-    else if (prevInside && currentInside)  // sisällä kokonaan
+      else if (prevInside && currentInside)  // sisï¿½llï¿½ kokonaan
       thePath.Add(theElem);
     else  // ulkona
     {
-    }  // moveto ulkona, ei lisätä uuteen path:iin
+      }  // moveto ulkona, ei lisï¿½tï¿½ uuteen path:iin
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
 // ----------------------------------------------------------------------
 // Create new path that is cut inside the given area. But so that the lines
 // at the edges goes out of area (by one point along the polyline).
-// HUOM! Tämä on raakile versio ja toimii vain rajojen katkaisijana,
-// pitäisi tehdä sellainen versio joka osaisi tehdä alue leikkaukset
+// HUOM! Tï¿½mï¿½ on raakile versio ja toimii vain rajojen katkaisijana,
+// pitï¿½isi tehdï¿½ sellainen versio joka osaisi tehdï¿½ alue leikkaukset
 // ghost-viivojen kanssa.
 // ----------------------------------------------------------------------
 
 NFmiPath NFmiPath::Clip(const NFmiArea *const theArea) const
 {
+  try
+  {
   NFmiPath path;
   if (theArea && itsElements.size() > 1)
   {
@@ -1369,25 +1565,32 @@ NFmiPath NFmiPath::Clip(const NFmiArea *const theArea) const
     bool currentInside = prevInside;
     for (; iter != itsElements.end(); ++iter)
     {
-      prevInside = currentInside;  // tämä pitää tehdä loopin alussa, jotta loopin lopuksi on tiedot
+        prevInside = currentInside;  // tï¿½mï¿½ pitï¿½ï¿½ tehdï¿½ loopin alussa, jotta loopin lopuksi on tiedot
                                    // kahden viimeisen pisteen tilasta
       currentInside = IsInside(theArea, *iter);
       AddElementToCutPath(path, prevInside, currentInside, *prevIter, iter->op, false);
       prevIter = iter;
     }
-    // lopuksi pitää lisätä tarvittaessa vielä viimeinen piste
+      // lopuksi pitï¿½ï¿½ lisï¿½tï¿½ tarvittaessa vielï¿½ viimeinen piste
     AddElementToCutPath(path,
                         prevInside,
                         currentInside,
                         *prevIter,
                         prevIter->op,
-                        true);  // huom! tässä on prevIter->op
+                          true);  // huom! tï¿½ssï¿½ on prevIter->op
   }
   return path;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 void add_cuts(NFmiContourTree &theTree, std::set<double> &theCuts, double theLon1, double theLon2)
 {
+  try
+  {
   std::set<double>::const_iterator iter = theCuts.begin();
   std::set<double>::const_iterator end = theCuts.end();
 
@@ -1401,6 +1604,11 @@ void add_cuts(NFmiContourTree &theTree, std::set<double> &theCuts, double theLon
       theTree.Add(NFmiEdge(theLon1, lat1, theLon1, lat2, true, false));
       theTree.Add(NFmiEdge(theLon2, lat1, theLon2, lat2, true, false));
     }
+  }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -1417,8 +1625,9 @@ void make_pacific(const NFmiPath &thePath,
                   std::set<double> &theCuts,
                   bool theDateLine)
 {
-  if (thePath.Empty())
-    return;
+  try
+  {
+    if (thePath.Empty()) return;
 
   if (theBox.Xmin() >= 0 && !theDateLine)
   {
@@ -1512,6 +1721,11 @@ void make_pacific(const NFmiPath &thePath,
     lastX = X;
     lastY = Y;
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -1527,8 +1741,9 @@ void make_atlantic(const NFmiPath &thePath,
                    std::set<double> &theCuts,
                    bool theDateLine)
 {
-  if (thePath.Empty())
-    return;
+  try
+  {
+    if (thePath.Empty()) return;
 
   // Note: We require Xmin to be >=0 in this easy cases since some paths
   // may look Pacific even though the coordinates are not. Example: Chuchki data
@@ -1646,6 +1861,11 @@ void make_atlantic(const NFmiPath &thePath,
     lastX = X;
     lastY = Y;
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -1656,12 +1876,11 @@ void make_atlantic(const NFmiPath &thePath,
 
 NFmiPath NFmiPath::PacificView(bool pacific) const
 {
-  if (!pacific)
-    return *this;
-  if (itsElements.empty())
-    return *this;
-  if (IsPacificView())
-    return *this;
+  try
+  {
+    if (!pacific) return *this;
+    if (itsElements.empty()) return *this;
+    if (IsPacificView()) return *this;
 
   NFmiPath outpath;
   NFmiPath currentpath;
@@ -1698,6 +1917,11 @@ NFmiPath NFmiPath::PacificView(bool pacific) const
 
   outpath.Add(tree.Path());
   return outpath;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -1708,12 +1932,11 @@ NFmiPath NFmiPath::PacificView(bool pacific) const
 
 NFmiPath NFmiPath::AtlanticView(bool atlantic) const
 {
-  if (!atlantic)
-    return *this;
-  if (itsElements.empty())
-    return *this;
-  if (!IsPacificView())
-    return *this;
+  try
+  {
+    if (!atlantic) return *this;
+    if (itsElements.empty()) return *this;
+    if (!IsPacificView()) return *this;
 
   NFmiPath outpath;
   NFmiPath currentpath;
@@ -1750,6 +1973,11 @@ NFmiPath NFmiPath::AtlanticView(bool atlantic) const
 
   outpath.Add(tree.Path());
   return outpath;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -1758,6 +1986,8 @@ NFmiPath NFmiPath::AtlanticView(bool atlantic) const
 
 bool NFmiPath::IsPacificView() const
 {
+  try
+  {
   // cntry06 data has longitudes such as 180.00000033527612686
   const double eps = 0.001;
 
@@ -1802,6 +2032,11 @@ bool NFmiPath::IsPacificView() const
   }
 
   return false;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace Imagine

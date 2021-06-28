@@ -16,6 +16,7 @@
 
 #include "NFmiFillMap.h"
 #include "NFmiColorBlend.h"
+#include <macgyver/Exception.h>
 #include <algorithm>
 #include <cmath>
 
@@ -59,6 +60,8 @@ static void Fill2(T theBlender,
                   int alpha,
                   NFmiFillMapData &theData)
 {
+  try
+  {
   // The iterator for traversing the data is not const, because we
   // sort the x-coordinates
 
@@ -159,6 +162,11 @@ static void Fill2(T theBlender,
       }
     }
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -183,6 +191,8 @@ static void Fill2(T theBlender,
                   NFmiColorTools::Color theColor,
                   NFmiFillMapData &theData)
 {
+  try
+  {
   // The iterator for traversing the data is not const, because we
   // sort the x-coordinates
 
@@ -284,6 +294,11 @@ static void Fill2(T theBlender,
       }
     }
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -307,6 +322,8 @@ static void Fill2(T theBlender,
                   int theY,
                   NFmiFillMapData &theData)
 {
+  try
+  {
   // The iterator for traversing the data is not const, because we
   // sort the x-coordinates
 
@@ -427,6 +444,11 @@ static void Fill2(T theBlender,
       }
     }
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -435,6 +457,8 @@ static void Fill2(T theBlender,
 
 void NFmiFillMap::Add(float theX1, float theY1, float theX2, float theY2)
 {
+  try
+  {
   // Ignore invalid coordinates
 
   if (theX1 == kFloatMissing || theY1 == kFloatMissing || theX2 == kFloatMissing ||
@@ -513,6 +537,11 @@ void NFmiFillMap::Add(float theX1, float theY1, float theX2, float theY2)
 
   for (int j = lo; j <= hi; ++j)
     itsData[j].push_back(tmp + k * j);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -522,6 +551,8 @@ void NFmiFillMap::Add(float theX1, float theY1, float theX2, float theY2)
 void NFmiFillMap::AddConic(
     float theX1, float theY1, float theX2, float theY2, float theX3, float theY3)
 {
+  try
+  {
   // Ignore invalid coordinates
 
   if (theX1 == kFloatMissing || theY1 == kFloatMissing || theX2 == kFloatMissing ||
@@ -529,6 +560,11 @@ void NFmiFillMap::AddConic(
     return;
 
   // NOT IMPLEMENTED
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -544,6 +580,8 @@ void NFmiFillMap::AddCubic(float theX1,
                            float theX4,
                            float theY4)
 {
+  try
+  {
   // Ignore invalid coordinates
 
   if (theX1 == kFloatMissing || theY1 == kFloatMissing || theX2 == kFloatMissing ||
@@ -552,6 +590,11 @@ void NFmiFillMap::AddCubic(float theX1,
     return;
 
   // NOT IMPLEMENTED
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -560,6 +603,8 @@ void NFmiFillMap::AddCubic(float theX1,
 
 void NFmiFillMap::Or(const NFmiFillMap &theMap)
 {
+  try
+  {
   // Traverse through the map, performing OR with each Y separately
 
   NFmiFillMapData::const_iterator theiter;  // theMap.itsData iterator
@@ -610,6 +655,11 @@ void NFmiFillMap::Or(const NFmiFillMap &theMap)
       iter->second = xvec;
     }
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -618,6 +668,8 @@ void NFmiFillMap::Or(const NFmiFillMap &theMap)
 
 void NFmiFillMap::And(const NFmiFillMap &theMap)
 {
+  try
+  {
   // Iterate through my data, doing AND at every Y
 
   NFmiFillMapData::const_iterator theiter;  // theMap.itsData iterator
@@ -676,6 +728,11 @@ void NFmiFillMap::And(const NFmiFillMap &theMap)
       ++iter;
     }
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -694,6 +751,8 @@ void NFmiFillMap::Fill(NFmiImage &theImage,
                        NFmiColorTools::Color theColor,
                        NFmiColorTools::NFmiBlendRule theRule)
 {
+  try
+  {
   // Quick exit if color is not real
 
   if (theColor == NFmiColorTools::NoColor)
@@ -832,6 +891,11 @@ void NFmiFillMap::Fill(NFmiImage &theImage,
     case NFmiColorTools::kFmiColorRuleMissing:
       break;
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -848,6 +912,8 @@ void NFmiFillMap::Fill(NFmiImage &theImage,
                        int theX,
                        int theY)
 {
+  try
+  {
   switch (theRule)
   {
     case NFmiColorTools::kFmiColorClear:
@@ -957,6 +1023,11 @@ void NFmiFillMap::Fill(NFmiImage &theImage,
     case NFmiColorTools::kFmiColorKeep:
     case NFmiColorTools::kFmiColorRuleMissing:
       break;
+  }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 

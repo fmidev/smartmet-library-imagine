@@ -23,6 +23,7 @@
 // ======================================================================
 
 #include "NFmiAffine.h"
+#include <macgyver/Exception.h>
 #include <cmath>
 #ifdef __BORLANDC__
 using std::cos;
@@ -100,10 +101,17 @@ NFmiAffine& NFmiAffine::operator=(const NFmiAffine& theAffine)
 
 void NFmiAffine::Translate(double tx, double ty)
 {
-  // Multiply(1,0,0,1,tx,ty)
+  try
+  {
+    // Multiply(1,0,0,1,tx,ty)
 
-  itsE += itsA * tx + itsC * ty;
-  itsF += itsB * tx + itsD * ty;
+    itsE += itsA * tx + itsC * ty;
+    itsF += itsB * tx + itsD * ty;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -114,11 +122,18 @@ void NFmiAffine::Translate(double tx, double ty)
 
 void NFmiAffine::Scale(double s)
 {
-  // Multiply(NFmiAffine(s,0,0,s,0,0));
-  itsA *= s;
-  itsB *= s;
-  itsC *= s;
-  itsD *= s;
+  try
+  {
+    // Multiply(NFmiAffine(s,0,0,s,0,0));
+    itsA *= s;
+    itsB *= s;
+    itsC *= s;
+    itsD *= s;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -129,11 +144,18 @@ void NFmiAffine::Scale(double s)
 
 void NFmiAffine::Scale(double sx, double sy)
 {
-  // Multiply(NFmiAffine(sx,0,0,sy,0,0));
-  itsA *= sx;
-  itsB *= sx;
-  itsC *= sy;
-  itsD *= sy;
+  try
+  {
+    // Multiply(NFmiAffine(sx,0,0,sy,0,0));
+    itsA *= sx;
+    itsB *= sx;
+    itsC *= sy;
+    itsD *= sy;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -144,21 +166,28 @@ void NFmiAffine::Scale(double sx, double sy)
 
 void NFmiAffine::Rotate(double a)
 {
-  // Multiply(NFmiAffine(cos(a),sin(a),-sin(a),cos(a),0,0))
+  try
+  {
+    // Multiply(NFmiAffine(cos(a),sin(a),-sin(a),cos(a),0,0))
 
-  const double pi180 = 3.141592658579323846 / 180.0;
-  double ca = cos(a * pi180);
-  double sa = sin(a * pi180);
+    const double pi180 = 3.141592658579323846 / 180.0;
+    double ca = cos(a * pi180);
+    double sa = sin(a * pi180);
 
-  double oldA = itsA;
-  double oldB = itsB;
-  double oldC = itsC;
-  double oldD = itsD;
+    double oldA = itsA;
+    double oldB = itsB;
+    double oldC = itsC;
+    double oldD = itsD;
 
-  itsA = oldA * ca + oldC * sa;
-  itsB = oldB * ca + oldD * sa;
-  itsC = -oldA * sa + oldC * ca;
-  itsD = -oldB * sa + oldD * ca;
+    itsA = oldA * ca + oldC * sa;
+    itsB = oldB * ca + oldD * sa;
+    itsC = -oldA * sa + oldC * ca;
+    itsD = -oldB * sa + oldD * ca;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -170,19 +199,26 @@ void NFmiAffine::Rotate(double a)
 
 void NFmiAffine::Multiply(const NFmiAffine& theAffine)
 {
-  double oldA = itsA;
-  double oldB = itsB;
-  double oldC = itsC;
-  double oldD = itsD;
-  double oldE = itsE;
-  double oldF = itsF;
+  try
+  {
+    double oldA = itsA;
+    double oldB = itsB;
+    double oldC = itsC;
+    double oldD = itsD;
+    double oldE = itsE;
+    double oldF = itsF;
 
-  itsA = oldA * theAffine.itsA + oldC * theAffine.itsB;
-  itsB = oldB * theAffine.itsA + oldD * theAffine.itsB;
-  itsC = oldA * theAffine.itsC + oldC * theAffine.itsD;
-  itsD = oldB * theAffine.itsC + oldD * theAffine.itsD;
-  itsE = oldA * theAffine.itsE + oldC * theAffine.itsF + oldE;
-  itsF = oldB * theAffine.itsE + oldD * theAffine.itsF + oldF;
+    itsA = oldA * theAffine.itsA + oldC * theAffine.itsB;
+    itsB = oldB * theAffine.itsA + oldD * theAffine.itsB;
+    itsC = oldA * theAffine.itsC + oldC * theAffine.itsD;
+    itsD = oldB * theAffine.itsC + oldD * theAffine.itsD;
+    itsE = oldA * theAffine.itsE + oldC * theAffine.itsF + oldE;
+    itsF = oldB * theAffine.itsE + oldD * theAffine.itsF + oldF;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -193,8 +229,16 @@ void NFmiAffine::Multiply(const NFmiAffine& theAffine)
 
 double NFmiAffine::X(double x, double y)
 {
-  return itsA * x + itsC * y + itsE;
+  try
+  {
+    return itsA * x + itsC * y + itsE;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
+
 // ----------------------------------------------------------------------
 /*!
  * \brief Calculate transformed Y-coordinate
@@ -203,8 +247,16 @@ double NFmiAffine::X(double x, double y)
 
 double NFmiAffine::Y(double x, double y)
 {
-  return itsB * x + itsD * y + itsF;
+  try
+  {
+    return itsB * x + itsD * y + itsF;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
+
 }  // namespace Imagine
 
 // ======================================================================

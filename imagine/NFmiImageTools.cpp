@@ -9,6 +9,7 @@
 
 #include "NFmiImageTools.h"
 #include "NFmiImage.h"
+#include <macgyver/Exception.h>
 
 #include <stdexcept>
 
@@ -38,13 +39,21 @@ namespace
 
 inline int compress_bits(int theValue, int theBits)
 {
-  if (theBits < 0 || theBits > 8)
-    throw runtime_error("Invalid number of bits in NFmiImageTools::compress_bits");
-  if (theBits == 8)
-    return theValue;
-  int round = (theValue >> (8 - theBits - 1)) & 1;
-  int value = (theValue >> (8 - theBits)) + round;
-  return min(255, value << (8 - theBits));
+  try
+  {
+    if (theBits < 0 || theBits > 8)
+      throw Fmi::Exception(BCP, "Invalid number of bits in NFmiImageTools::compress_bits");
+    if (theBits == 8)
+      return theValue;
+
+    int round = (theValue >> (8 - theBits - 1)) & 1;
+    int value = (theValue >> (8 - theBits)) + round;
+    return min(255, value << (8 - theBits));
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace
@@ -68,24 +77,33 @@ namespace NFmiImageTools
 void CompressBits(
     NFmiImage& theImage, int theRedBits, int theGreenBits, int theBlueBits, int theAlphaBits)
 {
-  using namespace NFmiColorTools;
-
-  if (theRedBits < 0 || theRedBits > 8 || theGreenBits < 0 || theGreenBits > 8 || theBlueBits < 0 ||
-      theBlueBits > 8 || theAlphaBits < 0 || theAlphaBits > 8)
+  try
   {
-    throw runtime_error("Color resolution must be 0-8 bits");
-  }
+    using namespace NFmiColorTools;
 
-  for (int j = 0; j < theImage.Height(); j++)
-    for (int i = 0; i < theImage.Width(); i++)
+    if (theRedBits < 0 || theRedBits > 8 || theGreenBits < 0 || theGreenBits > 8 ||
+        theBlueBits < 0 || theBlueBits > 8 || theAlphaBits < 0 || theAlphaBits > 8)
     {
-      Color& c = theImage(i, j);
-      const int r = compress_bits(GetRed(c), theRedBits);
-      const int g = compress_bits(GetGreen(c), theGreenBits);
-      const int b = compress_bits(GetBlue(c), theBlueBits);
-      const int a = compress_bits(GetAlpha(c), theAlphaBits);
-      c = MakeColor(r, g, b, a);
+      throw Fmi::Exception(BCP, "Color resolution must be 0-8 bits");
     }
+
+    for (int j = 0; j < theImage.Height(); j++)
+    {
+      for (int i = 0; i < theImage.Width(); i++)
+      {
+        Color& c = theImage(i, j);
+        const int r = compress_bits(GetRed(c), theRedBits);
+        const int g = compress_bits(GetGreen(c), theGreenBits);
+        const int b = compress_bits(GetBlue(c), theBlueBits);
+        const int a = compress_bits(GetAlpha(c), theAlphaBits);
+        c = MakeColor(r, g, b, a);
+      }
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -101,37 +119,44 @@ void CompressBits(
 
 std::string MimeType(const string& theFileName)
 {
-  FILE* in;
-  in = fopen(theFileName.c_str(), "rb");
-  if (in == nullptr)
-    throw runtime_error("Unable to determine image type of '" + theFileName + "'");
+  try
+  {
+    FILE* in;
+    in = fopen(theFileName.c_str(), "rb");
+    if (in == nullptr)
+      throw Fmi::Exception(BCP, "Unable to determine image type of '" + theFileName + "'");
 
-  unsigned char strmagic[4];
-  size_t num = fread(strmagic, 1, 4, in);
-  fclose(in);
+    unsigned char strmagic[4];
+    size_t num = fread(strmagic, 1, 4, in);
+    fclose(in);
 
-  if (num != 4)
-    throw runtime_error("Failed to read image magic number from '" + theFileName + "'");
+    if (num != 4)
+      throw Fmi::Exception(BCP, "Failed to read image magic number from '" + theFileName + "'");
 
-  unsigned long magic = (static_cast<unsigned long>(strmagic[0]) << 24) +
-                        (static_cast<unsigned long>(strmagic[1]) << 16) +
-                        (static_cast<unsigned long>(strmagic[2]) << 8) +
-                        (static_cast<unsigned long>(strmagic[3]));
+    unsigned long magic = (static_cast<unsigned long>(strmagic[0]) << 24) +
+                          (static_cast<unsigned long>(strmagic[1]) << 16) +
+                          (static_cast<unsigned long>(strmagic[2]) << 8) +
+                          (static_cast<unsigned long>(strmagic[3]));
 
-  if (magic == 0xffd8ffe0)
-    return "jpeg";
-  else if (magic == 0x89504e47)
-    return "png";
-  else if (magic == 0x47494638)
-    return "gif";
-  else if (strmagic[0] == 'P' && strmagic[1] == '6' && strmagic[2] == '\n')
-    return "pnm";
-  else if (strmagic[0] == 'P' && strmagic[1] == '5' && strmagic[2] == '\n')
-    return "pgm";
-  else if (strmagic[0] == 'I' && strmagic[1] == 'I' && strmagic[2] == '*')
-    return "tiff";
-  else
-    throw runtime_error("Unknown image format in '" + theFileName + "'");
+    if (magic == 0xffd8ffe0)
+      return "jpeg";
+    if (magic == 0x89504e47)
+      return "png";
+    if (magic == 0x47494638)
+      return "gif";
+    if (strmagic[0] == 'P' && strmagic[1] == '6' && strmagic[2] == '\n')
+      return "pnm";
+    if (strmagic[0] == 'P' && strmagic[1] == '5' && strmagic[2] == '\n')
+      return "pgm";
+    if (strmagic[0] == 'I' && strmagic[1] == 'I' && strmagic[2] == '*')
+      return "tiff";
+
+    throw Fmi::Exception(BCP, "Unknown image format in '" + theFileName + "'");
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace NFmiImageTools

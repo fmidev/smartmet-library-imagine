@@ -13,6 +13,7 @@
 
 #include "NFmiEsriPoint.h"
 #include "NFmiEsriBuffer.h"
+#include <macgyver/Exception.h>
 
 using namespace Imagine::NFmiEsriBuffer;  // Conversion tools
 using namespace std;
@@ -34,13 +35,20 @@ NFmiEsriPoint::NFmiEsriPoint(const NFmiEsriPoint& thePoint)
 
 NFmiEsriPoint& NFmiEsriPoint::operator=(const NFmiEsriPoint& thePoint)
 {
-  if (this != &thePoint)
+  try
   {
-    NFmiEsriElement::operator=(thePoint);
-    itsX = thePoint.itsX;
-    itsY = thePoint.itsY;
+    if (this != &thePoint)
+    {
+      NFmiEsriElement::operator=(thePoint);
+      itsX = thePoint.itsX;
+      itsY = thePoint.itsY;
+    }
+    return *this;
   }
-  return *this;
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -49,8 +57,16 @@ NFmiEsriPoint& NFmiEsriPoint::operator=(const NFmiEsriPoint& thePoint)
 
 NFmiEsriElement* NFmiEsriPoint::Clone() const
 {
-  return new NFmiEsriPoint(*this);
+  try
+  {
+    return new NFmiEsriPoint(*this);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
+
 // ----------------------------------------------------------------------
 // Constructor based on a character buffer
 // ----------------------------------------------------------------------
@@ -68,7 +84,14 @@ NFmiEsriPoint::NFmiEsriPoint(const string& theBuffer, int thePos, int theNumber)
 
 int NFmiEsriPoint::StringSize(void) const
 {
-  return (4 + 2 * 8);  // int + 2 doubles
+  try
+  {
+    return (4 + 2 * 8);  // int + 2 doubles
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -77,8 +100,15 @@ int NFmiEsriPoint::StringSize(void) const
 
 std::ostream& NFmiEsriPoint::Write(ostream& os) const
 {
-  os << LittleEndianInt(Type()) << LittleEndianDouble(X()) << LittleEndianDouble(Y());
-  return os;
+  try
+  {
+    os << LittleEndianInt(Type()) << LittleEndianDouble(X()) << LittleEndianDouble(Y());
+    return os;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -87,13 +117,20 @@ std::ostream& NFmiEsriPoint::Write(ostream& os) const
 
 void NFmiEsriPoint::Project(const NFmiEsriProjector& theProjector)
 {
-  // Hmm, I'll just ignore this problem, since we're moving to GDAL
-  // theProjector.SetBox(itsBox);
+  try
+  {
+    // Hmm, I'll just ignore this problem, since we're moving to GDAL
+    // theProjector.SetBox(itsBox);
 
-  NFmiEsriPoint tmp(X(), Y());
-  tmp = theProjector(tmp);
-  X(tmp.X());
-  Y(tmp.Y());
+    NFmiEsriPoint tmp(X(), Y());
+    tmp = theProjector(tmp);
+    X(tmp.X());
+    Y(tmp.Y());
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace Imagine

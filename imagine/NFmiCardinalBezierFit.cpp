@@ -16,6 +16,7 @@
 #include "NFmiBezierTools.h"
 #include "NFmiCounter.h"
 #include "NFmiPath.h"
+#include <macgyver/Exception.h>
 
 #include <list>
 
@@ -72,6 +73,8 @@ void CubicControlPoints(double smooth_value,
                         double& cx2,
                         double& cy2)
 {
+  try
+  {
   // calculate the centers for each of the three edges
   const double xc1 = (x0 + x1) / 2.0;
   const double yc1 = (y0 + y1) / 2.0;
@@ -100,6 +103,11 @@ void CubicControlPoints(double smooth_value,
 
   cx2 = xm2 + (xc2 - xm2) * smooth_value + x2 - xm2;
   cy2 = ym2 + (yc2 - ym2) * smooth_value + y2 - ym2;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -124,6 +132,8 @@ void CubicControlPoints(double smooth_value,
 
 NFmiPath SimpleFit(const NFmiPath& thePath, double theSmoothness)
 {
+  try
+  {
   using namespace NFmiBezierTools;
 
   if (thePath.Empty())
@@ -166,6 +176,11 @@ NFmiPath SimpleFit(const NFmiPath& thePath, double theSmoothness)
   }
 
   return outpath;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace
@@ -197,6 +212,8 @@ namespace NFmiCardinalBezierFit
 
 const NFmiPath Fit(const NFmiPath& thePath, double theSmoothness)
 {
+  try
+  {
   using namespace NFmiBezierTools;
 
   NFmiPath outpath;
@@ -210,6 +227,11 @@ const NFmiPath Fit(const NFmiPath& thePath, double theSmoothness)
   }
 
   return outpath;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 // ----------------------------------------------------------------------
@@ -243,6 +265,8 @@ const NFmiPath Fit(const NFmiPath& thePath, double theSmoothness)
 
 const NFmiPaths Fit(const NFmiPaths& thePaths, double theSmoothness)
 {
+  try
+  {
   using namespace NFmiBezierTools;
 
   // Calculate the points
@@ -262,6 +286,11 @@ const NFmiPaths Fit(const NFmiPaths& thePaths, double theSmoothness)
   }
 
   return thePaths;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 }  // namespace NFmiCardinalBezierFit

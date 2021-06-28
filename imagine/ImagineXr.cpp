@@ -4,6 +4,7 @@
  * Replacement for 'Imagine' library, using Cairo drawing
  */
 #include "imagine-config.h"
+#include <macgyver/Exception.h>
 
 #ifdef IMAGINE_WITH_CAIRO
 
@@ -53,6 +54,8 @@ static const char *COLORNAME(NFmiColorTools::Color col)
 
 static void Defaults(Cairo::RefPtr<Cairo::Context> cr)
 {
+  try
+  {
   cr->set_line_width(DEFAULT_LINE_WIDTH);
 
   cr->set_fill_rule(FILL_RULE_EVEN_ODD);
@@ -63,16 +66,27 @@ static void Defaults(Cairo::RefPtr<Cairo::Context> cr)
   cr->set_antialias(ANTIALIAS_DEFAULT);
   //
   // ANTIALIAS_DEFAULT / ANTIALIAS_NONE / ANTIALIAS_GRAY / ANTIALIAS_SUBPIXEL
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 ImagineXr::ImagineXr(int w, int h, const string &to_fn, const string &fmt_)
     : fn(to_fn), fmt(fmt_), width(w), height(h), face(0), font_bg_color(NFmiColorTools::NoColor)
 {
+  try
+  {
   USAGE(
       "ImagineXr(): format=%s, fn=%s width=%d, height=%d", fmt.c_str(), fn.c_str(), width, height);
 
   if (fn == "")
+<<<<<<< HEAD
     throw runtime_error("No output filename given!");
+=======
+      throw Fmi::Exception(BCP,"No output filename given!");
+>>>>>>> master
 
   if (fmt == "pdf")
   {
@@ -86,17 +100,29 @@ ImagineXr::ImagineXr(int w, int h, const string &to_fn, const string &fmt_)
   }
 
   Defaults(cr = Cairo::Context::create(surf()));
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 ImagineXr::ImagineXr(const string &from_png_fn)
     : fn(""), fmt("png"), face(0), font_bg_color(NFmiColorTools::NoColor)
 {
+  try
+  {
   USAGE("ImagineXr(): from_fn=%s", from_png_fn.c_str());
   image_surf = Cairo::ImageSurface::create_from_png(from_png_fn);
   width = image_surf->get_width();
   height = image_surf->get_height();
 
   Defaults(cr = Cairo::Context::create(image_surf));
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -105,10 +131,17 @@ ImagineXr::ImagineXr(const string &from_png_fn)
 ImagineXr::ImagineXr(int w, int h)
     : fn(""), fmt("png"), width(w), height(h), face(0), font_bg_color(NFmiColorTools::NoColor)
 {
+  try
+  {
   USAGE("ImagineXr(): width=%d, height=%d", width, height);
 
   image_surf = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
   Defaults(cr = Cairo::Context::create(surf()));
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 ImagineXr::ImagineXr(const ImagineXr &o)
@@ -121,26 +154,49 @@ ImagineXr::ImagineXr(const ImagineXr &o)
       face(0),
       font_bg_color(NFmiColorTools::NoColor)
 {
+  try
+  {
   USAGE0("ImagineXr(): copy");
   Defaults(cr = Cairo::Context::create(surf()));
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
  * Destructor: do nothing
  */
 ImagineXr::~ImagineXr() {}
+
 void ImagineXr::SetRGB(NFmiColorTools::Color col)
 {
+<<<<<<< HEAD
+=======
+  try
+  {
+>>>>>>> master
   if (col == NFmiColorTools::NoColor)
     return;
 
   cr->set_source_rgb(NFmiColorTools::GetRed(col) / 255.0,
                      NFmiColorTools::GetGreen(col) / 255.0,
                      NFmiColorTools::GetBlue(col) / 255.0);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 void ImagineXr::SetRGBA(NFmiColorTools::Color col)
 {
+<<<<<<< HEAD
+=======
+  try
+  {
+>>>>>>> master
   if (col == NFmiColorTools::NoColor)
     return;
 
@@ -148,10 +204,17 @@ void ImagineXr::SetRGBA(NFmiColorTools::Color col)
                       NFmiColorTools::GetGreen(col) / 255.0,
                       NFmiColorTools::GetBlue(col) / 255.0,
                       1.0 - (NFmiColorTools::GetAlpha(col) / 127.0));
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 void ImagineXr::SetBlend(enum NFmiColorTools::NFmiBlendRule rule)
 {
+  try
+  {
   Cairo::Operator op;
   //
   // OPERATOR_CLEAR 	    nothing in the combined image
@@ -231,6 +294,11 @@ void ImagineXr::SetBlend(enum NFmiColorTools::NFmiBlendRule rule)
   // "Sets the compositing operator to be used for all drawing operations."
   //
   cr->set_operator(op);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -240,6 +308,8 @@ void ImagineXr::SetBlend(enum NFmiColorTools::NFmiBlendRule rule)
  */
 bool ImagineXr::SetPath(const std::deque<NFmiPathElement> &path)
 {
+  try
+  {
   std::deque<NFmiPathElement>::const_iterator iter = path.begin();
   if (iter == path.end())
     return false;  // no elements (don't close either)
@@ -274,10 +344,15 @@ bool ImagineXr::SetPath(const std::deque<NFmiPathElement> &path)
       // 'kFmiConicTo' and 'kFmiCubicTo' aren't used (says Mika H.)
       //
       default:
-        throw runtime_error("Unexpected path primitive");
+          throw Fmi::Exception(BCP,"Unexpected path primitive");
     }
   }
   return true;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -285,6 +360,8 @@ bool ImagineXr::SetPath(const std::deque<NFmiPathElement> &path)
  */
 void ImagineXr::ApplyAlignment(enum NFmiAlignment alignment, int &x, int &y, int w, int h)
 {
+  try
+  {
   switch (alignment)
   {
     case kFmiAlignMissing:
@@ -320,14 +397,31 @@ void ImagineXr::ApplyAlignment(enum NFmiAlignment alignment, int &x, int &y, int
       y -= h / 2;
       break;
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 const int32_t *ImagineXr::ARGB_32() const
 {
+<<<<<<< HEAD
   if (!image_surf)
     throw runtime_error("Pixels not supported for PDF canvas!");
+=======
+  try
+  {
+    if (!image_surf)
+      throw Fmi::Exception(BCP,"Pixels not supported for PDF canvas!");
+>>>>>>> master
 
   return (const int32_t *)image_surf->get_data();
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -342,14 +436,16 @@ const int32_t *ImagineXr::ARGB_32() const
  */
 static inline NFmiColorTools::Color ARGB32_to_NFmiColor(int32_t v)
 {
+  try
+  {
   int a = (v >> 24) & 0xff;
 
   if (a == 0xff)
     return v & 0x00ffffff;  // fully opaque (RGB are non-scaled)
-  else if (a == 0)
+
+    if (a == 0)
     return 0x7f000000;  // fully transparent (no color information)
-  else
-  {
+
     // Transparency 1..0xfe; need to scale up RGB
     //
     double scale = 255.0 / double(a);  // range (1..255]
@@ -364,18 +460,24 @@ static inline NFmiColorTools::Color ARGB32_to_NFmiColor(int32_t v)
 
     return a << 24 | rgb;
   }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 static inline int32_t /* ARGB_32 */ NFmiColor_to_ARGB32(NFmiColorTools::Color v)
 {
+  try
+  {
   int a = (v >> 24) & 0xff;
 
   if (a == 0)
     return v | 0xff000000;  // fully opaque (RGB are non-scaled)
-  else if (a == 0x7f)
+
+    if (a == 0x7f)
     return 0;  // fully transparent (no color information)
-  else
-  {
+
     // Transparency 1..0x7e; need to scale up RGB
     //
     double scale = 255.0 / double(a);  // range (1..255]
@@ -390,10 +492,16 @@ static inline int32_t /* ARGB_32 */ NFmiColor_to_ARGB32(NFmiColorTools::Color v)
 
     return a << 24 | rgb;
   }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 const NFmiColorTools::Color *ImagineXr::NFmiColorBuf(NFmiColorTools::Color *buf) const
 {
+  try
+  {
   unsigned n = Width() * Height();
   const int32_t *argb = ARGB_32();
 
@@ -402,6 +510,11 @@ const NFmiColorTools::Color *ImagineXr::NFmiColorBuf(NFmiColorTools::Color *buf)
     buf[i] = ARGB32_to_NFmiColor(argb[i]);
   }
   return buf;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -412,6 +525,8 @@ const NFmiColorTools::Color *ImagineXr::NFmiColorBuf(NFmiColorTools::Color *buf)
  */
 NFmiColorTools::Color ImagineXr::operator()(int x, int y) const
 {
+  try
+  {
   int w = Width();
   int h = Height();
 
@@ -421,6 +536,11 @@ NFmiColorTools::Color ImagineXr::operator()(int x, int y) const
     return NFmiColorTools::NoColor;  // out of bounds
 
   return ARGB32_to_NFmiColor(ARGB_32()[y * w + x]);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -428,9 +548,16 @@ NFmiColorTools::Color ImagineXr::operator()(int x, int y) const
  */
 void ImagineXr::Erase(const NFmiColorTools::Color &color)
 {
+  try
+  {
   USAGE("Erase(): color=%s", COLORNAME(color));
   SetRGB(color);
   cr->paint();
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -443,6 +570,8 @@ void ImagineXr::Composite(const ImagineXr &img2,
                           int y,
                           float opaque)
 {
+  try
+  {
   USAGE("Composite(): rule=%s, align=%s, x=%d, y=%d, opaque=%.3f",
         RULENAME(rule),
         ALIGNNAME(alignment),
@@ -495,6 +624,11 @@ void ImagineXr::Composite(const ImagineXr &img2,
       //
       cr->paint_with_alpha( opaque );
   **/
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -505,6 +639,8 @@ void ImagineXr::Stroke(const std::deque<NFmiPathElement> &path,
                        NFmiColorTools::Color color,
                        NFmiColorTools::NFmiBlendRule rule)
 {
+  try
+  {
   USAGE(
       "Stroke(): line_width=%.2f, color=%s, rule=%s", line_width, COLORNAME(color), RULENAME(rule));
 
@@ -516,6 +652,11 @@ void ImagineXr::Stroke(const std::deque<NFmiPathElement> &path,
     cr->set_line_width(line_width);
     cr->stroke();
   }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -525,6 +666,8 @@ void ImagineXr::Fill(const std::deque<NFmiPathElement> &path,
                      NFmiColorTools::Color color,
                      NFmiBlendRule rule)
 {
+  try
+  {
   USAGE("Fill(): color=%s, rule=%s", COLORNAME(color), RULENAME(rule));
 
   SetBlend(rule);
@@ -533,6 +676,11 @@ void ImagineXr::Fill(const std::deque<NFmiPathElement> &path,
   if (SetPath(path))
   {
     cr->fill();
+  }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
@@ -544,6 +692,8 @@ void ImagineXr::Fill(const std::deque<NFmiPathElement> &path,
                      NFmiBlendRule rule,
                      float opaque)
 {
+  try
+  {
   USAGE("Fill(): pattern=yyy, rule=%s, opaque=%.3f", RULENAME(rule), opaque);
 
   SetBlend(rule);
@@ -555,10 +705,10 @@ void ImagineXr::Fill(const std::deque<NFmiPathElement> &path,
 
   cr->set_source(pattern);
 
-// Simple optimization:
-//      PNG generation on Cairo 1.6.4: no speedup measured
-//      PDF generation on Cairo 1.6.4: 837ms vs. 893ms measured (6.7% speedup)
-//
+  // Simple optimization:
+  //      PNG generation on Cairo 1.6.4: no speedup measured
+  //      PDF generation on Cairo 1.6.4: 837ms vs. 893ms measured (6.7% speedup)
+  //
 #if 1
   if (opaque == 1.0)
   {  // 308kB without this
@@ -572,6 +722,11 @@ void ImagineXr::Fill(const std::deque<NFmiPathElement> &path,
   cr->clip();
   cr->paint_with_alpha(opaque);  // seems to be needed as 'opaque', not '1.0-opaque'
   cr->reset_clip();
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -589,6 +744,8 @@ void ImagineXr::MakeFace(const string &fontspec,
                          int xm,
                          int ym)
 {
+  try
+  {
   USAGE("MakeFace(): fontspec=%s, backcolor=%s, xm=%d, ym=%d",
         fontspec.c_str(),
         COLORNAME(backcolor),
@@ -618,6 +775,11 @@ void ImagineXr::MakeFace(const string &fontspec,
   font_bg_color = backcolor;
   font_bg_mx = xm;
   font_bg_my = ym;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -630,6 +792,8 @@ bool ImagineXr::DrawFace(int x_,
                          NFmiAlignment alignment,
                          NFmiBlendRule rule)
 {
+  try
+  {
   bool ok = true;
 
   USAGE("DrawFace(): x=%d, y=%d, text=%s, color=%s, align=%s, rule=%s",
@@ -687,6 +851,11 @@ bool ImagineXr::DrawFace(int x_,
     ok = false;
   }
   return ok;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 /*
@@ -694,8 +863,15 @@ bool ImagineXr::DrawFace(int x_,
  */
 void ImagineXr::Write() const
 {
+<<<<<<< HEAD
   if (fn == "")
     throw runtime_error("Temporary image; not intended to be written");
+=======
+  try
+  {
+    if (fn == "")
+      throw Fmi::Exception(BCP,"Temporary image; not intended to be written");
+>>>>>>> master
 
   if (pdf_surf)
   {
@@ -704,9 +880,18 @@ void ImagineXr::Write() const
   else
   {
     if (fmt != "png")
+<<<<<<< HEAD
       throw runtime_error(string("Cairo can write only to png format, not") + fmt);
+=======
+        throw Fmi::Exception(BCP,string("Cairo can write only to png format, not") + fmt);
+>>>>>>> master
 
     image_surf->write_to_png(fn);
+  }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
 
