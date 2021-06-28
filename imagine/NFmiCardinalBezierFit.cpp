@@ -75,34 +75,34 @@ void CubicControlPoints(double smooth_value,
 {
   try
   {
-  // calculate the centers for each of the three edges
-  const double xc1 = (x0 + x1) / 2.0;
-  const double yc1 = (y0 + y1) / 2.0;
-  const double xc2 = (x1 + x2) / 2.0;
-  const double yc2 = (y1 + y2) / 2.0;
-  const double xc3 = (x2 + x3) / 2.0;
-  const double yc3 = (y2 + y3) / 2.0;
+    // calculate the centers for each of the three edges
+    const double xc1 = (x0 + x1) / 2.0;
+    const double yc1 = (y0 + y1) / 2.0;
+    const double xc2 = (x1 + x2) / 2.0;
+    const double yc2 = (y1 + y2) / 2.0;
+    const double xc3 = (x2 + x3) / 2.0;
+    const double yc3 = (y2 + y3) / 2.0;
 
-  const double len1 = sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
-  const double len2 = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-  const double len3 = sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));
+    const double len1 = sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+    const double len2 = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+    const double len3 = sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));
 
-  const double k1 = len1 / (len1 + len2);
-  const double k2 = len2 / (len2 + len3);
+    const double k1 = len1 / (len1 + len2);
+    const double k2 = len2 / (len2 + len3);
 
-  const double xm1 = xc1 + (xc2 - xc1) * k1;
-  const double ym1 = yc1 + (yc2 - yc1) * k1;
+    const double xm1 = xc1 + (xc2 - xc1) * k1;
+    const double ym1 = yc1 + (yc2 - yc1) * k1;
 
-  const double xm2 = xc2 + (xc3 - xc2) * k2;
-  const double ym2 = yc2 + (yc3 - yc2) * k2;
+    const double xm2 = xc2 + (xc3 - xc2) * k2;
+    const double ym2 = yc2 + (yc3 - yc2) * k2;
 
-  // Resulting control points. Here smooth_value is mentioned
-  // above coefficient K whose value should be in range [0...1].
-  cx1 = xm1 + (xc2 - xm1) * smooth_value + x1 - xm1;
-  cy1 = ym1 + (yc2 - ym1) * smooth_value + y1 - ym1;
+    // Resulting control points. Here smooth_value is mentioned
+    // above coefficient K whose value should be in range [0...1].
+    cx1 = xm1 + (xc2 - xm1) * smooth_value + x1 - xm1;
+    cy1 = ym1 + (yc2 - ym1) * smooth_value + y1 - ym1;
 
-  cx2 = xm2 + (xc2 - xm2) * smooth_value + x2 - xm2;
-  cy2 = ym2 + (yc2 - ym2) * smooth_value + y2 - ym2;
+    cx2 = xm2 + (xc2 - xm2) * smooth_value + x2 - xm2;
+    cy2 = ym2 + (yc2 - ym2) * smooth_value + y2 - ym2;
   }
   catch (...)
   {
@@ -134,48 +134,48 @@ NFmiPath SimpleFit(const NFmiPath& thePath, double theSmoothness)
 {
   try
   {
-  using namespace NFmiBezierTools;
+    using namespace NFmiBezierTools;
 
-  if (thePath.Empty())
-    return thePath;
+    if (thePath.Empty())
+      return thePath;
 
-  const NFmiPathData& path = thePath.Elements();
-  const bool isclosed = IsClosed(thePath);
+    const NFmiPathData& path = thePath.Elements();
+    const bool isclosed = IsClosed(thePath);
 
-  NFmiPath outpath;
-  outpath.Add(path.front());
+    NFmiPath outpath;
+    outpath.Add(path.front());
 
-  const unsigned int n = path.size();
+    const unsigned int n = path.size();
 
-  double cx1, cy1, cx2, cy2;
+    double cx1, cy1, cx2, cy2;
 
-  for (unsigned int i = 0; i < n - 1; i++)
-  {
-    const unsigned int p0 = (i != 0 ? i - 1 : (isclosed ? n - 2 : 0));
-    const unsigned int p1 = i;
-    const unsigned int p2 = i + 1;
-    const unsigned int p3 = (i + 2 < n ? i + 2 : (isclosed ? 1 : n - 1));
+    for (unsigned int i = 0; i < n - 1; i++)
+    {
+      const unsigned int p0 = (i != 0 ? i - 1 : (isclosed ? n - 2 : 0));
+      const unsigned int p1 = i;
+      const unsigned int p2 = i + 1;
+      const unsigned int p3 = (i + 2 < n ? i + 2 : (isclosed ? 1 : n - 1));
 
-    CubicControlPoints(theSmoothness,
-                       path[p0].x,
-                       path[p0].y,
-                       path[p1].x,
-                       path[p1].y,
-                       path[p2].x,
-                       path[p2].y,
-                       path[p3].x,
-                       path[p3].y,
-                       cx1,
-                       cy1,
-                       cx2,
-                       cy2);
+      CubicControlPoints(theSmoothness,
+                         path[p0].x,
+                         path[p0].y,
+                         path[p1].x,
+                         path[p1].y,
+                         path[p2].x,
+                         path[p2].y,
+                         path[p3].x,
+                         path[p3].y,
+                         cx1,
+                         cy1,
+                         cx2,
+                         cy2);
 
-    outpath.CubicTo(cx1, cy1);
-    outpath.CubicTo(cx2, cy2);
-    outpath.CubicTo(path[p2].x, path[p2].y);
-  }
+      outpath.CubicTo(cx1, cy1);
+      outpath.CubicTo(cx2, cy2);
+      outpath.CubicTo(path[p2].x, path[p2].y);
+    }
 
-  return outpath;
+    return outpath;
   }
   catch (...)
   {
@@ -214,19 +214,19 @@ const NFmiPath Fit(const NFmiPath& thePath, double theSmoothness)
 {
   try
   {
-  using namespace NFmiBezierTools;
+    using namespace NFmiBezierTools;
 
-  NFmiPath outpath;
-  Segments segments = SplitSegments(thePath);
-  for (Segments::const_iterator it = segments.begin(); it != segments.end(); ++it)
-  {
-    if (it->second)
-      outpath.Add(SimpleFit(it->first, theSmoothness));
-    else
-      outpath.Add(it->first);
-  }
+    NFmiPath outpath;
+    Segments segments = SplitSegments(thePath);
+    for (Segments::const_iterator it = segments.begin(); it != segments.end(); ++it)
+    {
+      if (it->second)
+        outpath.Add(SimpleFit(it->first, theSmoothness));
+      else
+        outpath.Add(it->first);
+    }
 
-  return outpath;
+    return outpath;
   }
   catch (...)
   {
@@ -267,25 +267,25 @@ const NFmiPaths Fit(const NFmiPaths& thePaths, double theSmoothness)
 {
   try
   {
-  using namespace NFmiBezierTools;
+    using namespace NFmiBezierTools;
 
-  // Calculate the points
+    // Calculate the points
 
-  NFmiCounter<NFmiPoint> counts = VertexCounts(thePaths);
+    NFmiCounter<NFmiPoint> counts = VertexCounts(thePaths);
 
-  NFmiPaths outpaths;
-  for (NFmiPaths::const_iterator it = thePaths.begin(); it != thePaths.end(); ++it)
-  {
-    PathList pathlist = SplitPath(*it, counts);
-    NFmiPath outpath;
-    for (PathList::const_iterator jt = pathlist.begin(); jt != pathlist.end(); ++jt)
+    NFmiPaths outpaths;
+    for (NFmiPaths::const_iterator it = thePaths.begin(); it != thePaths.end(); ++it)
     {
-      outpath.Add(Fit(*jt, theSmoothness));
+      PathList pathlist = SplitPath(*it, counts);
+      NFmiPath outpath;
+      for (PathList::const_iterator jt = pathlist.begin(); jt != pathlist.end(); ++jt)
+      {
+        outpath.Add(Fit(*jt, theSmoothness));
+      }
+      outpaths.push_back(outpath);
     }
-    outpaths.push_back(outpath);
-  }
 
-  return thePaths;
+    return thePaths;
   }
   catch (...)
   {

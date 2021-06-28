@@ -16,9 +16,9 @@
 #include "NFmiEsriMultiPointZ.h"
 #include "NFmiEsriPolyLineZ.h"
 #include "NFmiEsriPolygonZ.h"
-#include <macgyver/Exception.h>
 #include <gis/CoordinateTransformation.h>
 #include <gis/SpatialReference.h>
+#include <macgyver/Exception.h>
 
 using namespace std;
 
@@ -49,7 +49,7 @@ class ProjectXYEsriPoint : public NFmiEsriProjector
       double y = thePoint.Y();
 
       if (!itsTransformation.transform(x, y))
-        throw Fmi::Exception(BCP,"Failed to project shape coordinates");
+        throw Fmi::Exception(BCP, "Failed to project shape coordinates");
 
       auto xy = itsArea->WorldXYToXY(NFmiPoint(x, y));
       return NFmiEsriPoint(xy.X(), xy.Y());
@@ -106,9 +106,9 @@ void NFmiGeoShape::ProjectXY(NFmiArea &theArea)
           itsEsriShape->Project(ProjectXYEsriPoint(itsEsriShape->SpatialReference(), &theArea));
         break;
       case kFmiGeoShapeShoreLine:
-        throw Fmi::Exception(BCP,"NFmiGeoShape::Project() kFmiGeoShapeShoreLine not implemented");
+        throw Fmi::Exception(BCP, "NFmiGeoShape::Project() kFmiGeoShapeShoreLine not implemented");
       case kFmiGeoShapeGMT:
-        throw Fmi::Exception(BCP,"NFmiGeoShape::Project() kFmiGeoShapeGMT not implemented");
+        throw Fmi::Exception(BCP, "NFmiGeoShape::Project() kFmiGeoShapeGMT not implemented");
     }
   }
   catch (...)
@@ -133,9 +133,9 @@ const NFmiPath NFmiGeoShape::Path() const
         out = PathEsri();
         break;
       case kFmiGeoShapeShoreLine:
-        throw Fmi::Exception(BCP,"NFmiGeoShape::Path() kFmiGeoShapeShoreLine not implemented");
+        throw Fmi::Exception(BCP, "NFmiGeoShape::Path() kFmiGeoShapeShoreLine not implemented");
       case kFmiGeoShapeGMT:
-        throw Fmi::Exception(BCP,"NFmiGeoShape::Path() kFmiGeoShapeGMT not implemented");
+        throw Fmi::Exception(BCP, "NFmiGeoShape::Path() kFmiGeoShapeGMT not implemented");
     }
     return out;
   }
@@ -160,9 +160,9 @@ void NFmiGeoShape::Add(NFmiFillMap &theMap) const
         AddEsri(theMap);
         break;
       case kFmiGeoShapeShoreLine:
-        throw Fmi::Exception(BCP,"NFmiGeoShape::Add() kFmiGeoShapeShoreLine not implemented");
+        throw Fmi::Exception(BCP, "NFmiGeoShape::Add() kFmiGeoShapeShoreLine not implemented");
       case kFmiGeoShapeGMT:
-        throw Fmi::Exception(BCP,"NFmiGeoShape::Add() kFmiGeoShapeGMT not implemented");
+        throw Fmi::Exception(BCP, "NFmiGeoShape::Add() kFmiGeoShapeGMT not implemented");
     }
   }
   catch (...)
@@ -193,9 +193,9 @@ void NFmiGeoShape::Stroke(ImagineXr_or_NFmiImage &img,
         StrokeEsri(img, theColor, theRule);
         break;
       case kFmiGeoShapeShoreLine:
-        throw Fmi::Exception(BCP,"NFmiGeoShape::Stroke() kFmiGeoShapeShoreLine not implemented");
+        throw Fmi::Exception(BCP, "NFmiGeoShape::Stroke() kFmiGeoShapeShoreLine not implemented");
       case kFmiGeoShapeGMT:
-        throw Fmi::Exception(BCP,"NFmiGeoShape::Stroke() kFmiGeoShapeGMT not implemented");
+        throw Fmi::Exception(BCP, "NFmiGeoShape::Stroke() kFmiGeoShapeGMT not implemented");
     }
   }
   catch (...)
@@ -222,9 +222,9 @@ void NFmiGeoShape::Mark(ImagineXr_or_NFmiImage &img,
         MarkEsri(img, marker, theRule, theAlignment, theAlpha);
         break;
       case kFmiGeoShapeShoreLine:
-        throw Fmi::Exception(BCP,"NFmiGeoShape::Mark() kFmiGeoShapeShoreLine not implemented");
+        throw Fmi::Exception(BCP, "NFmiGeoShape::Mark() kFmiGeoShapeShoreLine not implemented");
       case kFmiGeoShapeGMT:
-        throw Fmi::Exception(BCP,"NFmiGeoShape::Mark() kFmiGeoShapeGMT not implemented");
+        throw Fmi::Exception(BCP, "NFmiGeoShape::Mark() kFmiGeoShapeGMT not implemented");
     }
   }
   catch (...)
@@ -248,9 +248,9 @@ void NFmiGeoShape::WriteImageMap(std::ostream &os, const string &theFieldName) c
         break;
       case kFmiGeoShapeShoreLine:
         throw Fmi::Exception(BCP,
-            "NFmiGeoShape::WriteImageMap() kFmiGeoShapeShoreLine not implemented");
+                             "NFmiGeoShape::WriteImageMap() kFmiGeoShapeShoreLine not implemented");
       case kFmiGeoShapeGMT:
-        throw Fmi::Exception(BCP,"NFmiGeoShape::WriteImageMap() kFmiGeoShapeGMT not implemented");
+        throw Fmi::Exception(BCP, "NFmiGeoShape::WriteImageMap() kFmiGeoShapeGMT not implemented");
     }
   }
   catch (...)

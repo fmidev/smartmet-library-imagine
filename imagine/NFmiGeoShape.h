@@ -128,7 +128,7 @@ class NFmiGeoShape
       case kFmiGeoShapeEsri:
         itsEsriShape = new NFmiEsriShape();
         if (!itsEsriShape->Read(theFilename))
-          throw Fmi::Exception(BCP,std::string("Failed to read shape ") + theFilename);
+          throw Fmi::Exception(BCP, std::string("Failed to read shape ") + theFilename);
 
         if (!theFilter.empty())
         {
@@ -139,9 +139,9 @@ class NFmiGeoShape
 
         break;
       case kFmiGeoShapeShoreLine:
-        throw Fmi::Exception(BCP,"kFmiGeoShapeShoreLine not implemented");
+        throw Fmi::Exception(BCP, "kFmiGeoShapeShoreLine not implemented");
       case kFmiGeoShapeGMT:
-        throw Fmi::Exception(BCP,"kFmiGeoShapeFMT not implemented");
+        throw Fmi::Exception(BCP, "kFmiGeoShapeFMT not implemented");
     }
   }
 
