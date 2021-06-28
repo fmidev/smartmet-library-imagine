@@ -64,7 +64,10 @@ NFmiEsriPolyLineZ& NFmiEsriPolyLineZ::operator=(const NFmiEsriPolyLineZ& theLine
 // Cloning
 // ----------------------------------------------------------------------
 
-NFmiEsriElement* NFmiEsriPolyLineZ::Clone() const { return new NFmiEsriPolyLineZ(*this); }
+NFmiEsriElement* NFmiEsriPolyLineZ::Clone() const
+{
+  return new NFmiEsriPolyLineZ(*this);
+}
 // ----------------------------------------------------------------------
 // Constructor based on a character buffer
 // ----------------------------------------------------------------------
@@ -106,26 +109,17 @@ NFmiEsriPolyLineZ::NFmiEsriPolyLineZ(const string& theBuffer, int thePos, int th
 
 int NFmiEsriPolyLineZ::StringSize(void) const
 {
-  return (4  // the type	: 1 int
-          +
-          4 * 8  // bounding box : 4 doubles
-          +
-          4  // numparts	: 1 int
-          +
-          4  // numpoints	: 1 int
-          +
-          NumParts() * 4  // parts	: np ints
-          +
-          NumPoints() * 2 * 8  // points	: 2n doubles
-          +
-          2 * 8  // zbox		: 2 doubles
-          +
-          NumPoints() * 8  // zvalues	: n doubles
-          +
-          2 * 8  // mbox		: 2 doubles
-          +
-          NumPoints() * 8  // mvalues	: n doubles
-          );
+  return (4                      // the type	: 1 int
+          + 4 * 8                // bounding box : 4 doubles
+          + 4                    // numparts	: 1 int
+          + 4                    // numpoints	: 1 int
+          + NumParts() * 4       // parts	: np ints
+          + NumPoints() * 2 * 8  // points	: 2n doubles
+          + 2 * 8                // zbox		: 2 doubles
+          + NumPoints() * 8      // zvalues	: n doubles
+          + 2 * 8                // mbox		: 2 doubles
+          + NumPoints() * 8      // mvalues	: n doubles
+  );
 }
 
 // ----------------------------------------------------------------------

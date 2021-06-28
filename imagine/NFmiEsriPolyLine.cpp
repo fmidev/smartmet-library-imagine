@@ -56,7 +56,10 @@ NFmiEsriPolyLine& NFmiEsriPolyLine::operator=(const NFmiEsriPolyLine& theLine)
 // Cloning
 // ----------------------------------------------------------------------
 
-NFmiEsriElement* NFmiEsriPolyLine::Clone() const { return new NFmiEsriPolyLine(*this); }
+NFmiEsriElement* NFmiEsriPolyLine::Clone() const
+{
+  return new NFmiEsriPolyLine(*this);
+}
 // ----------------------------------------------------------------------
 // Constructor based on a character buffer
 // ----------------------------------------------------------------------
@@ -95,18 +98,13 @@ NFmiEsriPolyLine::NFmiEsriPolyLine(const string& theBuffer, int thePos, int theN
 
 int NFmiEsriPolyLine::StringSize(void) const
 {
-  return (4  // the type	: 1 int
-          +
-          4 * 8  // bounding box : 4 doubles
-          +
-          4  // numparts	: 1 int
-          +
-          4  // numpoints	: 1 int
-          +
-          NumParts() * 4  // parts	: np ints
-          +
-          NumPoints() * 2 * 8  // points	: 2n doubles
-          );
+  return (4                      // the type	: 1 int
+          + 4 * 8                // bounding box : 4 doubles
+          + 4                    // numparts	: 1 int
+          + 4                    // numpoints	: 1 int
+          + NumParts() * 4       // parts	: np ints
+          + NumPoints() * 2 * 8  // points	: 2n doubles
+  );
 }
 
 // ----------------------------------------------------------------------

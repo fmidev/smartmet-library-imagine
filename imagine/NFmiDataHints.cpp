@@ -68,7 +68,8 @@ class NFmiDataHints::Pimple
 NFmiDataHints::Pimple::Pimple(const NFmiDataMatrix<float>& theData, int theMaxSize)
     : itsRoot(new RecursiveInfo())
 {
-  if (theMaxSize < 4) throw runtime_error("Too small maxsize in NFmiDataHints constructor");
+  if (theMaxSize < 4)
+    throw runtime_error("Too small maxsize in NFmiDataHints constructor");
 
   recurse(itsRoot, theData, 0, 0, theData.NX() - 1, theData.NY() - 1, theMaxSize);
 }
@@ -186,7 +187,8 @@ NFmiDataHints::return_type NFmiDataHints::Pimple::rectangles(float theLoLimit,
                                                              float theHiLimit) const
 {
   return_type ret;
-  if (find(ret, itsRoot, theLoLimit, theHiLimit)) ret.push_back(itsRoot->itsRectangle);
+  if (find(ret, itsRoot, theLoLimit, theHiLimit))
+    ret.push_back(itsRoot->itsRectangle);
   return ret;
 }
 
@@ -208,14 +210,18 @@ bool rectangle_intersects(const NFmiDataHints::Rectangle& theRectangle,
   {
     if (theHiLimit != kFloatMissing)  // searched range: x..y
     {
-      if (nodemissing) return false;
-      if (max(theLoLimit, nodemin) <= min(theHiLimit, nodemax)) return true;
+      if (nodemissing)
+        return false;
+      if (max(theLoLimit, nodemin) <= min(theHiLimit, nodemax))
+        return true;
       return false;
     }
     else  // searched range: x..inf
     {
-      if (nodemissing) return false;
-      if (nodemax >= theLoLimit) return true;
+      if (nodemissing)
+        return false;
+      if (nodemax >= theLoLimit)
+        return true;
       return false;
     }
   }
@@ -223,13 +229,16 @@ bool rectangle_intersects(const NFmiDataHints::Rectangle& theRectangle,
   {
     if (theHiLimit != kFloatMissing)  // searched range: -inf..y
     {
-      if (nodemissing) return false;
-      if (nodemin <= theHiLimit) return true;
+      if (nodemissing)
+        return false;
+      if (nodemin <= theHiLimit)
+        return true;
       return false;
     }
     else  // searched range: -inf..inf
     {
-      if (!nodemissing) return true;
+      if (!nodemissing)
+        return true;
       return false;
     }
   }
@@ -252,7 +261,8 @@ bool NFmiDataHints::Pimple::find(return_type& theValues,
 
   bool ok = rectangle_intersects(theNode->itsRectangle, theLoLimit, theHiLimit);
 
-  if (!ok) return false;
+  if (!ok)
+    return false;
 
   if (!haschildren)
   {
@@ -262,9 +272,12 @@ bool NFmiDataHints::Pimple::find(return_type& theValues,
   {
     bool leftok = find(theValues, theNode->itsLeft, theLoLimit, theHiLimit);
     bool rightok = find(theValues, theNode->itsRight, theLoLimit, theHiLimit);
-    if (leftok && rightok) return true;
-    if (leftok) theValues.push_back(theNode->itsLeft->itsRectangle);
-    if (rightok) theValues.push_back(theNode->itsRight->itsRectangle);
+    if (leftok && rightok)
+      return true;
+    if (leftok)
+      theValues.push_back(theNode->itsLeft->itsRectangle);
+    if (rightok)
+      theValues.push_back(theNode->itsRight->itsRectangle);
     return false;
   }
 }

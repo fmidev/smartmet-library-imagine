@@ -23,9 +23,9 @@
 
 #pragma once
 
-#include "NFmiEsriPointZ.h"
-#include "NFmiEsriMultiPointM.h"
 #include "NFmiEsriBox.h"
+#include "NFmiEsriMultiPointM.h"
+#include "NFmiEsriPointZ.h"
 
 namespace Imagine
 {
@@ -83,6 +83,5 @@ class NFmiEsriMultiPointZ : public NFmiEsriMultiPointM
 };
 
 }  // namespace Imagine
-
 
 // ======================================================================

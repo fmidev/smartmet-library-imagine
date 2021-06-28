@@ -26,8 +26,7 @@ const std::string LittleEndianDouble(double theValue);
 const std::string LittleEndianShort(int theValue);
 
 bool EsriRead(std::istream& is, std::string& theString, unsigned int theLength);
-}
+}  // namespace NFmiEsriBuffer
 }  // namespace Imagine
-
 
 // ======================================================================

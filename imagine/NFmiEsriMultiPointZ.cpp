@@ -57,7 +57,10 @@ NFmiEsriMultiPointZ& NFmiEsriMultiPointZ::operator=(const NFmiEsriMultiPointZ& t
 // Cloning
 // ----------------------------------------------------------------------
 
-NFmiEsriElement* NFmiEsriMultiPointZ::Clone() const { return new NFmiEsriMultiPointZ(*this); }
+NFmiEsriElement* NFmiEsriMultiPointZ::Clone() const
+{
+  return new NFmiEsriMultiPointZ(*this);
+}
 // ----------------------------------------------------------------------
 // Constructor based on a character buffer
 // ----------------------------------------------------------------------
@@ -99,22 +102,15 @@ NFmiEsriMultiPointZ::NFmiEsriMultiPointZ(const string& theBuffer, int thePos, in
 
 int NFmiEsriMultiPointZ::StringSize(void) const
 {
-  return (4  // the type	: 1 int
-          +
-          4 * 8  // bounding box : 4 doubles
-          +
-          4  // numpoints	: 1 int
-          +
-          NumPoints() * 2 * 8  // points	: 2n doubles
-          +
-          2 * 8  // zbox		: 2 doubles
-          +
-          NumPoints() * 8  // zvalues	: n doubles
-          +
-          2 * 8  // mbox		: 2 doubles
-          +
-          NumPoints() * 8  // mvalues	: n doubles
-          );
+  return (4                      // the type	: 1 int
+          + 4 * 8                // bounding box : 4 doubles
+          + 4                    // numpoints	: 1 int
+          + NumPoints() * 2 * 8  // points	: 2n doubles
+          + 2 * 8                // zbox		: 2 doubles
+          + NumPoints() * 8      // zvalues	: n doubles
+          + 2 * 8                // mbox		: 2 doubles
+          + NumPoints() * 8      // mvalues	: n doubles
+  );
 }
 
 // ----------------------------------------------------------------------

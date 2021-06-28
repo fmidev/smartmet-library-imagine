@@ -25,7 +25,8 @@ namespace Imagine
 
 void NFmiEdgeTree::Add(const NFmiEdge& theEdge)
 {
-  if (itsLinesOnly && !theEdge.Exact()) return;
+  if (itsLinesOnly && !theEdge.Exact())
+    return;
   // If the edge is a 0-length line, ignore it
 
   if (theEdge.GetX1() != theEdge.GetX2() || theEdge.GetY1() != theEdge.GetY2())
@@ -40,7 +41,8 @@ void NFmiEdgeTree::Add(const NFmiEdge& theEdge)
       // and we wish to delete it. We no longer need to find the element,
       // it is pointed to by the earlier find iterator.
 
-      if (!result.second) itsEdges.erase(result.first);
+      if (!result.second)
+        itsEdges.erase(result.first);
     }
   }
 }
@@ -86,7 +88,8 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
 
   // Handle empty path
 
-  if (itsEdges.empty() && itsMultiEdges.empty()) return outpath;
+  if (itsEdges.empty() && itsMultiEdges.empty())
+    return outpath;
 
   // Build from multiedges & edges
 
@@ -165,23 +168,23 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
       }
     }
 
-// We handle the cases separately:
-//
-// 1. Only first point matches
-// 2. Only second point matches
-// 3. Both points match
-// 4. No points match
-//
-// A help macro to handle the possible cases.
-// Note that the default values of the last two
-// variables is false, and cannot be anything but
-// false unless the respective variables a,b are true.
+    // We handle the cases separately:
+    //
+    // 1. Only first point matches
+    // 2. Only second point matches
+    // 3. Both points match
+    // 4. No points match
+    //
+    // A help macro to handle the possible cases.
+    // Note that the default values of the last two
+    // variables is false, and cannot be anything but
+    // false unless the respective variables a,b are true.
 
 #define PathCase(a, b, c, d) ((((a)*2 + (b)) * 2 + (c)) * 2 + d)
 
     switch (PathCase(fMatchedFirst, fMatchedLast, fMatchedFirstToFirst, fMatchedLastToFirst))
     {
-      // No match - we begin a new path
+        // No match - we begin a new path
 
       case (PathCase(false, false, false, false)):
       {
@@ -196,7 +199,7 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
         break;
       }
 
-      // Only first point matches, and it matches last point of path
+        // Only first point matches, and it matches last point of path
 
       case (PathCase(true, false, false, false)):
         if (edge.Exact() || itsConvertGhostLines)
@@ -205,7 +208,7 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
           bestFirstIter->GhostLineTo(edge.GetX2(), edge.GetY2());
         break;
 
-      // Only first point matches, and it matches first point of path
+        // Only first point matches, and it matches first point of path
 
       case (PathCase(true, false, true, false)):
         if (edge.Exact() || itsConvertGhostLines)
@@ -214,7 +217,7 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
           bestFirstIter->InsertGhostLineTo(edge.GetX2(), edge.GetY2());
         break;
 
-      // Only second point matches, and it matches last point of path
+        // Only second point matches, and it matches last point of path
 
       case (PathCase(false, true, false, false)):
         if (edge.Exact() || itsConvertGhostLines)
@@ -223,7 +226,7 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
           bestLastIter->GhostLineTo(edge.GetX1(), edge.GetY1());
         break;
 
-      // Only second point matches, and it matches first point of path
+        // Only second point matches, and it matches first point of path
 
       case (PathCase(false, true, false, true)):
         if (edge.Exact() || itsConvertGhostLines)
@@ -232,7 +235,7 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
           bestLastIter->InsertGhostLineTo(edge.GetX1(), edge.GetY1());
         break;
 
-      // Both points match, both match the endpoints or startpoints
+        // Both points match, both match the endpoints or startpoints
 
       case (PathCase(true, true, false, false)):
 
@@ -246,11 +249,11 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
         paths.erase(bestLastIter);
         break;
 
-      // Both points match, first endpoint, last firstpoint
-      // In this case it is possible that the edge connects
-      // the endpoints of some path. It is not possible
-      // in the above cases, since in them the edge matches
-      // either first points or last points.
+        // Both points match, first endpoint, last firstpoint
+        // In this case it is possible that the edge connects
+        // the endpoints of some path. It is not possible
+        // in the above cases, since in them the edge matches
+        // either first points or last points.
 
       case (PathCase(true, true, false, true)):
       case (PathCase(true, true, true, false)):

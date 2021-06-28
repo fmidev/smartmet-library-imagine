@@ -333,7 +333,8 @@ static void Composite2(T theBlender,
 
 void NFmiImage::Destroy(void)
 {
-  if (itsPixels != nullptr) delete[] itsPixels;
+  if (itsPixels != nullptr)
+    delete[] itsPixels;
   itsPixels = nullptr;
 }
 
@@ -476,11 +477,13 @@ void NFmiImage::Read(const string &theFileName)
   FILE *in;
   in = fopen(theFileName.c_str(), "rb");
 
-  if (in == nullptr) throw NFmiImageOpenError(std::string("Failed to open image ") + theFileName);
+  if (in == nullptr)
+    throw NFmiImageOpenError(std::string("Failed to open image ") + theFileName);
 
   itsType = mime;
 
-  if (mime == "gif") ReadGIF(in);
+  if (mime == "gif")
+    ReadGIF(in);
 #ifdef IMAGINE_FORMAT_PNG
   else if (mime == "png")
     ReadPNG(in);
@@ -553,7 +556,8 @@ void NFmiImage::WriteJpeg(const string &theFileName) const
 
   bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
-  if (!status) throw runtime_error("Failed to write '" + theFileName + "'");
+  if (!status)
+    throw runtime_error("Failed to write '" + theFileName + "'");
 }
 #endif
 
@@ -569,13 +573,15 @@ void NFmiImage::WritePng(const string &theFileName) const
 
   FILE *out;
   out = fopen(tmp.c_str(), "wb");
-  if (out == nullptr) throw runtime_error("Failed to open '" + theFileName + "' for writing a PNG");
+  if (out == nullptr)
+    throw runtime_error("Failed to open '" + theFileName + "' for writing a PNG");
   WritePNG(out);
   fclose(out);
 
   bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
-  if (!status) throw runtime_error("Failed to write '" + theFileName + "'");
+  if (!status)
+    throw runtime_error("Failed to write '" + theFileName + "'");
 }
 #endif
 
@@ -598,7 +604,8 @@ void NFmiImage::WriteWbmp(const string &theFileName) const
 
   bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
-  if (!status) throw runtime_error("Failed to write '" + theFileName + "'");
+  if (!status)
+    throw runtime_error("Failed to write '" + theFileName + "'");
 }
 
 // ----------------------------------------------------------------------
@@ -612,13 +619,15 @@ void NFmiImage::WriteGif(const string &theFileName) const
 
   FILE *out;
   out = fopen(tmp.c_str(), "wb");
-  if (out == nullptr) throw runtime_error("Failed to open '" + theFileName + "' for writing a GIF");
+  if (out == nullptr)
+    throw runtime_error("Failed to open '" + theFileName + "' for writing a GIF");
   WriteGIF(out);
   fclose(out);
 
   bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
-  if (!status) throw runtime_error("Failed to write '" + theFileName + "'");
+  if (!status)
+    throw runtime_error("Failed to write '" + theFileName + "'");
 }
 
 // ----------------------------------------------------------------------
@@ -632,13 +641,15 @@ void NFmiImage::WritePnm(const string &theFileName) const
 
   FILE *out;
   out = fopen(tmp.c_str(), "wb");
-  if (out == nullptr) throw runtime_error("Failed to open '" + theFileName + "' for writing a PNM");
+  if (out == nullptr)
+    throw runtime_error("Failed to open '" + theFileName + "' for writing a PNM");
   WritePNM(out);
   fclose(out);
 
   bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
-  if (!status) throw runtime_error("Failed to write '" + theFileName + "'");
+  if (!status)
+    throw runtime_error("Failed to write '" + theFileName + "'");
 }
 
 // ----------------------------------------------------------------------
@@ -652,13 +663,15 @@ void NFmiImage::WritePgm(const string &theFileName) const
 
   FILE *out;
   out = fopen(tmp.c_str(), "wb");
-  if (out == nullptr) throw runtime_error("Failed to open '" + theFileName + "' for writing a PGM");
+  if (out == nullptr)
+    throw runtime_error("Failed to open '" + theFileName + "' for writing a PGM");
   WritePGM(out);
   fclose(out);
 
   bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
-  if (!status) throw runtime_error("Failed to write '" + theFileName + "'");
+  if (!status)
+    throw runtime_error("Failed to write '" + theFileName + "'");
 }
 
 // ----------------------------------------------------------------------
@@ -672,7 +685,8 @@ void NFmiImage::Erase(NFmiColorTools::Color theColor)
 {
   // Quick exit if color is not real
 
-  if (theColor == NFmiColorTools::NoColor) return;
+  if (theColor == NFmiColorTools::NoColor)
+    return;
 
   for (int i = 0; i < itsWidth * itsHeight; i++)
     itsPixels[i] = theColor;
@@ -710,7 +724,8 @@ bool NFmiImage::IsOpaque(int threshold) const
 {
   int limit = (threshold < 0 ? 0 : threshold);
   for (int i = 0; i < itsWidth * itsHeight; i++)
-    if (NFmiColorTools::GetAlpha(itsPixels[i]) > limit) return false;
+    if (NFmiColorTools::GetAlpha(itsPixels[i]) > limit)
+      return false;
   return true;
 }
 
@@ -724,12 +739,14 @@ bool NFmiImage::IsFullyOpaqueOrTransparent(int threshold) const
   // If the separation threshold is set, each pixel is then obviously
   // forced to be either fully opaque or fully transparent
 
-  if (threshold >= 0) return true;
+  if (threshold >= 0)
+    return true;
 
   for (int i = 0; i < itsWidth * itsHeight; i++)
   {
     int alpha = NFmiColorTools::GetAlpha(itsPixels[i]);
-    if (!(alpha == NFmiColorTools::Opaque || alpha == NFmiColorTools::Transparent)) return false;
+    if (!(alpha == NFmiColorTools::Opaque || alpha == NFmiColorTools::Transparent))
+      return false;
   }
   return true;
 }
@@ -780,7 +797,8 @@ NFmiColorTools::Color NFmiImage::UnusedColor(void) const
 
     // If it wasn't used, return the color
 
-    if (!used) return rgb;
+    if (!used)
+      return rgb;
   }
 
   return NFmiColorTools::NoColor;
@@ -807,7 +825,8 @@ bool NFmiImage::AddColors(set<NFmiColorTools::Color> &theSet,
   if (maxcolors > 0)
   {
     colorsnow = theSet.size();
-    if (colorsnow > maxcolors) return true;
+    if (colorsnow > maxcolors)
+      return true;
   }
 
   // We keep a record of last 4 colors for extremely fast access
@@ -833,7 +852,8 @@ bool NFmiImage::AddColors(set<NFmiColorTools::Color> &theSet,
 
     // Quick continue of just handled the same color
 
-    if (color == color1 || color == color2 || color == color3 || color == color4) continue;
+    if (color == color1 || color == color2 || color == color3 || color == color4)
+      continue;
 
     // Otherwise add the color to the set
 
@@ -844,7 +864,8 @@ bool NFmiImage::AddColors(set<NFmiColorTools::Color> &theSet,
     if (iter.second && maxcolors > 0)
     {
       colorsnow++;
-      if (colorsnow > maxcolors) return true;
+      if (colorsnow > maxcolors)
+        return true;
     }
 
     // And shift back the last known colors
@@ -875,7 +896,8 @@ void NFmiImage::StrokeBasic(float theX1,
 {
   // Quick exit if color is not real
 
-  if (theColor == NFmiColorTools::NoColor) return;
+  if (theColor == NFmiColorTools::NoColor)
+    return;
 
   // Clip the coordinates
 
@@ -916,7 +938,8 @@ void NFmiImage::StrokeBasic(float theX1,
 
   // This also makes sure we don't have to worry about dy/dx
 
-  if (x1 > xmargin || x2 < 0) return;
+  if (x1 > xmargin || x2 < 0)
+    return;
 
   if (x1 < 0)
   {
@@ -937,7 +960,8 @@ void NFmiImage::StrokeBasic(float theX1,
 
   // This also makes sure we don't have to worry about dx/dy
 
-  if (y1 >= ymargin || y2 < 0) return;
+  if (y1 >= ymargin || y2 < 0)
+    return;
 
   if (y1 < 0)
   {
@@ -960,7 +984,8 @@ void NFmiImage::StrokeBasic(float theX1,
   // If the result is ColorKeep, the source alpha is such that there
   // is nothing to do!
 
-  if (rule == NFmiColorTools::kFmiColorKeep) return;
+  if (rule == NFmiColorTools::kFmiColorKeep)
+    return;
 
   // Otherwise we instantiate the appropriate fill routine
 

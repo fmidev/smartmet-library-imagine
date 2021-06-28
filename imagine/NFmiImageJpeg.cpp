@@ -16,7 +16,8 @@
 
 // JPEG group idiots.. I wasted hours on this one
 
-extern "C" {
+extern "C"
+{
 #include <jpeglib.h>
 }
 
@@ -89,7 +90,8 @@ void NFmiImage::ReadJPEG(FILE *in)
   // Make a one-row-high sample array that will go away when done with image
 
   JSAMPROW row = static_cast<JSAMPROW>(calloc(cinfo.output_width * 3, sizeof(JSAMPLE)));
-  if (row == nullptr) throw runtime_error("Failed to allocate memory for a JPEG data row");
+  if (row == nullptr)
+    throw runtime_error("Failed to allocate memory for a JPEG data row");
 
   JSAMPROW rowptr[1];
   rowptr[0] = row;

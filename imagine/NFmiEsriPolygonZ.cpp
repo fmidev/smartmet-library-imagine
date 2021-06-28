@@ -64,7 +64,10 @@ NFmiEsriPolygonZ& NFmiEsriPolygonZ::operator=(const NFmiEsriPolygonZ& thePolygon
 // Cloning
 // ----------------------------------------------------------------------
 
-NFmiEsriElement* NFmiEsriPolygonZ::Clone() const { return new NFmiEsriPolygonZ(*this); }
+NFmiEsriElement* NFmiEsriPolygonZ::Clone() const
+{
+  return new NFmiEsriPolygonZ(*this);
+}
 // ----------------------------------------------------------------------
 // Constructor based on a character buffer
 // ----------------------------------------------------------------------
@@ -106,26 +109,17 @@ NFmiEsriPolygonZ::NFmiEsriPolygonZ(const string& theBuffer, int thePos, int theN
 
 int NFmiEsriPolygonZ::StringSize(void) const
 {
-  return (4  // the type	: 1 int
-          +
-          4 * 8  // bounding box : 4 doubles
-          +
-          4  // numparts	: 1 int
-          +
-          4  // numpoints	: 1 int
-          +
-          NumParts() * 4  // parts	: np ints
-          +
-          NumPoints() * 2 * 8  // points	: 2n doubles
-          +
-          2 * 8  // zbox		: 2 doubles
-          +
-          NumPoints() * 8  // zvalues	: n doubles
-          +
-          2 * 8  // mbox		: 2 doubles
-          +
-          NumPoints() * 8  // mvalues	: n doubles
-          );
+  return (4                      // the type	: 1 int
+          + 4 * 8                // bounding box : 4 doubles
+          + 4                    // numparts	: 1 int
+          + 4                    // numpoints	: 1 int
+          + NumParts() * 4       // parts	: np ints
+          + NumPoints() * 2 * 8  // points	: 2n doubles
+          + 2 * 8                // zbox		: 2 doubles
+          + NumPoints() * 8      // zvalues	: n doubles
+          + 2 * 8                // mbox		: 2 doubles
+          + NumPoints() * 8      // mvalues	: n doubles
+  );
 }
 
 // ----------------------------------------------------------------------

@@ -44,8 +44,8 @@
 #include "ImagineXr.h"
 #define CAIRO_NORMAL_LINE_WIDTH (0.4)  // 2.0 is normal Cairo default
 #else
-#include "NFmiDrawable.h"
 #include "NFmiAffine.h"
+#include "NFmiDrawable.h"
 #endif
 
 #include <newbase/NFmiArea.h>
@@ -170,7 +170,8 @@ class NFmiPath
 
   void Add(const NFmiPath &thePath)
   {
-    if (thePath.Empty()) return;
+    if (thePath.Empty())
+      return;
 
     NFmiPathData::const_iterator it = thePath.itsElements.begin();
     // strip leading moveto if the coordinate is the same as last end point
@@ -217,7 +218,7 @@ class NFmiPath
   // Make Atlantic if so requested
   NFmiPath AtlanticView(bool atlantic) const;
 
-// Add the path to a fill map
+  // Add the path to a fill map
 
 #ifndef IMAGINE_WITH_CAIRO
   void Add(NFmiFillMap &theMap) const;
@@ -302,7 +303,7 @@ class NFmiPath
 #endif
 
   /***
-  */
+   */
  private:
   // Close the last subpath with an invisible or visible line
   //
@@ -326,6 +327,5 @@ class NFmiPath
 };
 
 }  // namespace Imagine
-
 
 // ----------------------------------------------------------------------

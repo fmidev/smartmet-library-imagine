@@ -15,8 +15,8 @@
 // ======================================================================
 
 #include "NFmiEsriPolygon.h"
-#include <iostream>
 #include "NFmiEsriBuffer.h"
+#include <iostream>
 
 using namespace Imagine::NFmiEsriBuffer;  // Conversion tools
 using namespace std;
@@ -55,7 +55,10 @@ NFmiEsriPolygon& NFmiEsriPolygon::operator=(const NFmiEsriPolygon& thePolygon)
 // Cloning
 // ----------------------------------------------------------------------
 
-NFmiEsriElement* NFmiEsriPolygon::Clone() const { return new NFmiEsriPolygon(*this); }
+NFmiEsriElement* NFmiEsriPolygon::Clone() const
+{
+  return new NFmiEsriPolygon(*this);
+}
 // ----------------------------------------------------------------------
 // Constructor based on a character buffer
 // ----------------------------------------------------------------------
@@ -93,18 +96,13 @@ NFmiEsriPolygon::NFmiEsriPolygon(const string& theBuffer, int thePos, int theNum
 
 int NFmiEsriPolygon::StringSize(void) const
 {
-  return (4  // the type	: 1 int
-          +
-          4 * 8  // bounding box : 4 doubles
-          +
-          4  // numparts	: 1 int
-          +
-          4  // numpoints	: 1 int
-          +
-          NumParts() * 4  // parts	: np ints
-          +
-          NumPoints() * 2 * 8  // points	: 2n doubles
-          );
+  return (4                      // the type	: 1 int
+          + 4 * 8                // bounding box : 4 doubles
+          + 4                    // numparts	: 1 int
+          + 4                    // numpoints	: 1 int
+          + NumParts() * 4       // parts	: np ints
+          + NumPoints() * 2 * 8  // points	: 2n doubles
+  );
 }
 
 // ----------------------------------------------------------------------

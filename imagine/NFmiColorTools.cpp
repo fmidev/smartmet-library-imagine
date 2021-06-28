@@ -184,10 +184,10 @@
 
 #include <newbase/NFmiGlobals.h>
 
-#include <string>
-#include <map>
-#include <vector>
 #include <algorithm>
+#include <map>
+#include <string>
+#include <vector>
 
 namespace Imagine
 {
@@ -252,7 +252,8 @@ void NFmiColorTools::RGBtoHLS(int red, int green, int blue, double *h, double *l
     else
       h1 = 4 + (r - g) / delta;
     h1 = h1 * 60;
-    if (h1 < 0) h1 = h1 + 360;
+    if (h1 < 0)
+      h1 = h1 + 360;
     *h = h1;
   }
 }
@@ -286,8 +287,10 @@ void NFmiColorTools::HLStoRGB(double h, double l, double s, int *r, int *g, int 
 double NFmiColorTools::hls_to_rgb_util(double m1, double m2, double h)
 {
   double hue = h;
-  if (hue > 360) hue = hue - 360;
-  if (hue < 0) hue = hue + 360;
+  if (hue > 360)
+    hue = hue - 360;
+  if (hue < 0)
+    hue = hue + 360;
   if (hue < 60)
     return m1 + (m2 - m1) * hue / 60;
   else if (hue < 180)
@@ -314,8 +317,10 @@ NFmiColorTools::Color NFmiColorTools::Interpolate(Color c1, Color c2, float frac
 {
   // Handle extrapolation
 
-  if (fraction <= 0) return c1;
-  if (fraction >= 1) return c2;
+  if (fraction <= 0)
+    return c1;
+  if (fraction >= 1)
+    return c2;
 
   double h1, l1, s1, h2, l2, s2, h, l, s;
   int r, g, b, a;
@@ -335,8 +340,10 @@ NFmiColorTools::Color NFmiColorTools::Interpolate(Color c1, Color c2, float frac
     h = h1 + (h2 - 360 - h1) * fraction;
   else
     h = h1 - 360 + (h2 - h1 - 360) * fraction;
-  if (h < 0) h += 360;
-  if (h >= 360) h -= 360;
+  if (h < 0)
+    h += 360;
+  if (h >= 360)
+    h -= 360;
 
   // Back to RGB space
 
@@ -408,28 +415,38 @@ NFmiColorTools::NFmiBlendRule NFmiColorTools::Simplify(NFmiColorTools::NFmiBlend
 {
   if (alpha == NFmiColorTools::Opaque)
   {
-    if (rule == NFmiColorTools::kFmiColorOver) return NFmiColorTools::kFmiColorCopy;
+    if (rule == NFmiColorTools::kFmiColorOver)
+      return NFmiColorTools::kFmiColorCopy;
 
-    if (rule == NFmiColorTools::kFmiColorKeepIn) return NFmiColorTools::kFmiColorKeep;
+    if (rule == NFmiColorTools::kFmiColorKeepIn)
+      return NFmiColorTools::kFmiColorKeep;
 
-    if (rule == NFmiColorTools::kFmiColorKeepOut) return NFmiColorTools::kFmiColorKeep;
+    if (rule == NFmiColorTools::kFmiColorKeepOut)
+      return NFmiColorTools::kFmiColorKeep;
 
-    if (rule == NFmiColorTools::kFmiColorKeepAtop) return NFmiColorTools::kFmiColorUnder;
+    if (rule == NFmiColorTools::kFmiColorKeepAtop)
+      return NFmiColorTools::kFmiColorUnder;
 
-    if (rule == NFmiColorTools::kFmiColorXor) return NFmiColorTools::kFmiColorUnder;
+    if (rule == NFmiColorTools::kFmiColorXor)
+      return NFmiColorTools::kFmiColorUnder;
   }
 
   else if (alpha == NFmiColorTools::Transparent)
   {
-    if (rule == NFmiColorTools::kFmiColorKeepIn) return NFmiColorTools::kFmiColorClear;
+    if (rule == NFmiColorTools::kFmiColorKeepIn)
+      return NFmiColorTools::kFmiColorClear;
 
-    if (rule == NFmiColorTools::kFmiColorKeepOut) return NFmiColorTools::kFmiColorClear;
+    if (rule == NFmiColorTools::kFmiColorKeepOut)
+      return NFmiColorTools::kFmiColorClear;
 
-    if (rule == NFmiColorTools::kFmiColorAtop) return NFmiColorTools::kFmiColorIn;
+    if (rule == NFmiColorTools::kFmiColorAtop)
+      return NFmiColorTools::kFmiColorIn;
 
-    if (rule == NFmiColorTools::kFmiColorKeepAtop) return NFmiColorTools::kFmiColorKeepOut;
+    if (rule == NFmiColorTools::kFmiColorKeepAtop)
+      return NFmiColorTools::kFmiColorKeepOut;
 
-    if (rule == NFmiColorTools::kFmiColorXor) return NFmiColorTools::kFmiColorKeepOut;
+    if (rule == NFmiColorTools::kFmiColorXor)
+      return NFmiColorTools::kFmiColorKeepOut;
   }
 
   return rule;
@@ -451,7 +468,8 @@ NFmiColorTools::Color NFmiColorTools::ToColor(const string &theColor)
 {
   // Handle hex format number
 
-  if (theColor[0] == '#') return HexToColor(theColor.substr(1));
+  if (theColor[0] == '#')
+    return HexToColor(theColor.substr(1));
 
   // Handle ascii format
 
@@ -475,7 +493,8 @@ NFmiColorTools::Color NFmiColorTools::ToColor(const string &theColor)
         else
           return MissingColor;
       }
-      if (value < 0) return MissingColor;
+      if (value < 0)
+        return MissingColor;
       Color tmp = ColorValue(theColor.substr(0, pos));
       return ReplaceAlpha(tmp, value);
     }
@@ -504,7 +523,8 @@ NFmiColorTools::Color NFmiColorTools::ToColor(const string &theColor)
       else
         return MissingColor;
     }
-    if (value >= 0) tmp.push_back(value);
+    if (value >= 0)
+      tmp.push_back(value);
 
     if (tmp.size() == 3)
       return MakeColor(tmp[0], tmp[1], tmp[2], 0);
@@ -572,7 +592,8 @@ const string NFmiColorTools::ColorName(const NFmiColorTools::Color &theColor)
 
   for (iter = itsColorNames.begin(); iter != itsColorNames.end(); ++iter)
   {
-    if (iter->second == theColor) return iter->first;
+    if (iter->second == theColor)
+      return iter->first;
   }
   static const string MissingColorName = string("");
   return MissingColorName;
@@ -587,7 +608,8 @@ void NFmiColorTools::ColorNamesInit(void)
 {
   // Abort if already initialized
 
-  if (!itsColorNames.empty()) return;
+  if (!itsColorNames.empty())
+    return;
 
 #define COLORINSERT(N, R, G, B) itsColorNames.insert(make_pair(string(N), MakeColor(R, G, B)))
 
@@ -778,7 +800,8 @@ const string NFmiColorTools::BlendName(const NFmiColorTools::NFmiBlendRule &theR
 
   for (iter = itsBlendNames.begin(); iter != itsBlendNames.end(); ++iter)
   {
-    if (iter->second == theRule) return iter->first;
+    if (iter->second == theRule)
+      return iter->first;
   }
   static const string MissingBlendName = string("");
   return MissingBlendName;
@@ -792,7 +815,8 @@ void NFmiColorTools::BlendNamesInit(void)
 {
   // Abort if already initialized
 
-  if (!itsBlendNames.empty()) return;
+  if (!itsBlendNames.empty())
+    return;
 
 #define BLENDINSERT(N, B) itsBlendNames.insert(make_pair(string(N), B))
 

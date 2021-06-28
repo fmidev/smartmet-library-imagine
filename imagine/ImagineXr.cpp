@@ -1,8 +1,8 @@
 /*
-* ImagineXr.cpp
-*
-* Replacement for 'Imagine' library, using Cairo drawing
-*/
+ * ImagineXr.cpp
+ *
+ * Replacement for 'Imagine' library, using Cairo drawing
+ */
 #include "imagine-config.h"
 
 #ifdef IMAGINE_WITH_CAIRO
@@ -11,14 +11,15 @@
 
 #include "NFmiImage.h"
 
+#include <deque>
 #include <iostream>
 #include <stdexcept>
-#include <deque>
 
 #include <boost/algorithm/string.hpp>
 
-#define DEFAULT_LINE_WIDTH 0.4  // Cairo itself has 2.0 as default
-                                // 0.2 is too little; starts graying the lines out
+#define DEFAULT_LINE_WIDTH \
+  0.4  // Cairo itself has 2.0 as default
+       // 0.2 is too little; starts graying the lines out
 
 #ifdef IMAGINE_USAGE
 #define USAGE(msg, ...) fprintf(stderr, ">>> #%d: " msg "\n", __LINE__, __VA_ARGS__)
@@ -70,7 +71,8 @@ ImagineXr::ImagineXr(int w, int h, const string &to_fn, const string &fmt_)
   USAGE(
       "ImagineXr(): format=%s, fn=%s width=%d, height=%d", fmt.c_str(), fn.c_str(), width, height);
 
-  if (fn == "") throw runtime_error("No output filename given!");
+  if (fn == "")
+    throw runtime_error("No output filename given!");
 
   if (fmt == "pdf")
   {
@@ -79,7 +81,7 @@ ImagineXr::ImagineXr(int w, int h, const string &to_fn, const string &fmt_)
   else
   {
     /* 'ImageSurface' does not need the filename at construction.
-    */
+     */
     image_surf = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
   }
 
@@ -98,8 +100,8 @@ ImagineXr::ImagineXr(const string &from_png_fn)
 }
 
 /*
-* Temporary image, not to be saved on disk.
-*/
+ * Temporary image, not to be saved on disk.
+ */
 ImagineXr::ImagineXr(int w, int h)
     : fn(""), fmt("png"), width(w), height(h), face(0), font_bg_color(NFmiColorTools::NoColor)
 {
@@ -124,12 +126,13 @@ ImagineXr::ImagineXr(const ImagineXr &o)
 }
 
 /*
-* Destructor: do nothing
-*/
+ * Destructor: do nothing
+ */
 ImagineXr::~ImagineXr() {}
 void ImagineXr::SetRGB(NFmiColorTools::Color col)
 {
-  if (col == NFmiColorTools::NoColor) return;
+  if (col == NFmiColorTools::NoColor)
+    return;
 
   cr->set_source_rgb(NFmiColorTools::GetRed(col) / 255.0,
                      NFmiColorTools::GetGreen(col) / 255.0,
@@ -138,7 +141,8 @@ void ImagineXr::SetRGB(NFmiColorTools::Color col)
 
 void ImagineXr::SetRGBA(NFmiColorTools::Color col)
 {
-  if (col == NFmiColorTools::NoColor) return;
+  if (col == NFmiColorTools::NoColor)
+    return;
 
   cr->set_source_rgba(NFmiColorTools::GetRed(col) / 255.0,
                       NFmiColorTools::GetGreen(col) / 255.0,
@@ -175,7 +179,7 @@ void ImagineXr::SetBlend(enum NFmiColorTools::NFmiBlendRule rule)
       return;  // no rule; change nothing
 
     /* Standard rules by Porter-Duff
-    */
+     */
     case kFmiColorClear:
       op = OPERATOR_CLEAR;
       break;  // Fs=0, Fd=0
@@ -214,7 +218,7 @@ void ImagineXr::SetBlend(enum NFmiColorTools::NFmiBlendRule rule)
       break;  // FS=1-Ad, Fd=1-As
 
     /* Additional rules not by Porter-Duff
-    */
+     */
     case kFmiColorPlus:
       op = OPERATOR_ADD;
       break;  // Fs=1, Fd=1
@@ -230,14 +234,15 @@ void ImagineXr::SetBlend(enum NFmiColorTools::NFmiBlendRule rule)
 }
 
 /*
-* Path for filling
-*
-* Returns 'true' if there were elements, 'false' if path empty
-*/
+ * Path for filling
+ *
+ * Returns 'true' if there were elements, 'false' if path empty
+ */
 bool ImagineXr::SetPath(const std::deque<NFmiPathElement> &path)
 {
   std::deque<NFmiPathElement>::const_iterator iter = path.begin();
-  if (iter == path.end()) return false;  // no elements (don't close either)
+  if (iter == path.end())
+    return false;  // no elements (don't close either)
 
   for (; iter != path.end(); ++iter)
   {
@@ -276,8 +281,8 @@ bool ImagineXr::SetPath(const std::deque<NFmiPathElement> &path)
 }
 
 /*
-* Modify 'x' and 'y' by the chosen alignment
-*/
+ * Modify 'x' and 'y' by the chosen alignment
+ */
 void ImagineXr::ApplyAlignment(enum NFmiAlignment alignment, int &x, int &y, int w, int h)
 {
   switch (alignment)
@@ -319,21 +324,22 @@ void ImagineXr::ApplyAlignment(enum NFmiAlignment alignment, int &x, int &y, int
 
 const int32_t *ImagineXr::ARGB_32() const
 {
-  if (!image_surf) throw runtime_error("Pixels not supported for PDF canvas!");
+  if (!image_surf)
+    throw runtime_error("Pixels not supported for PDF canvas!");
 
   return (const int32_t *)image_surf->get_data();
 }
 
 /*
-* Cairo alpha:
-*   "Pre-multiplied alpha is used (50% transparent red is 0x80800000, not 0x80ff0000)"
-*
-*   This also means opaque A is 0xff, full transparency 0x00000000. In other
-*   words A is stored negated.
-*
-* NFmiColorTools::Color:
-*   0..0x7f alpha (0=opaque), separate of RGB (they always range 0..0xff)
-*/
+ * Cairo alpha:
+ *   "Pre-multiplied alpha is used (50% transparent red is 0x80800000, not 0x80ff0000)"
+ *
+ *   This also means opaque A is 0xff, full transparency 0x00000000. In other
+ *   words A is stored negated.
+ *
+ * NFmiColorTools::Color:
+ *   0..0x7f alpha (0=opaque), separate of RGB (they always range 0..0xff)
+ */
 static inline NFmiColorTools::Color ARGB32_to_NFmiColor(int32_t v)
 {
   int a = (v >> 24) & 0xff;
@@ -399,11 +405,11 @@ const NFmiColorTools::Color *ImagineXr::NFmiColorBuf(NFmiColorTools::Color *buf)
 }
 
 /*
-* Get a single point from the current bitmap
-*
-* Note: NFmiColorTools has 'A' as opacity value (0=transparent) whereas Cairo
-*       has it as transparency (0=opaque).
-*/
+ * Get a single point from the current bitmap
+ *
+ * Note: NFmiColorTools has 'A' as opacity value (0=transparent) whereas Cairo
+ *       has it as transparency (0=opaque).
+ */
 NFmiColorTools::Color ImagineXr::operator()(int x, int y) const
 {
   int w = Width();
@@ -411,14 +417,15 @@ NFmiColorTools::Color ImagineXr::operator()(int x, int y) const
 
   USAGE("operator (): x=%d, y=%d", x, y);
 
-  if (x < 0 || y < 0 || x >= w || y >= h) return NFmiColorTools::NoColor;  // out of bounds
+  if (x < 0 || y < 0 || x >= w || y >= h)
+    return NFmiColorTools::NoColor;  // out of bounds
 
   return ARGB32_to_NFmiColor(ARGB_32()[y * w + x]);
 }
 
 /*
-* Paint the whole surface with 'color' (an ARGB_32 value)
-*/
+ * Paint the whole surface with 'color' (an ARGB_32 value)
+ */
 void ImagineXr::Erase(const NFmiColorTools::Color &color)
 {
   USAGE("Erase(): color=%s", COLORNAME(color));
@@ -427,8 +434,8 @@ void ImagineXr::Erase(const NFmiColorTools::Color &color)
 }
 
 /*
-* Composite image over another (one stamp)
-*/
+ * Composite image over another (one stamp)
+ */
 void ImagineXr::Composite(const ImagineXr &img2,
                           NFmiColorTools::NFmiBlendRule rule,
                           NFmiAlignment alignment,
@@ -446,13 +453,13 @@ void ImagineXr::Composite(const ImagineXr &img2,
   ApplyAlignment(alignment, x, y, img2.Width(), img2.Height());
 
   /* This part is tricky to be backward compatible; several alternatives below.
-  *
-  * QD-Contour test code uses 'Copy' blending rule with us; and seems to
-  * imply it should only affect the size of the source, not elsewhere.
-  *
-  * Cairo takes 'Copy' to mean the remaining target picture is wiped out,
-  * leaving only the last stamped image on it (rest is white).
-  */
+   *
+   * QD-Contour test code uses 'Copy' blending rule with us; and seems to
+   * imply it should only affect the size of the source, not elsewhere.
+   *
+   * Cairo takes 'Copy' to mean the remaining target picture is wiped out,
+   * leaving only the last stamped image on it (rest is white).
+   */
 
   // Selected this one in a meeting with Mika H. and Mikko R. 21-Aug-2008:
   // ignoring the alpha/opaqueness factor (kept in the calling interface
@@ -491,8 +498,8 @@ void ImagineXr::Composite(const ImagineXr &img2,
 }
 
 /*
-*
-*/
+ *
+ */
 void ImagineXr::Stroke(const std::deque<NFmiPathElement> &path,
                        float line_width,
                        NFmiColorTools::Color color,
@@ -512,8 +519,8 @@ void ImagineXr::Stroke(const std::deque<NFmiPathElement> &path,
 }
 
 /*
-* Path fill
-*/
+ * Path fill
+ */
 void ImagineXr::Fill(const std::deque<NFmiPathElement> &path,
                      NFmiColorTools::Color color,
                      NFmiBlendRule rule)
@@ -530,8 +537,8 @@ void ImagineXr::Fill(const std::deque<NFmiPathElement> &path,
 }
 
 /*
-* Fill an area with a 'pattern' image
-*/
+ * Fill an area with a 'pattern' image
+ */
 void ImagineXr::Fill(const std::deque<NFmiPathElement> &path,
                      const ImagineXr &img2,
                      NFmiBlendRule rule,
@@ -540,7 +547,8 @@ void ImagineXr::Fill(const std::deque<NFmiPathElement> &path,
   USAGE("Fill(): pattern=yyy, rule=%s, opaque=%.3f", RULENAME(rule), opaque);
 
   SetBlend(rule);
-  if (!SetPath(path)) return;  // get out if no path
+  if (!SetPath(path))
+    return;  // get out if no path
 
   RefPtr<SurfacePattern> pattern = SurfacePattern::create(img2.surf());
   pattern->set_extend(EXTEND_REPEAT);
@@ -567,15 +575,15 @@ void ImagineXr::Fill(const std::deque<NFmiPathElement> &path,
 }
 
 /*
-* Prepare a font to be used by 'DrawFace()'
-*
-* 'fontspec':
-*   "<fontname>:<points>"
-*   "<fontname>:<width>x<height>"   old format, not supported for Cairo (i.e.
-* "misc/6x13B.pcf.gz:6x13")
-*
-* TBD: Add FONT_SLANT, FONT_WEIGHT options to the string.
-*/
+ * Prepare a font to be used by 'DrawFace()'
+ *
+ * 'fontspec':
+ *   "<fontname>:<points>"
+ *   "<fontname>:<width>x<height>"   old format, not supported for Cairo (i.e.
+ * "misc/6x13B.pcf.gz:6x13")
+ *
+ * TBD: Add FONT_SLANT, FONT_WEIGHT options to the string.
+ */
 void ImagineXr::MakeFace(const string &fontspec,
                          const NFmiColorTools::Color backcolor,
                          int xm,
@@ -613,8 +621,8 @@ void ImagineXr::MakeFace(const string &fontspec,
 }
 
 /*
-* Returns 'false' if 'text' was not in UTF-8 format.
-*/
+ * Returns 'false' if 'text' was not in UTF-8 format.
+ */
 bool ImagineXr::DrawFace(int x_,
                          int y_,
                          const std::string &text,
@@ -633,8 +641,8 @@ bool ImagineXr::DrawFace(int x_,
         RULENAME(rule));
 
   /*
-  * 'text' needs to be UTF-8 encoded; otherwise Cairo throws an exception.
-  */
+   * 'text' needs to be UTF-8 encoded; otherwise Cairo throws an exception.
+   */
   try
   {
     TextExtents te;
@@ -666,11 +674,11 @@ bool ImagineXr::DrawFace(int x_,
   catch (Cairo::logic_error err)
   {
     /* Cairo (1.6.4) exceptions behave REALLY funny: for non-valid UTF8, it
-    * throws "input string not valid UTF8". Replacing that with 'X' throws
-    * another exception. At one point the exception was "success".
-    *
-    * Better just to not print anything if we get an exception?
-    */
+     * throws "input string not valid UTF8". Replacing that with 'X' throws
+     * another exception. At one point the exception was "success".
+     *
+     * Better just to not print anything if we get an exception?
+     */
     string what(err.what());
 
     // "input string not valid UTF8"
@@ -682,11 +690,12 @@ bool ImagineXr::DrawFace(int x_,
 }
 
 /*
-* Write IMAGE surface to ".png" file, PDF surface to ".pdf"
-*/
+ * Write IMAGE surface to ".png" file, PDF surface to ".pdf"
+ */
 void ImagineXr::Write() const
 {
-  if (fn == "") throw runtime_error("Temporary image; not intended to be written");
+  if (fn == "")
+    throw runtime_error("Temporary image; not intended to be written");
 
   if (pdf_surf)
   {
@@ -694,7 +703,8 @@ void ImagineXr::Write() const
   }
   else
   {
-    if (fmt != "png") throw runtime_error(string("Cairo can write only to png format, not") + fmt);
+    if (fmt != "png")
+      throw runtime_error(string("Cairo can write only to png format, not") + fmt);
 
     image_surf->write_to_png(fn);
   }

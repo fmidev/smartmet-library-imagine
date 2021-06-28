@@ -6,11 +6,12 @@
 
 #include "NFmiEsriBuffer.h"
 #include <algorithm>  // swap()
-#include <iostream>
 #include <cstring>
+#include <iostream>
 
 #ifdef UNIX
-extern "C" {
+extern "C"
+{
 #include <stdint.h>
 }
 #else

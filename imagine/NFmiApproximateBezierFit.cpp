@@ -24,8 +24,8 @@
 #include <newbase/NFmiPoint.h>
 
 #include <list>
-#include <vector>
 #include <utility>
+#include <vector>
 
 using namespace std;
 
@@ -75,7 +75,10 @@ double B2(double u)
  */
 // ----------------------------------------------------------------------
 
-double B3(double u) { return (u * u * u); }
+double B3(double u)
+{
+  return (u * u * u);
+}
 // ----------------------------------------------------------------------
 /*!
  * \brief Establish regular segment orientation
@@ -85,7 +88,8 @@ double B3(double u) { return (u * u * u); }
 bool IsPositivelyOriented(const NFmiPathData& thePath)
 {
   // no orientation for lines
-  if (thePath.size() < 3) return true;
+  if (thePath.size() < 3)
+    return true;
   // this calculates 2*polygon area with sign
   double sum = 0;
   for (unsigned int i = 0; i < thePath.size() - 1; i++)
@@ -250,7 +254,8 @@ NFmiPoint ComputeCenterTangent(const NFmiPathData& thePath, unsigned int thePos)
     double dx = (dx1 + dx2) / 2;
     double dy = (dy1 + dy2) / 2;
 
-    if (dx != 0 || dy != 0) return Tangent(dx, dy);
+    if (dx != 0 || dy != 0)
+      return Tangent(dx, dy);
   }
 
   // Make some stupid guess in case the entire curve is
@@ -283,7 +288,8 @@ NFmiPoint ComputeInitialTangent(const NFmiPathData& thePath)
   const double dx = (dx1 + dx2) / 2;
   const double dy = (dy1 + dy2) / 2;
 
-  if (dx != 0 && dy != 0) return Tangent(dx, dy);
+  if (dx != 0 && dy != 0)
+    return Tangent(dx, dy);
 
   // We have a spike. We return a normal to the spike direction
 
@@ -359,17 +365,20 @@ vector<double> ChordLengthParameterize(const NFmiPathData& thePath,
 
 bool IsValidParameterization(const vector<double>& theU)
 {
-  if (theU.size() < 2) return true;
+  if (theU.size() < 2)
+    return true;
 
   unsigned int i = 0;
   for (i = 0; i < theU.size(); i++)
   {
-    if (theU[i] < 0 || theU[i] > 1) return false;
+    if (theU[i] < 0 || theU[i] > 1)
+      return false;
   }
 
   for (i = 1; i < theU.size(); i++)
   {
-    if (theU[i] <= theU[i - 1]) return false;
+    if (theU[i] <= theU[i - 1])
+      return false;
   }
   return true;
 }
@@ -472,10 +481,13 @@ vector<double> Reparameterize(const NFmiPathData& thePath,
     {
       unsigned int j, k;
       for (j = i - 1; j > 0; j--)
-        if (out[j] >= 0 && out[j] <= 1) break;
+        if (out[j] >= 0 && out[j] <= 1)
+          break;
       for (k = i + 1; k < theLast; k++)
-        if (out[k] >= 0 && out[k] <= 1 && out[k] > out[j]) break;
-      if (k < theLast) out[i] = (out[j] * (k - i) + out[k] * (i - j)) / (k - j);
+        if (out[k] >= 0 && out[k] <= 1 && out[k] > out[j])
+          break;
+      if (k < theLast)
+        out[i] = (out[j] * (k - i) + out[k] * (i - j)) / (k - j);
     }
   }
 
@@ -727,7 +739,8 @@ NFmiPath RecursiveFit(const NFmiPathData& thePath,
     // Make sure the curve lengths are roughly equal
     // to avoid Bezier fits with wild control points
 
-    if (BezierLengthMatches(thePath, theFirst, theLast, outpath)) return outpath;
+    if (BezierLengthMatches(thePath, theFirst, theLast, outpath))
+      return outpath;
   }
 
   // if error not too large, try some reparameterization and iteration
@@ -753,7 +766,8 @@ NFmiPath RecursiveFit(const NFmiPathData& thePath,
       maxerror =
           ComputeMaxError(thePath, theFirst, theLast, outpath.Elements(), uprime, splitpoint);
       if (maxerror < theError)
-        if (BezierLengthMatches(thePath, theFirst, theLast, outpath)) return outpath;
+        if (BezierLengthMatches(thePath, theFirst, theLast, outpath))
+          return outpath;
       u = uprime;
     }
   }
@@ -793,7 +807,8 @@ NFmiPath RecursiveFit(const NFmiPathData& thePath,
 NFmiPath SimpleFit(const NFmiPath& thePath, double theMaxError)
 {
   // safety against too small paths
-  if (thePath.Size() < 3) return thePath;
+  if (thePath.Size() < 3)
+    return thePath;
 
   const bool isclosed = NFmiBezierTools::IsClosed(thePath);
 
@@ -832,7 +847,7 @@ NFmiPath SimpleFit(const NFmiPath& thePath, double theMaxError)
   return RecursiveFit(path, 0, thePath.Size() - 1, tangent1, tangent2, squared_max_error);
 }
 
-}  // namespace anonymous
+}  // namespace
 
 namespace NFmiApproximateBezierFit
 {

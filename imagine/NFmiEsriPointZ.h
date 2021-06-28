@@ -15,8 +15,8 @@
 
 #pragma once
 
-#include "NFmiEsriPointM.h"
 #include "NFmiEsriBox.h"
+#include "NFmiEsriPointM.h"
 
 namespace Imagine
 {
@@ -65,6 +65,5 @@ class NFmiEsriPointZ : public NFmiEsriPointM
 };
 
 }  // namespace Imagine
-
 
 // ======================================================================

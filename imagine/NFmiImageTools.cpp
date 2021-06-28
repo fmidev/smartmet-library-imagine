@@ -40,13 +40,14 @@ inline int compress_bits(int theValue, int theBits)
 {
   if (theBits < 0 || theBits > 8)
     throw runtime_error("Invalid number of bits in NFmiImageTools::compress_bits");
-  if (theBits == 8) return theValue;
+  if (theBits == 8)
+    return theValue;
   int round = (theValue >> (8 - theBits - 1)) & 1;
   int value = (theValue >> (8 - theBits)) + round;
   return min(255, value << (8 - theBits));
 }
 
-}  // namespace anonymous
+}  // namespace
 
 namespace NFmiImageTools
 {
@@ -102,13 +103,15 @@ std::string MimeType(const string& theFileName)
 {
   FILE* in;
   in = fopen(theFileName.c_str(), "rb");
-  if (in == nullptr) throw runtime_error("Unable to determine image type of '" + theFileName + "'");
+  if (in == nullptr)
+    throw runtime_error("Unable to determine image type of '" + theFileName + "'");
 
   unsigned char strmagic[4];
   size_t num = fread(strmagic, 1, 4, in);
   fclose(in);
 
-  if (num != 4) throw runtime_error("Failed to read image magic number from '" + theFileName + "'");
+  if (num != 4)
+    throw runtime_error("Failed to read image magic number from '" + theFileName + "'");
 
   unsigned long magic = (static_cast<unsigned long>(strmagic[0]) << 24) +
                         (static_cast<unsigned long>(strmagic[1]) << 16) +

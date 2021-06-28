@@ -63,7 +63,8 @@ void NFmiImage::WriteWBMP(FILE *out) const
         octet = 0;
       }
     }
-    if (bitpos != 8) fputc(octet, out);
+    if (bitpos != 8)
+      fputc(octet, out);
   }
 }
 

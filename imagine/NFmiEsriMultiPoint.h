@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "NFmiEsriPoint.h"
 #include "NFmiEsriBox.h"
+#include "NFmiEsriPoint.h"
 
 #include <vector>
 
@@ -79,6 +79,5 @@ class NFmiEsriMultiPoint : public NFmiEsriElement
 };
 
 }  // namespace Imagine
-
 
 // ======================================================================

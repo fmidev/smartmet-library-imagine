@@ -33,7 +33,8 @@
 #include <newbase/NFmiFileSystem.h>
 #include <newbase/NFmiSettings.h>
 
-extern "C" {
+extern "C"
+{
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_CACHE_H
@@ -84,10 +85,14 @@ FT_BBox compute_bbox(const vector<FT_Glyph>& theGlyphs, const vector<FT_Vector>&
     glyph_bbox.yMin += thePositions[i].y;
     glyph_bbox.yMax += thePositions[i].y;
 
-    if (glyph_bbox.xMin < bbox.xMin) bbox.xMin = glyph_bbox.xMin;
-    if (glyph_bbox.yMin < bbox.yMin) bbox.yMin = glyph_bbox.yMin;
-    if (glyph_bbox.xMax > bbox.xMax) bbox.xMax = glyph_bbox.xMax;
-    if (glyph_bbox.yMax > bbox.yMax) bbox.yMax = glyph_bbox.yMax;
+    if (glyph_bbox.xMin < bbox.xMin)
+      bbox.xMin = glyph_bbox.xMin;
+    if (glyph_bbox.yMin < bbox.yMin)
+      bbox.yMin = glyph_bbox.yMin;
+    if (glyph_bbox.xMax > bbox.xMax)
+      bbox.xMax = glyph_bbox.xMax;
+    if (glyph_bbox.yMax > bbox.yMax)
+      bbox.yMax = glyph_bbox.yMax;
   }
 
   // check that we really grew the string bbox
@@ -105,7 +110,7 @@ FT_BBox compute_bbox(const vector<FT_Glyph>& theGlyphs, const vector<FT_Vector>&
   return bbox;
 }
 
-}  // namespace anonymous
+}  // namespace
 
 namespace Imagine
 {
@@ -172,7 +177,8 @@ NFmiFreeType::Pimple::~Pimple()
 	  delete it->second;
 #endif  // UNIX
 
-  if (itsInitialized) FT_Done_FreeType(itsLibrary);
+  if (itsInitialized)
+    FT_Done_FreeType(itsLibrary);
 }
 
 // ----------------------------------------------------------------------
@@ -194,7 +200,8 @@ NFmiFreeType::Pimple::~Pimple()
 NFmiFreeType::Pimple::Pimple() : itsInitialized(false), itsLibrary()
 {
   FT_Error error = FT_Init_FreeType(&itsLibrary);
-  if (error) throw runtime_error("Initializing FreeType failed");
+  if (error)
+    throw runtime_error("Initializing FreeType failed");
 
   itsInitialized = true;
 }
@@ -209,7 +216,8 @@ const string& NFmiFreeType::Pimple::findFont(const string& theName)
 {
   map<string, string>::const_iterator it = itsFontPaths.find(theName);
 
-  if (it != itsFontPaths.end()) return it->second;
+  if (it != itsFontPaths.end())
+    return it->second;
 
   const string path = NFmiSettings::Optional<string>("imagine::font_path", ".");
   const string file = NFmiFileSystem::FileComplete(theName, path);
@@ -226,7 +234,8 @@ const string& NFmiFreeType::Pimple::findFont(const string& theName)
 FT_Face NFmiFreeType::Pimple::getFont(const string& theFont)
 {
   Faces::const_iterator it = itsFaces.find(theFont);
-  if (it != itsFaces.end()) return it->second;
+  if (it != itsFaces.end())
+    return it->second;
 
   FT_Face face;
 
@@ -235,7 +244,8 @@ FT_Face NFmiFreeType::Pimple::getFont(const string& theFont)
   if (error == FT_Err_Unknown_File_Format)
     throw runtime_error("Unknown font format in '" + theFont + "'");
 
-  if (error) throw runtime_error("Failed while reading font '" + theFont + "'");
+  if (error)
+    throw runtime_error("Failed while reading font '" + theFont + "'");
 
   itsFaces.insert(Faces::value_type(theFont, face));
 
@@ -336,11 +346,13 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
     // load glyph image into the slot without rendering
 
     error = FT_Load_Glyph(theFace, glyph_index, FT_LOAD_DEFAULT);
-    if (error) continue;
+    if (error)
+      continue;
 
     // Extract glyph image and store it in our table
     error = FT_Get_Glyph(theFace->glyph, &glyphs[glyphpos]);
-    if (error) continue;
+    if (error)
+      continue;
 
     // store current pen position
 
@@ -456,7 +468,8 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
   {
     for (j = y, q = 0; j < y_max; j++, q++)
     {
-      if (i < 0 || j < 0 || i >= theImage.Width() || j >= theImage.Height()) continue;
+      if (i < 0 || j < 0 || i >= theImage.Width() || j >= theImage.Height())
+        continue;
 
       int alpha = 0;
       if (theBitmap.pixel_mode == FT_PIXEL_MODE_GRAY)
@@ -538,7 +551,8 @@ void NFmiFreeType::Draw(NFmiImage& theImage,
 
   // Quick exit if color is not real
 
-  if (theColor == NFmiColorTools::NoColor) return;
+  if (theColor == NFmiColorTools::NoColor)
+    return;
 
   // When the color is opaque or transparent, some rules will simplify.
   // Instead of using ifs in the innermost loop, we will simplify the
@@ -549,7 +563,8 @@ void NFmiFreeType::Draw(NFmiImage& theImage,
   // If the result is ColorKeep, the source alpha is such that there
   // is nothing to do!
 
-  if (rule == NFmiColorTools::kFmiColorKeep) return;
+  if (rule == NFmiColorTools::kFmiColorKeep)
+    return;
 
   // Now we construct the needed FT_Face object
 

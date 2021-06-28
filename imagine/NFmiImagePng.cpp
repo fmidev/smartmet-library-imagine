@@ -14,10 +14,10 @@
 
 #ifdef IMAGINE_FORMAT_PNG
 
-#include <png.h>
-#include <map>
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
+#include <map>
+#include <png.h>
 
 // Define png_jmpbuf() in case we are using a pre-1.0.6 version of libpng
 #ifndef png_jmpbuf
@@ -40,14 +40,16 @@ void NFmiImage::ReadPNG(FILE *in)
   unsigned char sig[8];
 
   fread(sig, 1, 8, in);
-  if (!(png_check_sig(sig, 8))) throw NFmiImageCorruptError("Incorrect signature in PNG image");
+  if (!(png_check_sig(sig, 8)))
+    throw NFmiImageCorruptError("Incorrect signature in PNG image");
 
   // Initialize PNG struct
 
   png_structp png_ptr = nullptr;
 
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
-  if (!png_ptr) throw NFmiImageMemoryError("Insufficient memory to allocate PNG structure");
+  if (!png_ptr)
+    throw NFmiImageMemoryError("Insufficient memory to allocate PNG structure");
 
   // Initialize info struct
 
@@ -75,7 +77,8 @@ void NFmiImage::ReadPNG(FILE *in)
   png_uint_32 width, height;
   int bit_depth, color_type;
 
-  png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, nullptr, nullptr, nullptr);
+  png_get_IHDR(
+      png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, nullptr, nullptr, nullptr);
 
   // Allocate the final image
 
@@ -85,11 +88,15 @@ void NFmiImage::ReadPNG(FILE *in)
   // transparency chunks to full alpha channel; strip 16-bit-per-sample
   // images to 8 bits per sample; and convert grayscale to RGB[A]
 
-  if (color_type == PNG_COLOR_TYPE_PALETTE && bit_depth <= 8) png_set_expand(png_ptr);
-  if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_expand(png_ptr);
-  if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) png_set_expand(png_ptr);
+  if (color_type == PNG_COLOR_TYPE_PALETTE && bit_depth <= 8)
+    png_set_expand(png_ptr);
+  if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
+    png_set_expand(png_ptr);
+  if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+    png_set_expand(png_ptr);
 
-  if (bit_depth == 16) png_set_strip_16(png_ptr);
+  if (bit_depth == 16)
+    png_set_strip_16(png_ptr);
 
   if (color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
     png_set_gray_to_rgb(png_ptr);
@@ -128,7 +135,8 @@ void NFmiImage::ReadPNG(FILE *in)
       r = row_data[boxoffset++];
       g = row_data[boxoffset++];
       b = row_data[boxoffset++];
-      if (channels == 4) a = NFmiColorTools::MaxAlpha - (row_data[boxoffset++]) / 2;
+      if (channels == 4)
+        a = NFmiColorTools::MaxAlpha - (row_data[boxoffset++]) / 2;
       (*this)(i, j) = NFmiColorTools::MakeColor(r, g, b, a);
     }
   }
@@ -162,7 +170,8 @@ void NFmiImage::WritePNG(FILE *out) const
 
   png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
 
-  if (!png_ptr) throw NFmiImageMemoryError("Insufficient memory to allocate PNG write structure");
+  if (!png_ptr)
+    throw NFmiImageMemoryError("Insufficient memory to allocate PNG write structure");
 
   png_infop info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
@@ -241,8 +250,10 @@ void NFmiImage::WritePNG(FILE *out) const
     bool separate = false;
     NFmiColorTools::Color transcolor = NFmiColorTools::NoColor;
 
-    if (savealpha) separate = IsFullyOpaqueOrTransparent(opaquethreshold);
-    if (separate) transcolor = UnusedColor();
+    if (savealpha)
+      separate = IsFullyOpaqueOrTransparent(opaquethreshold);
+    if (separate)
+      transcolor = UnusedColor();
 
     bool rgba = (separate ? false : savealpha);
 
@@ -301,12 +312,14 @@ void NFmiImage::WritePNG(FILE *out) const
       {
         NFmiColorTools::Color c = (*this)(i, j);
         a = NFmiColorTools::GetAlpha(c);
-        if (separate && a == NFmiColorTools::MaxAlpha) c = transcolor;
+        if (separate && a == NFmiColorTools::MaxAlpha)
+          c = transcolor;
 
         row_data[boxoffset++] = static_cast<png_byte>(NFmiColorTools::GetRed(c));
         row_data[boxoffset++] = static_cast<png_byte>(NFmiColorTools::GetGreen(c));
         row_data[boxoffset++] = static_cast<png_byte>(NFmiColorTools::GetBlue(c));
-        if (channels == 4) row_data[boxoffset++] = 255 - ((a << 1) + (a >> 7));
+        if (channels == 4)
+          row_data[boxoffset++] = 255 - ((a << 1) + (a >> 7));
       }
       png_write_row(png_ptr, row_pointer);
     }

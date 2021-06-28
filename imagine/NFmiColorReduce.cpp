@@ -19,8 +19,8 @@
 // ======================================================================
 
 #include "NFmiColorReduce.h"
-#include "NFmiImage.h"
 #include "NFmiColorTools.h"
+#include "NFmiImage.h"
 
 #include <boost/shared_ptr.hpp>
 
@@ -96,9 +96,9 @@ void init_gamma_table(vector<float>& theTable, bool& theFlag)
 
 Counter calc_counts(const NFmiImage& theImage)
 {
-// The default bucket size in SGI is 100, which is quite
-// small for the typical number of colours we encounter
-// in images.
+  // The default bucket size in SGI is 100, which is quite
+  // small for the typical number of colours we encounter
+  // in images.
 
 #ifdef UNIX
   Counter counter(4096);
@@ -109,7 +109,8 @@ Counter calc_counts(const NFmiImage& theImage)
 
   // Safety check
 
-  if (theImage.Height() * theImage.Width() == 0) return counter;
+  if (theImage.Height() * theImage.Width() == 0)
+    return counter;
 
   // Insert the first color so that we can initialize the iterator cache
   // Note that we insert count 0, but the first loop will fix the number
@@ -227,7 +228,8 @@ float ColorTree::distance(ColorTree::value_type theColor1, ColorTree::value_type
   static vector<float> gamma(256, 0);
   static bool initialized = false;
 
-  if (!initialized) init_gamma_table(gamma, initialized);
+  if (!initialized)
+    init_gamma_table(gamma, initialized);
 
   const float r =
       (gamma[NFmiColorTools::GetRed(theColor1)] - gamma[NFmiColorTools::GetRed(theColor2)]);
@@ -247,14 +249,20 @@ float ColorTree::distance(ColorTree::value_type theColor1, ColorTree::value_type
  */
 // ----------------------------------------------------------------------
 
-bool ColorTree::empty() const { return (itsLeftObject.get() == 0); }
+bool ColorTree::empty() const
+{
+  return (itsLeftObject.get() == 0);
+}
 // ----------------------------------------------------------------------
 /*!
  * \brief Return number of colours in the tree.
  */
 // ----------------------------------------------------------------------
 
-int ColorTree::size() const { return itsCount; }
+int ColorTree::size() const
+{
+  return itsCount;
+}
 void ColorTree::clear()
 {
   itsRightBranch.reset(new ColorTree);
@@ -289,7 +297,8 @@ void ColorTree::insert(ColorTree::value_type theColor)
 
     if (dist_left > dist_right)
     {
-      if (itsRightBranch.get() == 0) itsRightBranch.reset(new ColorTree);
+      if (itsRightBranch.get() == 0)
+        itsRightBranch.reset(new ColorTree);
 
       // note that constructor sets itsMaxRight to be negative
 
@@ -300,7 +309,8 @@ void ColorTree::insert(ColorTree::value_type theColor)
     }
     else
     {
-      if (itsLeftBranch.get() == 0) itsLeftBranch.reset(new ColorTree);
+      if (itsLeftBranch.get() == 0)
+        itsLeftBranch.reset(new ColorTree);
 
       // note that constructor sets itsMaxLeft to be negative
 
@@ -374,7 +384,8 @@ bool ColorTree::nearest(ColorTree::value_type theColor,
   // if theRadius is negative at this point, the tree is empty
   // on the other hand, if the radius is zero, we found a match
 
-  if (theRadius <= 0) return found;
+  if (theRadius <= 0)
+    return found;
 
   // Now we test to see if the branches below might hold an object
   // nearer than the best so far found. The triangle rule is used
@@ -541,7 +552,8 @@ void build_tree(const NFmiImage& theImage,
 
 bool colorcmp(const ColorInfo& c1, const ColorInfo& c2)
 {
-  if (c1.keeper == c2.keeper) return (c2.count < c1.count);
+  if (c1.keeper == c2.keeper)
+    return (c2.count < c1.count);
   return c1.keeper;
 }
 
@@ -569,7 +581,7 @@ const ColorHistogram CalcColorHistogram(const NFmiImage& theImage)
 
   return histogram;
 }
-}
+}  // namespace
 
 // ======================================================================
 // The actual public interfaces
@@ -646,7 +658,8 @@ void AdaptiveReduce(NFmiImage& theImage, float theQuality)
 
   // A sanity check on the maximum error
 
-  if (theQuality < 1) return;
+  if (theQuality < 1)
+    return;
 
   // Calculate the histogram
 
@@ -670,7 +683,8 @@ void AdaptiveReduce(NFmiImage& theImage, float theQuality, int theMaxColors, flo
 {
   using namespace Imagine::NFmiColorTools;
 
-  if (theQuality < 1) throw runtime_error("Quality was too low.");
+  if (theQuality < 1)
+    throw runtime_error("Quality was too low.");
 
   // Calculate the histogram
 

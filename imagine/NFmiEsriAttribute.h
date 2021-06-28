@@ -106,7 +106,8 @@ class NFmiEsriAttribute
   NFmiEsriAttributeName* itsAttributeName;
   std::string itsString;
   NFmiMetTime itsDate;
-  union {
+  union
+  {
     int itsInteger;
     double itsDouble;
   };

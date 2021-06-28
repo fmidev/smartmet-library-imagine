@@ -25,8 +25,8 @@
 #include "NFmiAffine.h"
 #include <cmath>
 #ifdef __BORLANDC__
-using std::sin;
 using std::cos;
+using std::sin;
 #endif
 
 namespace Imagine
@@ -191,14 +191,20 @@ void NFmiAffine::Multiply(const NFmiAffine& theAffine)
  */
 // ----------------------------------------------------------------------
 
-double NFmiAffine::X(double x, double y) { return itsA * x + itsC * y + itsE; }
+double NFmiAffine::X(double x, double y)
+{
+  return itsA * x + itsC * y + itsE;
+}
 // ----------------------------------------------------------------------
 /*!
  * \brief Calculate transformed Y-coordinate
  */
 // ----------------------------------------------------------------------
 
-double NFmiAffine::Y(double x, double y) { return itsB * x + itsD * y + itsF; }
+double NFmiAffine::Y(double x, double y)
+{
+  return itsB * x + itsD * y + itsF;
+}
 }  // namespace Imagine
 
 // ======================================================================

@@ -33,7 +33,7 @@ float myround(float theValue)
   else
     return theValue;
 }
-}
+}  // namespace
 
 namespace Imagine
 {
@@ -72,7 +72,8 @@ static void Fill2(T theBlender,
 
     float y = iter->first;
 
-    if (y < 0 || y >= theImage.Height()) continue;
+    if (y < 0 || y >= theImage.Height())
+      continue;
 
     int j = static_cast<int>(y);
 
@@ -83,7 +84,8 @@ static void Fill2(T theBlender,
 
     if (iter->second.size() == 2)
     {
-      if (iter->second[0] > iter->second[1]) swap(iter->second[0], iter->second[1]);
+      if (iter->second[0] > iter->second[1])
+        swap(iter->second[0], iter->second[1]);
     }
     else
       sort(iter->second.begin(), iter->second.end());
@@ -100,7 +102,8 @@ static void Fill2(T theBlender,
 
       // If last x was invalid, set new beginning of line
 
-      if (x1 == kFloatMissing) x1 = x2;
+      if (x1 == kFloatMissing)
+        x1 = x2;
 
       // Otherwise we have a line to fill, from x1 to x2
       // Note that due to the rounding method, we may
@@ -118,7 +121,8 @@ static void Fill2(T theBlender,
         // If intersection has integer X coordinate, x1 would be
         // interior, x2 exterior
 
-        if (x2 == i2) i2--;
+        if (x2 == i2)
+          i2--;
 
         // Check the line is atleast partially inside
 
@@ -192,7 +196,8 @@ static void Fill2(T theBlender,
 
     float y = iter->first;
 
-    if (y < 0 || y >= theImage.Height()) continue;
+    if (y < 0 || y >= theImage.Height())
+      continue;
 
     int j = static_cast<int>(y);
 
@@ -203,7 +208,8 @@ static void Fill2(T theBlender,
 
     if (iter->second.size() == 2)
     {
-      if (iter->second[0] > iter->second[1]) swap(iter->second[0], iter->second[1]);
+      if (iter->second[0] > iter->second[1])
+        swap(iter->second[0], iter->second[1]);
     }
     else
       sort(iter->second.begin(), iter->second.end());
@@ -220,7 +226,8 @@ static void Fill2(T theBlender,
 
       // If last x was invalid, set new beginning of line
 
-      if (x1 == kFloatMissing) x1 = x2;
+      if (x1 == kFloatMissing)
+        x1 = x2;
 
       // Otherwise we have a line to fill, from x1 to x2
       // Note that due to the rounding method, we may
@@ -238,7 +245,8 @@ static void Fill2(T theBlender,
         // If intersection has integer X coordinate, x1 would be
         // interior, x2 exterior
 
-        if (x2 == i2) i2--;
+        if (x2 == i2)
+          i2--;
 
         // Check the line is atleast partially inside
 
@@ -319,7 +327,8 @@ static void Fill2(T theBlender,
 
     float y = iter->first;
 
-    if (y < 0 || y >= theImage.Height()) continue;
+    if (y < 0 || y >= theImage.Height())
+      continue;
 
     int j = static_cast<int>(y);
 
@@ -332,7 +341,8 @@ static void Fill2(T theBlender,
 
     if (iter->second.size() == 2)
     {
-      if (iter->second[0] > iter->second[1]) swap(iter->second[0], iter->second[1]);
+      if (iter->second[0] > iter->second[1])
+        swap(iter->second[0], iter->second[1]);
     }
     else
       sort(iter->second.begin(), iter->second.end());
@@ -349,7 +359,8 @@ static void Fill2(T theBlender,
 
       // If last x was invalid, set new beginning of line
 
-      if (x1 == kFloatMissing) x1 = x2;
+      if (x1 == kFloatMissing)
+        x1 = x2;
 
       // Otherwise we have a line to fill, from x1 to x2
       // Note that due to the rounding method, we may
@@ -367,7 +378,8 @@ static void Fill2(T theBlender,
         // If intersection has integer X coordinate, x1 would be
         // interior, x2 exterior
 
-        if (x2 == i2) i2--;
+        if (x2 == i2)
+          i2--;
 
         // Check the line is atleast partially inside
 
@@ -431,9 +443,11 @@ void NFmiFillMap::Add(float theX1, float theY1, float theX2, float theY2)
 
   // Ignore lines completely outside the area
 
-  if (itsLoLimit != kFloatMissing && std::max(theY1, theY2) < itsLoLimit) return;
+  if (itsLoLimit != kFloatMissing && std::max(theY1, theY2) < itsLoLimit)
+    return;
 
-  if (itsHiLimit != kFloatMissing && std::min(theY1, theY2) > itsHiLimit) return;
+  if (itsHiLimit != kFloatMissing && std::min(theY1, theY2) > itsHiLimit)
+    return;
 
   // The parametric equation of the line is:
   //
@@ -459,7 +473,8 @@ void NFmiFillMap::Add(float theX1, float theY1, float theX2, float theY2)
   // First, we ignore horizontal lines, they are meaningless
   // when filling with horizontal lines.
 
-  if (y1 == y2) return;
+  if (y1 == y2)
+    return;
 
   if (y1 > y2)
   {
@@ -472,17 +487,21 @@ void NFmiFillMap::Add(float theX1, float theY1, float theX2, float theY2)
 
   // If limits are active, we can speed things up by clipping the limits
 
-  if (itsLoLimit != kFloatMissing && lo < itsLoLimit) lo = static_cast<int>(ceil(itsLoLimit));
+  if (itsLoLimit != kFloatMissing && lo < itsLoLimit)
+    lo = static_cast<int>(ceil(itsLoLimit));
 
-  if (itsHiLimit != kFloatMissing && hi > itsHiLimit) hi = static_cast<int>(floor(itsHiLimit));
+  if (itsHiLimit != kFloatMissing && hi > itsHiLimit)
+    hi = static_cast<int>(floor(itsHiLimit));
 
   // We don't want to intersect ymin, it is handled
   // by the line connected to this one, except at
   // the bottom!
 
-  if (y2 <= 0) return;
+  if (y2 <= 0)
+    return;
 
-  if (static_cast<float>(lo) == y1 && y1 > 0) lo++;
+  if (static_cast<float>(lo) == y1 && y1 > 0)
+    lo++;
 
   // We precalculate k and x1+k*y1 for speed
   // Should in principle remove the multiplication too,
@@ -555,7 +574,8 @@ void NFmiFillMap::Or(const NFmiFillMap &theMap)
 
     // If the value did not exist, add all of it since this is OR
 
-    if (iter == itsData.end()) itsData[y] = theiter->second;
+    if (iter == itsData.end())
+      itsData[y] = theiter->second;
 
     // Otherwise we must OR with old x-coordinate data
 
@@ -573,7 +593,8 @@ void NFmiFillMap::Or(const NFmiFillMap &theMap)
 
       while (pos1 <= xvec1.size() - 2 || pos2 <= xvec2.size() - 2)
       {
-        if (pos1 >= xvec1.size() || xvec1[pos1] > xvec2[pos2]) swap(xvec1, xvec2);
+        if (pos1 >= xvec1.size() || xvec1[pos1] > xvec2[pos2])
+          swap(xvec1, xvec2);
         if (xvec.size() == 0 || xvec1[pos1] > tail)
         {
           xvec.push_back(xvec1[pos1++]);
@@ -609,7 +630,8 @@ void NFmiFillMap::And(const NFmiFillMap &theMap)
 
     // If found no match, then must remove the Y
 
-    if (theiter == theMap.MapData().end()) itsData.erase(iter++);  // must be postfix ++ !!!
+    if (theiter == theMap.MapData().end())
+      itsData.erase(iter++);  // must be postfix ++ !!!
 
     // Otherwise must perform AND
 
@@ -628,11 +650,13 @@ void NFmiFillMap::And(const NFmiFillMap &theMap)
       {
         // Make sure xvec1 starts earlier
 
-        if (xvec1[pos1] > xvec2[pos2]) swap(xvec1, xvec2);
+        if (xvec1[pos1] > xvec2[pos2])
+          swap(xvec1, xvec2);
 
         // If xvec1 ends before xvec2 starts, skip forward in xvec1
 
-        if (xvec1[pos1 + 1] <= xvec2[pos2]) pos1 += 2;
+        if (xvec1[pos1 + 1] <= xvec2[pos2])
+          pos1 += 2;
 
         // Otherwise there is a common linesegment
 
@@ -672,7 +696,8 @@ void NFmiFillMap::Fill(NFmiImage &theImage,
 {
   // Quick exit if color is not real
 
-  if (theColor == NFmiColorTools::NoColor) return;
+  if (theColor == NFmiColorTools::NoColor)
+    return;
 
   // When the color is opaque or transparent, some rules will simplify.
   // Instead of using ifs in the innermost loop, we will simplify the
@@ -684,7 +709,8 @@ void NFmiFillMap::Fill(NFmiImage &theImage,
   // If the result is ColorKeep, the source alpha is such that there
   // is nothing to do!
 
-  if (rule == NFmiColorTools::kFmiColorKeep) return;
+  if (rule == NFmiColorTools::kFmiColorKeep)
+    return;
 
   // Otherwise we instantiate the appropriate fill routine
 

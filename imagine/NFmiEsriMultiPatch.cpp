@@ -50,7 +50,10 @@ NFmiEsriMultiPatch::NFmiEsriMultiPatch(const NFmiEsriMultiPatch& theElement)
 // Cloning
 // ----------------------------------------------------------------------
 
-NFmiEsriElement* NFmiEsriMultiPatch::Clone() const { return new NFmiEsriMultiPatch(*this); }
+NFmiEsriElement* NFmiEsriMultiPatch::Clone() const
+{
+  return new NFmiEsriMultiPatch(*this);
+}
 // ----------------------------------------------------------------------
 // Constructor based on a character buffer
 // ----------------------------------------------------------------------
@@ -103,28 +106,18 @@ NFmiEsriMultiPatch::NFmiEsriMultiPatch(const string& theBuffer, int thePos, int 
 
 int NFmiEsriMultiPatch::StringSize(void) const
 {
-  return (4  // the type	: 1 int
-          +
-          4 * 8  // bounding box : 4 doubles
-          +
-          4  // numparts	: 1 int
-          +
-          4  // numpoints	: 1 int
-          +
-          NumParts() * 4  // parts	: np ints
-          +
-          NumParts() * 4  // parttypes	: np ints
-          +
-          NumPoints() * 2 * 8  // points	: 2n doubles
-          +
-          2 * 8  // zbox		: 2 doubles
-          +
-          NumPoints() * 8  // zvalues	: n doubles
-          +
-          2 * 8  // mbox		: 2 doubles
-          +
-          NumPoints() * 8  // mvalues	: n doubles
-          );
+  return (4                      // the type	: 1 int
+          + 4 * 8                // bounding box : 4 doubles
+          + 4                    // numparts	: 1 int
+          + 4                    // numpoints	: 1 int
+          + NumParts() * 4       // parts	: np ints
+          + NumParts() * 4       // parttypes	: np ints
+          + NumPoints() * 2 * 8  // points	: 2n doubles
+          + 2 * 8                // zbox		: 2 doubles
+          + NumPoints() * 8      // zvalues	: n doubles
+          + 2 * 8                // mbox		: 2 doubles
+          + NumPoints() * 8      // mvalues	: n doubles
+  );
 }
 
 // ----------------------------------------------------------------------

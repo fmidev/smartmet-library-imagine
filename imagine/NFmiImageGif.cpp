@@ -6,13 +6,13 @@
 
 // ======================================================================
 
-#include "NFmiImage.h"
 #include "NFmiEsriBuffer.h"
+#include "NFmiImage.h"
 
-#include <set>
-#include <map>
-#include <iostream>
 #include <algorithm>
+#include <iostream>
+#include <map>
+#include <set>
 #include <vector>
 
 using namespace std;
@@ -51,7 +51,10 @@ inline bool bitset(T theByte, T theBit)
  */
 // ----------------------------------------------------------------------
 
-inline unsigned int LM_to_uint(unsigned char a, unsigned char b) { return ((b << 8) | a); }
+inline unsigned int LM_to_uint(unsigned char a, unsigned char b)
+{
+  return ((b << 8) | a);
+}
 // ----------------------------------------------------------------------
 /*!
  * \brief Reader function
@@ -112,7 +115,8 @@ void read_colormap(FILE *theInput, int theBits, unsigned char theColorMap[3][Max
   unsigned char rgb[3];
   for (int i = 0; i < theBits; ++i)
   {
-    if (!readok(theInput, rgb, 3)) throw runtime_error("Bad GIF colormap");
+    if (!readok(theInput, rgb, 3))
+      throw runtime_error("Bad GIF colormap");
     theColorMap[0][i] = rgb[0];
     theColorMap[1][i] = rgb[1];
     theColorMap[2][i] = rgb[2];
@@ -128,13 +132,15 @@ void read_colormap(FILE *theInput, int theBits, unsigned char theColorMap[3][Max
 int getdatablock(FILE *theInput, unsigned char *theBuffer)
 {
   int count;
-  if ((count = fgetc(theInput)) == EOF) throw runtime_error("Block size missing from GIF stream");
+  if ((count = fgetc(theInput)) == EOF)
+    throw runtime_error("Block size missing from GIF stream");
 
   zeroblock = (count == 0);
 
   if (count != 0)
   {
-    if (!readok(theInput, theBuffer, count)) throw runtime_error("Error reading GIF data block");
+    if (!readok(theInput, theBuffer, count))
+      throw runtime_error("Error reading GIF data block");
   }
 
   return count;
@@ -162,7 +168,8 @@ void read_extension(FILE *theInput, int theLabel, GifScreen &theScreen)
       theScreen.disposal = (buffer[0] >> 2) & 0x7;
       theScreen.inputflag = (buffer[0] >> 1) & 0x1;
       theScreen.delaytime = LM_to_uint(buffer[1], buffer[2]);
-      if ((buffer[0] & 0x1) != 0) theScreen.transparent = buffer[3];
+      if ((buffer[0] & 0x1) != 0)
+        theScreen.transparent = buffer[3];
       break;
     }
     default:
@@ -200,7 +207,8 @@ int getcode(FILE *theInput, int theCodeSize, bool theFlushFlag)
   {
     if (done)
     {
-      if (curbit >= lastbit) throw runtime_error("Ran off the end of GIF LZW bits");
+      if (curbit >= lastbit)
+        throw runtime_error("Ran off the end of GIF LZW bits");
       return -1;
     }
 
@@ -209,7 +217,8 @@ int getcode(FILE *theInput, int theCodeSize, bool theFlushFlag)
 
     int count = getdatablock(theInput, &buf[2]);
 
-    if (count == 0) done = true;
+    if (count == 0)
+      done = true;
 
     lastbyte = 2 + count;
     curbit = (curbit - lastbit) + 16;
@@ -281,7 +290,8 @@ int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
     return firstcode;
   }
 
-  if (sp > stack) return *--sp;
+  if (sp > stack)
+    return *--sp;
 
   int code;
   while ((code = getcode(theInput, code_size, false)) >= 0)
@@ -304,7 +314,8 @@ int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
     }
     else if (code == end_code)
     {
-      if (zeroblock) return -2;
+      if (zeroblock)
+        return -2;
 
       unsigned char buf[260];
       while (getdatablock(theInput, buf) > 0)
@@ -323,7 +334,8 @@ int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
     while (code >= clear_code)
     {
       *sp++ = table[1][code];
-      if (code == table[0][code]) throw runtime_error("Circular table entry in GIF");
+      if (code == table[0][code])
+        throw runtime_error("Circular table entry in GIF");
       code = table[0][code];
     }
 
@@ -344,7 +356,8 @@ int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
 
     oldcode = incode;
 
-    if (sp > stack) return *--sp;
+    if (sp > stack)
+      return *--sp;
   }
 
   return code;
@@ -368,9 +381,11 @@ void read_image(FILE *theInput,
   // Initialize decompression
 
   int c;
-  if ((c = fgetc(theInput)) == EOF) throw runtime_error("Image data missing in GIF");
+  if ((c = fgetc(theInput)) == EOF)
+    throw runtime_error("Image data missing in GIF");
 
-  if (lzwreadbyte(theInput, true, c) < 0) throw runtime_error("Error read GIF image section");
+  if (lzwreadbyte(theInput, true, c) < 0)
+    throw runtime_error("Error read GIF image section");
 
   // If this is an uninteresting part of the GIF animation, ignore it
 
@@ -433,7 +448,8 @@ void read_image(FILE *theInput,
         }
       }
     }
-    if (ypos >= theHeight) break;
+    if (ypos >= theHeight)
+      break;
   }
 
 fini:
@@ -457,7 +473,8 @@ void NFmiImage::ReadGIF(FILE *in)
   unsigned char buf[16];
 
   // Read and verify the signature
-  if (!readok(in, buf, 6)) throw runtime_error("Failed to read GIF magic number");
+  if (!readok(in, buf, 6))
+    throw runtime_error("Failed to read GIF magic number");
 
   if (buf[0] != 'G' || buf[1] != 'I' || buf[2] != 'F' || buf[3] != '8' ||
       (buf[4] != '7' && buf[4] != '9') || buf[5] != 'a')
@@ -466,7 +483,8 @@ void NFmiImage::ReadGIF(FILE *in)
   }
 
   // Read the screen descriptor
-  if (!readok(in, buf, 7)) throw runtime_error("Failed to read GIF screen descriptor");
+  if (!readok(in, buf, 7))
+    throw runtime_error("Failed to read GIF screen descriptor");
 
   // Establish the screen info
 
@@ -497,12 +515,14 @@ void NFmiImage::ReadGIF(FILE *in)
   for (;;)
   {
     int c;
-    if ((c = fgetc(in)) == EOF) throw runtime_error("GIF file ended abrubtly");
+    if ((c = fgetc(in)) == EOF)
+      throw runtime_error("GIF file ended abrubtly");
 
     // GIF terminator
     if (c == ';')
     {
-      if (imagecount < imagenumber) throw runtime_error("Too few images in the GIF file");
+      if (imagecount < imagenumber)
+        throw runtime_error("Too few images in the GIF file");
       return;
     }
 
@@ -510,7 +530,8 @@ void NFmiImage::ReadGIF(FILE *in)
     if (c == '!')
     {
       int label;
-      if ((label = fgetc(in)) == EOF) throw runtime_error("Read error in GIF extension block");
+      if ((label = fgetc(in)) == EOF)
+        throw runtime_error("Read error in GIF extension block");
       read_extension(in, label, screen);
       continue;
     }
@@ -522,7 +543,8 @@ void NFmiImage::ReadGIF(FILE *in)
     // Now we have an image to read
     ++imagecount;
 
-    if (!readok(in, buf, 9)) throw runtime_error("Failed to read GIF frame size");
+    if (!readok(in, buf, 9))
+      throw runtime_error("Failed to read GIF frame size");
 
     const bool use_global_colormap = !bitset(buf[8], LocalColorMap);
     const int bitpixel = 1 << ((buf[8] & 0x07) + 1);
@@ -592,11 +614,12 @@ void NFmiImage::WriteGIF(FILE *out) const
 
   set<NFmiColorTools::Color> theColors;
 
-// Opaque threshold must be > 0, we have binary transparency
+  // Opaque threshold must be > 0, we have binary transparency
 
 #if (defined IMAGINE_FORMAT_JPEG) || (defined IMAGINE_FORMAT_PNG)
   int opaquethreshold = itsAlphaLimit;
-  if (opaquethreshold < 0) opaquethreshold = NFmiColorTools::MaxAlpha / 2;
+  if (opaquethreshold < 0)
+    opaquethreshold = NFmiColorTools::MaxAlpha / 2;
 
   bool ignorealpha = !itsSaveAlphaFlag;
 #else
@@ -635,7 +658,8 @@ void NFmiImage::WriteGIF(FILE *out) const
   }
 
   int total_colors = num_colors;
-  if (hastransparent) total_colors++;
+  if (hastransparent)
+    total_colors++;
 
   // The number of bits needed per pixel. Note that we must use
   // total_colors instead of num_colors, in case there is
@@ -643,7 +667,8 @@ void NFmiImage::WriteGIF(FILE *out) const
 
   int bits;
   for (bits = 1; bits < 8; bits++)
-    if (1 << bits >= total_colors) break;
+    if (1 << bits >= total_colors)
+      break;
 
   // Write the magic number
 
@@ -774,7 +799,8 @@ void NFmiImage::WriteGIF(FILE *out) const
 
     int k = (static_cast<int>(index) << (MaxGIFBits - 8)) + waiting_code;
 
-    if (k >= MaxHashTable) k -= MaxHashTable;
+    if (k >= MaxHashTable)
+      k -= MaxHashTable;
 
     bool next_pixel = false;
     int displacement = 1;
@@ -786,12 +812,15 @@ void NFmiImage::WriteGIF(FILE *out) const
         waiting_code = hash_code[k];
         continue;
       }
-      if (k != 0) displacement = MaxHashTable - k;
+      if (k != 0)
+        displacement = MaxHashTable - k;
       for (;;)
       {
         k -= displacement;
-        if (k < 0) k += MaxHashTable;
-        if (hash_code[k] == 0) break;
+        if (k < 0)
+          k += MaxHashTable;
+        if (hash_code[k] == 0)
+          break;
         if ((hash_prefix[k] == waiting_code) && (hash_suffix[k] == index))
         {
           waiting_code = hash_code[k];
@@ -799,7 +828,8 @@ void NFmiImage::WriteGIF(FILE *out) const
           break;
         }
       }
-      if (next_pixel) continue;
+      if (next_pixel)
+        continue;
     }
     GIFOutputCode(waiting_code);
     if (free_code < MaxGIFTable)
@@ -824,7 +854,8 @@ void NFmiImage::WriteGIF(FILE *out) const
 
   GIFOutputCode(waiting_code);
   GIFOutputCode(end_code);
-  if (bitsnow > 0) packet[byte_count++] = (datum & 0xff);
+  if (bitsnow > 0)
+    packet[byte_count++] = (datum & 0xff);
 
   // Flush accumulated data.
 

@@ -102,8 +102,10 @@ struct NFmiColorBlendOver
   {
     // This optimization is for banging partly opaque/transparent images onto an image
     int srca = NFmiColorTools::GetAlpha(src);
-    if (srca == NFmiColorTools::Opaque) return src;
-    if (srca == NFmiColorTools::Transparent) return dst;
+    if (srca == NFmiColorTools::Opaque)
+      return src;
+    if (srca == NFmiColorTools::Transparent)
+      return dst;
 
     // We inlined this from the other Blend function for best possible speed.
     // The decision is based on profiling a time critical contouring application.
@@ -128,7 +130,8 @@ struct NFmiColorBlendOver
   {
     // This is as in ImageMagick
 
-    if (srca == NFmiColorTools::Transparent) return dst;
+    if (srca == NFmiColorTools::Transparent)
+      return dst;
 
     int srcp = NFmiColorTools::MaxAlpha - srca;
     int dsta = NFmiColorTools::GetAlpha(dst);
@@ -1000,6 +1003,5 @@ struct NFmiColorBlendOnTransparent
 };
 
 }  // namespace Imagine
-
 
 // ----------------------------------------------------------------------

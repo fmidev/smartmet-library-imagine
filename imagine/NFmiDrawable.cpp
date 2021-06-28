@@ -15,8 +15,8 @@
 // ======================================================================
 
 #include "NFmiDrawable.h"
-#include "NFmiImage.h"
 #include "NFmiFillMap.h"
+#include "NFmiImage.h"
 
 namespace Imagine
 {
@@ -35,7 +35,8 @@ void NFmiDrawable::Fill(NFmiImage& theImage,
 {
   // Quick exit if color is not real
 
-  if (theColor == NFmiColorTools::NoColor) return;
+  if (theColor == NFmiColorTools::NoColor)
+    return;
 
   // Create fillmap, clip it based on image height
 

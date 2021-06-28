@@ -158,7 +158,8 @@ void NFmiPath::DoCloseLineTo(NFmiPathOperation theOper)
 
       // Don't add if the last element is exactly the same
 
-      if (!(itsElements.back() == tmp)) Add(tmp);
+      if (!(itsElements.back() == tmp))
+        Add(tmp);
       break;
     }
   }
@@ -281,7 +282,8 @@ void NFmiPath::Add(const string &theString)
 
       // Skip the possible comma we may have found
 
-      if (theString[pos] == ',') pos++;
+      if (theString[pos] == ',')
+        pos++;
 
       double number = atof(asciinumber.c_str());
 
@@ -328,7 +330,8 @@ void NFmiPath::Add(const string &theString)
 
 void NFmiPath::Simplify(double epsilon)
 {
-  if (epsilon < 0.0) return;
+  if (epsilon < 0.0)
+    return;
 
   // Count the important points
 
@@ -377,7 +380,10 @@ void NFmiPath::Translate(double theX, double theY)
 // Scale the path by the given amount
 // ----------------------------------------------------------------------
 
-void NFmiPath::Scale(double theScale) { Scale(theScale, theScale); }
+void NFmiPath::Scale(double theScale)
+{
+  Scale(theScale, theScale);
+}
 // ----------------------------------------------------------------------
 // Scale the path by the given amounts in x- and y-directions
 // ----------------------------------------------------------------------
@@ -459,7 +465,8 @@ void NFmiPath::Align(NFmiAlignment theAlignment, double theX, double theY)
 
 void NFmiPath::Project(const NFmiArea *const theArea)
 {
-  if (!theArea) return;
+  if (!theArea)
+    return;
 
 #ifdef WGS84
   NFmiPathData::iterator iter;
@@ -628,7 +635,8 @@ void NFmiPath::SimplifyLines(double theOffset)
     //      cachesize = min(3,cachesize+1);
     cachesize = FmiMin(3, cachesize + 1);
 
-    if (cachesize < 3) continue;
+    if (cachesize < 3)
+      continue;
 
     // Now, if the last 2 operations are of equal lineto-type,
     // we may simplify the sequence of 3 points:
@@ -640,10 +648,14 @@ void NFmiPath::SimplifyLines(double theOffset)
     {
       // The line cannot be straight unless it is monotonous
 
-      if (x1 < x2 && x2 > x3) continue;
-      if (x1 > x2 && x2 < x3) continue;
-      if (y1 < y2 && y2 > y3) continue;
-      if (y1 > y2 && y2 < y3) continue;
+      if (x1 < x2 && x2 > x3)
+        continue;
+      if (x1 > x2 && x2 < x3)
+        continue;
+      if (y1 < y2 && y2 > y3)
+        continue;
+      if (y1 > y2 && y2 < y3)
+        continue;
 
       // Vertical and horizontal lines are easily tested
       // General case lines are compared based on their
@@ -680,13 +692,15 @@ std::ostream &operator<<(std::ostream &os, const NFmiPath &thePath)
 {
   NFmiPathData::const_iterator iter = thePath.Elements().begin();
 
-  if (thePath.IsInsideOut()) os << "INSIDEOUT ";
+  if (thePath.IsInsideOut())
+    os << "INSIDEOUT ";
 
   for (; iter != thePath.Elements().end(); ++iter)
   {
     // Special code for first move
 
-    if (iter != thePath.Elements().begin()) os << " ";
+    if (iter != thePath.Elements().begin())
+      os << " ";
 
     if (iter->op == kFmiMoveTo)
       os << 'M';
@@ -739,7 +753,8 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
   for (; iter != Elements().end(); ++iter)
   {
 #ifdef _MSC_VER  // MSVC:n stringi on paska kun se täyttyy ei sitä kasvateta tarpeeksi
-    if (os.size() > 0.9 * os.capacity()) os.reserve(os.size() * 2);
+    if (os.size() > 0.9 * os.capacity())
+      os.reserve(os.size() * 2);
 #endif
     const double x = iter->x;
     const double y = iter->y;
@@ -881,7 +896,8 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 
   if (!removeghostlines && itsInsideOut)
   {
-    if (inside_out_limit != 1e8) throw runtime_error("Internal error in NFmiPath inside_out_limit");
+    if (inside_out_limit != 1e8)
+      throw runtime_error("Internal error in NFmiPath inside_out_limit");
     os += "M -1e8,-1e8 L -1e8,1e8 L 1e8,1e8 L 1e8,-1e8 Z";
   }
 
@@ -993,7 +1009,8 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
 {
   // Quick exit if color is not real
 
-  if (theColor == NFmiColorTools::NoColor) return;
+  if (theColor == NFmiColorTools::NoColor)
+    return;
 
   // Current point is not defined yet
 
@@ -1041,9 +1058,11 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
 {
   // Quick exit if color is not real
 
-  if (theColor == NFmiColorTools::NoColor) return;
+  if (theColor == NFmiColorTools::NoColor)
+    return;
 
-  if (theWidth <= 0) return;
+  if (theWidth <= 0)
+    return;
 
 /*
  * Important that Cairo drawings are done the whole path at once;
@@ -1108,7 +1127,8 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
 NFmiPath NFmiPath::Clip(
     double theX1, double theY1, double theX2, double theY2, double theMargin) const
 {
-  if (itsElements.empty()) return *this;
+  if (itsElements.empty())
+    return *this;
 
   NFmiPath outPath;
   NFmiPath tmpPath;
@@ -1170,7 +1190,8 @@ NFmiPath NFmiPath::Clip(
       {
         if (this_quadrant == central_quadrant || this_quadrant != last_quadrant)
         {
-          if (last_ignored) tmpPath.Add(lastOp, lastX, lastY);
+          if (last_ignored)
+            tmpPath.Add(lastOp, lastX, lastY);
           tmpPath.Add(op, X, Y);
           last_ignored = false;
         }
@@ -1197,7 +1218,8 @@ NFmiPath NFmiPath::Clip(
         if (end_quadrant == central_quadrant || end_quadrant != this_quadrant ||
             end_quadrant != last_quadrant)
         {
-          if (last_ignored) tmpPath.Add(lastOp, lastX, lastY);
+          if (last_ignored)
+            tmpPath.Add(lastOp, lastX, lastY);
           tmpPath.Add(op, X, Y);
           tmpPath.Add(op, X2, Y2);
           last_ignored = false;
@@ -1234,7 +1256,8 @@ NFmiPath NFmiPath::Clip(
         if (end_quadrant == central_quadrant || end_quadrant != this_quadrant ||
             end_quadrant != middle_quadrant || end_quadrant != last_quadrant)
         {
-          if (last_ignored) tmpPath.Add(lastOp, lastX, lastY);
+          if (last_ignored)
+            tmpPath.Add(lastOp, lastX, lastY);
           tmpPath.Add(op, X, Y);
           tmpPath.Add(op, X2, Y2);
           tmpPath.Add(op, X3, Y3);
@@ -1394,7 +1417,8 @@ void make_pacific(const NFmiPath &thePath,
                   std::set<double> &theCuts,
                   bool theDateLine)
 {
-  if (thePath.Empty()) return;
+  if (thePath.Empty())
+    return;
 
   if (theBox.Xmin() >= 0 && !theDateLine)
   {
@@ -1503,7 +1527,8 @@ void make_atlantic(const NFmiPath &thePath,
                    std::set<double> &theCuts,
                    bool theDateLine)
 {
-  if (thePath.Empty()) return;
+  if (thePath.Empty())
+    return;
 
   // Note: We require Xmin to be >=0 in this easy cases since some paths
   // may look Pacific even though the coordinates are not. Example: Chuchki data
@@ -1631,9 +1656,12 @@ void make_atlantic(const NFmiPath &thePath,
 
 NFmiPath NFmiPath::PacificView(bool pacific) const
 {
-  if (!pacific) return *this;
-  if (itsElements.empty()) return *this;
-  if (IsPacificView()) return *this;
+  if (!pacific)
+    return *this;
+  if (itsElements.empty())
+    return *this;
+  if (IsPacificView())
+    return *this;
 
   NFmiPath outpath;
   NFmiPath currentpath;
@@ -1660,7 +1688,8 @@ NFmiPath NFmiPath::PacificView(bool pacific) const
     currentpath.Add(*iter);
     box.Update(iter->x, iter->y);
 
-    if (iter->x == -180 || iter->x == 180) dateline = true;
+    if (iter->x == -180 || iter->x == 180)
+      dateline = true;
   }
 
   make_pacific(currentpath, box, outpath, tree, cuts, dateline);
@@ -1679,9 +1708,12 @@ NFmiPath NFmiPath::PacificView(bool pacific) const
 
 NFmiPath NFmiPath::AtlanticView(bool atlantic) const
 {
-  if (!atlantic) return *this;
-  if (itsElements.empty()) return *this;
-  if (!IsPacificView()) return *this;
+  if (!atlantic)
+    return *this;
+  if (itsElements.empty())
+    return *this;
+  if (!IsPacificView())
+    return *this;
 
   NFmiPath outpath;
   NFmiPath currentpath;
@@ -1708,7 +1740,8 @@ NFmiPath NFmiPath::AtlanticView(bool atlantic) const
     currentpath.Add(*iter);
     box.Update(iter->x, iter->y);
 
-    if (iter->x == 0 || iter->x == 360) dateline = true;
+    if (iter->x == 0 || iter->x == 360)
+      dateline = true;
   }
 
   make_atlantic(currentpath, box, outpath, tree, cuts, dateline);
@@ -1728,7 +1761,8 @@ bool NFmiPath::IsPacificView() const
   // cntry06 data has longitudes such as 180.00000033527612686
   const double eps = 0.001;
 
-  if (Empty()) return false;
+  if (Empty())
+    return false;
 
   double lastX = kFloatMissing;
 
@@ -1745,13 +1779,18 @@ bool NFmiPath::IsPacificView() const
         if (iter->y != -90 && iter->y != 90)
         {
           // if line is all together over 180 + eps, its pacific
-          if (lastX > 180 + eps && iter->x > 180 + eps) return true;
-          if (lastX < 180 && iter->x > 180 + eps) return true;
-          if (lastX > 180 + eps && iter->x < 180) return true;
+          if (lastX > 180 + eps && iter->x > 180 + eps)
+            return true;
+          if (lastX < 180 && iter->x > 180 + eps)
+            return true;
+          if (lastX > 180 + eps && iter->x < 180)
+            return true;
           // Or looks like it should be made into a Pacific view
           // when there are lines longer than half the world
-          if (lastX < -90 && iter->x > 90) return true;
-          if (lastX > 90 && iter->x < -90) return true;
+          if (lastX < -90 && iter->x > 90)
+            return true;
+          if (lastX > 90 && iter->x < -90)
+            return true;
 
           break;
         }

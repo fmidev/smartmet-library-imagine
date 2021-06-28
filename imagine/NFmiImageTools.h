@@ -33,5 +33,4 @@ std::string MimeType(const std::string& theFileName);
 
 }  // namespace Imagine
 
-
 // ======================================================================

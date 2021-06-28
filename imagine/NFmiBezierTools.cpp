@@ -58,7 +58,8 @@ void AppendSplits(PathList& theList, const NFmiPath& thePath, const std::vector<
       outpath.MoveTo(path[i].x, path[i].y);
   }
 
-  if (!outpath.Empty()) theList.push_back(outpath);
+  if (!outpath.Empty())
+    theList.push_back(outpath);
 }
 
 // ----------------------------------------------------------------------
@@ -188,7 +189,7 @@ double BezierLengthRecursion(const NFmiPath& thePath, double theRelativeAccuracy
   }
 }
 
-}  // namespace anonymous
+}  // namespace
 
 // ----------------------------------------------------------------------
 /*!
@@ -204,7 +205,8 @@ double BezierLengthRecursion(const NFmiPath& thePath, double theRelativeAccuracy
 
 bool IsClosed(const NFmiPath& thePath)
 {
-  if (thePath.Size() < 2) return false;
+  if (thePath.Size() < 2)
+    return false;
 
   const NFmiPathElement& first = thePath.Elements().front();
   const NFmiPathElement& last = thePath.Elements().back();
@@ -246,7 +248,8 @@ const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths& thePaths)
         case kFmiLineTo:
         case kFmiGhostLineTo:
           // ignore moves which close a subpath
-          if (p != previous_moveto) counts.Add(p);
+          if (p != previous_moveto)
+            counts.Add(p);
           break;
         case kFmiCubicTo:
         case kFmiConicTo:
@@ -294,7 +297,8 @@ const Segments SplitSegments(const NFmiPath& thePath)
     if (flush)
     {
       // must have sufficiently many lineto cmds to be regular
-      if (outpath.Size() <= 3) isregular = false;
+      if (outpath.Size() <= 3)
+        isregular = false;
       // flush
       out.push_back(std::make_pair(outpath, isregular));
       outpath.Clear();
@@ -319,10 +323,12 @@ const Segments SplitSegments(const NFmiPath& thePath)
     }
 
     // lineto cannot start a new regular segment!
-    if (outpath.Size() == 1) isregular = (it->op == kFmiMoveTo);
+    if (outpath.Size() == 1)
+      isregular = (it->op == kFmiMoveTo);
   }
 
-  if (!outpath.Empty()) out.push_back(std::make_pair(outpath, isregular));
+  if (!outpath.Empty())
+    out.push_back(std::make_pair(outpath, isregular));
 
   return out;
 }
@@ -355,7 +361,8 @@ const PathList SplitPath(const NFmiPath& thePath)
     outpath.Add(*it);
   }
 
-  if (!outpath.Empty()) out.push_back(outpath);
+  if (!outpath.Empty())
+    out.push_back(outpath);
 
   return out;
 }
@@ -423,7 +430,8 @@ const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& 
         const size_t c0 = (i > 0 ? counts[i - 1] : counts[n - 2]);
         const size_t c1 = counts[i];
         const size_t c2 = (i + 1 < n ? counts[i + 1] : counts[1]);
-        if (c0 < c1 || c2 < c1) break;
+        if (c0 < c1 || c2 < c1)
+          break;
       }
       // Now if 0<i<n we found a split point to rotate to
       if (i > 0 && i < n)

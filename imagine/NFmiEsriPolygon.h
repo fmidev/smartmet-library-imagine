@@ -18,8 +18,8 @@
 
 #include <vector>
 
-#include "NFmiEsriPoint.h"
 #include "NFmiEsriBox.h"
+#include "NFmiEsriPoint.h"
 
 namespace Imagine
 {
@@ -97,6 +97,5 @@ class NFmiEsriPolygon : public NFmiEsriElement
 };
 
 }  // namespace Imagine
-
 
 // ======================================================================

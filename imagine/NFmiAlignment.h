@@ -54,5 +54,4 @@ double YAlignmentFactor(NFmiAlignment theAlignment);
 
 }  // namespace Imagine
 
-
 // ======================================================================

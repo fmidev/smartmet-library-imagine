@@ -47,8 +47,8 @@
 #pragma warning(disable : 4786)  // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
 #endif
 
-#include <map>        // maps
-#include <vector>     // vectors
+#include <map>     // maps
+#include <vector>  // vectors
 
 #include "NFmiImage.h"
 
@@ -140,6 +140,5 @@ class NFmiFillMap : public NFmiDrawable
 };
 
 }  // namespace Imagine
-
 
 // ======================================================================

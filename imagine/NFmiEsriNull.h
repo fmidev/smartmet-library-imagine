@@ -11,9 +11,9 @@
 
 #pragma once
 
-#include "NFmiEsriElement.h"
 #include "NFmiEsriBox.h"
 #include "NFmiEsriBuffer.h"
+#include "NFmiEsriElement.h"
 
 namespace Imagine
 {
@@ -31,7 +31,8 @@ class NFmiEsriNull : public NFmiEsriElement
 
   NFmiEsriNull& operator=(const NFmiEsriNull& theNull)
   {
-    if (this != &theNull) NFmiEsriElement::operator=(theNull);
+    if (this != &theNull)
+      NFmiEsriElement::operator=(theNull);
     return *this;
   }
 
@@ -57,6 +58,5 @@ class NFmiEsriNull : public NFmiEsriElement
 };
 
 }  // namespace Imagine
-
 
 // ======================================================================
