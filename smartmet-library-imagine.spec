@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 21.6.16
+Version: 21.9.7
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -18,14 +18,14 @@ BuildRequires: boost169-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: smartmet-library-macgyver-devel >= 21.6.16
+BuildRequires: smartmet-library-macgyver-devel >= 21.8.30
 BuildRequires: smartmet-library-newbase-devel >= 21.6.16
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal32-devel
-BuildRequires: smartmet-library-gis-devel >= 21.6.16
+BuildRequires: smartmet-library-gis-devel >= 21.9.2
 BuildRequires: fmt-devel >= 7.1.3
-Requires: smartmet-library-macgyver >= 21.6.16
+Requires: smartmet-library-macgyver >= 21.8.30
 Requires: smartmet-library-newbase >= 21.6.16
 Requires: boost169-filesystem
 Requires: boost169-regex
@@ -48,7 +48,7 @@ Requires: zlib
 #TestRequires: libpng
 #TestRequires: zlib
 #TestRequires: bzip2-libs
-#TestRequires: smartmet-library-gis-devel >= 21.6.16
+#TestRequires: smartmet-library-gis-devel >= 21.9.2
 Provides: %{LIBNAME}
 Obsoletes: libsmartmet-imagine < 17.1.4
 Obsoletes: libsmartmet-imagine-debuginfo < 17.1.4
@@ -91,6 +91,9 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Tue Sep  7 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.9.7-1.fmi
+- Merged WGS84 branch to enable proper datums
+
 * Wed Jun 16 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.6.16-1.fmi
 - Use Fmi::Exception
 
