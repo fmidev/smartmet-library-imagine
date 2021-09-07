@@ -85,11 +85,7 @@ ImagineXr::ImagineXr(int w, int h, const string &to_fn, const string &fmt_)
           height);
 
     if (fn == "")
-<<<<<<< HEAD
-      throw runtime_error("No output filename given!");
-=======
       throw Fmi::Exception(BCP, "No output filename given!");
->>>>>>> master
 
     if (fmt == "pdf")
     {
@@ -175,43 +171,37 @@ ImagineXr::~ImagineXr() {}
 
 void ImagineXr::SetRGB(NFmiColorTools::Color col)
 {
-<<<<<<< HEAD
-=======
   try
   {
->>>>>>> master
-  if (col == NFmiColorTools::NoColor)
-    return;
+    if (col == NFmiColorTools::NoColor)
+      return;
 
-  cr->set_source_rgb(NFmiColorTools::GetRed(col) / 255.0,
-                     NFmiColorTools::GetGreen(col) / 255.0,
-                     NFmiColorTools::GetBlue(col) / 255.0);
-}
-catch (...)
-{
-  throw Fmi::Exception::Trace(BCP, "Operation failed!");
-}
+    cr->set_source_rgb(NFmiColorTools::GetRed(col) / 255.0,
+                       NFmiColorTools::GetGreen(col) / 255.0,
+                       NFmiColorTools::GetBlue(col) / 255.0);
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 void ImagineXr::SetRGBA(NFmiColorTools::Color col)
 {
-<<<<<<< HEAD
-=======
   try
   {
->>>>>>> master
-  if (col == NFmiColorTools::NoColor)
-    return;
+    if (col == NFmiColorTools::NoColor)
+      return;
 
-  cr->set_source_rgba(NFmiColorTools::GetRed(col) / 255.0,
-                      NFmiColorTools::GetGreen(col) / 255.0,
-                      NFmiColorTools::GetBlue(col) / 255.0,
-                      1.0 - (NFmiColorTools::GetAlpha(col) / 127.0));
-}
-catch (...)
-{
-  throw Fmi::Exception::Trace(BCP, "Operation failed!");
-}
+    cr->set_source_rgba(NFmiColorTools::GetRed(col) / 255.0,
+                        NFmiColorTools::GetGreen(col) / 255.0,
+                        NFmiColorTools::GetBlue(col) / 255.0,
+                        1.0 - (NFmiColorTools::GetAlpha(col) / 127.0));
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
 }
 
 void ImagineXr::SetBlend(enum NFmiColorTools::NFmiBlendRule rule)
@@ -417,6 +407,9 @@ const int32_t *ImagineXr::ARGB_32() const
   {
     if (!image_surf)
       throw Fmi::Exception(BCP, "Pixels not supported for PDF canvas!");
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
 
   return (const int32_t *)image_surf->get_data();
@@ -877,6 +870,18 @@ void ImagineXr::Write() const
   {
     if (fn == "")
       throw Fmi::Exception(BCP, "Temporary image; not intended to be written");
+<<<<<<< HEAD
+>>>>>>> master
+=======
+
+    if (pdf_surf)
+    {
+      // Nothing we can (have to) do; file is most likely already on the disk
+    }
+    else
+    {
+      if (fmt != "png")
+        throw Fmi::Exception(BCP, string("Cairo can write only to png format, not") + fmt);
 >>>>>>> master
 
   if (pdf_surf)

@@ -43,6 +43,7 @@ inline int compress_bits(int theValue, int theBits)
   {
     if (theBits < 0 || theBits > 8)
       throw Fmi::Exception(BCP, "Invalid number of bits in NFmiImageTools::compress_bits");
+
     if (theBits == 8)
       return theValue;
 

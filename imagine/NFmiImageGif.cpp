@@ -9,6 +9,7 @@
 #include "NFmiEsriBuffer.h"
 #include "NFmiImage.h"
 #include <macgyver/Exception.h>
+
 #include <algorithm>
 #include <iostream>
 #include <map>

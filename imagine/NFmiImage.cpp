@@ -898,6 +898,7 @@ bool NFmiImage::IsOpaque(int threshold) const
     for (int i = 0; i < itsWidth * itsHeight; i++)
       if (NFmiColorTools::GetAlpha(itsPixels[i]) > limit)
         return false;
+
     return true;
   }
   catch (...)

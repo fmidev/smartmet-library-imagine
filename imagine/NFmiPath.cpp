@@ -895,7 +895,7 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 
     for (; iter != Elements().end(); ++iter)
     {
-#ifdef _MSC_VER  // MSVC:n stringi on paska kun se täyttyy ei sitä kasvateta tarpeeksi
+#ifdef _MSC_VER  // MSVC:n stringi on paska kun se tï¿½yttyy ei sitï¿½ kasvateta tarpeeksi
       if (os.size() > 0.9 * os.capacity())
         os.reserve(os.size() * 2);
 #endif
@@ -1523,8 +1523,8 @@ static void AddElementToCutPath(NFmiPath &thePath,
     {  // joku viiva tyyppi, oletetaan ettï¿½ lineto (ei oikeastaan vï¿½liï¿½)
       if (prevInside == false && currentInside)  // ulkoa sisï¿½lle
       {
-        if (lastOperation)  // tï¿½mï¿½ on ainoa poikkeus kï¿½sittely, kun kyseessï¿½ on
-                            // viimeisestï¿½ viivan pï¿½tkï¿½stï¿½
+        if (lastOperation)  // tï¿½mï¿½ on ainoa poikkeus kï¿½sittely, kun kyseessï¿½ on viimeisestï¿½ viivan
+                            // pï¿½tkï¿½stï¿½
           thePath.Add(theElem);
         else
         {
@@ -1569,8 +1569,8 @@ NFmiPath NFmiPath::Clip(const NFmiArea *const theArea) const
       bool currentInside = prevInside;
       for (; iter != itsElements.end(); ++iter)
       {
-        prevInside = currentInside;  // tï¿½mï¿½ pitï¿½ï¿½ tehdï¿½ loopin alussa, jotta loopin
-                                     // lopuksi on tiedot kahden viimeisen pisteen tilasta
+        prevInside = currentInside;  // tï¿½mï¿½ pitï¿½ï¿½ tehdï¿½ loopin alussa, jotta loopin lopuksi on
+                                     // tiedot kahden viimeisen pisteen tilasta
         currentInside = IsInside(theArea, *iter);
         AddElementToCutPath(path, prevInside, currentInside, *prevIter, iter->op, false);
         prevIter = iter;
