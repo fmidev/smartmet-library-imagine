@@ -318,13 +318,13 @@ bool ImagineXr::SetPath(const std::deque<NFmiPathElement> &path)
           USAGE("\t\tmove_to( %.2f, %.2f )", x, y);
           cr->move_to(x, y);
 #if 0
-      // DEBUG
-      { static unsigned int nnn=1;
-      char buf[10]; sprintf( buf, "%d", nnn++ );
-      cr->save();
-      cr->set_source_rgb( 0,0,0 );    // black
-      cr->show_text( string(buf) );
-      cr->restore(); }
+    // DEBUG
+    { static unsigned int nnn=1;
+    char buf[10]; sprintf( buf, "%d", nnn++ );
+    cr->save();
+    cr->set_source_rgb( 0,0,0 );    // black
+    cr->show_text( string(buf) );
+    cr->restore(); }
 #endif
           break;
 
@@ -399,17 +399,25 @@ void ImagineXr::ApplyAlignment(enum NFmiAlignment alignment, int &x, int &y, int
 
 const int32_t *ImagineXr::ARGB_32() const
 {
+<<<<<<< HEAD
+  if (!image_surf)
+    throw runtime_error("Pixels not supported for PDF canvas!");
+=======
   try
   {
     if (!image_surf)
       throw Fmi::Exception(BCP, "Pixels not supported for PDF canvas!");
+<<<<<<< HEAD
+>>>>>>> master
+=======
+>>>>>>> master
 
-    return (const int32_t *)image_surf->get_data();
-  }
-  catch (...)
-  {
-    throw Fmi::Exception::Trace(BCP, "Operation failed!");
-  }
+  return (const int32_t *)image_surf->get_data();
+}
+catch (...)
+{
+  throw Fmi::Exception::Trace(BCP, "Operation failed!");
+}
 }
 
 /*
@@ -854,10 +862,17 @@ bool ImagineXr::DrawFace(int x_,
  */
 void ImagineXr::Write() const
 {
+<<<<<<< HEAD
+  if (fn == "")
+    throw runtime_error("Temporary image; not intended to be written");
+=======
   try
   {
     if (fn == "")
       throw Fmi::Exception(BCP, "Temporary image; not intended to be written");
+<<<<<<< HEAD
+>>>>>>> master
+=======
 
     if (pdf_surf)
     {
@@ -867,14 +882,28 @@ void ImagineXr::Write() const
     {
       if (fmt != "png")
         throw Fmi::Exception(BCP, string("Cairo can write only to png format, not") + fmt);
+>>>>>>> master
 
-      image_surf->write_to_png(fn);
-    }
-  }
-  catch (...)
+  if (pdf_surf)
   {
-    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+    // Nothing we can (have to) do; file is most likely already on the disk
   }
+  else
+  {
+    if (fmt != "png")
+<<<<<<< HEAD
+      throw runtime_error(string("Cairo can write only to png format, not") + fmt);
+=======
+        throw Fmi::Exception(BCP, string("Cairo can write only to png format, not") + fmt);
+>>>>>>> master
+
+    image_surf->write_to_png(fn);
+  }
+}
+catch (...)
+{
+  throw Fmi::Exception::Trace(BCP, "Operation failed!");
+}
 }
 
 #endif

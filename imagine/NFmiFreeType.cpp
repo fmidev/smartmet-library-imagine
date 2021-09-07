@@ -461,10 +461,10 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
         FT_BitmapGlyph bit = reinterpret_cast<FT_BitmapGlyph>(image);
 
 #if 0
-        this->Draw(theBlender, theImage, theColor,
-               bit->bitmap,
-               pen.x + bit->left,
-               pen.y - bit->top);
+			this->Draw(theBlender, theImage, theColor,
+					   bit->bitmap,
+					   pen.x + bit->left,
+					   pen.y - bit->top);
 #else
         this->Draw(theBlender, theImage, theColor, bit->bitmap, pen.x, pen.y);
 #endif

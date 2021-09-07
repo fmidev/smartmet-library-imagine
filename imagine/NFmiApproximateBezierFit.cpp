@@ -144,10 +144,10 @@ bool IsPositivelyOriented(const NFmiPathData& thePath)
     // for some reasing closing the segments will produce same area every time
     // must check area formula validity
 #if 0
-      const bool isclosed = (thePath.front().x == thePath.back().x &&
-                 thePath.front().y == thePath.back().y);
+	  const bool isclosed = (thePath.front().x == thePath.back().x &&
+							 thePath.front().y == thePath.back().y);
       if (!isclosed)
-        sum += thePath.back().x*thePath.front().y-thePath.front().x*thePath.back().y;
+		sum += thePath.back().x*thePath.front().y-thePath.front().x*thePath.back().y;
 #endif
 
     // positive orientation for positive area

@@ -55,6 +55,7 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
     const NFmiEsriAttributeName* name = theShape.AttributeName(fieldname);
     if (name == 0)
       throw Fmi::Exception(BCP, "The shape does not have a field named '" + fieldname + "'");
+
     // Preparse the desired field value
 
     const NFmiEsriAttributeType atype = name->Type();

@@ -348,7 +348,6 @@ NFmiColorTools::Color NFmiColorTools::Interpolate(Color c1, Color c2, float frac
 
     if (fraction <= 0)
       return c1;
-
     if (fraction >= 1)
       return c2;
 
