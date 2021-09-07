@@ -269,9 +269,12 @@ class NFmiContourTree : public NFmiEdgeTree
 
   bool IsValid(float value)
   {
-    if (itHasMissingValue && value == itsMissingValue) return false;
-    if (itHasDataLoLimit && value < itsDataLoLimit) return false;
-    if (itHasDataHiLimit && value > itsDataHiLimit) return false;
+    if (itHasMissingValue && value == itsMissingValue)
+      return false;
+    if (itHasDataLoLimit && value < itsDataLoLimit)
+      return false;
+    if (itHasDataHiLimit && value > itsDataHiLimit)
+      return false;
     return true;
   }
 

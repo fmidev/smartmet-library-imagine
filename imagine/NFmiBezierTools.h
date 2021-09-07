@@ -42,5 +42,4 @@ double BezierLength(const NFmiPath& thePath, double theRelativeAccuracy);
 }  // namespace NFmiBezierTools
 }  // namespace Imagine
 
-
 // ======================================================================

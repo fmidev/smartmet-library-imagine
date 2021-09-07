@@ -29,5 +29,4 @@ void AdaptiveReduce(NFmiImage& theImage, float theQuality, int theMaxColors, flo
 
 }  // namespace Imagine
 
-
 // ======================================================================

@@ -29,13 +29,16 @@ void isclosed()
 
   NFmiPath path;
 
-  if (NFmiBezierTools::IsClosed(path)) TEST_FAILED("An empty path is not closed");
+  if (NFmiBezierTools::IsClosed(path))
+    TEST_FAILED("An empty path is not closed");
 
   path.MoveTo(1, 0);
-  if (NFmiBezierTools::IsClosed(path)) TEST_FAILED("A single moveto cannot be closed");
+  if (NFmiBezierTools::IsClosed(path))
+    TEST_FAILED("A single moveto cannot be closed");
 
   path.LineTo(1, 1);
-  if (NFmiBezierTools::IsClosed(path)) TEST_FAILED("moveto 1,0 + lineto 1,1 is not closed");
+  if (NFmiBezierTools::IsClosed(path))
+    TEST_FAILED("moveto 1,0 + lineto 1,1 is not closed");
 
   path.LineTo(0, 1);
   if (NFmiBezierTools::IsClosed(path))
@@ -106,7 +109,8 @@ void bezierlength()
     path.CubicTo(3, 0);
 
     double len = NFmiBezierTools::BezierLength(path, 0.1);
-    if (len != 3) TEST_FAILED("Failed to calculate trivial length exactly");
+    if (len != 3)
+      TEST_FAILED("Failed to calculate trivial length exactly");
   }
 
   // a simple parabola type curve
@@ -122,16 +126,20 @@ void bezierlength()
     double len;
 
     len = NFmiBezierTools::BezierLength(path, 0.1);
-    if (abs(len - accurate) > 0.1) TEST_FAILED("Failed to calculate length to accuracy 0.1");
+    if (abs(len - accurate) > 0.1)
+      TEST_FAILED("Failed to calculate length to accuracy 0.1");
 
     len = NFmiBezierTools::BezierLength(path, 0.01);
-    if (abs(len - accurate) > 0.01) TEST_FAILED("Failed to calculate length to accuracy 0.01");
+    if (abs(len - accurate) > 0.01)
+      TEST_FAILED("Failed to calculate length to accuracy 0.01");
 
     len = NFmiBezierTools::BezierLength(path, 0.001);
-    if (abs(len - accurate) > 0.001) TEST_FAILED("Failed to calculate length to accuracy 0.001");
+    if (abs(len - accurate) > 0.001)
+      TEST_FAILED("Failed to calculate length to accuracy 0.001");
 
     len = NFmiBezierTools::BezierLength(path, 0.0001);
-    if (abs(len - accurate) > 0.0001) TEST_FAILED("Failed to calculate length to accuracy 0.0001");
+    if (abs(len - accurate) > 0.0001)
+      TEST_FAILED("Failed to calculate length to accuracy 0.0001");
   }
 
   // up and down curve
@@ -147,16 +155,20 @@ void bezierlength()
     double len;
 
     len = NFmiBezierTools::BezierLength(path, 0.1);
-    if (abs(len - accurate) > 0.1) TEST_FAILED("Failed to calculate length to accuracy 0.1");
+    if (abs(len - accurate) > 0.1)
+      TEST_FAILED("Failed to calculate length to accuracy 0.1");
 
     len = NFmiBezierTools::BezierLength(path, 0.01);
-    if (abs(len - accurate) > 0.01) TEST_FAILED("Failed to calculate length to accuracy 0.01");
+    if (abs(len - accurate) > 0.01)
+      TEST_FAILED("Failed to calculate length to accuracy 0.01");
 
     len = NFmiBezierTools::BezierLength(path, 0.001);
-    if (abs(len - accurate) > 0.001) TEST_FAILED("Failed to calculate length to accuracy 0.001");
+    if (abs(len - accurate) > 0.001)
+      TEST_FAILED("Failed to calculate length to accuracy 0.001");
 
     len = NFmiBezierTools::BezierLength(path, 0.0001);
-    if (abs(len - accurate) > 0.0001) TEST_FAILED("Failed to calculate length to accuracy 0.0001");
+    if (abs(len - accurate) > 0.0001)
+      TEST_FAILED("Failed to calculate length to accuracy 0.0001");
   }
 
   TEST_PASSED();

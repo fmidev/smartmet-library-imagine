@@ -106,11 +106,11 @@ static void StrokeBasic2(T theBlender,
     // Assign the first point
 
     //  (*this)(x1,y1) = T::Blend(theColor,(*this)(x1,y1));
-    theImage(x1, y1) = theBlender.Blend(
-        theColor,
-        theImage(
-            x1,
-            y1));  // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan MSVC vaatii jostain syyst‰.
+    theImage(x1, y1) =
+        theBlender.Blend(theColor,
+                         theImage(x1,
+                                  y1));  // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen sijaan
+                                         // MSVC vaatii jostain syyst‰.
 
     if (dx > dy)
     {
@@ -221,9 +221,9 @@ static void StrokeBasic2(T theBlender,
 
     //  (*this)(x1,y1) = T::Blend(r,g,b,a,(*this)(x1,y1));
     theImage(x1, y1) = theBlender.Blend(r, g, b, a, theImage(x1, y1));  // joudun k‰ytt‰m‰‰n
-                                                                        // .operaattoria :: osoituksen
-                                                                        // sijaan MSVC vaatii jostain
-                                                                        // syyst‰.
+                                                                        // .operaattoria ::
+                                                                        // osoituksen sijaan MSVC
+                                                                        // vaatii jostain syyst‰.
 
     if (dx > dy)
     {
@@ -242,10 +242,11 @@ static void StrokeBasic2(T theBlender,
           error += adj1;
         x1 += dir;
         //	  (*this)(x1,y1) = T::Blend(r,g,b,a,(*this)(x1,y1));
-        theImage(x1, y1) = theBlender.Blend(r, g, b, a, theImage(x1, y1));  // joudun k‰ytt‰m‰‰n
-                                                                            // .operaattoria ::
-                                                                            // osoituksen sijaan MSVC
-                                                                            // vaatii jostain syyst‰.
+        theImage(x1, y1) =
+            theBlender.Blend(r, g, b, a, theImage(x1, y1));  // joudun k‰ytt‰m‰‰n
+                                                             // .operaattoria ::
+                                                             // osoituksen sijaan MSVC
+                                                             // vaatii jostain syyst‰.
       }
     }
     else
@@ -264,10 +265,11 @@ static void StrokeBasic2(T theBlender,
           error += adj1;
         y1++;
         //	  (*this)(x1,y1) = T::Blend(r,g,b,a,(*this)(x1,y1));
-        theImage(x1, y1) = theBlender.Blend(r, g, b, a, theImage(x1, y1));  // joudun k‰ytt‰m‰‰n
-                                                                            // .operaattoria ::
-                                                                            // osoituksen sijaan MSVC
-                                                                            // vaatii jostain syyst‰.
+        theImage(x1, y1) =
+            theBlender.Blend(r, g, b, a, theImage(x1, y1));  // joudun k‰ytt‰m‰‰n
+                                                             // .operaattoria ::
+                                                             // osoituksen sijaan MSVC
+                                                             // vaatii jostain syyst‰.
       }
     }
   }
@@ -317,9 +319,10 @@ static void Composite2(T theBlender,
         for (int i = i1; i <= i2; i++)
           //	  (*this)(theX+i,theY+j) = T::Blend(thePattern(i,j),(*this)(theX+i,theY+j));
           theThisImage(theX + i, theY + j) = theBlender.Blend(
-              thePattern(i, j), theThisImage(theX + i, theY + j));  // joudun k‰ytt‰m‰‰n .operaattoria
-                                                                    // :: osoituksen sijaan MSVC
-                                                                    // vaatii jostain syyst‰.
+              thePattern(i, j),
+              theThisImage(theX + i, theY + j));  // joudun k‰ytt‰m‰‰n .operaattoria
+                                                  // :: osoituksen sijaan MSVC
+                                                  // vaatii jostain syyst‰.
     }
     else
     {
@@ -337,8 +340,9 @@ static void Composite2(T theBlender,
           c = NFmiColorTools::ReplaceAlpha(c, aa);
           //	    (*this)(theX+i,theY+j) = T::Blend(c,(*this)(theX+i,theY+j));
           theThisImage(theX + i, theY + j) = theBlender.Blend(
-              c, theThisImage(theX + i, theY + j));  // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen
-                                                     // sijaan MSVC vaatii jostain syyst‰.
+              c,
+              theThisImage(theX + i, theY + j));  // joudun k‰ytt‰m‰‰n .operaattoria :: osoituksen
+                                                  // sijaan MSVC vaatii jostain syyst‰.
         }
       }
     }
@@ -512,7 +516,7 @@ void NFmiImage::Allocate(int theWidth, int theHeight)
   try
   {
     if (theWidth < 0 || theHeight < 0)
-      throw Fmi::Exception(BCP,"Cannot allocate an image with negative dimensions");
+      throw Fmi::Exception(BCP, "Cannot allocate an image with negative dimensions");
 
     itsWidth = theWidth;
     itsHeight = theHeight;
@@ -521,7 +525,7 @@ void NFmiImage::Allocate(int theWidth, int theHeight)
     {
       ostringstream os;
       os << "Insufficient memory to allocate image of size " << theWidth << "x" << theHeight;
-      throw Fmi::Exception(BCP,os.str());
+      throw Fmi::Exception(BCP, os.str());
     }
   }
   catch (...)
@@ -570,11 +574,12 @@ void NFmiImage::Read(const string &theFileName)
     in = fopen(theFileName.c_str(), "rb");
 
     if (in == nullptr)
-      throw Fmi::Exception(BCP,std::string("Failed to open image ") + theFileName);
+      throw Fmi::Exception(BCP, std::string("Failed to open image ") + theFileName);
 
     itsType = mime;
 
-    if (mime == "gif") ReadGIF(in);
+    if (mime == "gif")
+      ReadGIF(in);
 #ifdef IMAGINE_FORMAT_PNG
     else if (mime == "png")
       ReadPNG(in);
@@ -588,11 +593,11 @@ void NFmiImage::Read(const string &theFileName)
     else if (mime == "pgm")
       ReadPGM(in);
     else
-      throw Fmi::Exception(BCP,"Unrecognized image format in '" + theFileName + "'");
+      throw Fmi::Exception(BCP, "Unrecognized image format in '" + theFileName + "'");
     // Assert we got an image
 
     if (itsPixels == nullptr)
-      throw Fmi::Exception(BCP,std::string("Failed to read image ") + theFileName);
+      throw Fmi::Exception(BCP, std::string("Failed to read image ") + theFileName);
 
     // Close the input file
     fclose(in);
@@ -614,14 +619,14 @@ void NFmiImage::Write(const string &theFileName, const string &theType) const
   {
     if (0)
       ;
-  #ifdef IMAGINE_FORMAT_PNG
+#ifdef IMAGINE_FORMAT_PNG
     else if (theType == "png")
       WritePng(theFileName);
-  #endif
-  #ifdef IMAGINE_FORMAT_JPEG
+#endif
+#ifdef IMAGINE_FORMAT_JPEG
     else if (theType == "jpeg" || theType == "jpg")
       WriteJpeg(theFileName);
-  #endif
+#endif
     else if (theType == "gif")
       WriteGif(theFileName);
     else if (theType == "wbmp")
@@ -631,7 +636,7 @@ void NFmiImage::Write(const string &theFileName, const string &theType) const
     else if (theType == "pgm")
       WritePgm(theFileName);
     else
-      throw Fmi::Exception(BCP,"Image format '" + theType + "' is not supported");
+      throw Fmi::Exception(BCP, "Image format '" + theType + "' is not supported");
   }
   catch (...)
   {
@@ -655,7 +660,7 @@ void NFmiImage::WriteJpeg(const string &theFileName) const
     FILE *out;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
-      throw Fmi::Exception(BCP,"Failed to open '" + theFileName + "' for writing a JPEG");
+      throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a JPEG");
 
     WriteJPEG(out);
     fclose(out);
@@ -663,7 +668,7 @@ void NFmiImage::WriteJpeg(const string &theFileName) const
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
     if (!status)
-      throw Fmi::Exception(BCP,"Failed to write '" + theFileName + "'");
+      throw Fmi::Exception(BCP, "Failed to write '" + theFileName + "'");
   }
   catch (...)
   {
@@ -687,7 +692,7 @@ void NFmiImage::WritePng(const string &theFileName) const
     FILE *out;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
-      throw Fmi::Exception(BCP,"Failed to open '" + theFileName + "' for writing a PNG");
+      throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a PNG");
 
     WritePNG(out);
     fclose(out);
@@ -695,7 +700,7 @@ void NFmiImage::WritePng(const string &theFileName) const
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
     if (!status)
-      throw Fmi::Exception(BCP,"Failed to write '" + theFileName + "'");
+      throw Fmi::Exception(BCP, "Failed to write '" + theFileName + "'");
   }
   catch (...)
   {
@@ -719,7 +724,7 @@ void NFmiImage::WriteWbmp(const string &theFileName) const
     FILE *out;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
-      throw Fmi::Exception(BCP,"Failed to open '" + theFileName + "' for writing a WBMP");
+      throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a WBMP");
 
     WriteWBMP(out);
     fclose(out);
@@ -727,7 +732,7 @@ void NFmiImage::WriteWbmp(const string &theFileName) const
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
     if (!status)
-      throw Fmi::Exception(BCP,"Failed to write '" + theFileName + "'");
+      throw Fmi::Exception(BCP, "Failed to write '" + theFileName + "'");
   }
   catch (...)
   {
@@ -749,7 +754,7 @@ void NFmiImage::WriteGif(const string &theFileName) const
     FILE *out;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
-      throw Fmi::Exception(BCP,"Failed to open '" + theFileName + "' for writing a GIF");
+      throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a GIF");
 
     WriteGIF(out);
     fclose(out);
@@ -757,7 +762,7 @@ void NFmiImage::WriteGif(const string &theFileName) const
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
     if (!status)
-      throw Fmi::Exception(BCP,"Failed to write '" + theFileName + "'");
+      throw Fmi::Exception(BCP, "Failed to write '" + theFileName + "'");
   }
   catch (...)
   {
@@ -779,7 +784,7 @@ void NFmiImage::WritePnm(const string &theFileName) const
     FILE *out;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
-      throw Fmi::Exception(BCP,"Failed to open '" + theFileName + "' for writing a PNM");
+      throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a PNM");
 
     WritePNM(out);
     fclose(out);
@@ -787,7 +792,7 @@ void NFmiImage::WritePnm(const string &theFileName) const
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
     if (!status)
-      throw Fmi::Exception(BCP,"Failed to write '" + theFileName + "'");
+      throw Fmi::Exception(BCP, "Failed to write '" + theFileName + "'");
   }
   catch (...)
   {
@@ -809,7 +814,7 @@ void NFmiImage::WritePgm(const string &theFileName) const
     FILE *out;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
-      throw Fmi::Exception(BCP,"Failed to open '" + theFileName + "' for writing a PGM");
+      throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a PGM");
 
     WritePGM(out);
     fclose(out);
@@ -817,7 +822,7 @@ void NFmiImage::WritePgm(const string &theFileName) const
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
     if (!status)
-      throw Fmi::Exception(BCP,"Failed to write '" + theFileName + "'");
+      throw Fmi::Exception(BCP, "Failed to write '" + theFileName + "'");
   }
   catch (...)
   {
@@ -891,7 +896,8 @@ bool NFmiImage::IsOpaque(int threshold) const
   {
     int limit = (threshold < 0 ? 0 : threshold);
     for (int i = 0; i < itsWidth * itsHeight; i++)
-      if (NFmiColorTools::GetAlpha(itsPixels[i]) > limit) return false;
+      if (NFmiColorTools::GetAlpha(itsPixels[i]) > limit)
+        return false;
 
     return true;
   }
@@ -913,7 +919,8 @@ bool NFmiImage::IsFullyOpaqueOrTransparent(int threshold) const
     // If the separation threshold is set, each pixel is then obviously
     // forced to be either fully opaque or fully transparent
 
-    if (threshold >= 0) return true;
+    if (threshold >= 0)
+      return true;
 
     for (int i = 0; i < itsWidth * itsHeight; i++)
     {
@@ -1012,7 +1019,8 @@ bool NFmiImage::AddColors(set<NFmiColorTools::Color> &theSet,
     if (maxcolors > 0)
     {
       colorsnow = theSet.size();
-      if (colorsnow > maxcolors) return true;
+      if (colorsnow > maxcolors)
+        return true;
     }
 
     // We keep a record of last 4 colors for extremely fast access
@@ -1038,7 +1046,8 @@ bool NFmiImage::AddColors(set<NFmiColorTools::Color> &theSet,
 
       // Quick continue of just handled the same color
 
-      if (color == color1 || color == color2 || color == color3 || color == color4) continue;
+      if (color == color1 || color == color2 || color == color3 || color == color4)
+        continue;
 
       // Otherwise add the color to the set
 
@@ -1049,7 +1058,8 @@ bool NFmiImage::AddColors(set<NFmiColorTools::Color> &theSet,
       if (iter.second && maxcolors > 0)
       {
         colorsnow++;
-        if (colorsnow > maxcolors) return true;
+        if (colorsnow > maxcolors)
+          return true;
       }
 
       // And shift back the last known colors
@@ -1087,7 +1097,8 @@ void NFmiImage::StrokeBasic(float theX1,
   {
     // Quick exit if color is not real
 
-    if (theColor == NFmiColorTools::NoColor) return;
+    if (theColor == NFmiColorTools::NoColor)
+      return;
 
     // Clip the coordinates
 
@@ -1128,7 +1139,8 @@ void NFmiImage::StrokeBasic(float theX1,
 
     // This also makes sure we don't have to worry about dy/dx
 
-    if (x1 > xmargin || x2 < 0) return;
+    if (x1 > xmargin || x2 < 0)
+      return;
 
     if (x1 < 0)
     {
@@ -1149,7 +1161,8 @@ void NFmiImage::StrokeBasic(float theX1,
 
     // This also makes sure we don't have to worry about dx/dy
 
-    if (y1 >= ymargin || y2 < 0) return;
+    if (y1 >= ymargin || y2 < 0)
+      return;
 
     if (y1 < 0)
     {
@@ -1172,7 +1185,8 @@ void NFmiImage::StrokeBasic(float theX1,
     // If the result is ColorKeep, the source alpha is such that there
     // is nothing to do!
 
-    if (rule == NFmiColorTools::kFmiColorKeep) return;
+    if (rule == NFmiColorTools::kFmiColorKeep)
+      return;
 
     // Otherwise we instantiate the appropriate fill routine
 

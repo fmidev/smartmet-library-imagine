@@ -39,7 +39,7 @@ void NFmiImage::ReadPNM(FILE *in)
     {
       fgets(buffer, maxbufsize, in);
       if (strlen(buffer) == 0)
-        throw Fmi::Exception(BCP,"Invalid PNM image data");
+        throw Fmi::Exception(BCP, "Invalid PNM image data");
     }
 
     // Then there are the dimensions X Y
@@ -49,10 +49,10 @@ void NFmiImage::ReadPNM(FILE *in)
       istringstream input(buffer);
       input >> width >> height;
       if (input.bad())
-        throw Fmi::Exception(BCP,"Failed to read PNM dimensions");
+        throw Fmi::Exception(BCP, "Failed to read PNM dimensions");
 
       if (width <= 0 || height <= 0)
-        throw Fmi::Exception(BCP,"PNM dimensions must be positive");
+        throw Fmi::Exception(BCP, "PNM dimensions must be positive");
     }
 
     // And the size of each color component (normally 255)
@@ -63,11 +63,12 @@ void NFmiImage::ReadPNM(FILE *in)
       istringstream input(buffer);
       input >> colorsize;
       if (input.bad())
-        throw Fmi::Exception(BCP,"Failed to read PNM color size");
+        throw Fmi::Exception(BCP, "Failed to read PNM color size");
 
       if (colorsize != 255)
-        throw Fmi::Exception(BCP,"Only colorsize 255 is supported for PNM images (size=" +
-                            NFmiStringTools::Convert(colorsize) + ")");
+        throw Fmi::Exception(BCP,
+                             "Only colorsize 255 is supported for PNM images (size=" +
+                                 NFmiStringTools::Convert(colorsize) + ")");
     }
 
     // And then there is the raw data
@@ -82,7 +83,7 @@ void NFmiImage::ReadPNM(FILE *in)
         const int g = fgetc(in);
         const int b = fgetc(in);
         if (r == EOF || g == EOF || b == EOF)
-          throw Fmi::Exception(BCP,"PNM data ends abruptly");
+          throw Fmi::Exception(BCP, "PNM data ends abruptly");
 
         (*this)(i, j) = NFmiColorTools::MakeColor(r, g, b);
       }

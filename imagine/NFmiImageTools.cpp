@@ -42,7 +42,7 @@ inline int compress_bits(int theValue, int theBits)
   try
   {
     if (theBits < 0 || theBits > 8)
-      throw Fmi::Exception(BCP,"Invalid number of bits in NFmiImageTools::compress_bits");
+      throw Fmi::Exception(BCP, "Invalid number of bits in NFmiImageTools::compress_bits");
 
     if (theBits == 8)
       return theValue;
@@ -57,7 +57,7 @@ inline int compress_bits(int theValue, int theBits)
   }
 }
 
-}  // namespace anonymous
+}  // namespace
 
 namespace NFmiImageTools
 {
@@ -82,10 +82,10 @@ void CompressBits(
   {
     using namespace NFmiColorTools;
 
-    if (theRedBits < 0 || theRedBits > 8 || theGreenBits < 0 || theGreenBits > 8 || theBlueBits < 0 ||
-        theBlueBits > 8 || theAlphaBits < 0 || theAlphaBits > 8)
+    if (theRedBits < 0 || theRedBits > 8 || theGreenBits < 0 || theGreenBits > 8 ||
+        theBlueBits < 0 || theBlueBits > 8 || theAlphaBits < 0 || theAlphaBits > 8)
     {
-      throw Fmi::Exception(BCP,"Color resolution must be 0-8 bits");
+      throw Fmi::Exception(BCP, "Color resolution must be 0-8 bits");
     }
 
     for (int j = 0; j < theImage.Height(); j++)
@@ -125,14 +125,14 @@ std::string MimeType(const string& theFileName)
     FILE* in;
     in = fopen(theFileName.c_str(), "rb");
     if (in == nullptr)
-      throw Fmi::Exception(BCP,"Unable to determine image type of '" + theFileName + "'");
+      throw Fmi::Exception(BCP, "Unable to determine image type of '" + theFileName + "'");
 
     unsigned char strmagic[4];
     size_t num = fread(strmagic, 1, 4, in);
     fclose(in);
 
     if (num != 4)
-      throw Fmi::Exception(BCP,"Failed to read image magic number from '" + theFileName + "'");
+      throw Fmi::Exception(BCP, "Failed to read image magic number from '" + theFileName + "'");
 
     unsigned long magic = (static_cast<unsigned long>(strmagic[0]) << 24) +
                           (static_cast<unsigned long>(strmagic[1]) << 16) +
@@ -152,7 +152,7 @@ std::string MimeType(const string& theFileName)
     if (strmagic[0] == 'I' && strmagic[1] == 'I' && strmagic[2] == '*')
       return "tiff";
 
-    throw Fmi::Exception(BCP,"Unknown image format in '" + theFileName + "'");
+    throw Fmi::Exception(BCP, "Unknown image format in '" + theFileName + "'");
   }
   catch (...)
   {

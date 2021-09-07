@@ -63,9 +63,12 @@ class NFmiEdge
 
   bool operator<(const NFmiEdge &theEdge) const
   {
-    if (itsX1 != theEdge.itsX1) return (itsX1 < theEdge.itsX1);
-    if (itsY1 != theEdge.itsY1) return (itsY1 < theEdge.itsY1);
-    if (itsX2 != theEdge.itsX2) return (itsX2 < theEdge.itsX2);
+    if (itsX1 != theEdge.itsX1)
+      return (itsX1 < theEdge.itsX1);
+    if (itsY1 != theEdge.itsY1)
+      return (itsY1 < theEdge.itsY1);
+    if (itsX2 != theEdge.itsX2)
+      return (itsX2 < theEdge.itsX2);
     return (itsY2 < theEdge.itsY2);
   }
 
@@ -87,4 +90,3 @@ class NFmiEdge
 }  // namespace Imagine
 
 // ----------------------------------------------------------------------
-

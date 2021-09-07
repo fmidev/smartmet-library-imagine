@@ -39,7 +39,7 @@ void NFmiImage::ReadPGM(FILE *in)
     {
       fgets(buffer, maxbufsize, in);
       if (strlen(buffer) == 0)
-        throw Fmi::Exception(BCP,"Invalid PGM image data");
+        throw Fmi::Exception(BCP, "Invalid PGM image data");
     }
 
     // Then there are the dimensions X Y
@@ -49,10 +49,10 @@ void NFmiImage::ReadPGM(FILE *in)
       istringstream input(buffer);
       input >> width >> height;
       if (input.bad())
-        throw Fmi::Exception(BCP,"Failed to read PGM dimensions");
+        throw Fmi::Exception(BCP, "Failed to read PGM dimensions");
 
       if (width <= 0 || height <= 0)
-        throw Fmi::Exception(BCP,"PGM dimensions must be positive");
+        throw Fmi::Exception(BCP, "PGM dimensions must be positive");
     }
 
     // And the size of each color component (normally 255)
@@ -63,11 +63,12 @@ void NFmiImage::ReadPGM(FILE *in)
       istringstream input(buffer);
       input >> colorsize;
       if (input.bad())
-        throw Fmi::Exception(BCP,"Failed to read PGM color size");
+        throw Fmi::Exception(BCP, "Failed to read PGM color size");
 
       if (colorsize != 255)
-        throw Fmi::Exception(BCP,"Only colorsize 255 is supported for PGM images (size=" +
-                            NFmiStringTools::Convert(colorsize) + ")");
+        throw Fmi::Exception(BCP,
+                             "Only colorsize 255 is supported for PGM images (size=" +
+                                 NFmiStringTools::Convert(colorsize) + ")");
     }
 
     // And then there is the raw data
@@ -80,7 +81,7 @@ void NFmiImage::ReadPGM(FILE *in)
       {
         const int gray = fgetc(in);
         if (gray == EOF)
-          throw Fmi::Exception(BCP,"PGM data ends abruptly");
+          throw Fmi::Exception(BCP, "PGM data ends abruptly");
 
         (*this)(i, j) = NFmiColorTools::MakeColor(gray, gray, gray);
       }

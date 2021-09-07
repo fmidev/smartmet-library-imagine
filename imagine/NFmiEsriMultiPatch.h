@@ -28,8 +28,8 @@
 
 #pragma once
 
-#include "NFmiEsriPointZ.h"
 #include "NFmiEsriBox.h"
+#include "NFmiEsriPointZ.h"
 
 #include <vector>
 
@@ -130,6 +130,5 @@ class NFmiEsriMultiPatch : public NFmiEsriElement
 };
 
 }  // namespace Imagine
-
 
 // ======================================================================

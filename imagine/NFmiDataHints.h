@@ -52,7 +52,6 @@ class NFmiDataHints
   NFmiDataHints(const NFmiDataHints& theMatrix);
 };
 
-}  // namespace
-
+}  // namespace Imagine
 
 // ======================================================================

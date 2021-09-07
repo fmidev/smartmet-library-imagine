@@ -1,11 +1,11 @@
 /*
-* imagine-config.h
-*
-* Defines whether Cairo or non-cairo (self made) rendering is used.
-*
-* This is in a config file (and not Makefile) so that other projects using
-* Imagine will get the headers right automatically.
-*/
+ * imagine-config.h
+ *
+ * Defines whether Cairo or non-cairo (self made) rendering is used.
+ *
+ * This is in a config file (and not Makefile) so that other projects using
+ * Imagine will get the headers right automatically.
+ */
 #pragma once
 
 #ifdef IMAGINE_WITH_CAIRO
@@ -28,4 +28,3 @@ class NFmiImage;
 }
 typedef Imagine::NFmiImage ImagineXr_or_NFmiImage;
 #endif
-

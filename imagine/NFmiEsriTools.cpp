@@ -48,13 +48,13 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
     }
 
     if (fieldcomparison.empty())
-      throw Fmi::Exception(BCP,"Unable to parse comparison option");
+      throw Fmi::Exception(BCP, "Unable to parse comparison option");
 
     // Fetch the attribute name
 
     const NFmiEsriAttributeName* name = theShape.AttributeName(fieldname);
     if (name == 0)
-      throw Fmi::Exception(BCP,"The shape does not have a field named '" + fieldname + "'");
+      throw Fmi::Exception(BCP, "The shape does not have a field named '" + fieldname + "'");
     // Preparse the desired field value
 
     const NFmiEsriAttributeType atype = name->Type();
@@ -75,7 +75,7 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
         dvalue = NFmiStringTools::Convert<double>(fieldvalue);
         break;
       default:
-        throw Fmi::Exception(BCP,"The field '" + fieldname + "' is of unknown type");
+        throw Fmi::Exception(BCP, "The field '" + fieldname + "' is of unknown type");
     }
 
     NFmiEsriShape* shape = new NFmiEsriShape(theShape.Type());
@@ -92,7 +92,8 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
          ++it)
     {
       // Skip empty elements
-      if (*it == 0) continue;
+      if (*it == 0)
+        continue;
 
       // Check if the value is correct
 
@@ -152,7 +153,8 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
           ok = ((*it)->GetDouble(fieldname) >= dvalue);
       }
 
-      if (!ok) continue;
+      if (!ok)
+        continue;
 
       NFmiEsriElement* tmp = (*it)->Clone();
       shape->Add(tmp);

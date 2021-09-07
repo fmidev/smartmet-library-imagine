@@ -31,8 +31,8 @@
 
 #ifdef UNIX
 
-#include "NFmiFace.h"
 #include "NFmiColorBlend.h"
+#include "NFmiFace.h"
 #include "NFmiFreeType.h"
 #include "NFmiImage.h"
 
@@ -76,13 +76,13 @@ NFmiFace::NFmiFace(const std::string& theFontSpec)
   {
     vector<string> words = NFmiStringTools::Split(theFontSpec, ":");
     if (words.size() != 2)
-      throw Fmi::Exception(BCP,"Invalid font specification '" + theFontSpec + "'");
+      throw Fmi::Exception(BCP, "Invalid font specification '" + theFontSpec + "'");
 
     itsFile = words[0];
 
     vector<int> sizes = NFmiStringTools::Split<vector<int> >(words[1], "x");
     if (sizes.size() != 2)
-      throw Fmi::Exception(BCP,"Invalid font specification '" + theFontSpec + "'");
+      throw Fmi::Exception(BCP, "Invalid font specification '" + theFontSpec + "'");
 
     itsWidth = sizes[0];
     itsHeight = sizes[1];
@@ -136,7 +136,7 @@ void NFmiFace::BackgroundMargin(int theWidth, int theHeight)
   try
   {
     if (theWidth < 0 || theHeight < 0)
-      throw Fmi::Exception(BCP,"Background margins must be nonnegative");
+      throw Fmi::Exception(BCP, "Background margins must be nonnegative");
 
     itsBackgroundWidth = theWidth;
     itsBackgroundHeight = theHeight;

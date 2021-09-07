@@ -247,35 +247,50 @@ Color Simplify(Color c, int opaquethreshold, bool ignorealpha);
  */
 // ----------------------------------------------------------------------
 
-inline int NFmiColorTools::GetAlpha(Color c) { return (c >> 24) & 0x7F; }
+inline int NFmiColorTools::GetAlpha(Color c)
+{
+  return (c >> 24) & 0x7F;
+}
 // ----------------------------------------------------------------------
 /*!
  * \brief Extract red component from a color.
  */
 // ----------------------------------------------------------------------
 
-inline int NFmiColorTools::GetRed(Color c) { return (c >> 16) & 0xFF; }
+inline int NFmiColorTools::GetRed(Color c)
+{
+  return (c >> 16) & 0xFF;
+}
 // ----------------------------------------------------------------------
 /*!
  * \brief Extract green component from a color.
  */
 // ----------------------------------------------------------------------
 
-inline int NFmiColorTools::GetGreen(Color c) { return (c >> 8) & 0xFF; }
+inline int NFmiColorTools::GetGreen(Color c)
+{
+  return (c >> 8) & 0xFF;
+}
 // ----------------------------------------------------------------------
 /*!
  * \brief Extract blue component from a color.
  */
 // ----------------------------------------------------------------------
 
-inline int NFmiColorTools::GetBlue(Color c) { return (c & 0xFF); }
+inline int NFmiColorTools::GetBlue(Color c)
+{
+  return (c & 0xFF);
+}
 // ----------------------------------------------------------------------
 /*!
  * \brief Extract RGB component from a color. Alpha will be zero (opaque color).
  */
 // ----------------------------------------------------------------------
 
-inline NFmiColorTools::Color NFmiColorTools::GetRGB(Color c) { return (c & 0xFFFFFF); }
+inline NFmiColorTools::Color NFmiColorTools::GetRGB(Color c)
+{
+  return (c & 0xFFFFFF);
+}
 // ----------------------------------------------------------------------
 /*!
  * \brief Set new alpha component into the color.
@@ -371,10 +386,21 @@ inline NFmiColorTools::Color NFmiColorTools::SafeColor(int r, int g, int b, int 
 
 inline NFmiColorTools::Color NFmiColorTools::SafestColor(int r, int g, int b, int a)
 {
-  return ((((a < 0) ? 0 : (a > NFmiColorTools::MaxAlpha) ? NFmiColorTools::MaxAlpha : a) << 24) +
-          (((r < 0) ? 0 : (r > NFmiColorTools::MaxRGB) ? NFmiColorTools::MaxRGB : r) << 16) +
-          (((g < 0) ? 0 : (g > NFmiColorTools::MaxRGB) ? NFmiColorTools::MaxRGB : g) << 8) +
-          ((b < 0) ? 0 : (b > NFmiColorTools::MaxRGB) ? NFmiColorTools::MaxRGB : b));
+  return ((((a < 0)                          ? 0
+            : (a > NFmiColorTools::MaxAlpha) ? NFmiColorTools::MaxAlpha
+                                             : a)
+           << 24) +
+          (((r < 0)                        ? 0
+            : (r > NFmiColorTools::MaxRGB) ? NFmiColorTools::MaxRGB
+                                           : r)
+           << 16) +
+          (((g < 0)                        ? 0
+            : (g > NFmiColorTools::MaxRGB) ? NFmiColorTools::MaxRGB
+                                           : g)
+           << 8) +
+          ((b < 0)                        ? 0
+           : (b > NFmiColorTools::MaxRGB) ? NFmiColorTools::MaxRGB
+                                          : b));
 }
 
 // ----------------------------------------------------------------------
@@ -435,9 +461,12 @@ inline NFmiColorTools::Color NFmiColorTools::Simplify(Color c,
                                                       int opaquethreshold,
                                                       bool ignorealpha)
 {
-  if (ignorealpha) return ReplaceAlpha(c, 0);
-  if (GetAlpha(c) == NFmiColorTools::MaxAlpha) return TransparentColor;
-  if (opaquethreshold < 0) return c;
+  if (ignorealpha)
+    return ReplaceAlpha(c, 0);
+  if (GetAlpha(c) == NFmiColorTools::MaxAlpha)
+    return TransparentColor;
+  if (opaquethreshold < 0)
+    return c;
   if (GetAlpha(c) < opaquethreshold)
     return ReplaceAlpha(c, 0);
   else

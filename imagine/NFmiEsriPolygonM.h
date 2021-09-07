@@ -19,9 +19,9 @@
 
 #pragma once
 
+#include "NFmiEsriBox.h"
 #include "NFmiEsriPointM.h"
 #include "NFmiEsriPolygon.h"
-#include "NFmiEsriBox.h"
 
 namespace Imagine
 {
@@ -93,6 +93,5 @@ class NFmiEsriPolygonM : public NFmiEsriPolygon
 };
 
 }  // namespace Imagine
-
 
 // ======================================================================

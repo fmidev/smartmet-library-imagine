@@ -26,8 +26,8 @@
 #include <macgyver/Exception.h>
 #include <cmath>
 #ifdef __BORLANDC__
-using std::sin;
 using std::cos;
+using std::sin;
 #endif
 
 namespace Imagine

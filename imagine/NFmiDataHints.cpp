@@ -72,7 +72,7 @@ NFmiDataHints::Pimple::Pimple(const NFmiDataMatrix<float>& theData, int theMaxSi
   try
   {
     if (theMaxSize < 4)
-      throw Fmi::Exception(BCP,"Too small maxsize in NFmiDataHints constructor");
+      throw Fmi::Exception(BCP, "Too small maxsize in NFmiDataHints constructor");
 
     recurse(itsRoot, theData, 0, 0, theData.NX() - 1, theData.NY() - 1, theMaxSize);
   }
@@ -235,7 +235,8 @@ bool rectangle_intersects(const NFmiDataHints::Rectangle& theRectangle,
     {
       if (theHiLimit != kFloatMissing)  // searched range: x..y
       {
-        if (nodemissing) return false;
+        if (nodemissing)
+          return false;
         if (max(theLoLimit, nodemin) <= min(theHiLimit, nodemax))
           return true;
 

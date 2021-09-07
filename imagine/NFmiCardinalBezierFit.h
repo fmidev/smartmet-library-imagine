@@ -23,5 +23,4 @@ const NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError);
 }  // namespace NFmiCardinalBezierFit
 }  // namespace Imagine
 
-
 // ======================================================================

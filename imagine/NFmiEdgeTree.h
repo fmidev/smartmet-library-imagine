@@ -12,7 +12,6 @@
 
 #pragma once
 
-
 // Essential includes:
 
 #include "NFmiEdge.h"  // Input edges
@@ -60,6 +59,7 @@ class NFmiEdgeTree
 
   void LinesOnly(bool theFlag) { itsLinesOnly = theFlag; }
   void ConvertGhostLines(bool theFlag) { itsConvertGhostLines = theFlag; }
+
  protected:
   NFmiPath Path(std::list<NFmiPath>& thePaths) const;
 
@@ -79,4 +79,3 @@ class NFmiEdgeTree
 }  // namespace Imagine
 
 // ----------------------------------------------------------------------
-

@@ -92,13 +92,15 @@ NFmiPath SubdividePath(const NFmiPath& thePath, double theMaxLength)
   try
   {
     // safety check
-    if (theMaxLength <= 0) return thePath;
+    if (theMaxLength <= 0)
+      return thePath;
 
     NFmiPath out;
 
     double lastx = 0;
     double lasty = 0;
-    for (NFmiPathData::const_iterator it = thePath.Elements().begin(); it != thePath.Elements().end();
+    for (NFmiPathData::const_iterator it = thePath.Elements().begin();
+         it != thePath.Elements().end();
          ++it)
     {
       switch (it->op)
@@ -124,7 +126,7 @@ NFmiPath SubdividePath(const NFmiPath& thePath, double theMaxLength)
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-}
+}  // namespace
 
 namespace NFmiTightBezierFit
 {

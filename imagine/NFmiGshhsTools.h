@@ -43,5 +43,4 @@ const NFmiPath ReadPath(const std::string& theFilename,
 
 }  // namespace Imagine
 
-
 // ======================================================================

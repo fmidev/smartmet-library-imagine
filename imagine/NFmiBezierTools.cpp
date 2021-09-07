@@ -51,7 +51,8 @@ void AppendSplits(PathList& theList, const NFmiPath& thePath, const std::vector<
     {
       outpath.Add(path[i]);
 
-      if (i > 0 && i < n - 1 && (theCounts[i - 1] < theCounts[i] || theCounts[i + 1] < theCounts[i]))
+      if (i > 0 && i < n - 1 &&
+          (theCounts[i - 1] < theCounts[i] || theCounts[i + 1] < theCounts[i]))
       {
         theList.push_back(outpath);
         outpath.Clear();
@@ -160,7 +161,7 @@ std::pair<NFmiPath, NFmiPath> BezierSplit(const NFmiPath& thePath)
       return std::make_pair(left, right);
     }
 
-    throw Fmi::Exception(BCP,"BezierSplit does not support arbitrary Bezier degrees");
+    throw Fmi::Exception(BCP, "BezierSplit does not support arbitrary Bezier degrees");
   }
   catch (...)
   {
@@ -208,7 +209,7 @@ double BezierLengthRecursion(const NFmiPath& thePath, double theRelativeAccuracy
   }
 }
 
-}  // namespace anonymous
+}  // namespace
 
 // ----------------------------------------------------------------------
 /*!
@@ -276,12 +277,13 @@ const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths& thePaths)
           case kFmiLineTo:
           case kFmiGhostLineTo:
             // ignore moves which close a subpath
-            if (p != previous_moveto) counts.Add(p);
+            if (p != previous_moveto)
+              counts.Add(p);
             break;
           case kFmiCubicTo:
           case kFmiConicTo:
-            throw Fmi::Exception(BCP,
-                "Cubic and conic elements not supported in multiple path Bezier fitting");
+            throw Fmi::Exception(
+                BCP, "Cubic and conic elements not supported in multiple path Bezier fitting");
         }
       }
     }
@@ -318,7 +320,8 @@ const Segments SplitSegments(const NFmiPath& thePath)
     bool isregular = false;
     NFmiPath outpath;
 
-    for (NFmiPathData::const_iterator it = thePath.Elements().begin(); it != thePath.Elements().end();
+    for (NFmiPathData::const_iterator it = thePath.Elements().begin();
+         it != thePath.Elements().end();
          ++it)
     {
       // current outpath must be flushed if
@@ -391,7 +394,8 @@ const PathList SplitPath(const NFmiPath& thePath)
     PathList out;
 
     NFmiPath outpath;
-    for (NFmiPathData::const_iterator it = thePath.Elements().begin(); it != thePath.Elements().end();
+    for (NFmiPathData::const_iterator it = thePath.Elements().begin();
+         it != thePath.Elements().end();
          ++it)
     {
       if (it->op == kFmiMoveTo && !outpath.Empty())
@@ -478,7 +482,8 @@ const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& 
           const size_t c0 = (i > 0 ? counts[i - 1] : counts[n - 2]);
           const size_t c1 = counts[i];
           const size_t c2 = (i + 1 < n ? counts[i + 1] : counts[1]);
-          if (c0 < c1 || c2 < c1) break;
+          if (c0 < c1 || c2 < c1)
+            break;
         }
         // Now if 0<i<n we found a split point to rotate to
         if (i > 0 && i < n)
@@ -550,7 +555,7 @@ double BezierLength(const NFmiPath& thePath, double theRelativeAccuracy)
       }
       default:
         throw Fmi::Exception(BCP,
-            "NFmiBezierTools::BezierLength not implemented for high degree basis");
+                             "NFmiBezierTools::BezierLength not implemented for high degree basis");
     }
   }
   catch (...)

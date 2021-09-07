@@ -15,8 +15,8 @@
 // ======================================================================
 
 #include "NFmiDrawable.h"
-#include "NFmiImage.h"
 #include "NFmiFillMap.h"
+#include "NFmiImage.h"
 #include <macgyver/Exception.h>
 
 namespace Imagine

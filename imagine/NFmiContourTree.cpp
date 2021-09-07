@@ -27,8 +27,8 @@
 // ======================================================================
 
 #include "NFmiContourTree.h"
-#include <macgyver/Exception.h>
 #include <gis/CoordinateMatrix.h>
+#include <macgyver/Exception.h>
 #include <stdexcept>
 
 #ifndef square
@@ -84,7 +84,7 @@ void NFmiContourTree::Contour(const Fmi::CoordinateMatrix& thePts,
   try
   {
     if (thePts.width() != theValues.NX() || thePts.height() != theValues.NY())
-      throw Fmi::Exception(BCP,"Cannot contour values with coordinate matrix of different size");
+      throw Fmi::Exception(BCP, "Cannot contour values with coordinate matrix of different size");
 
     switch (theInterpolation)
     {
@@ -162,7 +162,7 @@ void NFmiContourTree::Contour(const Fmi::CoordinateMatrix& thePts,
   try
   {
     if (thePts.width() != theValues.NX() || thePts.height() != theValues.NY())
-      throw Fmi::Exception(BCP,"Cannot contour values with coordinate matrix of different size");
+      throw Fmi::Exception(BCP, "Cannot contour values with coordinate matrix of different size");
 
     switch (theInterpolation)
     {
@@ -948,7 +948,7 @@ void NFmiContourTree::ContourLinear4(float x1,
               Add(NFmiEdge(firstx, firsty, lastx, lasty, true, false));
             break;
           default:
-            throw Fmi::Exception(BCP,"NFmiContourTree encountered bad path element");
+            throw Fmi::Exception(BCP, "NFmiContourTree encountered bad path element");
         }
       }
       //	   cout << endl;
@@ -1259,8 +1259,9 @@ void NFmiContourTree::ContourLinear3(
     // Abort if any of the values is missing. We test z first, since
     // it is most likely that z is missing, not x or y
 
-    if (!IsValid(z1) || !IsValid(z2) || !IsValid(z3) || x1 == kFloatMissing || x2 == kFloatMissing ||
-        x3 == kFloatMissing || y1 == kFloatMissing || y2 == kFloatMissing || y3 == kFloatMissing)
+    if (!IsValid(z1) || !IsValid(z2) || !IsValid(z3) || x1 == kFloatMissing ||
+        x2 == kFloatMissing || x3 == kFloatMissing || y1 == kFloatMissing || y2 == kFloatMissing ||
+        y3 == kFloatMissing)
       return;
 
     // If both limits are missing, cover the entire triangle, since
@@ -1389,8 +1390,9 @@ void NFmiContourTree::ContourNearest3(
     // Abort if any of the values is missing. We test z first, since
     // it is most likely that z is missing, not x or y
 
-    if (!IsValid(z1) || !IsValid(z2) || !IsValid(z3) || x1 == kFloatMissing || x2 == kFloatMissing ||
-        x3 == kFloatMissing || y1 == kFloatMissing || y2 == kFloatMissing || y3 == kFloatMissing)
+    if (!IsValid(z1) || !IsValid(z2) || !IsValid(z3) || x1 == kFloatMissing ||
+        x2 == kFloatMissing || x3 == kFloatMissing || y1 == kFloatMissing || y2 == kFloatMissing ||
+        y3 == kFloatMissing)
       return;
 
     // If both limits are missing, cover the entire triangle, since

@@ -68,8 +68,8 @@
 
 #include "NFmiCounter.h"
 
-#include <vector>
 #include <stack>
+#include <vector>
 
 namespace Imagine
 {
@@ -166,11 +166,13 @@ class NFmiSimplifier
 
     // Special case of no line:
 
-    if (theData.size() <= 1) return out;
+    if (theData.size() <= 1)
+      return out;
 
     // The first point can be output already - we have atleast two points
 
-    if (!theData.empty()) out.push_back(theData[0]);
+    if (!theData.empty())
+      out.push_back(theData[0]);
 
     // Stack of vector indices for recursion, initialized with N-1
 
@@ -205,7 +207,8 @@ class NFmiSimplifier
           {
             // distance from line
             double tmp = dxdy + theData[k].X() * yiyj - xixj * theData[k].Y();
-            if (tmp < 0) tmp = -tmp;
+            if (tmp < 0)
+              tmp = -tmp;
             if (tmp > dist)
             {
               dist = tmp;
@@ -257,7 +260,8 @@ class NFmiSimplifier
     {
       double dx = out[1].X() - out[0].X();
       double dy = out[1].Y() - out[0].Y();
-      if (dx * dx + dy * dy < epssq) out.clear();
+      if (dx * dx + dy * dy < epssq)
+        out.clear();
     }
 
     return out;
@@ -280,7 +284,8 @@ class NFmiSimplifier
 
     // Special case of no line:
 
-    if (theData.size() <= 1) return out;
+    if (theData.size() <= 1)
+      return out;
 
     // Go through the data again and again, until nothing is deleted
 
@@ -320,7 +325,8 @@ class NFmiSimplifier
 
         // Delete previous triangle, if possible
 
-        if (area < Tolerance()) found_small = true;
+        if (area < Tolerance())
+          found_small = true;
 
         if (last_area > 0 && last_area < area && last_area < Tolerance())
         {
@@ -357,11 +363,13 @@ class NFmiSimplifier
 
     // Special case of no line:
 
-    if (theData.size() <= 1) return out;
+    if (theData.size() <= 1)
+      return out;
 
     // The first point can be output already - we have atleast two points
 
-    if (!theData.empty()) out.push_back(theData[0]);
+    if (!theData.empty())
+      out.push_back(theData[0]);
 
     // Stack of vector indices for recursion, initialized with N-1
 
@@ -390,7 +398,8 @@ class NFmiSimplifier
         {
           // The area
           double tmp = 0.5 * (theData[k].Y() * xixj - theData[k].X() * yiyj + term3);
-          if (tmp < 0) tmp = -tmp;
+          if (tmp < 0)
+            tmp = -tmp;
 
           if (tmp > area)
           {
@@ -426,13 +435,13 @@ class NFmiSimplifier
     {
       double dx = abs(out[1].X() - out[0].X());
       double dy = abs(out[1].Y() - out[0].Y());
-      if (0.5 * dx * dy < Tolerance()) out.clear();
+      if (0.5 * dx * dy < Tolerance())
+        out.clear();
     }
     return out;
   }
 };
 
 }  // namespace Imagine
-
 
 // ======================================================================

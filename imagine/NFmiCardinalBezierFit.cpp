@@ -13,8 +13,8 @@
 // ======================================================================
 
 #include "NFmiCardinalBezierFit.h"
-#include "NFmiCounter.h"
 #include "NFmiBezierTools.h"
+#include "NFmiCounter.h"
 #include "NFmiPath.h"
 #include <macgyver/Exception.h>
 
@@ -136,7 +136,8 @@ NFmiPath SimpleFit(const NFmiPath& thePath, double theSmoothness)
   {
     using namespace NFmiBezierTools;
 
-    if (thePath.Empty()) return thePath;
+    if (thePath.Empty())
+      return thePath;
 
     const NFmiPathData& path = thePath.Elements();
     const bool isclosed = IsClosed(thePath);
@@ -182,7 +183,7 @@ NFmiPath SimpleFit(const NFmiPath& thePath, double theSmoothness)
   }
 }
 
-}  // namespace anonymous
+}  // namespace
 
 namespace NFmiCardinalBezierFit
 {

@@ -17,7 +17,8 @@
 
 // JPEG group idiots.. I wasted hours on this one
 
-extern "C" {
+extern "C"
+{
 #include <jpeglib.h>
 }
 
@@ -87,13 +88,13 @@ void NFmiImage::ReadJPEG(FILE *in)
     // int row_stride = cinfo.output_width * cinfo.output_components;
 
     if (cinfo.output_components != 3)
-      throw Fmi::Exception(BCP,"Failed to create 3 output channels in JPEG");
+      throw Fmi::Exception(BCP, "Failed to create 3 output channels in JPEG");
 
     // Make a one-row-high sample array that will go away when done with image
 
     JSAMPROW row = static_cast<JSAMPROW>(calloc(cinfo.output_width * 3, sizeof(JSAMPLE)));
     if (row == nullptr)
-      throw Fmi::Exception(BCP,"Failed to allocate memory for a JPEG data row");
+      throw Fmi::Exception(BCP, "Failed to allocate memory for a JPEG data row");
 
     JSAMPROW rowptr[1];
     rowptr[0] = row;
@@ -231,7 +232,7 @@ void NFmiImage::WriteJPEG(FILE *out) const
     if (row == 0)
     {
       jpeg_destroy_compress(&cinfo);
-      throw Fmi::Exception(BCP,"Insufficient memory to allocate JPEG image");
+      throw Fmi::Exception(BCP, "Insufficient memory to allocate JPEG image");
     }
     rowptr[0] = row;
 

@@ -105,14 +105,11 @@ int NFmiEsriMultiPoint::StringSize(void) const
 {
   try
   {
-    return (4  // the type	: 1 int
-            +
-            4 * 8  // bounding box : 4 doubles
-            +
-            4  // numpoints	: 1 int
-            +
-            NumPoints() * 2 * 8  // points	: 2n doubles
-            );
+    return (4                      // the type	: 1 int
+            + 4 * 8                // bounding box : 4 doubles
+            + 4                    // numpoints	: 1 int
+            + NumPoints() * 2 * 8  // points	: 2n doubles
+    );
   }
   catch (...)
   {

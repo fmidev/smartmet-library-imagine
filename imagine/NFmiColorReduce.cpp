@@ -19,8 +19,8 @@
 // ======================================================================
 
 #include "NFmiColorReduce.h"
-#include "NFmiImage.h"
 #include "NFmiColorTools.h"
+#include "NFmiImage.h"
 #include <macgyver/Exception.h>
 
 #include <boost/shared_ptr.hpp>
@@ -106,9 +106,9 @@ Counter calc_counts(const NFmiImage& theImage)
 {
   try
   {
-  // The default bucket size in SGI is 100, which is quite
-  // small for the typical number of colours we encounter
-  // in images.
+    // The default bucket size in SGI is 100, which is quite
+    // small for the typical number of colours we encounter
+    // in images.
 
 #ifdef UNIX
     Counter counter(4096);
@@ -246,7 +246,8 @@ float ColorTree::distance(ColorTree::value_type theColor1, ColorTree::value_type
     static vector<float> gamma(256, 0);
     static bool initialized = false;
 
-    if (!initialized) init_gamma_table(gamma, initialized);
+    if (!initialized)
+      init_gamma_table(gamma, initialized);
 
     const float r =
         (gamma[NFmiColorTools::GetRed(theColor1)] - gamma[NFmiColorTools::GetRed(theColor2)]);
@@ -254,8 +255,8 @@ float ColorTree::distance(ColorTree::value_type theColor1, ColorTree::value_type
         (gamma[NFmiColorTools::GetGreen(theColor1)] - gamma[NFmiColorTools::GetGreen(theColor2)]);
     const float b =
         (gamma[NFmiColorTools::GetBlue(theColor1)] - gamma[NFmiColorTools::GetBlue(theColor2)]);
-    const float a =
-        static_cast<float>(NFmiColorTools::GetAlpha(theColor1) - NFmiColorTools::GetAlpha(theColor2));
+    const float a = static_cast<float>(NFmiColorTools::GetAlpha(theColor1) -
+                                       NFmiColorTools::GetAlpha(theColor2));
 
     return sqrt(3.0f * r * r + 4.0f * g * g + 2.0f * b * b + a * a);
   }
@@ -336,7 +337,8 @@ void ColorTree::insert(ColorTree::value_type theColor)
 
       if (dist_left > dist_right)
       {
-        if (itsRightBranch.get() == 0) itsRightBranch.reset(new ColorTree);
+        if (itsRightBranch.get() == 0)
+          itsRightBranch.reset(new ColorTree);
 
         // note that constructor sets itsMaxRight to be negative
 
@@ -347,7 +349,8 @@ void ColorTree::insert(ColorTree::value_type theColor)
       }
       else
       {
-        if (itsLeftBranch.get() == 0) itsLeftBranch.reset(new ColorTree);
+        if (itsLeftBranch.get() == 0)
+          itsLeftBranch.reset(new ColorTree);
 
         // note that constructor sets itsMaxLeft to be negative
 
@@ -380,7 +383,7 @@ ColorTree::value_type ColorTree::nearest(ColorTree::value_type theColor)
     value_type bestcolor;
     float radius = -1;
     if (!nearest(theColor, bestcolor, radius))
-      throw Fmi::Exception(BCP,"Invalid use of color reduction tables");
+      throw Fmi::Exception(BCP, "Invalid use of color reduction tables");
 
     return bestcolor;
   }
@@ -676,7 +679,7 @@ const ColorHistogram CalcColorHistogram(const NFmiImage& theImage)
   }
 }
 
-} // namespace anonymous
+}  // namespace
 
 // ======================================================================
 // The actual public interfaces
@@ -762,7 +765,8 @@ void AdaptiveReduce(NFmiImage& theImage, float theQuality)
 
     // A sanity check on the maximum error
 
-    if (theQuality < 1) return;
+    if (theQuality < 1)
+      return;
 
     // Calculate the histogram
 
@@ -794,7 +798,7 @@ void AdaptiveReduce(NFmiImage& theImage, float theQuality, int theMaxColors, flo
     using namespace Imagine::NFmiColorTools;
 
     if (theQuality < 1)
-      throw Fmi::Exception(BCP,"Quality was too low.");
+      throw Fmi::Exception(BCP, "Quality was too low.");
 
     // Calculate the histogram
 

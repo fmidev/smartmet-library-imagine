@@ -82,7 +82,7 @@ struct POINT
   int y;  //!< y-coordinate
 };
 
-}  // namespace anonymous
+}  // namespace
 
 // ======================================================================
 //				ACTUAL INTERFACE IMPLEMENTATION
@@ -123,7 +123,8 @@ const NFmiPath ReadPath(const std::string &theFilename,
 
     // Handle invalid bounding box by returning empty path
 
-    if (theMinLongitude >= theMaxLongitude || theMinLatitude >= theMaxLatitude) return ret;
+    if (theMinLongitude >= theMaxLongitude || theMinLatitude >= theMaxLatitude)
+      return ret;
 
     // Open file for reading
 
@@ -136,7 +137,7 @@ const NFmiPath ReadPath(const std::string &theFilename,
     // Throw if failed to open
 
     if (fp == nullptr)
-      throw Fmi::Exception(BCP,"Failed to open " + theFilename + " for reading");
+      throw Fmi::Exception(BCP, "Failed to open " + theFilename + " for reading");
 
     // Read the first header
     GSHHS header;
@@ -175,8 +176,8 @@ const NFmiPath ReadPath(const std::string &theFilename,
       const double ww = (w < -180 ? w + 360 : w > 180 ? w - 360 : w);
       const double ee = (e < -180 ? e + 360 : e > 180 ? e - 360 : e);
 
-      bool outside =
-          (ww > theMaxLongitude || ee < theMinLongitude || s > theMaxLatitude || n < theMinLatitude);
+      bool outside = (ww > theMaxLongitude || ee < theMinLongitude || s > theMaxLatitude ||
+                      n < theMinLatitude);
 
       // Correct test for Eurasia
       if (ee < ww)
@@ -198,7 +199,7 @@ const NFmiPath ReadPath(const std::string &theFilename,
         for (int k = 0; k < header.n; k++)
         {
           if (fread(static_cast<void *>(&point), size_t(sizeof(struct POINT)), size_t(1), fp) != 1)
-            throw Fmi::Exception(BCP,"File " + theFilename + " is corrupt");
+            throw Fmi::Exception(BCP, "File " + theFilename + " is corrupt");
 
           if (flip)
           {

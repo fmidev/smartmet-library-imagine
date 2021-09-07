@@ -185,10 +185,10 @@
 #include <macgyver/Exception.h>
 #include <newbase/NFmiGlobals.h>
 
-#include <string>
-#include <map>
-#include <vector>
 #include <algorithm>
+#include <map>
+#include <string>
+#include <vector>
 
 namespace Imagine
 {
