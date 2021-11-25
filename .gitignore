@@ -7,3 +7,4 @@
 obj/
 *Test
 compile_commands.json
+/smartmet-library-imagine.spec
