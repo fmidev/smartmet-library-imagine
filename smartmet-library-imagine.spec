@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 21.9.7
+Version: 21.12.2
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -18,15 +18,15 @@ BuildRequires: boost169-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: smartmet-library-macgyver-devel >= 21.8.30
-BuildRequires: smartmet-library-newbase-devel >= 21.6.16
+BuildRequires: smartmet-library-macgyver-devel >= 21.12.1
+BuildRequires: smartmet-library-newbase-devel >= 21.12.1
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal33-devel
-BuildRequires: smartmet-library-gis-devel >= 21.9.2
+BuildRequires: smartmet-library-gis-devel >= 21.12.1
 BuildRequires: fmt-devel >= 7.1.3
-Requires: smartmet-library-macgyver >= 21.8.30
-Requires: smartmet-library-newbase >= 21.6.16
+Requires: smartmet-library-macgyver >= 21.12.1
+Requires: smartmet-library-newbase >= 21.12.1
 Requires: boost169-filesystem
 Requires: boost169-regex
 Requires: boost169-thread
@@ -39,16 +39,16 @@ Requires: zlib
 #TestRequires: make
 #TestRequires: gcc-c++
 #TestRequires: smartmet-library-regression
-#TestRequires: smartmet-library-macgyver-devel
+#TestRequires: smartmet-library-macgyver-devel >= 21.12.1
 #TestRequires: smartmet-library-macgyver
-#TestRequires: smartmet-library-newbase-devel
+#TestRequires: smartmet-library-newbase-devel >= 21.12.1
 #TestRequires: boost169-devel
 #TestRequires: freetype-devel
 #TestRequires: libjpeg
 #TestRequires: libpng
 #TestRequires: zlib
 #TestRequires: bzip2-libs
-#TestRequires: smartmet-library-gis-devel >= 21.9.2
+#TestRequires: smartmet-library-gis-devel >= 21.12.1
 Provides: %{LIBNAME}
 Obsoletes: libsmartmet-imagine < 17.1.4
 Obsoletes: libsmartmet-imagine-debuginfo < 17.1.4
