@@ -18,15 +18,15 @@ BuildRequires: boost169-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: smartmet-library-macgyver-devel >= 21.12.1
-BuildRequires: smartmet-library-newbase-devel >= 21.12.1
+BuildRequires: smartmet-library-macgyver-devel >= 21.1.21
+BuildRequires: smartmet-library-newbase-devel >= 21.1.21
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
-BuildRequires: gdal33-devel
-BuildRequires: smartmet-library-gis-devel >= 21.12.1
+BuildRequires: gdal34-devel
+BuildRequires: smartmet-library-gis-devel >= 21.1.21
 BuildRequires: fmt-devel >= 7.1.3
-Requires: smartmet-library-macgyver >= 21.12.1
-Requires: smartmet-library-newbase >= 21.12.1
+Requires: smartmet-library-macgyver >= 21.1.21
+Requires: smartmet-library-newbase >= 21.1.21
 Requires: boost169-filesystem
 Requires: boost169-regex
 Requires: boost169-thread
@@ -39,16 +39,16 @@ Requires: zlib
 #TestRequires: make
 #TestRequires: gcc-c++
 #TestRequires: smartmet-library-regression
-#TestRequires: smartmet-library-macgyver-devel >= 21.12.1
+#TestRequires: smartmet-library-macgyver-devel >= 21.1.21
 #TestRequires: smartmet-library-macgyver
-#TestRequires: smartmet-library-newbase-devel >= 21.12.1
+#TestRequires: smartmet-library-newbase-devel >= 21.1.21
 #TestRequires: boost169-devel
 #TestRequires: freetype-devel
 #TestRequires: libjpeg
 #TestRequires: libpng
 #TestRequires: zlib
 #TestRequires: bzip2-libs
-#TestRequires: smartmet-library-gis-devel >= 21.12.1
+#TestRequires: smartmet-library-gis-devel >= 21.1.21
 Provides: %{LIBNAME}
 Obsoletes: libsmartmet-imagine < 17.1.4
 Obsoletes: libsmartmet-imagine-debuginfo < 17.1.4
