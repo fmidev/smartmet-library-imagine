@@ -11,15 +11,17 @@ include $(shell echo $${PREFIX-/usr})/share/smartmet/devel/makefile.inc
 
 DEFINES = -DUNIX -D_REENTRANT -DFMI_COMPRESSION -DBOOST -DBOOST_IOSTREAMS_NO_LIB
 
-INCLUDES += \
-	`freetype-config --cflags`
+FREETYPE_CFLAGS := $(shell pkg-config --cflags freetype2)
+FREETYPE_LIBS := $(shell pkg-config --libs freetype2)
+
+INCLUDES += $(FREETYPE_CFLAGS)
 
 LIBS += -L$(libdir) \
 	-lboost_filesystem \
 	-lboost_regex \
 	-lboost_thread \
 	$(REQUIRED_LIBS) \
-	`freetype-config --libs` \
+	$(FREETYPE_LIBS) \
 	-ljpeg -lpng -lz
 
 # What to install
