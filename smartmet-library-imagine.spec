@@ -81,7 +81,8 @@ rm -rf $RPM_BUILD_ROOT
 Summary: FMI %{DIRNAME} development files
 Provides: %{DEVELNAME}
 Obsoletes: libsmartmet-imagine-devel < 17.1.4
-Requires: %{SPECNAME}
+Requires: %{SPECNAME} = %{version}-%{release}
+Requires: smartmet-library-newbase-devel
 
 %description -n %{DEVELNAME}
 FMI %{DIRNAME} development files
