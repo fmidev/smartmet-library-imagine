@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 22.5.18
+Version: 22.5.20
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -19,14 +19,14 @@ BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
 BuildRequires: smartmet-library-macgyver-devel >= 22.3.28
-BuildRequires: smartmet-library-newbase-devel >= 22.5.18
+BuildRequires: smartmet-library-newbase-devel >= 22.5.20
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal34-devel
 BuildRequires: smartmet-library-gis-devel >= 22.5.4
 BuildRequires: fmt-devel >= 7.1.3
 Requires: smartmet-library-macgyver >= 22.3.28
-Requires: smartmet-library-newbase >= 22.5.18
+Requires: smartmet-library-newbase >= 22.5.20
 Requires: boost169-filesystem
 Requires: boost169-regex
 Requires: boost169-thread
@@ -41,7 +41,7 @@ Requires: zlib
 #TestRequires: smartmet-library-regression
 #TestRequires: smartmet-library-macgyver-devel >= 22.3.28
 #TestRequires: smartmet-library-macgyver
-#TestRequires: smartmet-library-newbase-devel >= 22.5.18
+#TestRequires: smartmet-library-newbase-devel >= 22.5.20
 #TestRequires: boost169-devel
 #TestRequires: freetype-devel
 #TestRequires: libjpeg
@@ -92,6 +92,9 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Fri May 20 2022 Mika Heiskanen <mika.heiskanen@fmi.fi> - 22.5.20-1.fmi
+- Repackaged due to newbase ABI change to LatLon methods
+
 * Wed May 18 2022 Mika Heiskanen <mika.heiskanen@fmi.fi> - 22.5.18-1.fmi
 - Removed obsolete #ifdef WGS84 segments
 
