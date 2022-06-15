@@ -11,26 +11,36 @@ Group: Development/Libraries
 URL: https://github.com/fmidev/smartmet-library-imagine
 Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+%if 0%{?rhel} && 0%{rhel} < 9
+%define smartmet_boost boost169
+%else
+%define smartmet_boost boost
+%endif
+
+%define smartmet_fmt_min 8.1.1
+%define smartmet_fmt_max 8.2.0
+
 BuildRequires: rpm-build
 BuildRequires: gcc-c++
 BuildRequires: make
-BuildRequires: boost169-devel
+BuildRequires: %{smartmet_boost}-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: smartmet-library-macgyver-devel >= 22.3.28
-BuildRequires: smartmet-library-newbase-devel >= 22.5.24
+BuildRequires: smartmet-library-macgyver-devel >= 22.6.16
+BuildRequires: smartmet-library-newbase-devel >= 22.6.16
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal34-devel
-BuildRequires: smartmet-library-gis-devel >= 22.5.4
-BuildRequires: fmt-devel >= 7.1.3
-Requires: smartmet-library-macgyver >= 22.3.28
-Requires: smartmet-library-newbase >= 22.5.24
-Requires: boost169-filesystem
-Requires: boost169-regex
-Requires: boost169-thread
-Requires: fmt >= 7.1.3
+BuildRequires: smartmet-library-gis-devel >= 22.6.16
+BuildRequires: fmt-devel >= %{smartmet_fmt_min}, fmt-devel < %{smartmet_fmt_max}
+Requires: smartmet-library-macgyver >= 22.6.16
+Requires: smartmet-library-newbase >= 22.6.16
+Requires: %{smartmet_boost}-filesystem
+Requires: %{smartmet_boost}-regex
+Requires: %{smartmet_boost}-thread
+Requires: fmt >= %{smartmet_fmt_min}, fmt < %{smartmet_fmt_max}
 Requires: cairomm
 Requires: freetype
 Requires: libjpeg
@@ -39,16 +49,16 @@ Requires: zlib
 #TestRequires: make
 #TestRequires: gcc-c++
 #TestRequires: smartmet-library-regression
-#TestRequires: smartmet-library-macgyver-devel >= 22.3.28
+#TestRequires: smartmet-library-macgyver-devel >= 22.6.16
 #TestRequires: smartmet-library-macgyver
-#TestRequires: smartmet-library-newbase-devel >= 22.5.24
-#TestRequires: boost169-devel
+#TestRequires: smartmet-library-newbase-devel >= 22.6.16
+#TestRequires: %{smartmet_boost}-devel
 #TestRequires: freetype-devel
 #TestRequires: libjpeg
 #TestRequires: libpng
 #TestRequires: zlib
 #TestRequires: bzip2-libs
-#TestRequires: smartmet-library-gis-devel >= 22.5.4
+#TestRequires: smartmet-library-gis-devel >= 22.6.16
 Provides: %{LIBNAME}
 Obsoletes: libsmartmet-imagine < 17.1.4
 Obsoletes: libsmartmet-imagine-debuginfo < 17.1.4
