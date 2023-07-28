@@ -28,15 +28,15 @@ BuildRequires: %{smartmet_boost}-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: smartmet-library-macgyver-devel >= 22.6.16
-BuildRequires: smartmet-library-newbase-devel >= 23.7.10
+BuildRequires: smartmet-library-macgyver-devel >= 23.7.28
+BuildRequires: smartmet-library-newbase-devel >= 23.7.28
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal35-devel
 BuildRequires: smartmet-library-gis-devel >= 23.7.10
 BuildRequires: fmt-devel >= %{smartmet_fmt_min}, fmt-devel < %{smartmet_fmt_max}
-Requires: smartmet-library-macgyver >= 22.6.16
-Requires: smartmet-library-newbase >= 23.7.10
+Requires: smartmet-library-macgyver >= 23.7.28
+Requires: smartmet-library-newbase >= 23.7.28
 Requires: %{smartmet_boost}-filesystem
 Requires: %{smartmet_boost}-regex
 Requires: %{smartmet_boost}-thread
@@ -49,9 +49,9 @@ Requires: zlib
 #TestRequires: make
 #TestRequires: gcc-c++
 #TestRequires: smartmet-library-regression
-#TestRequires: smartmet-library-macgyver-devel >= 22.6.16
+#TestRequires: smartmet-library-macgyver-devel >= 23.7.28
 #TestRequires: smartmet-library-macgyver
-#TestRequires: smartmet-library-newbase-devel >= 23.7.10
+#TestRequires: smartmet-library-newbase-devel >= 23.7.28
 #TestRequires: %{smartmet_boost}-devel
 #TestRequires: freetype-devel
 #TestRequires: libjpeg
