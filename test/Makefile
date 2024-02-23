@@ -25,6 +25,7 @@ INCLUDES += \
 
 LIBS +=  ../libsmartmet-imagine.so \
 	-lsmartmet-newbase \
+	-lsmartmet-macgyver \
 	-lboost_regex \
 	-lboost_filesystem \
         -lboost_iostreams \
