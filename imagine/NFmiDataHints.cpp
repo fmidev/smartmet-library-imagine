@@ -21,8 +21,8 @@ namespace Imagine
 struct RecursiveInfo
 {
   NFmiDataHints::Rectangle itsRectangle;
-  boost::shared_ptr<RecursiveInfo> itsLeft;
-  boost::shared_ptr<RecursiveInfo> itsRight;
+  std::shared_ptr<RecursiveInfo> itsLeft;
+  std::shared_ptr<RecursiveInfo> itsRight;
 };
 
 // ----------------------------------------------------------------------
@@ -38,7 +38,7 @@ class NFmiDataHints::Pimple
   return_type rectangles(float theLoLimit, float theHiLimit) const;
 
  private:
-  typedef boost::shared_ptr<RecursiveInfo> node_type;
+  typedef std::shared_ptr<RecursiveInfo> node_type;
 
   void recurse(node_type& theInfo,
                const NFmiDataMatrix<float>& theData,
