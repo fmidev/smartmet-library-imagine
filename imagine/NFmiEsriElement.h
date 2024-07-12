@@ -10,7 +10,7 @@
 #include "NFmiEsriAttribute.h"
 #include "NFmiEsriProjector.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include <iostream>
 #include <list>

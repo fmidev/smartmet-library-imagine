@@ -18,7 +18,7 @@
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 
 namespace Imagine
@@ -49,7 +49,7 @@ class NFmiFreeType
 
  private:
   class Pimple;
-  boost::shared_ptr<Pimple> itsPimple;
+  std::shared_ptr<Pimple> itsPimple;
 
   // Private - only NFmiFreeType itself is allowed to call these
   ~NFmiFreeType();

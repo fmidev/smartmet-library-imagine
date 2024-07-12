@@ -8,7 +8,7 @@
 
 #include <newbase/NFmiDataMatrix.h>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <list>
 
 namespace Imagine
@@ -45,7 +45,7 @@ class NFmiDataHints
 
  private:
   class Pimple;
-  boost::shared_ptr<Pimple> itsPimple;
+  std::shared_ptr<Pimple> itsPimple;
 
   NFmiDataHints();
   NFmiDataHints& operator=(const NFmiDataHints& theMatrix);
