@@ -19,7 +19,6 @@ INCLUDES += $(FREETYPE_CFLAGS)
 LIBS += -L$(libdir) \
 	-lsmartmet-newbase \
 	-lsmartmet-macgyver \
-	-lboost_filesystem \
 	-lboost_regex \
 	-lboost_thread \
 	$(REQUIRED_LIBS) \
