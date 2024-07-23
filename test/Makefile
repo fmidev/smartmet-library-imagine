@@ -23,14 +23,15 @@ INCLUDES += \
 	-I/usr/include/smartmet/regression \
 	$(FT2_CFLAGS)
 
-LIBS +=  ../libsmartmet-imagine.so \
+LIBS +=  \
+	../libsmartmet-imagine.so \
+	$(PREFIX_LDFLAGS) \
 	-lsmartmet-newbase \
 	-lsmartmet-macgyver \
 	-lboost_regex \
-	-lboost_filesystem \
-        -lboost_iostreams \
-        -lboost_thread \
-        -lboost_system \
+	-lboost_iostreams \
+	-lboost_thread \
+	-lboost_system \
 	$(FT2_LIBS) \
 	$(REQUIRES_LIBS) \
 	-lz -lpthread -lrt
