@@ -16,10 +16,10 @@ FREETYPE_LIBS := $(shell pkg-config --libs freetype2)
 
 INCLUDES += $(FREETYPE_CFLAGS)
 
-LIBS += -L$(libdir) \
+LIBS += \
+	$(PREFIX_LDFLAGS) \
 	-lsmartmet-newbase \
 	-lsmartmet-macgyver \
-	-lboost_filesystem \
 	-lboost_regex \
 	-lboost_thread \
 	$(REQUIRED_LIBS) \

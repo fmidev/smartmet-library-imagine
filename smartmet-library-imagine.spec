@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 24.2.23
+Version: 24.7.17
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -28,15 +28,15 @@ BuildRequires: %{smartmet_boost}-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: smartmet-library-macgyver-devel >= 24.1.17
-BuildRequires: smartmet-library-newbase-devel >= 24.2.23
+BuildRequires: smartmet-library-macgyver-devel >= 24.7.12
+BuildRequires: smartmet-library-newbase-devel >= 24.7.12
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal38-devel
-BuildRequires: smartmet-library-gis-devel >= 24.1.3
+BuildRequires: smartmet-library-gis-devel >= 24.7.12
 BuildRequires: fmt-devel >= %{smartmet_fmt_min}, fmt-devel < %{smartmet_fmt_max}
-Requires: smartmet-library-macgyver >= 24.1.17
-Requires: smartmet-library-newbase >= 24.2.23
+Requires: smartmet-library-macgyver >= 24.7.12
+Requires: smartmet-library-newbase >= 24.7.12
 Requires: %{smartmet_boost}-filesystem
 Requires: %{smartmet_boost}-regex
 Requires: %{smartmet_boost}-thread
@@ -49,16 +49,16 @@ Requires: zlib
 #TestRequires: make
 #TestRequires: gcc-c++
 #TestRequires: smartmet-library-regression
-#TestRequires: smartmet-library-macgyver-devel >= 24.1.17
+#TestRequires: smartmet-library-macgyver-devel >= 24.7.12
 #TestRequires: smartmet-library-macgyver
-#TestRequires: smartmet-library-newbase-devel >= 24.2.23
+#TestRequires: smartmet-library-newbase-devel >= 24.7.12
 #TestRequires: %{smartmet_boost}-devel
 #TestRequires: freetype-devel
 #TestRequires: libjpeg
 #TestRequires: libpng
 #TestRequires: zlib
 #TestRequires: bzip2-libs
-#TestRequires: smartmet-library-gis-devel >= 24.1.3
+#TestRequires: smartmet-library-gis-devel >= 24.7.12
 Provides: %{LIBNAME}
 Obsoletes: libsmartmet-imagine < 17.1.4
 Obsoletes: libsmartmet-imagine-debuginfo < 17.1.4
@@ -102,6 +102,12 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Wed Jul 17 2024 Andris Pavēnis <andris.pavenis@fmi.fi> 24.7.17-1.fmi
+- Do not link with libboost_filesystem
+
+* Fri Jul 12 2024 Andris Pavēnis <andris.pavenis@fmi.fi> 24.7.12-1.fmi
+- Replace many boost library types with C++ standard library ones
+
 * Fri Feb 23 2024 Mika Heiskanen <mika.heiskanen@fmi.fi> 24.2.23-1.fmi
 - Full repackaging
 

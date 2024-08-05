@@ -23,7 +23,7 @@
 #include "NFmiImage.h"
 #include <macgyver/Exception.h>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include <iomanip>
 #include <map>
@@ -205,12 +205,12 @@ class ColorTree
 
   bool nearest(value_type theColor, value_type& theNearest, float& theRadius) const;
 
-  boost::shared_ptr<value_type> itsLeftObject;
-  boost::shared_ptr<value_type> itsRightObject;
+  std::shared_ptr<value_type> itsLeftObject;
+  std::shared_ptr<value_type> itsRightObject;
   float itsMaxLeft;
   float itsMaxRight;
-  boost::shared_ptr<ColorTree> itsLeftBranch;
-  boost::shared_ptr<ColorTree> itsRightBranch;
+  std::shared_ptr<ColorTree> itsLeftBranch;
+  std::shared_ptr<ColorTree> itsRightBranch;
   int itsCount;
 };
 
