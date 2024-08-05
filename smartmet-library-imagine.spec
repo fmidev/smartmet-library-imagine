@@ -18,8 +18,8 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 %define smartmet_boost boost
 %endif
 
-%define smartmet_fmt_min 8.1.1
-%define smartmet_fmt_max 8.2.0
+%define smartmet_fmt_min 11.0.0
+%define smartmet_fmt_max 12.0.0
 
 BuildRequires: rpm-build
 BuildRequires: gcc-c++
