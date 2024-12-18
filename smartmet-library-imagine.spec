@@ -32,7 +32,7 @@ BuildRequires: smartmet-library-macgyver-devel >= 24.8.7
 BuildRequires: smartmet-library-newbase-devel >= 24.8.7
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
-BuildRequires: gdal38-devel
+BuildRequires: gdal310-devel
 BuildRequires: smartmet-library-gis-devel >= 24.8.7
 BuildRequires: fmt-devel >= %{smartmet_fmt_min}, fmt-devel < %{smartmet_fmt_max}
 Requires: smartmet-library-macgyver >= 24.8.7
