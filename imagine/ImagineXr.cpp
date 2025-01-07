@@ -755,6 +755,8 @@ void ImagineXr::MakeFace(const string &fontspec,
 
     vector<string> to_vec;
     boost::split(to_vec, fontspec, boost::is_any_of(":,"));
+    if (to_vec.size() != 2)
+      throw Fmi::Exception(BCP, "Invalid fontspec: " + fontspec);
 
     if (strchr(to_vec[1].c_str(), 'x'))
     {
