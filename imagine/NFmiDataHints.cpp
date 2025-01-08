@@ -157,7 +157,7 @@ void NFmiDataHints::Pimple::recurse(node_type& theNode,
       }
 
       theNode->itsRectangle.hasmissing =
-          (theNode->itsLeft->itsRectangle.hasmissing | theNode->itsRight->itsRectangle.hasmissing);
+          (theNode->itsLeft->itsRectangle.hasmissing || theNode->itsRight->itsRectangle.hasmissing);
 
       float min1 = theNode->itsLeft->itsRectangle.minimum;
       float max1 = theNode->itsLeft->itsRectangle.maximum;
