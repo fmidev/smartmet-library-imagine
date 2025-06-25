@@ -28,12 +28,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 %define smartmet_fmt_devel fmt-devel
 %endif
 
-%if 0%{?rhel} && 0%{rhel} == 10
-%define smartmet_cairomm cairomm1.16
-%else
-%define smartmet_cairomm cairomm
-%endif
-
 BuildRequires: rpm-build
 BuildRequires: gcc-c++
 BuildRequires: make
@@ -44,7 +38,7 @@ BuildRequires: libpng-devel
 BuildRequires: smartmet-library-macgyver-devel >= 25.2.18
 BuildRequires: smartmet-library-newbase-devel >= 25.2.18
 BuildRequires: zlib-devel
-BuildRequires: %{smartmet_cairomm}-devel
+BuildRequires: cairomm-devel
 BuildRequires: gdal310-devel
 BuildRequires: smartmet-library-gis-devel >= 25.2.18
 BuildRequires: %{smartmet_fmt_devel}
@@ -54,7 +48,7 @@ Requires: %{smartmet_boost}-filesystem
 Requires: %{smartmet_boost}-regex
 Requires: %{smartmet_boost}-thread
 Requires: %{smartmet_fmt}
-Requires: %{smartmet_cairomm}
+Requires: cairomm
 Requires: freetype
 Requires: libjpeg
 Requires: libpng
