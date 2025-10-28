@@ -31,7 +31,6 @@ LIBS +=  \
 	-lboost_regex \
 	-lboost_iostreams \
 	-lboost_thread \
-	-lboost_system \
 	$(FT2_LIBS) \
 	$(REQUIRES_LIBS) \
 	-lz -lpthread -lrt
