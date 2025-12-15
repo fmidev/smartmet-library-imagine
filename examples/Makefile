@@ -22,7 +22,6 @@ LIBS =  -L .. -lsmartmet_imagine \
 	-lboost_regex-mt \
 	-lboost_filesystem-mt \
 	-lboost_thread-mt \
-	-lboost_system-mt \
 	-lfreetype -lpng -ljpeg -lz -lbz2 -lrt
 
 all: $(PROG)
