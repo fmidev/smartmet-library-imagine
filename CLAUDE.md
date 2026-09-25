@@ -4,6 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
+Full developer documentation: `docs/developer-guide.md`.
+
 `smartmet-library-imagine` is a 2D graphics rendering library (`libsmartmet-imagine.so`) used by SmartMet Server rendering tools (notably `qdcontour`). It lives in the `Imagine` namespace. The successor library is `imagine2`, but this one is still actively maintained.
 
 ## Build commands
