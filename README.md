@@ -18,6 +18,10 @@ The imagine library is a 2D graphics rendering library used by SmartMet Server r
 
 Used by [smartmet-qdcontour](https://github.com/fmidev/smartmet-qdcontour) and other SmartMet rendering tools for weather map product generation. The successor library is [smartmet-library-imagine2](https://github.com/fmidev/smartmet-library-imagine2).
 
+## Documentation
+
+- [Developer guide](docs/developer-guide.md): backend, colours, paths, contouring, shapefiles and pitfalls
+
 ## License
 
 MIT — see [LICENSE](LICENSE)
