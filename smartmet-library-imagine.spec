@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 26.4.13
+Version: 26.10.3
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -30,15 +30,15 @@ BuildRequires: %{smartmet_boost}-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: smartmet-library-macgyver-devel >= 26.4.13
-BuildRequires: smartmet-library-newbase-devel >= 26.2.4
+BuildRequires: smartmet-library-macgyver-devel >= 26.10.3
+BuildRequires: smartmet-library-newbase-devel >= 26.10.3
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal312-devel
-BuildRequires: smartmet-library-gis-devel >= 26.4.13
+BuildRequires: smartmet-library-gis-devel >= 26.10.3
 BuildRequires: %{smartmet_fmt_devel}
-Requires: smartmet-library-macgyver >= 26.4.13
-Requires: smartmet-library-newbase >= 26.2.4
+Requires: smartmet-library-macgyver >= 26.10.3
+Requires: smartmet-library-newbase >= 26.10.3
 Requires: %{smartmet_boost}-filesystem
 Requires: %{smartmet_boost}-regex
 Requires: %{smartmet_boost}-thread
@@ -51,16 +51,16 @@ Requires: zlib
 #TestRequires: make
 #TestRequires: gcc-c++
 #TestRequires: smartmet-library-regression
-#TestRequires: smartmet-library-macgyver-devel >= 26.4.13
+#TestRequires: smartmet-library-macgyver-devel >= 26.10.3
 #TestRequires: smartmet-library-macgyver
-#TestRequires: smartmet-library-newbase-devel >= 26.2.4
+#TestRequires: smartmet-library-newbase-devel >= 26.10.3
 #TestRequires: %{smartmet_boost}-devel
 #TestRequires: freetype-devel
 #TestRequires: libjpeg
 #TestRequires: libpng
 #TestRequires: zlib
 #TestRequires: bzip2-libs
-#TestRequires: smartmet-library-gis-devel >= 26.4.13
+#TestRequires: smartmet-library-gis-devel >= 26.10.3
 Provides: %{LIBNAME}
 Obsoletes: libsmartmet-imagine < 17.1.4
 Obsoletes: libsmartmet-imagine-debuginfo < 17.1.4
@@ -104,6 +104,9 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Sat Oct 03 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.3-1.fmi
+- Remove unnecessary copies found by clang-tidy performance checks
+
 * Mon Apr 13 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.4.13-1.fmi
 - Repackaged due to API changes
 
