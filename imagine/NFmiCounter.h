@@ -101,7 +101,7 @@ class NFmiCounter
 
   long Count(T theElement) const
   {
-    typename NFmiCounterData::const_iterator iter = itsData.find(theElement);
+    auto iter = itsData.find(theElement);
     if (iter == itsData.end())
       return 0L;
     else

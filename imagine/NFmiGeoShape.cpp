@@ -289,7 +289,7 @@ const NFmiPath NFmiGeoShape::PathEsri() const
 
     // Iterate through all elements
 
-    NFmiEsriShape::const_iterator iter = itsEsriShape->Elements().begin();
+    auto iter = itsEsriShape->Elements().begin();
 
     for (; iter != itsEsriShape->Elements().end(); ++iter)
     {
@@ -315,7 +315,7 @@ const NFmiPath NFmiGeoShape::PathEsri() const
         case kFmiEsriMultiPointM:
         case kFmiEsriMultiPointZ:
         {
-          const NFmiEsriMultiPoint *elem = static_cast<const NFmiEsriMultiPoint *>(*iter);
+          const auto* elem = static_cast<const NFmiEsriMultiPoint*>(*iter);
           for (int i = 0; i < elem->NumPoints(); i++)
             outpath.LineTo(elem->Points()[i].X(), elem->Points()[i].Y());
           break;
@@ -325,7 +325,7 @@ const NFmiPath NFmiGeoShape::PathEsri() const
         case kFmiEsriPolyLineM:
         case kFmiEsriPolyLineZ:
         {
-          const NFmiEsriPolyLine *elem = static_cast<const NFmiEsriPolyLine *>(*iter);
+          const auto* elem = static_cast<const NFmiEsriPolyLine*>(*iter);
           for (int part = 0; part < elem->NumParts(); part++)
           {
             int i1, i2;
@@ -350,7 +350,7 @@ const NFmiPath NFmiGeoShape::PathEsri() const
         case kFmiEsriPolygonM:
         case kFmiEsriPolygonZ:
         {
-          const NFmiEsriPolygon *elem = static_cast<const NFmiEsriPolygon *>(*iter);
+          const auto* elem = static_cast<const NFmiEsriPolygon*>(*iter);
           for (int part = 0; part < elem->NumParts(); part++)
           {
             int i1, i2;
@@ -373,7 +373,7 @@ const NFmiPath NFmiGeoShape::PathEsri() const
         }
         case kFmiEsriMultiPatch:
         {
-          const NFmiEsriMultiPatch *elem = static_cast<const NFmiEsriMultiPatch *>(*iter);
+          const auto* elem = static_cast<const NFmiEsriMultiPatch*>(*iter);
           for (int part = 0; part < elem->NumParts(); part++)
           {
             int i1, i2;
@@ -465,7 +465,7 @@ void NFmiGeoShape::AddEsri(NFmiFillMap &theMap) const
 
     // Iterate through all elements
 
-    NFmiEsriShape::const_iterator iter = itsEsriShape->Elements().begin();
+    auto iter = itsEsriShape->Elements().begin();
 
     for (; iter != itsEsriShape->Elements().end(); ++iter)
     {
@@ -492,7 +492,7 @@ void NFmiGeoShape::AddEsri(NFmiFillMap &theMap) const
         case kFmiEsriPolygonM:
         case kFmiEsriPolygonZ:
         {
-          const NFmiEsriPolygon *elem = static_cast<const NFmiEsriPolygon *>(*iter);
+          const auto* elem = static_cast<const NFmiEsriPolygon*>(*iter);
           for (int part = 0; part < elem->NumParts(); part++)
           {
             int i1, i2;
@@ -512,7 +512,7 @@ void NFmiGeoShape::AddEsri(NFmiFillMap &theMap) const
         }
         case kFmiEsriMultiPatch:
         {
-          const NFmiEsriMultiPatch *elem = static_cast<const NFmiEsriMultiPatch *>(*iter);
+          const auto* elem = static_cast<const NFmiEsriMultiPatch*>(*iter);
           for (int part = 0; part < elem->NumParts(); part++)
           {
             int i1, i2;
@@ -637,7 +637,7 @@ void NFmiGeoShape::MarkEsri(ImagineXr_or_NFmiImage &img,
 
     // Iterate through all elements
 
-    NFmiEsriShape::const_iterator iter = itsEsriShape->Elements().begin();
+    auto iter = itsEsriShape->Elements().begin();
 
     for (; iter != itsEsriShape->Elements().end(); ++iter)
     {
@@ -666,7 +666,7 @@ void NFmiGeoShape::MarkEsri(ImagineXr_or_NFmiImage &img,
         case kFmiEsriMultiPointM:
         case kFmiEsriMultiPointZ:
         {
-          const NFmiEsriMultiPoint *elem = static_cast<const NFmiEsriMultiPoint *>(*iter);
+          const auto* elem = static_cast<const NFmiEsriMultiPoint*>(*iter);
           for (int i = 0; i < elem->NumPoints(); i++)
           {
             int x = static_cast<int>(elem->Points()[i].X());
@@ -680,7 +680,7 @@ void NFmiGeoShape::MarkEsri(ImagineXr_or_NFmiImage &img,
         case kFmiEsriPolyLineM:
         case kFmiEsriPolyLineZ:
         {
-          const NFmiEsriPolyLine *elem = static_cast<const NFmiEsriPolyLine *>(*iter);
+          const auto* elem = static_cast<const NFmiEsriPolyLine*>(*iter);
           for (int i = 0; i < elem->NumPoints(); i++)
           {
             int x = static_cast<int>(elem->Points()[i].X());
@@ -693,7 +693,7 @@ void NFmiGeoShape::MarkEsri(ImagineXr_or_NFmiImage &img,
         case kFmiEsriPolygonM:
         case kFmiEsriPolygonZ:
         {
-          const NFmiEsriPolygon *elem = static_cast<const NFmiEsriPolygon *>(*iter);
+          const auto* elem = static_cast<const NFmiEsriPolygon*>(*iter);
           // Note that the last one is ignored, it is equal to the first one!
           for (int i = 0; i < elem->NumPoints() - 1; i++)
           {
@@ -743,7 +743,7 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
 
     // Iterate through all elements
 
-    NFmiEsriShape::const_iterator iter = itsEsriShape->Elements().begin();
+    auto iter = itsEsriShape->Elements().begin();
 
     for (; iter != itsEsriShape->Elements().end(); ++iter)
     {
@@ -780,7 +780,7 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
         case kFmiEsriMultiPointM:
         case kFmiEsriMultiPointZ:
         {
-          const NFmiEsriMultiPoint *elem = static_cast<const NFmiEsriMultiPoint *>(*iter);
+          const auto* elem = static_cast<const NFmiEsriMultiPoint*>(*iter);
           for (int i = 0; i < elem->NumPoints(); i++)
           {
             int x = static_cast<int>(elem->Points()[i].X());
@@ -794,7 +794,7 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
         case kFmiEsriPolygonM:
         case kFmiEsriPolygonZ:
         {
-          const NFmiEsriPolygon *elem = static_cast<const NFmiEsriPolygon *>(*iter);
+          const auto* elem = static_cast<const NFmiEsriPolygon*>(*iter);
           for (int part = 0; part < elem->NumParts(); part++)
           {
             vector<pair<int, int> > points;
@@ -829,8 +829,7 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
             if (points.size() > 3)
             {
               os << '"' << fieldvalue << '"' << " => " << '"';
-              for (vector<pair<int, int> >::const_iterator it = points.begin(); it != points.end();
-                   ++it)
+              for (auto it = points.begin(); it != points.end(); ++it)
               {
                 if (it != points.begin())
                   os << ' ';

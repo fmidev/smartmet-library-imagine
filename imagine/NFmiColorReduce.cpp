@@ -255,8 +255,8 @@ float ColorTree::distance(ColorTree::value_type theColor1, ColorTree::value_type
         (gamma[NFmiColorTools::GetGreen(theColor1)] - gamma[NFmiColorTools::GetGreen(theColor2)]);
     const float b =
         (gamma[NFmiColorTools::GetBlue(theColor1)] - gamma[NFmiColorTools::GetBlue(theColor2)]);
-    const float a = static_cast<float>(NFmiColorTools::GetAlpha(theColor1) -
-                                       NFmiColorTools::GetAlpha(theColor2));
+    const auto a = static_cast<float>(NFmiColorTools::GetAlpha(theColor1) -
+                                      NFmiColorTools::GetAlpha(theColor2));
 
     return sqrt(3.0f * r * r + 4.0f * g * g + 2.0f * b * b + a * a);
   }
@@ -482,7 +482,7 @@ void replace_colors(NFmiImage& theImage, const ColorMap& theMap)
   {
     boost::unordered_map<NFmiColorTools::Color, NFmiColorTools::Color> colormap(256);
 
-    for (ColorMap::const_iterator it = theMap.begin(); it != theMap.end(); ++it)
+    for (auto it = theMap.begin(); it != theMap.end(); ++it)
     {
       colormap[it->first] = it->second;
     }
@@ -535,10 +535,10 @@ void build_tree(const NFmiImage& theImage,
 {
   try
   {
-    const float ratio = static_cast<float>(1.0 / (theImage.Width() * theImage.Height()));
+    const auto ratio = static_cast<float>(1.0 / (theImage.Width() * theImage.Height()));
     const float factor = -theQuality / log(10.0f);
 
-    for (ColorHistogram::const_iterator it = theHistogram.begin(); it != theHistogram.end(); ++it)
+    for (auto it = theHistogram.begin(); it != theHistogram.end(); ++it)
     {
       if (theTree.empty() || it->keeper)
       {
@@ -586,7 +586,7 @@ void build_tree(const NFmiImage& theImage,
 {
   try
   {
-    const float ratio = static_cast<float>(1.0 / (theImage.Width() * theImage.Height()));
+    const auto ratio = static_cast<float>(1.0 / (theImage.Width() * theImage.Height()));
 
     bool done = false;
     while (!done)
@@ -594,7 +594,7 @@ void build_tree(const NFmiImage& theImage,
       done = true;
       const float factor = -theQuality / log(10.0f);
 
-      for (ColorHistogram::const_iterator it = theHistogram.begin(); it != theHistogram.end(); ++it)
+      for (auto it = theHistogram.begin(); it != theHistogram.end(); ++it)
       {
         if (theTree.empty() || it->keeper)
         {

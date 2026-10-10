@@ -174,7 +174,7 @@ void NFmiEsriShape::Init(void)
   {
     // Destroy attributename pointees
 
-    attributes_type::iterator aiter = itsAttributeNames.begin();
+    auto aiter = itsAttributeNames.begin();
     for (; aiter != itsAttributeNames.end(); ++aiter)
       delete *aiter;
 
@@ -184,7 +184,7 @@ void NFmiEsriShape::Init(void)
 
     // Destroy element pointees
 
-    NFmiEsriShape::iterator eiter = itsElements.begin();
+    auto eiter = itsElements.begin();
     for (; eiter != itsElements.end(); ++eiter)
       delete *eiter;
 
@@ -251,7 +251,7 @@ bool NFmiEsriShape::Read(const string &theFilename, bool fDBF)
   try
   {
     // Default search path for shape files
-    const string shapes_path = NFmiSettings::Optional<string>("imagine::shapes_path", string("."));
+    const auto shapes_path = NFmiSettings::Optional<string>("imagine::shapes_path", string("."));
 
     // Derived file names
 
@@ -503,7 +503,7 @@ bool NFmiEsriShape::Read(const string &theFilename, bool fDBF)
 
     // The first shape to get an attribute
 
-    NFmiEsriShape::iterator elementiter = itsElements.begin();
+    auto elementiter = itsElements.begin();
 
     // Read all the records at once, including the leading terminator byte
 
@@ -522,7 +522,7 @@ bool NFmiEsriShape::Read(const string &theFilename, bool fDBF)
 
       int recpos = 1 + (rec - 1) * recordlength;
 
-      attributes_type::iterator nameiter = itsAttributeNames.begin();
+      auto nameiter = itsAttributeNames.begin();
       for (int fieldnum = 0; fieldnum < numfields; ++fieldnum, ++nameiter)
       {
         // Position and size of the field
@@ -945,15 +945,13 @@ bool NFmiEsriShape::WriteDBF(const string &theFilename) const
       }
       dbffile << '\x0d';  // header record terminator
 
-      for (const_iterator it = itsElements.begin(); it != itsElements.end(); ++it)
+      for (auto it = itsElements.begin(); it != itsElements.end(); ++it)
       {
         const elements_type::value_type element = *it;
 
         dbffile << ' ';  // not deleted, "*" would indicate deleted
 
-        for (attributes_type::const_iterator jt = itsAttributeNames.begin();
-             jt != itsAttributeNames.end();
-             ++jt)
+        for (auto jt = itsAttributeNames.begin(); jt != itsAttributeNames.end(); ++jt)
         {
           const string name = (*jt)->Name();
           switch ((*jt)->Type())
@@ -1058,7 +1056,7 @@ void NFmiEsriShape::Project(const NFmiEsriProjector &theProjector)
 
     static_cast<NFmiEsriBox>(itsBox).Init();
 
-    NFmiEsriShape::iterator iter = itsElements.begin();
+    auto iter = itsElements.begin();
 
     for (; iter != itsElements.end(); ++iter)
     {
@@ -1083,8 +1081,8 @@ NFmiEsriAttributeName *NFmiEsriShape::AttributeName(const string &theFieldName) 
 {
   try
   {
-    attributes_type::const_iterator begin = itsAttributeNames.begin();
-    attributes_type::const_iterator end = itsAttributeNames.end();
+    auto begin = itsAttributeNames.begin();
+    auto end = itsAttributeNames.end();
     attributes_type::const_iterator iter;
 
     NFmiEsriAttributeName *out = nullptr;

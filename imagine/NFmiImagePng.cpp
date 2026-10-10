@@ -114,7 +114,7 @@ void NFmiImage::ReadPNG(FILE *in)
 
     // Image data holder
 
-    unsigned char *row_data = static_cast<unsigned char *>(malloc(rowbytes));
+    auto* row_data = static_cast<unsigned char*>(malloc(rowbytes));
 
     if (row_data == nullptr)
     {
@@ -303,7 +303,7 @@ void NFmiImage::WritePNG(FILE *out) const
 
       // Image data holder
 
-      unsigned char *row_data = static_cast<unsigned char *>(malloc(channels * itsWidth));
+      auto* row_data = static_cast<unsigned char*>(malloc(channels * itsWidth));
       if (row_data == nullptr)
       {
         png_destroy_write_struct(&png_ptr, &info_ptr);
@@ -438,7 +438,7 @@ void NFmiImage::WritePNG(FILE *out) const
 
       // Image data holder
 
-      unsigned char *row_data = static_cast<unsigned char *>(malloc(itsWidth));
+      auto* row_data = static_cast<unsigned char*>(malloc(itsWidth));
       if (row_data == nullptr)
       {
         png_destroy_write_struct(&png_ptr, &info_ptr);

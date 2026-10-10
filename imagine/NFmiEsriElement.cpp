@@ -42,8 +42,8 @@ NFmiEsriAttributeType NFmiEsriElement::GetType(const string& theName) const
 {
   try
   {
-    list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
-    list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
+    auto begin = itsAttributes.begin();
+    auto end = itsAttributes.end();
     list<NFmiEsriAttribute>::const_iterator iter;
 
     for (iter = begin; iter != end; ++iter)
@@ -70,8 +70,8 @@ const std::string NFmiEsriElement::GetString(const string& theName) const
 {
   try
   {
-    list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
-    list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
+    auto begin = itsAttributes.begin();
+    auto end = itsAttributes.end();
     list<NFmiEsriAttribute>::const_iterator iter;
 
     for (iter = begin; iter != end; ++iter)
@@ -100,8 +100,8 @@ const NFmiMetTime& NFmiEsriElement::GetDate(const std::string& theName) const
 {
   try
   {
-    list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
-    list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
+    auto begin = itsAttributes.begin();
+    auto end = itsAttributes.end();
     list<NFmiEsriAttribute>::const_iterator iter;
 
     for (iter = begin; iter != end; ++iter)
@@ -127,8 +127,8 @@ int NFmiEsriElement::GetInteger(const string& theName) const
 {
   try
   {
-    list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
-    list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
+    auto begin = itsAttributes.begin();
+    auto end = itsAttributes.end();
     list<NFmiEsriAttribute>::const_iterator iter;
 
     for (iter = begin; iter != end; ++iter)
@@ -156,8 +156,8 @@ double NFmiEsriElement::GetDouble(const string& theName) const
 {
   try
   {
-    list<NFmiEsriAttribute>::const_iterator begin = itsAttributes.begin();
-    list<NFmiEsriAttribute>::const_iterator end = itsAttributes.end();
+    auto begin = itsAttributes.begin();
+    auto end = itsAttributes.end();
     list<NFmiEsriAttribute>::const_iterator iter;
 
     for (iter = begin; iter != end; ++iter)

@@ -99,9 +99,7 @@ NFmiPath SubdividePath(const NFmiPath& thePath, double theMaxLength)
 
     double lastx = 0;
     double lasty = 0;
-    for (NFmiPathData::const_iterator it = thePath.Elements().begin();
-         it != thePath.Elements().end();
-         ++it)
+    for (auto it = thePath.Elements().begin(); it != thePath.Elements().end(); ++it)
     {
       switch (it->op)
       {
@@ -198,11 +196,11 @@ const NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError)
     NFmiCounter<NFmiPoint> counts = VertexCounts(thePaths);
 
     NFmiPaths outpaths;
-    for (NFmiPaths::const_iterator it = thePaths.begin(); it != thePaths.end(); ++it)
+    for (auto it = thePaths.begin(); it != thePaths.end(); ++it)
     {
       PathList pathlist = SplitPath(*it, counts);
       NFmiPath outpath;
-      for (PathList::const_iterator jt = pathlist.begin(); jt != pathlist.end(); ++jt)
+      for (auto jt = pathlist.begin(); jt != pathlist.end(); ++jt)
       {
         NFmiPath fitpath = Fit(*jt, theMaxError);
         outpath.Add(fitpath);

@@ -218,7 +218,7 @@ const NFmiPath Fit(const NFmiPath& thePath, double theSmoothness)
 
     NFmiPath outpath;
     Segments segments = SplitSegments(thePath);
-    for (Segments::const_iterator it = segments.begin(); it != segments.end(); ++it)
+    for (auto it = segments.begin(); it != segments.end(); ++it)
     {
       if (it->second)
         outpath.Add(SimpleFit(it->first, theSmoothness));
@@ -274,11 +274,11 @@ const NFmiPaths Fit(const NFmiPaths& thePaths, double theSmoothness)
     NFmiCounter<NFmiPoint> counts = VertexCounts(thePaths);
 
     NFmiPaths outpaths;
-    for (NFmiPaths::const_iterator it = thePaths.begin(); it != thePaths.end(); ++it)
+    for (auto it = thePaths.begin(); it != thePaths.end(); ++it)
     {
       PathList pathlist = SplitPath(*it, counts);
       NFmiPath outpath;
-      for (PathList::const_iterator jt = pathlist.begin(); jt != pathlist.end(); ++jt)
+      for (auto jt = pathlist.begin(); jt != pathlist.end(); ++jt)
       {
         outpath.Add(Fit(*jt, theSmoothness));
       }

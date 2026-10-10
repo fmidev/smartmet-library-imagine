@@ -173,7 +173,7 @@ class NFmiPath
     if (thePath.Empty())
       return;
 
-    NFmiPathData::const_iterator it = thePath.itsElements.begin();
+    auto it = thePath.itsElements.begin();
     // strip leading moveto if the coordinate is the same as last end point
     if (!Empty() && (*it).op == kFmiMoveTo && (*it).x == itsElements.back().x &&
         (*it).y == itsElements.back().y)

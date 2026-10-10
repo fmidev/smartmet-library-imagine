@@ -258,14 +258,14 @@ const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths& thePaths)
   {
     NFmiCounter<NFmiPoint> counts;
 
-    for (NFmiPaths::const_iterator pt = thePaths.begin(); pt != thePaths.end(); ++pt)
+    for (auto pt = thePaths.begin(); pt != thePaths.end(); ++pt)
     {
       const NFmiPathData& path = pt->Elements();
 
       // end coordinate of previous moveto
       NFmiPoint previous_moveto(kFloatMissing, kFloatMissing);
 
-      for (NFmiPathData::const_iterator it = path.begin(); it != path.end(); ++it)
+      for (auto it = path.begin(); it != path.end(); ++it)
       {
         NFmiPoint p(it->x, it->y);
         switch (it->op)
@@ -320,9 +320,7 @@ const Segments SplitSegments(const NFmiPath& thePath)
     bool isregular = false;
     NFmiPath outpath;
 
-    for (NFmiPathData::const_iterator it = thePath.Elements().begin();
-         it != thePath.Elements().end();
-         ++it)
+    for (auto it = thePath.Elements().begin(); it != thePath.Elements().end(); ++it)
     {
       // current outpath must be flushed if
       // a) operator is moveto
@@ -394,9 +392,7 @@ const PathList SplitPath(const NFmiPath& thePath)
     PathList out;
 
     NFmiPath outpath;
-    for (NFmiPathData::const_iterator it = thePath.Elements().begin();
-         it != thePath.Elements().end();
-         ++it)
+    for (auto it = thePath.Elements().begin(); it != thePath.Elements().end(); ++it)
     {
       if (it->op == kFmiMoveTo && !outpath.Empty())
       {
@@ -448,7 +444,7 @@ const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& 
 
     PathList input = SplitPath(thePath);
 
-    for (PathList::const_iterator it = input.begin(); it != input.end(); ++it)
+    for (auto it = input.begin(); it != input.end(); ++it)
     {
       const bool isclosed = IsClosed(*it);
       const NFmiPathData& path = it->Elements();
@@ -458,7 +454,7 @@ const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& 
       std::vector<long> counts;
       counts.reserve(path.size());
 
-      for (NFmiPathData::const_iterator jt = path.begin(); jt != path.end(); ++jt)
+      for (auto jt = path.begin(); jt != path.end(); ++jt)
       {
         const NFmiPoint point(jt->x, jt->y);
         const long count = theCounts.Count(point);

@@ -231,12 +231,12 @@ const string& NFmiFreeType::Pimple::findFont(const string& theName)
 {
   try
   {
-    map<string, string>::const_iterator it = itsFontPaths.find(theName);
+    auto it = itsFontPaths.find(theName);
 
     if (it != itsFontPaths.end())
       return it->second;
 
-    const string path = NFmiSettings::Optional<string>("imagine::font_path", ".");
+    const auto path = NFmiSettings::Optional<string>("imagine::font_path", ".");
     const string file = NFmiFileSystem::FileComplete(theName, path);
 
     return (itsFontPaths[theName] = file);
@@ -257,7 +257,7 @@ FT_Face NFmiFreeType::Pimple::getFont(const string& theFont)
 {
   try
   {
-    Faces::const_iterator it = itsFaces.find(theFont);
+    auto it = itsFaces.find(theFont);
     if (it != itsFaces.end())
       return it->second;
 
@@ -395,7 +395,7 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
       error = FT_Glyph_To_Bitmap(&image, FT_RENDER_MODE_NORMAL, &pen, 0);
       if (!error)
       {
-        FT_BitmapGlyph bit = reinterpret_cast<FT_BitmapGlyph>(image);
+        auto bit = reinterpret_cast<FT_BitmapGlyph>(image);
         pos[glyphpos].x += bit->left;
         pos[glyphpos].y -= bit->top;
       }
@@ -458,7 +458,7 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
 
       if (!error)
       {
-        FT_BitmapGlyph bit = reinterpret_cast<FT_BitmapGlyph>(image);
+        auto bit = reinterpret_cast<FT_BitmapGlyph>(image);
 
 #if 0
 			this->Draw(theBlender, theImage, theColor,

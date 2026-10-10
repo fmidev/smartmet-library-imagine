@@ -396,7 +396,7 @@ void NFmiContourTree::ContourNearest(const Fmi::CoordinateMatrix& thePts,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (Rectangles::const_iterator it = rects.begin(); it != rects.end(); ++it)
+    for (auto it = rects.begin(); it != rects.end(); ++it)
     {
       for (int j = it->y1; j < it->y2; ++j)
         for (int i = it->x1; i < it->x2; ++i)
@@ -441,7 +441,7 @@ void NFmiContourTree::ContourDiscrete(const Fmi::CoordinateMatrix& thePts,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (Rectangles::const_iterator it = rects.begin(); it != rects.end(); ++it)
+    for (auto it = rects.begin(); it != rects.end(); ++it)
     {
       for (int j = it->y1; j < it->y2; ++j)
         for (int i = it->x1; i < it->x2; ++i)
@@ -486,7 +486,7 @@ void NFmiContourTree::ContourNearest(const NFmiDataMatrix<float>& theValues,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (Rectangles::const_iterator it = rects.begin(); it != rects.end(); ++it)
+    for (auto it = rects.begin(); it != rects.end(); ++it)
     {
       for (int j = it->y1; j < it->y2; ++j)
         for (int i = it->x1; i < it->x2; ++i)
@@ -529,7 +529,7 @@ void NFmiContourTree::ContourDiscrete(const NFmiDataMatrix<float>& theValues,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (Rectangles::const_iterator it = rects.begin(); it != rects.end(); ++it)
+    for (auto it = rects.begin(); it != rects.end(); ++it)
     {
       for (int j = it->y1; j < it->y2; ++j)
         for (int i = it->x1; i < it->x2; ++i)
@@ -652,7 +652,7 @@ void NFmiContourTree::ContourLinear(const Fmi::CoordinateMatrix& thePts,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (Rectangles::const_iterator it = rects.begin(); it != rects.end(); ++it)
+    for (auto it = rects.begin(); it != rects.end(); ++it)
     {
       for (int j = it->y1; j < it->y2; ++j)
         for (int i = it->x1; i < it->x2; ++i)
@@ -697,7 +697,7 @@ void NFmiContourTree::ContourLinear(const NFmiDataMatrix<float>& theValues,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (Rectangles::const_iterator it = rects.begin(); it != rects.end(); ++it)
+    for (auto it = rects.begin(); it != rects.end(); ++it)
     {
       for (int j = it->y1; j < it->y2; ++j)
         for (int i = it->x1; i < it->x2; ++i)
@@ -908,7 +908,7 @@ void NFmiContourTree::ContourLinear4(float x1,
 
       // all ghostlines can be added as is
       {
-        for (EdgeTreeType::iterator it = subpath.itsEdges.begin(); it != subpath.itsEdges.end();)
+        for (auto it = subpath.itsEdges.begin(); it != subpath.itsEdges.end();)
         {
           if (it->Exact())
             ++it;
@@ -929,7 +929,7 @@ void NFmiContourTree::ContourLinear4(float x1,
       float firsty = 0;
       float lastx = 0;
       float lasty = 0;
-      for (NFmiPathData::const_iterator it = elements.begin(); it != elements.end(); ++it)
+      for (auto it = elements.begin(); it != elements.end(); ++it)
       {
         switch (it->op)
         {
@@ -1219,7 +1219,7 @@ void NFmiContourTree::ContourDiscrete4(float x1,
                              y4,
                              c4 == kInside ? 1 : 2);
 
-      for (EdgeTreeType::iterator it = subpath.itsEdges.begin(); it != subpath.itsEdges.end(); ++it)
+      for (auto it = subpath.itsEdges.begin(); it != subpath.itsEdges.end(); ++it)
       {
         Add(*it);
       }

@@ -100,7 +100,7 @@ void NFmiPath::Add(const NFmiPath &thePath, bool fExact)
     // moveto in the path being appended into a lineto of the
     // type implied by fExact
 
-    NFmiPathData::const_iterator iter = thePath.itsElements.begin();
+    auto iter = thePath.itsElements.begin();
 
     for (; iter != thePath.itsElements.end(); ++iter)
     {
@@ -129,7 +129,7 @@ void NFmiPath::Insert(const NFmiPath &thePath, bool fExact)
   {
     // And insert one by one to get correct inverse order
 
-    NFmiPathData::const_iterator iter = thePath.itsElements.begin();
+    auto iter = thePath.itsElements.begin();
 
     bool first = true;
     for (; iter != thePath.itsElements.end(); ++iter)
@@ -169,7 +169,7 @@ void NFmiPath::AddReverse(const NFmiPath &thePath, bool fExact)
 
     // Iterate
 
-    NFmiPathData::const_reverse_iterator iter = thePath.itsElements.rbegin();
+    auto iter = thePath.itsElements.rbegin();
     for (; iter != thePath.itsElements.rend(); ++iter)
     {
       Add(op, iter->x, iter->y);
@@ -710,8 +710,8 @@ void NFmiPath::SimplifyLines(double theOffset)
 {
   try
   {
-    NFmiPathData::iterator iter = itsElements.begin();
-    NFmiPathData::iterator end = itsElements.end();
+    auto iter = itsElements.begin();
+    auto end = itsElements.end();
 
     NFmiPathData newelements;
 
@@ -815,7 +815,7 @@ std::ostream &operator<<(std::ostream &os, const NFmiPath &thePath)
 {
   try
   {
-    NFmiPathData::const_iterator iter = thePath.Elements().begin();
+    auto iter = thePath.Elements().begin();
 
     if (thePath.IsInsideOut())
       os << "INSIDEOUT ";
@@ -880,7 +880,7 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
     int count_conic = 0;
     int count_cubic = 0;
 
-    NFmiPathData::const_iterator iter = Elements().begin();
+    auto iter = Elements().begin();
 
     for (; iter != Elements().end(); ++iter)
     {
@@ -1085,7 +1085,7 @@ void NFmiPath::Add(NFmiFillMap &theMap) const
 
     // The iterator for traversing the data
 
-    NFmiPathData::const_iterator iter = Elements().begin();
+    auto iter = Elements().begin();
 
     for (; iter != Elements().end(); ++iter)
     {
@@ -1171,7 +1171,7 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
     double lastX = kFloatMissing;
     double lastY = kFloatMissing;
 
-    NFmiPathData::const_iterator iter = Elements().begin();
+    auto iter = Elements().begin();
 
     for (; iter != Elements().end(); ++iter)
     {
@@ -1238,7 +1238,7 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
     double lastX = kFloatMissing;
     double lastY = kFloatMissing;
 
-    NFmiPathData::const_iterator iter = Elements().begin();
+    auto iter = Elements().begin();
 
     for (; iter != Elements().end(); ++iter)
     {
@@ -1301,8 +1301,8 @@ NFmiPath NFmiPath::Clip(
     NFmiPath outPath;
     NFmiPath tmpPath;
 
-    const NFmiPathData::const_iterator begin = Elements().begin();
-    const NFmiPathData::const_iterator end = Elements().end();
+    const auto begin = Elements().begin();
+    const auto end = Elements().end();
     int last_quadrant = 0;
     int this_quadrant = 0;
 
@@ -1552,8 +1552,8 @@ NFmiPath NFmiPath::Clip(const NFmiArea *const theArea) const
     NFmiPath path;
     if (theArea && itsElements.size() > 1)
     {
-      NFmiPathData::const_iterator iter = itsElements.begin();
-      NFmiPathData::const_iterator prevIter = iter++;
+      auto iter = itsElements.begin();
+      auto prevIter = iter++;
       bool prevInside = IsInside(theArea, *prevIter);
       bool currentInside = prevInside;
       for (; iter != itsElements.end(); ++iter)
@@ -1584,8 +1584,8 @@ void add_cuts(NFmiContourTree &theTree, std::set<double> &theCuts, double theLon
 {
   try
   {
-    std::set<double>::const_iterator iter = theCuts.begin();
-    std::set<double>::const_iterator end = theCuts.end();
+    auto iter = theCuts.begin();
+    auto end = theCuts.end();
 
     while (iter != end)
     {
@@ -1632,9 +1632,7 @@ void make_pacific(const NFmiPath &thePath,
     if (theBox.Xmax() < 0 && !theDateLine)
     {
       // Only shift from Atlantic to Pacific
-      for (NFmiPathData::const_iterator iter = thePath.Elements().begin(),
-                                        end = thePath.Elements().end();
-           iter != end;
+      for (auto iter = thePath.Elements().begin(), end = thePath.Elements().end(); iter != end;
            ++iter)
       {
         theOutPath.Add(NFmiPathElement(iter->op, iter->x + 360, iter->y));
@@ -1650,9 +1648,7 @@ void make_pacific(const NFmiPath &thePath,
     double lastX = kFloatMissing;
     double lastY = kFloatMissing;
 
-    for (NFmiPathData::const_iterator iter = thePath.Elements().begin(),
-                                      end = thePath.Elements().end();
-         iter != end;
+    for (auto iter = thePath.Elements().begin(), end = thePath.Elements().end(); iter != end;
          ++iter)
     {
       double X = iter->x;
@@ -1752,9 +1748,7 @@ void make_atlantic(const NFmiPath &thePath,
     if (theBox.Xmin() >= 180 && !theDateLine)
     {
       // Only shift from Pacific to Atlantic
-      for (NFmiPathData::const_iterator iter = thePath.Elements().begin(),
-                                        end = thePath.Elements().end();
-           iter != end;
+      for (auto iter = thePath.Elements().begin(), end = thePath.Elements().end(); iter != end;
            ++iter)
       {
         theOutPath.Add(NFmiPathElement(iter->op, iter->x - 360, iter->y));
@@ -1769,9 +1763,7 @@ void make_atlantic(const NFmiPath &thePath,
     double lastX = kFloatMissing;
     double lastY = kFloatMissing;
 
-    for (NFmiPathData::const_iterator iter = thePath.Elements().begin(),
-                                      end = thePath.Elements().end();
-         iter != end;
+    for (auto iter = thePath.Elements().begin(), end = thePath.Elements().end(); iter != end;
          ++iter)
     {
       double X = iter->x;
@@ -1891,9 +1883,7 @@ NFmiPath NFmiPath::PacificView(bool pacific) const
 
     // Iterate over subsegments, calculating the bounding box simultaneously
 
-    for (NFmiPathData::const_iterator iter = Elements().begin(), end = Elements().end();
-         iter != end;
-         ++iter)
+    for (auto iter = Elements().begin(), end = Elements().end(); iter != end; ++iter)
     {
       if (iter->op == kFmiMoveTo)
       {
@@ -1951,9 +1941,7 @@ NFmiPath NFmiPath::AtlanticView(bool atlantic) const
 
     // Iterate over subsegments, calculating the bounding box simultaneously
 
-    for (NFmiPathData::const_iterator iter = Elements().begin(), end = Elements().end();
-         iter != end;
-         ++iter)
+    for (auto iter = Elements().begin(), end = Elements().end(); iter != end; ++iter)
     {
       if (iter->op == kFmiMoveTo)
       {

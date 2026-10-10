@@ -35,7 +35,7 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
     string fieldname, fieldvalue, fieldcomparison;
     list<string> words;
 
-    for (list<string>::const_iterator it = comparisons.begin(); it != comparisons.end(); ++it)
+    for (auto it = comparisons.begin(); it != comparisons.end(); ++it)
     {
       string::size_type pos = theCondition.find(*it);
       if (pos != string::npos)
@@ -79,18 +79,14 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
         throw Fmi::Exception(BCP, "The field '" + fieldname + "' is of unknown type");
     }
 
-    NFmiEsriShape* shape = new NFmiEsriShape(theShape.Type());
+    auto* shape = new NFmiEsriShape(theShape.Type());
 
-    for (NFmiEsriShape::attributes_type::const_iterator ait = theShape.Attributes().begin();
-         ait != theShape.Attributes().end();
-         ++ait)
+    for (auto ait = theShape.Attributes().begin(); ait != theShape.Attributes().end(); ++ait)
     {
       shape->Add(new NFmiEsriAttributeName(**ait));
     }
 
-    for (NFmiEsriShape::const_iterator it = theShape.Elements().begin();
-         it != theShape.Elements().end();
-         ++it)
+    for (auto it = theShape.Elements().begin(); it != theShape.Elements().end(); ++it)
     {
       // Skip empty elements
       if (*it == 0)

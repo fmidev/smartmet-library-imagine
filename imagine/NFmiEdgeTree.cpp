@@ -63,9 +63,7 @@ void NFmiEdgeTree::Add(const NFmiEdgeTree& theTree)
 {
   try
   {
-    for (EdgeTreeType::const_iterator iter = theTree.itsEdges.begin();
-         iter != theTree.itsEdges.end();
-         ++iter)
+    for (auto iter = theTree.itsEdges.begin(); iter != theTree.itsEdges.end(); ++iter)
       Add(*iter);
   }
   catch (...)
@@ -119,8 +117,7 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
     // Build from multiedges & edges
 
     MultiEdgeTreeType edges(itsMultiEdges);
-    for (EdgeTreeType::const_iterator iter = itsEdges.begin(), end = itsEdges.end(); iter != end;
-         ++iter)
+    for (auto iter = itsEdges.begin(), end = itsEdges.end(); iter != end; ++iter)
     {
       edges.insert(*iter);
     }
@@ -339,7 +336,7 @@ void NFmiEdgeTree::Add(NFmiFillMap& theMap) const
   {
     // The iterator for traversing the data
 
-    EdgeTreeType::const_iterator iter = Edges().begin();
+    auto iter = Edges().begin();
 
     for (; iter != Edges().end(); ++iter)
       theMap.Add(iter->GetX1(), iter->GetY1(), iter->GetX2(), iter->GetY2());

@@ -92,7 +92,7 @@ void NFmiImage::ReadJPEG(FILE *in)
 
     // Make a one-row-high sample array that will go away when done with image
 
-    JSAMPROW row = static_cast<JSAMPROW>(calloc(cinfo.output_width * 3, sizeof(JSAMPLE)));
+    auto row = static_cast<JSAMPROW>(calloc(cinfo.output_width * 3, sizeof(JSAMPLE)));
     if (row == nullptr)
       throw Fmi::Exception(BCP, "Failed to allocate memory for a JPEG data row");
 

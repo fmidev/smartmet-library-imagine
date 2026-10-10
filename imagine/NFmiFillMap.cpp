@@ -65,7 +65,7 @@ static void Fill2(T theBlender,
     // The iterator for traversing the data is not const, because we
     // sort the x-coordinates
 
-    NFmiFillMapData::iterator iter = theData.begin();
+    auto iter = theData.begin();
 
     // Iterate over all y-coordinates in the map
 
@@ -97,7 +97,7 @@ static void Fill2(T theBlender,
 
       float x1 = kFloatMissing;
 
-      NFmiFillMapElement::const_iterator dataiter = iter->second.begin();
+      auto dataiter = iter->second.begin();
 
       for (; dataiter != iter->second.end(); ++dataiter)
       {
@@ -196,7 +196,7 @@ static void Fill2(T theBlender,
     // The iterator for traversing the data is not const, because we
     // sort the x-coordinates
 
-    NFmiFillMapData::iterator iter = theData.begin();
+    auto iter = theData.begin();
 
     // Iterate over all y-coordinates in the map
 
@@ -228,7 +228,7 @@ static void Fill2(T theBlender,
 
       float x1 = kFloatMissing;
 
-      NFmiFillMapElement::const_iterator dataiter = iter->second.begin();
+      auto dataiter = iter->second.begin();
 
       for (; dataiter != iter->second.end(); ++dataiter)
       {
@@ -328,7 +328,7 @@ static void Fill2(T theBlender,
     // The iterator for traversing the data is not const, because we
     // sort the x-coordinates
 
-    NFmiFillMapData::iterator iter = theData.begin();
+    auto iter = theData.begin();
 
     // Pattern related variables
 
@@ -369,7 +369,7 @@ static void Fill2(T theBlender,
 
       float x1 = kFloatMissing;
 
-      NFmiFillMapElement::const_iterator dataiter = iter->second.begin();
+      auto dataiter = iter->second.begin();
 
       for (; dataiter != iter->second.end(); ++dataiter)
       {

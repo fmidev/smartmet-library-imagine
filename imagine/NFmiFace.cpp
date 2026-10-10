@@ -80,7 +80,7 @@ NFmiFace::NFmiFace(const std::string& theFontSpec)
 
     itsFile = words[0];
 
-    vector<int> sizes = NFmiStringTools::Split<vector<int> >(words[1], "x");
+    auto sizes = NFmiStringTools::Split<vector<int> >(words[1], "x");
     if (sizes.size() != 2)
       throw Fmi::Exception(BCP, "Invalid font specification '" + theFontSpec + "'");
 

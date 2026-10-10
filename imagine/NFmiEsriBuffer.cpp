@@ -178,7 +178,7 @@ const string NFmiEsriBuffer::BigEndianInt(int theValue)
 
     // Initialize string by reinterpreting 4 value bytes as characters
 
-    unsigned char *svalue = reinterpret_cast<unsigned char *>(&value);
+    auto* svalue = reinterpret_cast<unsigned char*>(&value);
 
     // string tmp(svalue,4);  // Perkele kun ei toimi g++:ssa
 
@@ -211,7 +211,7 @@ const string NFmiEsriBuffer::LittleEndianInt(int theValue)
 
     // Initialize string by reinterpreting 4 value bytes as characters
 
-    unsigned char *svalue = reinterpret_cast<unsigned char *>(&value);
+    auto* svalue = reinterpret_cast<unsigned char*>(&value);
 
     // string tmp(svalue,4);  // Perkele kun ei toimi g++:ssa
 
@@ -263,7 +263,7 @@ const string NFmiEsriBuffer::LittleEndianDouble(double theValue)
 
     // Initialize string by reinterpreting 8 value bytes as characters
 
-    unsigned char *svalue = reinterpret_cast<unsigned char *>(&value);
+    auto* svalue = reinterpret_cast<unsigned char*>(&value);
 
     // string tmp(svalue,8);  // Perkele kun ei toimi g++:ssa
 
