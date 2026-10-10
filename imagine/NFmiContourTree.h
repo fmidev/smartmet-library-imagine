@@ -329,7 +329,7 @@ class NFmiContourTree : public NFmiEdgeTree
 
   /// A help function definition for vertex insidedness combinations
 
-#define VertexCombo(a, b) (3 * (a) + b)
+#define VertexCombo(a, b) (3 * (a) + (b))
 
   /// VertexInsidedness of a value
 

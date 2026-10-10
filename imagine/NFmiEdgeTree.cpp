@@ -202,7 +202,7 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
       // variables is false, and cannot be anything but
       // false unless the respective variables a,b are true.
 
-#define PathCase(a, b, c, d) ((((a)*2 + (b)) * 2 + (c)) * 2 + d)
+#define PathCase(a, b, c, d) ((((a) * 2 + (b)) * 2 + (c)) * 2 + (d))
 
       switch (PathCase(fMatchedFirst, fMatchedLast, fMatchedFirstToFirst, fMatchedLastToFirst))
       {

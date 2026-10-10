@@ -113,6 +113,7 @@ FMI %{DIRNAME} development files
 - Use emplace and C++ standard library headers where clang-tidy suggests it, no functional changes
 - Use raw string literals and std::make_shared where clang-tidy suggests it, no functional changes
 - Use range-based for loops where clang-tidy suggests it, no functional changes
+- Parenthesize macro arguments where clang-tidy suggests it
 
 * Sat Oct 03 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.3-1.fmi
 - Remove unnecessary copies found by clang-tidy performance checks
