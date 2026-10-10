@@ -26,9 +26,8 @@ namespace Imagine
 // ----------------------------------------------------------------------
 
 NFmiEsriMultiPoint::NFmiEsriMultiPoint(const NFmiEsriMultiPoint& thePoints)
-    : NFmiEsriElement(thePoints), itsBox(thePoints.itsBox), itsPoints(thePoints.itsPoints)
-{
-}
+
+    = default;
 
 // ----------------------------------------------------------------------
 // Assignment operator

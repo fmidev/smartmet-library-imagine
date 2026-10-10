@@ -97,17 +97,17 @@ class NFmiEsriShape
  public:
   // Typedefs to aid iterating
 
-  typedef std::vector<NFmiEsriElement *> elements_type;
-  typedef std::vector<NFmiEsriAttributeName *> attributes_type;
+  using elements_type = std::vector<NFmiEsriElement*>;
+  using attributes_type = std::vector<NFmiEsriAttributeName*>;
 
-  typedef elements_type::const_iterator const_iterator;
-  typedef elements_type::iterator iterator;
+  using const_iterator = elements_type::const_iterator;
+  using iterator = elements_type::iterator;
 
   const attributes_type &Attributes(void) const { return itsAttributeNames; }
   // Constructor, destructor
 
   NFmiEsriShape(NFmiEsriElementType theType) : itsShapeType(theType) {}
-  NFmiEsriShape(void) {}
+  NFmiEsriShape(void) = default;
   ~NFmiEsriShape(void) { Init(); }
   // Access to data members
 

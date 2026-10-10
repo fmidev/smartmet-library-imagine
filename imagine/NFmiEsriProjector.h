@@ -23,7 +23,7 @@ class NFmiEsriProjector
 {
  public:
   virtual ~NFmiEsriProjector(void){};
-  NFmiEsriProjector() {}
+  NFmiEsriProjector() = default;
   virtual NFmiEsriPoint operator()(const NFmiEsriPoint& thePoint) const = 0;
   virtual void SetBox(const NFmiEsriBox& theBox) const = 0;
 };

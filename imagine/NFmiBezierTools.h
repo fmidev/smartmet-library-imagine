@@ -23,9 +23,9 @@ class NFmiPath;
 
 namespace NFmiBezierTools
 {
-typedef std::list<std::pair<NFmiPath, bool> > Segments;
-typedef std::vector<NFmiPath> NFmiPaths;
-typedef std::list<NFmiPath> PathList;
+using Segments = std::list<std::pair<NFmiPath, bool> >;
+using NFmiPaths = std::vector<NFmiPath>;
+using PathList = std::list<NFmiPath>;
 
 bool IsClosed(const NFmiPath& thePath);
 

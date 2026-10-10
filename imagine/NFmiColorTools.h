@@ -45,7 +45,7 @@ namespace NFmiColorTools
 {
 //! An RGBA colour is internally represented as an integer of the form 0xaarrggbb
 
-typedef int Color;
+using Color = int;
 
 // -------------------- special colors --------------------
 

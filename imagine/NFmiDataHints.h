@@ -34,7 +34,7 @@ class NFmiDataHints
   };
 
  public:
-  typedef std::list<Rectangle> return_type;
+  using return_type = std::list<Rectangle>;
 
   ~NFmiDataHints();
 

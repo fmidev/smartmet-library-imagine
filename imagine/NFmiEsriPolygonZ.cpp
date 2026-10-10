@@ -38,12 +38,8 @@ namespace Imagine
 // ----------------------------------------------------------------------
 
 NFmiEsriPolygonZ::NFmiEsriPolygonZ(const NFmiEsriPolygonZ& thePolygon)
-    : NFmiEsriPolygonM(thePolygon),
-      itsBox(thePolygon.itsBox),
-      itsParts(thePolygon.itsParts),
-      itsPoints(thePolygon.itsPoints)
-{
-}
+
+    = default;
 
 // ----------------------------------------------------------------------
 // Assignment operator

@@ -38,12 +38,8 @@ namespace Imagine
 // ----------------------------------------------------------------------
 
 NFmiEsriPolyLineZ::NFmiEsriPolyLineZ(const NFmiEsriPolyLineZ& theLine)
-    : NFmiEsriPolyLineM(theLine),
-      itsBox(theLine.itsBox),
-      itsParts(theLine.itsParts),
-      itsPoints(theLine.itsPoints)
-{
-}
+
+    = default;
 
 // ----------------------------------------------------------------------
 // Assignment operator

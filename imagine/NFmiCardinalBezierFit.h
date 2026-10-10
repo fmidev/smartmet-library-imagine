@@ -17,7 +17,7 @@ namespace NFmiCardinalBezierFit
 {
 const NFmiPath Fit(const NFmiPath& thePath, double theSmoothness);
 
-typedef NFmiBezierTools::NFmiPaths NFmiPaths;
+using NFmiPaths = NFmiBezierTools::NFmiPaths;
 const NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError);
 
 }  // namespace NFmiCardinalBezierFit

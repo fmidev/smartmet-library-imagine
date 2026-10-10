@@ -61,13 +61,13 @@ struct ColorInfo
 };
 
 //! Histogram information
-typedef boost::unordered_map<NFmiColorTools::Color, ColorInfo> Counter;
+using Counter = boost::unordered_map<NFmiColorTools::Color, ColorInfo>;
 
 //! Internal histogram
-typedef std::vector<ColorInfo> ColorHistogram;
+using ColorHistogram = std::vector<ColorInfo>;
 
 //! Colormap transformation
-typedef map<NFmiColorTools::Color, NFmiColorTools::Color> ColorMap;
+using ColorMap = map<NFmiColorTools::Color, NFmiColorTools::Color>;
 
 // ----------------------------------------------------------------------
 /*!
@@ -188,7 +188,7 @@ Counter calc_counts(const NFmiImage& theImage)
 class ColorTree
 {
  public:
-  typedef NFmiColorTools::Color value_type;
+  using value_type = NFmiColorTools::Color;
 
   ColorTree();
   void insert(value_type theColor);

@@ -50,7 +50,7 @@ class NFmiDrawable
    * and the class would have a data member storing it.
    */
 
-  NFmiDrawable(void) {}
+  NFmiDrawable(void) = default;
   //! Add the drawable into a fill map.
 
   virtual void Add(NFmiFillMap& /* theMap */) const {}

@@ -38,7 +38,7 @@ class NFmiDataHints::Pimple
   return_type rectangles(float theLoLimit, float theHiLimit) const;
 
  private:
-  typedef std::shared_ptr<RecursiveInfo> node_type;
+  using node_type = std::shared_ptr<RecursiveInfo>;
 
   void recurse(node_type& theInfo,
                const NFmiDataMatrix<float>& theData,
@@ -328,7 +328,7 @@ bool NFmiDataHints::Pimple::find(return_type& theValues,
  */
 // ----------------------------------------------------------------------
 
-NFmiDataHints::~NFmiDataHints() {}
+NFmiDataHints::~NFmiDataHints() = default;
 // ----------------------------------------------------------------------
 /*!
  * \brief Constructor

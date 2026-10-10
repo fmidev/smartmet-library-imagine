@@ -60,7 +60,7 @@ namespace Imagine
 {
 class NFmiEsriBox;
 
-typedef std::deque<NFmiPathElement> NFmiPathData;
+using NFmiPathData = std::deque<NFmiPathElement>;
 
 // ----------------------------------------------------------------------
 // A class defining a path

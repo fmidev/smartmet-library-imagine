@@ -63,8 +63,8 @@ class NFmiEdgeTree
  protected:
   NFmiPath Path(std::list<NFmiPath>& thePaths) const;
 
-  typedef std::set<NFmiEdge> EdgeTreeType;
-  typedef std::multiset<NFmiEdge> MultiEdgeTreeType;
+  using EdgeTreeType = std::set<NFmiEdge>;
+  using MultiEdgeTreeType = std::multiset<NFmiEdge>;
 
   // Access to edge-data for iterating through the data, not for
   // modifying it.

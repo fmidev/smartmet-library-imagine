@@ -55,16 +55,16 @@ class NFmiCounter
 {
  protected:
   //! The counted data is held in this type containers.
-  typedef std::map<T, unsigned long> NFmiCounterData;
+  using NFmiCounterData = std::map<T, unsigned long>;
 
   //! The data counted so far, along with the counts.
   NFmiCounterData itsData;
 
  public:
-  typedef typename NFmiCounterData::const_iterator const_iterator;
+  using const_iterator = typename NFmiCounterData::const_iterator;
 
   //! Constructor
-  NFmiCounter(void) {}
+  NFmiCounter(void) = default;
   //! Destructor
   ~NFmiCounter(void) {}
   //! Reset the counter to contain no data

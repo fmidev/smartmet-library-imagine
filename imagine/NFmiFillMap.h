@@ -56,8 +56,8 @@ namespace Imagine
 {
 // Typedefs to ease things
 
-typedef std::vector<float> NFmiFillMapElement;
-typedef std::map<float, NFmiFillMapElement> NFmiFillMapData;
+using NFmiFillMapElement = std::vector<float>;
+using NFmiFillMapData = std::map<float, NFmiFillMapElement>;
 
 class NFmiFillMap : public NFmiDrawable
 {

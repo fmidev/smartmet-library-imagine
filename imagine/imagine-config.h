@@ -26,5 +26,5 @@ namespace Imagine
 {
 class NFmiImage;
 }
-typedef Imagine::NFmiImage ImagineXr_or_NFmiImage;
+using ImagineXr_or_NFmiImage = Imagine::NFmiImage;
 #endif

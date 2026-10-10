@@ -131,7 +131,7 @@ namespace Imagine
 class NFmiFreeType::Pimple
 {
  public:
-  typedef map<string, FT_Face> Faces;
+  using Faces = map<string, FT_Face>;
 
   bool itsInitialized;
   FT_Library itsLibrary;             //!< Freetype library reference
@@ -543,7 +543,7 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
  */
 // ----------------------------------------------------------------------
 
-NFmiFreeType::~NFmiFreeType() {}
+NFmiFreeType::~NFmiFreeType() = default;
 // ----------------------------------------------------------------------
 /*!
  * \brief Constructor used privately by Instance()

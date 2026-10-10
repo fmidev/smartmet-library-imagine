@@ -52,7 +52,7 @@ namespace Imagine
  */
 // ----------------------------------------------------------------------
 
-NFmiFace::~NFmiFace() {}
+NFmiFace::~NFmiFace() = default;
 // ----------------------------------------------------------------------
 /*!
  * \brief Constructor based on a font specification

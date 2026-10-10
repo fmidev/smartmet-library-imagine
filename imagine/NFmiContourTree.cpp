@@ -392,7 +392,7 @@ void NFmiContourTree::ContourNearest(const Fmi::CoordinateMatrix& thePts,
 {
   try
   {
-    typedef NFmiDataHints::return_type Rectangles;
+    using Rectangles = NFmiDataHints::return_type;
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
@@ -437,7 +437,7 @@ void NFmiContourTree::ContourDiscrete(const Fmi::CoordinateMatrix& thePts,
 {
   try
   {
-    typedef NFmiDataHints::return_type Rectangles;
+    using Rectangles = NFmiDataHints::return_type;
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
@@ -482,7 +482,7 @@ void NFmiContourTree::ContourNearest(const NFmiDataMatrix<float>& theValues,
 {
   try
   {
-    typedef NFmiDataHints::return_type Rectangles;
+    using Rectangles = NFmiDataHints::return_type;
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
@@ -525,7 +525,7 @@ void NFmiContourTree::ContourDiscrete(const NFmiDataMatrix<float>& theValues,
 {
   try
   {
-    typedef NFmiDataHints::return_type Rectangles;
+    using Rectangles = NFmiDataHints::return_type;
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
@@ -648,7 +648,7 @@ void NFmiContourTree::ContourLinear(const Fmi::CoordinateMatrix& thePts,
 {
   try
   {
-    typedef NFmiDataHints::return_type Rectangles;
+    using Rectangles = NFmiDataHints::return_type;
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
@@ -693,7 +693,7 @@ void NFmiContourTree::ContourLinear(const NFmiDataMatrix<float>& theValues,
 {
   try
   {
-    typedef NFmiDataHints::return_type Rectangles;
+    using Rectangles = NFmiDataHints::return_type;
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
