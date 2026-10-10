@@ -750,7 +750,7 @@ NFmiPath GenerateBezier(const NFmiPathData& thePath,
     {
       const NFmiPoint v1 = ScaleTangent(theTangent1, B1(theU[i]));
       const NFmiPoint v2 = ScaleTangent(theTangent2, B2(theU[i]));
-      A.push_back(make_pair(v1, v2));
+      A.emplace_back(v1, v2);
     }
 
     // Create the C and X matrices

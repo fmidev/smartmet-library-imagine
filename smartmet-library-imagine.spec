@@ -110,6 +110,7 @@ FMI %{DIRNAME} development files
 - Mark overriding methods override and use nullptr, no functional changes
 - Use = default and using declarations where clang-tidy suggests it, no functional changes
 - Remove redundant void parameter lists and use bool literals, no functional changes
+- Use emplace and C++ standard library headers where clang-tidy suggests it, no functional changes
 
 * Sat Oct 03 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.3-1.fmi
 - Remove unnecessary copies found by clang-tidy performance checks

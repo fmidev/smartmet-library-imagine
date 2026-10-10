@@ -24,13 +24,13 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
     // Parse the relevant option
 
     list<string> comparisons;
-    comparisons.push_back("==");
-    comparisons.push_back("<=");
-    comparisons.push_back(">=");
-    comparisons.push_back("<>");
-    comparisons.push_back("<");
-    comparisons.push_back(">");
-    comparisons.push_back("=");
+    comparisons.emplace_back("==");
+    comparisons.emplace_back("<=");
+    comparisons.emplace_back(">=");
+    comparisons.emplace_back("<>");
+    comparisons.emplace_back("<");
+    comparisons.emplace_back(">");
+    comparisons.emplace_back("=");
 
     string fieldname, fieldvalue, fieldcomparison;
     list<string> words;

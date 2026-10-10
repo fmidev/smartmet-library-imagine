@@ -335,7 +335,7 @@ const Segments SplitSegments(const NFmiPath& thePath)
         if (outpath.Size() <= 3)
           isregular = false;
         // flush
-        out.push_back(std::make_pair(outpath, isregular));
+        out.emplace_back(outpath, isregular);
         outpath.Clear();
       }
 
@@ -363,7 +363,7 @@ const Segments SplitSegments(const NFmiPath& thePath)
     }
 
     if (!outpath.Empty())
-      out.push_back(std::make_pair(outpath, isregular));
+      out.emplace_back(outpath, isregular);
 
     return out;
   }

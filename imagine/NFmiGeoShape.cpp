@@ -822,7 +822,7 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
                   continue;
                 lastx = x;
                 lasty = y;
-                points.push_back(make_pair(x, y));
+                points.emplace_back(x, y);
               }
             }
 

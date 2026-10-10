@@ -103,28 +103,22 @@ class NFmiPath
 
   void Add(NFmiPathOperation theOper, double theX, double theY)
   {
-    itsElements.push_back(NFmiPathElement(theOper, theX, theY));
+    itsElements.emplace_back(theOper, theX, theY);
   }
 
   // Move to a new point
 
-  void MoveTo(double theX, double theY)
-  {
-    itsElements.push_back(NFmiPathElement(kFmiMoveTo, theX, theY));
-  }
+  void MoveTo(double theX, double theY) { itsElements.emplace_back(kFmiMoveTo, theX, theY); }
 
   // Draw a line from current point to new point
 
-  void LineTo(double theX, double theY)
-  {
-    itsElements.push_back(NFmiPathElement(kFmiLineTo, theX, theY));
-  }
+  void LineTo(double theX, double theY) { itsElements.emplace_back(kFmiLineTo, theX, theY); }
 
   // Draw an invisible line from current point to new point
 
   void GhostLineTo(double theX, double theY)
   {
-    itsElements.push_back(NFmiPathElement(kFmiGhostLineTo, theX, theY));
+    itsElements.emplace_back(kFmiGhostLineTo, theX, theY);
   }
 
   // Draw a line from the given point to the first point
@@ -132,7 +126,7 @@ class NFmiPath
   void InsertLineTo(double theX, double theY)
   {
     itsElements.front().op = kFmiLineTo;
-    itsElements.push_front(NFmiPathElement(kFmiMoveTo, theX, theY));
+    itsElements.emplace_front(kFmiMoveTo, theX, theY);
   }
 
   // Draw a line from the given point to the first point
@@ -140,22 +134,16 @@ class NFmiPath
   void InsertGhostLineTo(double theX, double theY)
   {
     itsElements.front().op = kFmiGhostLineTo;
-    itsElements.push_front(NFmiPathElement(kFmiMoveTo, theX, theY));
+    itsElements.emplace_front(kFmiMoveTo, theX, theY);
   }
 
   // Add a conic control point
 
-  void ConicTo(double theX, double theY)
-  {
-    itsElements.push_back(NFmiPathElement(kFmiConicTo, theX, theY));
-  }
+  void ConicTo(double theX, double theY) { itsElements.emplace_back(kFmiConicTo, theX, theY); }
 
   // Add a cubic control point
 
-  void CubicTo(double theX, double theY)
-  {
-    itsElements.push_back(NFmiPathElement(kFmiCubicTo, theX, theY));
-  }
+  void CubicTo(double theX, double theY) { itsElements.emplace_back(kFmiCubicTo, theX, theY); }
 
   // Close the last subpath with a line
 
