@@ -182,7 +182,8 @@ void read_extension(FILE *theInput, int theLabel, GifScreen &theScreen)
         break;
       case 0xf9:  // graphic control extension
       {
-        getdatablock(theInput, buffer);
+        if (getdatablock(theInput, buffer) < 4)
+          throw Fmi::Exception(BCP, "GIF graphic control extension block is too short");
         theScreen.disposal = (buffer[0] >> 2) & 0x7;
         theScreen.inputflag = (buffer[0] >> 1) & 0x1;
         theScreen.delaytime = LM_to_uint(buffer[1], buffer[2]);
