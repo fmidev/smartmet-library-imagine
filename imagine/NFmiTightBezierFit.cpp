@@ -99,22 +99,22 @@ NFmiPath SubdividePath(const NFmiPath& thePath, double theMaxLength)
 
     double lastx = 0;
     double lasty = 0;
-    for (auto it = thePath.Elements().begin(); it != thePath.Elements().end(); ++it)
+    for (const auto& it : thePath.Elements())
     {
-      switch (it->op)
+      switch (it.op)
       {
         case kFmiMoveTo:
         case kFmiConicTo:
         case kFmiCubicTo:
-          out.Add(*it);
+          out.Add(it);
           break;
         case kFmiGhostLineTo:
         case kFmiLineTo:
-          SubdivideLine(out, it->op, lastx, lasty, it->x, it->y, theMaxLength);
+          SubdivideLine(out, it.op, lastx, lasty, it.x, it.y, theMaxLength);
           break;
       }
-      lastx = it->x;
-      lasty = it->y;
+      lastx = it.x;
+      lasty = it.y;
     }
 
     return out;
@@ -196,13 +196,13 @@ const NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError)
     NFmiCounter<NFmiPoint> counts = VertexCounts(thePaths);
 
     NFmiPaths outpaths;
-    for (auto it = thePaths.begin(); it != thePaths.end(); ++it)
+    for (const auto& thePath : thePaths)
     {
-      PathList pathlist = SplitPath(*it, counts);
+      PathList pathlist = SplitPath(thePath, counts);
       NFmiPath outpath;
-      for (auto jt = pathlist.begin(); jt != pathlist.end(); ++jt)
+      for (auto& jt : pathlist)
       {
-        NFmiPath fitpath = Fit(*jt, theMaxError);
+        NFmiPath fitpath = Fit(jt, theMaxError);
         outpath.Add(fitpath);
       }
       outpaths.push_back(outpath);

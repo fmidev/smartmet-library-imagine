@@ -1632,10 +1632,9 @@ void make_pacific(const NFmiPath &thePath,
     if (theBox.Xmax() < 0 && !theDateLine)
     {
       // Only shift from Atlantic to Pacific
-      for (auto iter = thePath.Elements().begin(), end = thePath.Elements().end(); iter != end;
-           ++iter)
+      for (const auto& iter : thePath.Elements())
       {
-        theOutPath.Add(NFmiPathElement(iter->op, iter->x + 360, iter->y));
+        theOutPath.Add(NFmiPathElement(iter.op, iter.x + 360, iter.y));
       }
       return;
     }
@@ -1648,12 +1647,11 @@ void make_pacific(const NFmiPath &thePath,
     double lastX = kFloatMissing;
     double lastY = kFloatMissing;
 
-    for (auto iter = thePath.Elements().begin(), end = thePath.Elements().end(); iter != end;
-         ++iter)
+    for (const auto& iter : thePath.Elements())
     {
-      double X = iter->x;
-      double Y = iter->y;
-      NFmiPathOperation op = iter->op;
+      double X = iter.x;
+      double Y = iter.y;
+      NFmiPathOperation op = iter.op;
 
       switch (op)
       {
@@ -1748,10 +1746,9 @@ void make_atlantic(const NFmiPath &thePath,
     if (theBox.Xmin() >= 180 && !theDateLine)
     {
       // Only shift from Pacific to Atlantic
-      for (auto iter = thePath.Elements().begin(), end = thePath.Elements().end(); iter != end;
-           ++iter)
+      for (const auto& iter : thePath.Elements())
       {
-        theOutPath.Add(NFmiPathElement(iter->op, iter->x - 360, iter->y));
+        theOutPath.Add(NFmiPathElement(iter.op, iter.x - 360, iter.y));
       }
       return;
     }
@@ -1763,12 +1760,11 @@ void make_atlantic(const NFmiPath &thePath,
     double lastX = kFloatMissing;
     double lastY = kFloatMissing;
 
-    for (auto iter = thePath.Elements().begin(), end = thePath.Elements().end(); iter != end;
-         ++iter)
+    for (const auto& iter : thePath.Elements())
     {
-      double X = iter->x;
-      double Y = iter->y;
-      NFmiPathOperation op = iter->op;
+      double X = iter.x;
+      double Y = iter.y;
+      NFmiPathOperation op = iter.op;
 
       switch (op)
       {
@@ -1883,9 +1879,9 @@ NFmiPath NFmiPath::PacificView(bool pacific) const
 
     // Iterate over subsegments, calculating the bounding box simultaneously
 
-    for (auto iter = Elements().begin(), end = Elements().end(); iter != end; ++iter)
+    for (const auto& iter : Elements())
     {
-      if (iter->op == kFmiMoveTo)
+      if (iter.op == kFmiMoveTo)
       {
         make_pacific(currentpath, box, outpath, tree, cuts, dateline);
         currentpath.Clear();
@@ -1893,10 +1889,10 @@ NFmiPath NFmiPath::PacificView(bool pacific) const
         dateline = false;
       }
 
-      currentpath.Add(*iter);
-      box.Update(iter->x, iter->y);
+      currentpath.Add(iter);
+      box.Update(iter.x, iter.y);
 
-      if (iter->x == -180 || iter->x == 180)
+      if (iter.x == -180 || iter.x == 180)
         dateline = true;
     }
 
@@ -1941,9 +1937,9 @@ NFmiPath NFmiPath::AtlanticView(bool atlantic) const
 
     // Iterate over subsegments, calculating the bounding box simultaneously
 
-    for (auto iter = Elements().begin(), end = Elements().end(); iter != end; ++iter)
+    for (const auto& iter : Elements())
     {
-      if (iter->op == kFmiMoveTo)
+      if (iter.op == kFmiMoveTo)
       {
         make_atlantic(currentpath, box, outpath, tree, cuts, dateline);
         currentpath.Clear();
@@ -1951,10 +1947,10 @@ NFmiPath NFmiPath::AtlanticView(bool atlantic) const
         dateline = false;
       }
 
-      currentpath.Add(*iter);
-      box.Update(iter->x, iter->y);
+      currentpath.Add(iter);
+      box.Update(iter.x, iter.y);
 
-      if (iter->x == 0 || iter->x == 360)
+      if (iter.x == 0 || iter.x == 360)
         dateline = true;
     }
 

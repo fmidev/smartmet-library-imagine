@@ -396,10 +396,10 @@ void NFmiContourTree::ContourNearest(const Fmi::CoordinateMatrix& thePts,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (auto it = rects.begin(); it != rects.end(); ++it)
+    for (auto& rect : rects)
     {
-      for (int j = it->y1; j < it->y2; ++j)
-        for (int i = it->x1; i < it->x2; ++i)
+      for (int j = rect.y1; j < rect.y2; ++j)
+        for (int i = rect.x1; i < rect.x2; ++i)
           ContourNearest4(thePts.x(i, j),
                           thePts.y(i, j),
                           theValues[i][j],
@@ -441,10 +441,10 @@ void NFmiContourTree::ContourDiscrete(const Fmi::CoordinateMatrix& thePts,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (auto it = rects.begin(); it != rects.end(); ++it)
+    for (auto& rect : rects)
     {
-      for (int j = it->y1; j < it->y2; ++j)
-        for (int i = it->x1; i < it->x2; ++i)
+      for (int j = rect.y1; j < rect.y2; ++j)
+        for (int i = rect.x1; i < rect.x2; ++i)
           ContourDiscrete4(thePts.x(i, j),
                            thePts.y(i, j),
                            theValues[i][j],
@@ -486,10 +486,10 @@ void NFmiContourTree::ContourNearest(const NFmiDataMatrix<float>& theValues,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (auto it = rects.begin(); it != rects.end(); ++it)
+    for (auto& rect : rects)
     {
-      for (int j = it->y1; j < it->y2; ++j)
-        for (int i = it->x1; i < it->x2; ++i)
+      for (int j = rect.y1; j < rect.y2; ++j)
+        for (int i = rect.x1; i < rect.x2; ++i)
           ContourNearest4(i,
                           j,
                           theValues[i][j],
@@ -529,10 +529,10 @@ void NFmiContourTree::ContourDiscrete(const NFmiDataMatrix<float>& theValues,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (auto it = rects.begin(); it != rects.end(); ++it)
+    for (auto& rect : rects)
     {
-      for (int j = it->y1; j < it->y2; ++j)
-        for (int i = it->x1; i < it->x2; ++i)
+      for (int j = rect.y1; j < rect.y2; ++j)
+        for (int i = rect.x1; i < rect.x2; ++i)
           ContourDiscrete4(i,
                            j,
                            theValues[i][j],
@@ -652,10 +652,10 @@ void NFmiContourTree::ContourLinear(const Fmi::CoordinateMatrix& thePts,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (auto it = rects.begin(); it != rects.end(); ++it)
+    for (auto& rect : rects)
     {
-      for (int j = it->y1; j < it->y2; ++j)
-        for (int i = it->x1; i < it->x2; ++i)
+      for (int j = rect.y1; j < rect.y2; ++j)
+        for (int i = rect.x1; i < rect.x2; ++i)
           ContourLinear4(thePts.x(i, j),
                          thePts.y(i, j),
                          theValues[i][j],
@@ -697,10 +697,10 @@ void NFmiContourTree::ContourLinear(const NFmiDataMatrix<float>& theValues,
 
     Rectangles rects = theHelper.rectangles(itsLoLimit, itsHiLimit);
 
-    for (auto it = rects.begin(); it != rects.end(); ++it)
+    for (auto& rect : rects)
     {
-      for (int j = it->y1; j < it->y2; ++j)
-        for (int i = it->x1; i < it->x2; ++i)
+      for (int j = rect.y1; j < rect.y2; ++j)
+        for (int i = rect.x1; i < rect.x2; ++i)
           ContourLinear4(i,
                          j,
                          theValues[i][j],
@@ -1219,9 +1219,9 @@ void NFmiContourTree::ContourDiscrete4(float x1,
                              y4,
                              c4 == kInside ? 1 : 2);
 
-      for (auto it = subpath.itsEdges.begin(); it != subpath.itsEdges.end(); ++it)
+      for (const auto& itsEdge : subpath.itsEdges)
       {
-        Add(*it);
+        Add(itsEdge);
       }
     }
   }

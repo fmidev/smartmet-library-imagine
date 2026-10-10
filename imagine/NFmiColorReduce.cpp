@@ -484,9 +484,9 @@ void replace_colors(NFmiImage& theImage, const ColorMap& theMap)
   {
     boost::unordered_map<NFmiColorTools::Color, NFmiColorTools::Color> colormap(256);
 
-    for (auto it = theMap.begin(); it != theMap.end(); ++it)
+    for (auto it : theMap)
     {
-      colormap[it->first] = it->second;
+      colormap[it.first] = it.second;
     }
 
     NFmiColorTools::Color last_color1 = NFmiColorTools::NoColor;
@@ -540,28 +540,28 @@ void build_tree(const NFmiImage& theImage,
     const auto ratio = static_cast<float>(1.0 / (theImage.Width() * theImage.Height()));
     const float factor = -theQuality / log(10.0f);
 
-    for (auto it = theHistogram.begin(); it != theHistogram.end(); ++it)
+    for (auto it : theHistogram)
     {
-      if (theTree.empty() || it->keeper)
+      if (theTree.empty() || it.keeper)
       {
-        theTree.insert(it->color);
-        theMap.insert(ColorMap::value_type(it->color, it->color));
+        theTree.insert(it.color);
+        theMap.insert(ColorMap::value_type(it.color, it.color));
       }
       else
       {
-        NFmiColorTools::Color nearest = theTree.nearest(it->color);
-        float dist = theTree.distance(nearest, it->color);
+        NFmiColorTools::Color nearest = theTree.nearest(it.color);
+        float dist = theTree.distance(nearest, it.color);
 
-        float limit = factor * log(ratio * it->count);
+        float limit = factor * log(ratio * it.count);
 
         if (dist < limit)
         {
-          theMap.insert(ColorMap::value_type(it->color, nearest));
+          theMap.insert(ColorMap::value_type(it.color, nearest));
         }
         else
         {
-          theTree.insert(it->color);
-          theMap.insert(ColorMap::value_type(it->color, it->color));
+          theTree.insert(it.color);
+          theMap.insert(ColorMap::value_type(it.color, it.color));
         }
       }
     }
@@ -596,25 +596,25 @@ void build_tree(const NFmiImage& theImage,
       done = true;
       const float factor = -theQuality / log(10.0f);
 
-      for (auto it = theHistogram.begin(); it != theHistogram.end(); ++it)
+      for (auto it : theHistogram)
       {
-        if (theTree.empty() || it->keeper)
+        if (theTree.empty() || it.keeper)
         {
-          theTree.insert(it->color);
-          theMap.insert(ColorMap::value_type(it->color, it->color));
+          theTree.insert(it.color);
+          theMap.insert(ColorMap::value_type(it.color, it.color));
         }
         else
         {
-          NFmiColorTools::Color nearest = theTree.nearest(it->color);
-          float dist = theTree.distance(nearest, it->color);
+          NFmiColorTools::Color nearest = theTree.nearest(it.color);
+          float dist = theTree.distance(nearest, it.color);
 
-          const float limit = factor * log(ratio * it->count);
+          const float limit = factor * log(ratio * it.count);
           if (dist < limit)
-            theMap.insert(ColorMap::value_type(it->color, nearest));
+            theMap.insert(ColorMap::value_type(it.color, nearest));
           else if (theTree.size() < theMaxCount)
           {
-            theTree.insert(it->color);
-            theMap.insert(ColorMap::value_type(it->color, it->color));
+            theTree.insert(it.color);
+            theMap.insert(ColorMap::value_type(it.color, it.color));
           }
           else
           {

@@ -63,8 +63,8 @@ void NFmiEdgeTree::Add(const NFmiEdgeTree& theTree)
 {
   try
   {
-    for (auto iter = theTree.itsEdges.begin(); iter != theTree.itsEdges.end(); ++iter)
-      Add(*iter);
+    for (const auto& itsEdge : theTree.itsEdges)
+      Add(itsEdge);
   }
   catch (...)
   {
@@ -117,9 +117,9 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
     // Build from multiedges & edges
 
     MultiEdgeTreeType edges(itsMultiEdges);
-    for (auto iter = itsEdges.begin(), end = itsEdges.end(); iter != end; ++iter)
+    for (const auto& itsEdge : itsEdges)
     {
-      edges.insert(*iter);
+      edges.insert(itsEdge);
     }
 
     // An iterator for the open paths, we go through it again

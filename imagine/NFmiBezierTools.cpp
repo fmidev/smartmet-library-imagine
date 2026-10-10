@@ -258,17 +258,17 @@ const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths& thePaths)
   {
     NFmiCounter<NFmiPoint> counts;
 
-    for (auto pt = thePaths.begin(); pt != thePaths.end(); ++pt)
+    for (const auto& thePath : thePaths)
     {
-      const NFmiPathData& path = pt->Elements();
+      const NFmiPathData& path = thePath.Elements();
 
       // end coordinate of previous moveto
       NFmiPoint previous_moveto(kFloatMissing, kFloatMissing);
 
-      for (auto it = path.begin(); it != path.end(); ++it)
+      for (const auto& it : path)
       {
-        NFmiPoint p(it->x, it->y);
-        switch (it->op)
+        NFmiPoint p(it.x, it.y);
+        switch (it.op)
         {
           case kFmiMoveTo:
             counts.Add(p);
@@ -320,14 +320,14 @@ const Segments SplitSegments(const NFmiPath& thePath)
     bool isregular = false;
     NFmiPath outpath;
 
-    for (auto it = thePath.Elements().begin(); it != thePath.Elements().end(); ++it)
+    for (const auto& it : thePath.Elements())
     {
       // current outpath must be flushed if
       // a) operator is moveto
       // b) type changes from regular to nonregular
 
       bool flush =
-          (!outpath.Empty() && (it->op == kFmiMoveTo || (it->op == kFmiLineTo && !isregular)));
+          (!outpath.Empty() && (it.op == kFmiMoveTo || (it.op == kFmiLineTo && !isregular)));
 
       if (flush)
       {
@@ -340,26 +340,26 @@ const Segments SplitSegments(const NFmiPath& thePath)
       }
 
       // add the element, but remove zero-length line segments
-      switch (it->op)
+      switch (it.op)
       {
         case kFmiMoveTo:
         case kFmiConicTo:
         case kFmiCubicTo:
-          outpath.Add(*it);
+          outpath.Add(it);
           break;
         case kFmiGhostLineTo:
         case kFmiLineTo:
         {
           if (outpath.Empty())
-            outpath.Add(*it);
-          else if (outpath.Elements().back().x != it->x || outpath.Elements().back().y != it->y)
-            outpath.Add(*it);
+            outpath.Add(it);
+          else if (outpath.Elements().back().x != it.x || outpath.Elements().back().y != it.y)
+            outpath.Add(it);
         }
       }
 
       // lineto cannot start a new regular segment!
       if (outpath.Size() == 1)
-        isregular = (it->op == kFmiMoveTo);
+        isregular = (it.op == kFmiMoveTo);
     }
 
     if (!outpath.Empty())
@@ -392,14 +392,14 @@ const PathList SplitPath(const NFmiPath& thePath)
     PathList out;
 
     NFmiPath outpath;
-    for (auto it = thePath.Elements().begin(); it != thePath.Elements().end(); ++it)
+    for (const auto& it : thePath.Elements())
     {
-      if (it->op == kFmiMoveTo && !outpath.Empty())
+      if (it.op == kFmiMoveTo && !outpath.Empty())
       {
         out.push_back(outpath);
         outpath.Clear();
       }
-      outpath.Add(*it);
+      outpath.Add(it);
     }
 
     if (!outpath.Empty())
@@ -444,19 +444,19 @@ const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& 
 
     PathList input = SplitPath(thePath);
 
-    for (auto it = input.begin(); it != input.end(); ++it)
+    for (auto& it : input)
     {
-      const bool isclosed = IsClosed(*it);
-      const NFmiPathData& path = it->Elements();
+      const bool isclosed = IsClosed(it);
+      const NFmiPathData& path = it.Elements();
 
       // establish the counts for each element
 
       std::vector<long> counts;
       counts.reserve(path.size());
 
-      for (auto jt = path.begin(); jt != path.end(); ++jt)
+      for (const auto& jt : path)
       {
-        const NFmiPoint point(jt->x, jt->y);
+        const NFmiPoint point(jt.x, jt.y);
         const long count = theCounts.Count(point);
         counts.push_back(count);
       }
@@ -468,7 +468,7 @@ const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& 
       // the path so that it starts at the first split point.
 
       if (!isclosed)
-        AppendSplits(out, *it, counts);
+        AppendSplits(out, it, counts);
       else
       {
         const unsigned long n = path.size();
@@ -502,7 +502,7 @@ const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& 
           AppendSplits(out, tmppath, tmpcounts);
         }
         else
-          AppendSplits(out, *it, counts);
+          AppendSplits(out, it, counts);
       }
     }
 

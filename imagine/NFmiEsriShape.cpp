@@ -945,21 +945,19 @@ bool NFmiEsriShape::WriteDBF(const string &theFilename) const
       }
       dbffile << '\x0d';  // header record terminator
 
-      for (auto it = itsElements.begin(); it != itsElements.end(); ++it)
+      for (auto element : itsElements)
       {
-        const elements_type::value_type element = *it;
-
         dbffile << ' ';  // not deleted, "*" would indicate deleted
 
-        for (auto jt = itsAttributeNames.begin(); jt != itsAttributeNames.end(); ++jt)
+        for (auto itsAttributeName : itsAttributeNames)
         {
-          const string name = (*jt)->Name();
-          switch ((*jt)->Type())
+          const string name = itsAttributeName->Name();
+          switch (itsAttributeName->Type())
           {
             case kFmiEsriString:
             {
               const string value = element->GetString(name);
-              const int length = (*jt)->Length();
+              const int length = itsAttributeName->Length();
               dbffile << value;
               for (i = 0; i < length - static_cast<int>(value.size()); i++)
                 dbffile << ' ';
@@ -968,15 +966,15 @@ bool NFmiEsriShape::WriteDBF(const string &theFilename) const
             case kFmiEsriInteger:
             {
               const int value = element->GetInteger(name);
-              const int length = (*jt)->FieldLength();
+              const int length = itsAttributeName->FieldLength();
               dbffile << setw(length) << setfill(' ') << value;
               break;
             }
             case kFmiEsriDouble:
             {
               const double value = element->GetDouble(name);
-              const int length = (*jt)->FieldLength();
-              const int decimals = (*jt)->DecimalCount();
+              const int length = itsAttributeName->FieldLength();
+              const int decimals = itsAttributeName->DecimalCount();
 #ifdef PERKELEEN_296
               // Perkeleen g++ v2.96, std::fixed puuttuu
               NFmiString str = NFmiValueString::GetStringWithMaxDecimalsSmartWay(value, decimals);

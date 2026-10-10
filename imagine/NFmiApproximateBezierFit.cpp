@@ -1041,12 +1041,12 @@ const NFmiPath Fit(const NFmiPath& thePath, double theMaxError)
 
     NFmiPath outpath;
     Segments segments = SplitSegments(thePath);
-    for (auto it = segments.begin(); it != segments.end(); ++it)
+    for (auto& segment : segments)
     {
-      if (it->second)
-        outpath.Add(SimpleFit(it->first, theMaxError));
+      if (segment.second)
+        outpath.Add(SimpleFit(segment.first, theMaxError));
       else
-        outpath.Add(it->first);
+        outpath.Add(segment.first);
     }
 
     return outpath;
@@ -1097,13 +1097,13 @@ const NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError)
     NFmiCounter<NFmiPoint> counts = VertexCounts(thePaths);
 
     NFmiPaths outpaths;
-    for (auto it = thePaths.begin(); it != thePaths.end(); ++it)
+    for (const auto& thePath : thePaths)
     {
-      PathList pathlist = SplitPath(*it, counts);
+      PathList pathlist = SplitPath(thePath, counts);
       NFmiPath outpath;
-      for (auto jt = pathlist.begin(); jt != pathlist.end(); ++jt)
+      for (auto& jt : pathlist)
       {
-        NFmiPath fitpath = Fit(*jt, theMaxError);
+        NFmiPath fitpath = Fit(jt, theMaxError);
         outpath.Add(fitpath);
       }
       outpaths.push_back(outpath);

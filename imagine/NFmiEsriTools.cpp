@@ -35,14 +35,14 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
     string fieldname, fieldvalue, fieldcomparison;
     list<string> words;
 
-    for (auto it = comparisons.begin(); it != comparisons.end(); ++it)
+    for (auto& comparison : comparisons)
     {
-      string::size_type pos = theCondition.find(*it);
+      string::size_type pos = theCondition.find(comparison);
       if (pos != string::npos)
       {
-        fieldcomparison = *it;
+        fieldcomparison = comparison;
         fieldname = theCondition.substr(0, pos);
-        fieldvalue = theCondition.substr(pos + it->size());
+        fieldvalue = theCondition.substr(pos + comparison.size());
         break;
       }
     }
@@ -81,15 +81,15 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
 
     auto* shape = new NFmiEsriShape(theShape.Type());
 
-    for (auto ait = theShape.Attributes().begin(); ait != theShape.Attributes().end(); ++ait)
+    for (auto ait : theShape.Attributes())
     {
-      shape->Add(new NFmiEsriAttributeName(**ait));
+      shape->Add(new NFmiEsriAttributeName(*ait));
     }
 
-    for (auto it = theShape.Elements().begin(); it != theShape.Elements().end(); ++it)
+    for (auto it : theShape.Elements())
     {
       // Skip empty elements
-      if (*it == nullptr)
+      if (it == nullptr)
         continue;
 
       // Check if the value is correct
@@ -98,62 +98,62 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
       if (fieldcomparison == "==" || fieldcomparison == "=")
       {
         if (atype == kFmiEsriString)
-          ok = ((*it)->GetString(fieldname) == svalue);
+          ok = (it->GetString(fieldname) == svalue);
         else if (atype == kFmiEsriInteger)
-          ok = ((*it)->GetInteger(fieldname) == ivalue);
+          ok = (it->GetInteger(fieldname) == ivalue);
         else
-          ok = ((*it)->GetDouble(fieldname) == dvalue);
+          ok = (it->GetDouble(fieldname) == dvalue);
       }
       else if (fieldcomparison == "<>")
       {
         if (atype == kFmiEsriString)
-          ok = ((*it)->GetString(fieldname) != svalue);
+          ok = (it->GetString(fieldname) != svalue);
         else if (atype == kFmiEsriInteger)
-          ok = ((*it)->GetInteger(fieldname) != ivalue);
+          ok = (it->GetInteger(fieldname) != ivalue);
         else
-          ok = ((*it)->GetDouble(fieldname) != dvalue);
+          ok = (it->GetDouble(fieldname) != dvalue);
       }
       else if (fieldcomparison == "<")
       {
         if (atype == kFmiEsriString)
-          ok = ((*it)->GetString(fieldname) < svalue);
+          ok = (it->GetString(fieldname) < svalue);
         else if (atype == kFmiEsriInteger)
-          ok = ((*it)->GetInteger(fieldname) < ivalue);
+          ok = (it->GetInteger(fieldname) < ivalue);
         else
-          ok = ((*it)->GetDouble(fieldname) < dvalue);
+          ok = (it->GetDouble(fieldname) < dvalue);
       }
       else if (fieldcomparison == ">")
       {
         if (atype == kFmiEsriString)
-          ok = ((*it)->GetString(fieldname) > svalue);
+          ok = (it->GetString(fieldname) > svalue);
         else if (atype == kFmiEsriInteger)
-          ok = ((*it)->GetInteger(fieldname) > ivalue);
+          ok = (it->GetInteger(fieldname) > ivalue);
         else
-          ok = ((*it)->GetDouble(fieldname) > dvalue);
+          ok = (it->GetDouble(fieldname) > dvalue);
       }
       else if (fieldcomparison == "<=")
       {
         if (atype == kFmiEsriString)
-          ok = ((*it)->GetString(fieldname) <= svalue);
+          ok = (it->GetString(fieldname) <= svalue);
         else if (atype == kFmiEsriInteger)
-          ok = ((*it)->GetInteger(fieldname) <= ivalue);
+          ok = (it->GetInteger(fieldname) <= ivalue);
         else
-          ok = ((*it)->GetDouble(fieldname) <= dvalue);
+          ok = (it->GetDouble(fieldname) <= dvalue);
       }
       else if (fieldcomparison == ">=")
       {
         if (atype == kFmiEsriString)
-          ok = ((*it)->GetString(fieldname) >= svalue);
+          ok = (it->GetString(fieldname) >= svalue);
         else if (atype == kFmiEsriInteger)
-          ok = ((*it)->GetInteger(fieldname) >= ivalue);
+          ok = (it->GetInteger(fieldname) >= ivalue);
         else
-          ok = ((*it)->GetDouble(fieldname) >= dvalue);
+          ok = (it->GetDouble(fieldname) >= dvalue);
       }
 
       if (!ok)
         continue;
 
-      NFmiEsriElement* tmp = (*it)->Clone();
+      NFmiEsriElement* tmp = it->Clone();
       shape->Add(tmp);
     }
 
