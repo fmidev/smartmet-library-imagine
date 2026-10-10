@@ -69,11 +69,11 @@ class NFmiFillMap : public NFmiDrawable
   {
   }
 
-  ~NFmiFillMap(void) override {};
+  ~NFmiFillMap() override {};
 
   // Data access
 
-  const NFmiFillMapData& MapData(void) const { return itsData; }
+  const NFmiFillMapData& MapData() const { return itsData; }
   // Adding a line, conic or cubic segment
 
   using NFmiDrawable::Add;

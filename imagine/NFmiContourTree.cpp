@@ -49,7 +49,7 @@ namespace Imagine
  */
 // ----------------------------------------------------------------------
 
-NFmiPath NFmiContourTree::Path(void) const
+NFmiPath NFmiContourTree::Path() const
 {
   try
   {

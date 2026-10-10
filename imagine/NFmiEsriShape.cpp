@@ -168,7 +168,7 @@ namespace Imagine
 //	Initialize type
 // ----------------------------------------------------------------------
 
-void NFmiEsriShape::Init(void)
+void NFmiEsriShape::Init()
 {
   try
   {

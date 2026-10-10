@@ -120,7 +120,7 @@ NFmiEsriMultiPatch::NFmiEsriMultiPatch(const string& theBuffer, int thePos, int 
 // Calculating string buffer size
 // ----------------------------------------------------------------------
 
-int NFmiEsriMultiPatch::StringSize(void) const
+int NFmiEsriMultiPatch::StringSize() const
 {
   try
   {

@@ -33,7 +33,7 @@ class NFmiEsriAttributeName
  public:
   // Constructor, destructor
 
-  ~NFmiEsriAttributeName(void) {}
+  ~NFmiEsriAttributeName() {}
   NFmiEsriAttributeName(const std::string& theName,
                         NFmiEsriAttributeType theType,
                         int theFieldLength = -1,
@@ -87,14 +87,14 @@ class NFmiEsriAttributeName
 
   // Data-access
 
-  const std::string& Name(void) const { return itsName; }
-  NFmiEsriAttributeType Type(void) const { return itsType; }
+  const std::string& Name() const { return itsName; }
+  NFmiEsriAttributeType Type() const { return itsType; }
   short FieldLength() const { return itsFieldLength; }
   short DecimalCount() const { return itsDecimalCount; }
   short Length() const { return static_cast<short>(itsLength); }
 
  private:
-  NFmiEsriAttributeName(void);
+  NFmiEsriAttributeName();
 
   std::string itsName;
   NFmiEsriAttributeType itsType;

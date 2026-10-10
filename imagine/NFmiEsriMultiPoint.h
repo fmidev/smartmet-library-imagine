@@ -26,7 +26,7 @@ class NFmiEsriMultiPoint : public NFmiEsriElement
  public:
   // Constructors, destructors
 
-  ~NFmiEsriMultiPoint(void) override {}
+  ~NFmiEsriMultiPoint() override {}
   NFmiEsriMultiPoint(const NFmiEsriMultiPoint& thePoints);
 
   NFmiEsriMultiPoint(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriMultiPoint)
@@ -44,9 +44,9 @@ class NFmiEsriMultiPoint : public NFmiEsriElement
 
   // Data access
 
-  const NFmiEsriBox& Box(void) const { return itsBox; }
-  int NumPoints(void) const override { return itsPoints.size(); }
-  const std::vector<NFmiEsriPoint>& Points(void) const { return itsPoints; }
+  const NFmiEsriBox& Box() const { return itsBox; }
+  int NumPoints() const override { return itsPoints.size(); }
+  const std::vector<NFmiEsriPoint>& Points() const { return itsPoints; }
   // This is intended to be used by projection etc methods
 
   void Points(const std::vector<NFmiEsriPoint>& pts) { itsPoints = pts; }
@@ -63,7 +63,7 @@ class NFmiEsriMultiPoint : public NFmiEsriElement
   void Update(NFmiEsriBox& theBox) const override { theBox.Update(itsBox); }
   // String buffer size, write and string
 
-  int StringSize(void) const override;
+  int StringSize() const override;
   std::ostream& Write(std::ostream& os) const override;
 
   // Projection

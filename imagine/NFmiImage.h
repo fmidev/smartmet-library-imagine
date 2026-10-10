@@ -148,20 +148,20 @@ class NFmiImage
   // Access to individual options
 
 #ifdef IMAGINE_FORMAT_JPEG
-  int JpegQuality(void) const { return itsJpegQuality; }
+  int JpegQuality() const { return itsJpegQuality; }
   void JpegQuality(int quality) { itsJpegQuality = quality; }
 #endif
 #ifdef IMAGINE_FORMAT_PNG
-  int PngQuality(void) const { return itsPngQuality; }
+  int PngQuality() const { return itsPngQuality; }
   void PngQuality(int quality) { itsPngQuality = quality; }
 #endif
 #if (defined IMAGINE_FORMAT_JPEG) || (defined IMAGINE_FORMAT_PNG)
-  int AlphaLimit(void) const { return itsAlphaLimit; }
-  bool SaveAlpha(void) const { return itsSaveAlphaFlag; }
-  bool WantPalette(void) const { return itsWantPaletteFlag; }
-  bool ForcePalette(void) const { return itsForcePaletteFlag; }
-  float Gamma(void) const { return itsGamma; }
-  const std::string Intent(void) const { return itsIntent; }
+  int AlphaLimit() const { return itsAlphaLimit; }
+  bool SaveAlpha() const { return itsSaveAlphaFlag; }
+  bool WantPalette() const { return itsWantPaletteFlag; }
+  bool ForcePalette() const { return itsForcePaletteFlag; }
+  float Gamma() const { return itsGamma; }
+  const std::string Intent() const { return itsIntent; }
   void AlphaLimit(int limit) { itsAlphaLimit = limit; }
   void SaveAlpha(bool flag) { itsSaveAlphaFlag = flag; }
   void WantPalette(bool flag) { itsWantPaletteFlag = flag; }

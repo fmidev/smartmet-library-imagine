@@ -75,16 +75,16 @@ class NFmiEsriAttribute
 
   // Destructor is automatic
 
-  ~NFmiEsriAttribute(void) {}
+  ~NFmiEsriAttribute() {}
   // Getting values - it is assumed that type has been checked
 
-  int GetInteger(void) const { return itsInteger; }
-  double GetDouble(void) const { return itsDouble; }
-  const std::string& GetString(void) const { return itsString; }
-  const NFmiMetTime& GetDate(void) const { return itsDate; }
+  int GetInteger() const { return itsInteger; }
+  double GetDouble() const { return itsDouble; }
+  const std::string& GetString() const { return itsString; }
+  const NFmiMetTime& GetDate() const { return itsDate; }
 
-  const std::string& GetName(void) const { return itsAttributeName->Name(); }
-  NFmiEsriAttributeType GetType(void) const { return itsAttributeName->Type(); }
+  const std::string& GetName() const { return itsAttributeName->Name(); }
+  NFmiEsriAttributeType GetType() const { return itsAttributeName->Type(); }
   // Setting values - it is assumed that type has been checked
 
   void SetInteger(int theValue) { itsInteger = theValue; }
@@ -95,7 +95,7 @@ class NFmiEsriAttribute
  private:
   // Must not have a null-attribute - hide the constructor
 
-  NFmiEsriAttribute(void);
+  NFmiEsriAttribute();
 
   // The data elements
   //

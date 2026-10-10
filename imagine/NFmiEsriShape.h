@@ -103,17 +103,17 @@ class NFmiEsriShape
   using const_iterator = elements_type::const_iterator;
   using iterator = elements_type::iterator;
 
-  const attributes_type &Attributes(void) const { return itsAttributeNames; }
+  const attributes_type& Attributes() const { return itsAttributeNames; }
   // Constructor, destructor
 
   NFmiEsriShape(NFmiEsriElementType theType) : itsShapeType(theType) {}
-  NFmiEsriShape(void) = default;
-  ~NFmiEsriShape(void) { Init(); }
+  NFmiEsriShape() = default;
+  ~NFmiEsriShape() { Init(); }
   // Access to data members
 
-  NFmiEsriElementType Type(void) const { return itsShapeType; }
-  const NFmiEsriBox &Box(void) const { return itsBox; }
-  const elements_type &Elements(void) const { return itsElements; }
+  NFmiEsriElementType Type() const { return itsShapeType; }
+  const NFmiEsriBox& Box() const { return itsBox; }
+  const elements_type& Elements() const { return itsElements; }
   // Add an element
 
   void Add(NFmiEsriElement *theElement);
@@ -148,7 +148,7 @@ class NFmiEsriShape
 
   // This one initializes by destroying possible old contents
 
-  void Init(void);
+  void Init();
 
   // Adding a stringed element
 

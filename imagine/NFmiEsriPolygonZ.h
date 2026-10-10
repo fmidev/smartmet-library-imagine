@@ -37,7 +37,7 @@ class NFmiEsriPolygonZ : public NFmiEsriPolygonM
  public:
   // Constructors, destructors
 
-  ~NFmiEsriPolygonZ(void) override {}
+  ~NFmiEsriPolygonZ() override {}
   NFmiEsriPolygonZ(const NFmiEsriPolygonZ& thePolygon);
 
   NFmiEsriPolygonZ(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriPolygonZ)
@@ -55,11 +55,11 @@ class NFmiEsriPolygonZ : public NFmiEsriPolygonM
 
   // Data access
 
-  const NFmiEsriBox& Box(void) const { return itsBox; }
-  int NumPoints(void) const override { return itsPoints.size(); }
-  int NumParts(void) const override { return itsParts.size(); }
-  const std::vector<int>& Parts(void) const { return itsParts; }
-  const std::vector<NFmiEsriPointZ>& Points(void) const { return itsPoints; }
+  const NFmiEsriBox& Box() const { return itsBox; }
+  int NumPoints() const override { return itsPoints.size(); }
+  int NumParts() const override { return itsParts.size(); }
+  const std::vector<int>& Parts() const { return itsParts; }
+  const std::vector<NFmiEsriPointZ>& Points() const { return itsPoints; }
   // This is intended to be used by projection etc methods
 
   void Points(const std::vector<NFmiEsriPointZ>& pts) { itsPoints = pts; }
@@ -87,7 +87,7 @@ class NFmiEsriPolygonZ : public NFmiEsriPolygonM
   void Update(NFmiEsriBox& theBox) const override { theBox.Update(itsBox); }
   // String buffer size, write and string
 
-  int StringSize(void) const override;
+  int StringSize() const override;
   std::ostream& Write(std::ostream& os) const override;
 
  private:

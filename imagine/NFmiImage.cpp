@@ -359,7 +359,7 @@ static void Composite2(T theBlender,
 // Destructor
 // ----------------------------------------------------------------------
 
-void NFmiImage::Destroy(void)
+void NFmiImage::Destroy()
 {
   try
   {
@@ -457,7 +457,7 @@ NFmiImage::NFmiImage(int w, int h, const NFmiColorTools::Color *data)
 // Image default options
 // ----------------------------------------------------------------------
 
-void NFmiImage::DefaultOptions(void)
+void NFmiImage::DefaultOptions()
 {
   try
   {
@@ -617,7 +617,7 @@ void NFmiImage::Write(const string &theFileName, const string &theType) const
 {
   try
   {
-    if (0)
+    if (false)
       ;
 #ifdef IMAGINE_FORMAT_PNG
     else if (theType == "png")
@@ -953,7 +953,7 @@ bool NFmiImage::IsFullyOpaqueOrTransparent(int threshold) const
 //
 // ----------------------------------------------------------------------
 
-NFmiColorTools::Color NFmiImage::UnusedColor(void) const
+NFmiColorTools::Color NFmiImage::UnusedColor() const
 {
   try
   {

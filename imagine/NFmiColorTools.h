@@ -190,7 +190,7 @@ const std::string ColorName(const Color &theColor);
 
 //! Initialize colour name table.
 
-void ColorNamesInit(void);
+void ColorNamesInit();
 
 //! A general purpose string to colour conversion
 
@@ -212,7 +212,7 @@ const std::string BlendName(const NFmiBlendRule &theRule);
 
 //! Initialize blending rule name table .
 
-void BlendNamesInit(void);
+void BlendNamesInit();
 
 // -------------------- color space conversion --------------------
 

@@ -122,7 +122,7 @@ NFmiEsriMultiPointZ::NFmiEsriMultiPointZ(const string& theBuffer, int thePos, in
 // Calculating string buffer size
 // ----------------------------------------------------------------------
 
-int NFmiEsriMultiPointZ::StringSize(void) const
+int NFmiEsriMultiPointZ::StringSize() const
 {
   try
   {

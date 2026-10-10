@@ -126,7 +126,7 @@ NFmiEsriPolygonZ::NFmiEsriPolygonZ(const string& theBuffer, int thePos, int theN
 // Calculating string buffer size
 // ----------------------------------------------------------------------
 
-int NFmiEsriPolygonZ::StringSize(void) const
+int NFmiEsriPolygonZ::StringSize() const
 {
   try
   {

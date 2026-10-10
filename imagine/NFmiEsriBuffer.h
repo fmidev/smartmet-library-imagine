@@ -12,7 +12,7 @@ namespace Imagine
 {
 namespace NFmiEsriBuffer
 {
-bool IsCpuLittleEndian(void);
+bool IsCpuLittleEndian();
 
 int BigEndianInt(const std::string& theBuffer, int thePos);
 int LittleEndianInt(const std::string& theBuffer, int thePos);

@@ -680,7 +680,7 @@ const string NFmiColorTools::ColorName(const NFmiColorTools::Color &theColor)
 // See: http://www.w3.org/TR/SVG/types.html#ColorKeyWords
 // ----------------------------------------------------------------------
 
-void NFmiColorTools::ColorNamesInit(void)
+void NFmiColorTools::ColorNamesInit()
 {
   try
   {
@@ -908,7 +908,7 @@ const string NFmiColorTools::BlendName(const NFmiColorTools::NFmiBlendRule &theR
 // See the header file for the respective enum
 // ----------------------------------------------------------------------
 
-void NFmiColorTools::BlendNamesInit(void)
+void NFmiColorTools::BlendNamesInit()
 {
   try
   {

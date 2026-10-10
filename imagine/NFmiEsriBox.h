@@ -21,7 +21,7 @@ class NFmiEsriBox
  public:
   // Constructors, destructors
 
-  NFmiEsriBox(void);
+  NFmiEsriBox();
 
 #ifdef NO_COMPILER_OPTIMIZED
   ~NFmiEsriBox(void);
@@ -29,19 +29,19 @@ class NFmiEsriBox
   NFmiEsriBox& operator=(const NFmiEsriBox& theBox);
 #endif
 
-  void Init(void);
+  void Init();
 
   // Data access
 
-  bool IsValid(void) const { return itsValidity; }
-  double Xmin(void) const { return itsXmin; }
-  double Xmax(void) const { return itsXmax; }
-  double Ymin(void) const { return itsYmin; }
-  double Ymax(void) const { return itsYmax; }
-  double Mmin(void) const { return itsMmin; }
-  double Mmax(void) const { return itsMmax; }
-  double Zmin(void) const { return itsZmin; }
-  double Zmax(void) const { return itsZmax; }
+  bool IsValid() const { return itsValidity; }
+  double Xmin() const { return itsXmin; }
+  double Xmax() const { return itsXmax; }
+  double Ymin() const { return itsYmin; }
+  double Ymax() const { return itsYmax; }
+  double Mmin() const { return itsMmin; }
+  double Mmax() const { return itsMmax; }
+  double Zmin() const { return itsZmin; }
+  double Zmax() const { return itsZmax; }
   // Update utilities
 
   void Update(double theX, double theY, double theM, double theZ);

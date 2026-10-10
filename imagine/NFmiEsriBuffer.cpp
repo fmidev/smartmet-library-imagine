@@ -30,7 +30,7 @@ namespace Imagine
 // the value of the first byte (smallest memory address) is 1.
 // ----------------------------------------------------------------------
 
-bool NFmiEsriBuffer::IsCpuLittleEndian(void)
+bool NFmiEsriBuffer::IsCpuLittleEndian()
 {
   try
   {
