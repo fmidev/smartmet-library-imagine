@@ -606,7 +606,7 @@ void NFmiPath::InvProject(const NFmiArea *const theArea)
 {
   try
   {
-    if (theArea != 0)
+    if (theArea != nullptr)
     {
       NFmiPathData::iterator iter;
       for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)
@@ -631,7 +631,7 @@ void NFmiPath::InvGrid(const NFmiGrid *const theGrid)
 {
   try
   {
-    if (theGrid != 0)
+    if (theGrid != nullptr)
     {
       NFmiPathData::iterator iter;
       for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)

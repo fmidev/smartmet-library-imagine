@@ -37,7 +37,7 @@ class NFmiEsriPolyLineZ : public NFmiEsriPolyLineM
  public:
   // Constructors, destructors
 
-  ~NFmiEsriPolyLineZ(void) {}
+  ~NFmiEsriPolyLineZ(void) override {}
   NFmiEsriPolyLineZ(const NFmiEsriPolyLineZ& theLine);
 
   NFmiEsriPolyLineZ(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriPolyLineZ)
@@ -51,13 +51,13 @@ class NFmiEsriPolyLineZ : public NFmiEsriPolyLineM
 
   NFmiEsriPolyLineZ& operator=(const NFmiEsriPolyLineZ& theLine);
 
-  virtual NFmiEsriElement* Clone() const;
+  NFmiEsriElement* Clone() const override;
 
   // Data access
 
   const NFmiEsriBox& Box(void) const { return itsBox; }
-  int NumPoints(void) const { return itsPoints.size(); }
-  int NumParts(void) const { return itsParts.size(); }
+  int NumPoints(void) const override { return itsPoints.size(); }
+  int NumParts(void) const override { return itsParts.size(); }
   const std::vector<int>& Parts(void) const { return itsParts; }
   const std::vector<NFmiEsriPointZ>& Points(void) const { return itsPoints; }
   // This is intended to be used by projection etc methods
@@ -84,11 +84,11 @@ class NFmiEsriPolyLineZ : public NFmiEsriPolyLineM
 
   // Updating bounding boxes
 
-  void Update(NFmiEsriBox& theBox) const { theBox.Update(itsBox); }
+  void Update(NFmiEsriBox& theBox) const override { theBox.Update(itsBox); }
   // String buffer size, write and string
 
-  int StringSize(void) const;
-  std::ostream& Write(std::ostream& os) const;
+  int StringSize(void) const override;
+  std::ostream& Write(std::ostream& os) const override;
 
  private:
   NFmiEsriBox itsBox;  // Bounding Box, xmin,ymin,xmax,ymax

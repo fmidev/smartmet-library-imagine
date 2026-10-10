@@ -135,7 +135,7 @@ class NFmiImage
   //
   NFmiImage(int w, int h, const NFmiColorTools::Color *data);
 
-  virtual ~NFmiImage() { Destroy(); }
+  ~NFmiImage() override { Destroy(); }
   // Data access
   //
   int Width() const { return itsWidth; }

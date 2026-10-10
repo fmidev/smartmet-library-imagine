@@ -41,7 +41,7 @@ class NFmiEdgeTree
   NFmiEdgeTree() : itsLinesOnly(false), itsConvertGhostLines(false), itsEdges() {}
   // Destructors
 
-  virtual ~NFmiEdgeTree() {}
+  ~NFmiEdgeTree() override {}
   // Adding a single edge
 
   void Add(const NFmiEdge& theEdge);
@@ -54,7 +54,7 @@ class NFmiEdgeTree
 
 // Add the tree to a fill map
 #ifndef IMAGINE_WITH_CAIRO
-  void Add(NFmiFillMap& theMap) const;
+  void Add(NFmiFillMap& theMap) const override;
 #endif
 
   void LinesOnly(bool theFlag) { itsLinesOnly = theFlag; }

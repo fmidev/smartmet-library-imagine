@@ -276,7 +276,7 @@ bool ColorTree::empty() const
 {
   try
   {
-    return (itsLeftObject.get() == 0);
+    return (itsLeftObject.get() == nullptr);
   }
   catch (...)
   {
@@ -324,10 +324,10 @@ void ColorTree::insert(ColorTree::value_type theColor)
 {
   try
   {
-    if (itsLeftObject.get() == 0)
+    if (itsLeftObject.get() == nullptr)
       itsLeftObject.reset(new value_type(theColor));
 
-    else if (itsRightObject.get() == 0)
+    else if (itsRightObject.get() == nullptr)
       itsRightObject.reset(new value_type(theColor));
 
     else
@@ -337,7 +337,7 @@ void ColorTree::insert(ColorTree::value_type theColor)
 
       if (dist_left > dist_right)
       {
-        if (itsRightBranch.get() == 0)
+        if (itsRightBranch.get() == nullptr)
           itsRightBranch.reset(new ColorTree);
 
         // note that constructor sets itsMaxRight to be negative
@@ -349,7 +349,7 @@ void ColorTree::insert(ColorTree::value_type theColor)
       }
       else
       {
-        if (itsLeftBranch.get() == 0)
+        if (itsLeftBranch.get() == nullptr)
           itsLeftBranch.reset(new ColorTree);
 
         // note that constructor sets itsMaxLeft to be negative
@@ -414,7 +414,7 @@ bool ColorTree::nearest(ColorTree::value_type theColor,
     // first test each of the left and right positions to see if
     // one holds a color nearer than the nearest so far discovered
 
-    if (itsLeftObject.get() != 0)
+    if (itsLeftObject.get() != nullptr)
     {
       left_dist = distance(theColor, *itsLeftObject);
       if (theRadius < 0 || left_dist <= theRadius)
@@ -425,7 +425,7 @@ bool ColorTree::nearest(ColorTree::value_type theColor,
       }
     }
 
-    if (itsRightObject.get() != 0)
+    if (itsRightObject.get() != nullptr)
     {
       right_dist = distance(theColor, *itsRightObject);
       if (theRadius < 0 || right_dist <= theRadius)
@@ -453,13 +453,15 @@ bool ColorTree::nearest(ColorTree::value_type theColor,
 
     const bool left_closer = (left_dist < right_dist);
 
-    if (!left_closer && (itsRightBranch.get() != 0) && ((theRadius + itsMaxRight) >= right_dist))
+    if (!left_closer && (itsRightBranch.get() != nullptr) &&
+        ((theRadius + itsMaxRight) >= right_dist))
       found |= itsRightBranch->nearest(theColor, theNearest, theRadius);
 
-    if ((itsLeftBranch.get() != 0) && ((theRadius + itsMaxLeft) >= left_dist))
+    if ((itsLeftBranch.get() != nullptr) && ((theRadius + itsMaxLeft) >= left_dist))
       found |= itsLeftBranch->nearest(theColor, theNearest, theRadius);
 
-    if (left_closer && (itsRightBranch.get() != 0) && ((theRadius + itsMaxRight) >= right_dist))
+    if (left_closer && (itsRightBranch.get() != nullptr) &&
+        ((theRadius + itsMaxRight) >= right_dist))
       found |= itsRightBranch->nearest(theColor, theNearest, theRadius);
 
     return found;

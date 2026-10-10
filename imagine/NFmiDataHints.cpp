@@ -291,7 +291,7 @@ bool NFmiDataHints::Pimple::find(return_type& theValues,
 {
   try
   {
-    bool haschildren = (theNode->itsLeft.get() != 0 && theNode->itsRight.get() != 0);
+    bool haschildren = (theNode->itsLeft.get() != nullptr && theNode->itsRight.get() != nullptr);
 
     // Quick exit if the rectangle does not intersect at all
 

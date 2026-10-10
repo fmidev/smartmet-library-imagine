@@ -223,13 +223,13 @@ void NFmiImage::WriteJPEG(FILE *out) const
     // To keep things simple, we pass one scanline per call; you can pass
     // more if you wish, though.
 
-    JSAMPROW row = 0;
+    JSAMPROW row = nullptr;
     JSAMPROW rowptr[1];
 
     row = static_cast<JSAMPROW>(
         calloc(1, cinfo.image_width * cinfo.input_components * sizeof(JSAMPLE)));
 
-    if (row == 0)
+    if (row == nullptr)
     {
       jpeg_destroy_compress(&cinfo);
       throw Fmi::Exception(BCP, "Insufficient memory to allocate JPEG image");

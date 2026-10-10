@@ -58,18 +58,18 @@ class NFmiGeoShape
 {
  public:
   // Constructor
-  NFmiGeoShape() : itsType(kFmiGeoShapeEsri), itsEsriShape(0) {}
-  NFmiGeoShape(const std::string &theFilename,
+  NFmiGeoShape() : itsType(kFmiGeoShapeEsri), itsEsriShape(nullptr) {}
+  NFmiGeoShape(const std::string& theFilename,
                NFmiGeoShapeType theType = kFmiGeoShapeEsri,
-               const std::string &theFilter = "")
-      : itsType(theType), itsEsriShape(0)
+               const std::string& theFilter = "")
+      : itsType(theType), itsEsriShape(nullptr)
   {
     Read(theFilename, theType, theFilter);
   }
 
   // Destructor
 
-  virtual ~NFmiGeoShape() { delete itsEsriShape; }
+  ~NFmiGeoShape() override { delete itsEsriShape; }
   // Data-access
 
   NFmiGeoShapeType Type() const { return itsType; }
@@ -83,7 +83,7 @@ class NFmiGeoShape
 
 // Add the data to a fill map
 #ifndef IMAGINE_WITH_CAIRO
-  void Add(NFmiFillMap &theMap) const;
+  void Add(NFmiFillMap& theMap) const override;
 #endif
 
   // Stroke onto given image using various Porter-Duff rules
@@ -93,9 +93,9 @@ class NFmiGeoShape
               NFmiColorTools::Color theColor,
               NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const;
 #else
-  void Stroke(NFmiImage &theImage,
+  void Stroke(NFmiImage& theImage,
               NFmiColorTools::Color theColor,
-              NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const;
+              NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const override;
 #endif
 
   // Mark the coordinates
@@ -121,7 +121,7 @@ class NFmiGeoShape
   void Read(const std::string &theFilename, NFmiGeoShapeType theType, const std::string &theFilter)
   {
     delete itsEsriShape;
-    itsEsriShape = 0;
+    itsEsriShape = nullptr;
     itsType = theType;
     switch (itsType)
     {
@@ -154,7 +154,7 @@ class NFmiGeoShape
   void Fill(Imagine::NFmiImage &image,
             Imagine::NFmiColorTools::Color col,
             NFmiColorTools::NFmiBlendRule rule) const
-#endif
+#endif override
   {
     PathEsri().Fill(image, col, rule);
   }

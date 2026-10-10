@@ -283,7 +283,7 @@ void NFmiImage::WritePNG(FILE *out) const
         trans_rgb_value.red = NFmiColorTools::GetRed(transcolor);
         trans_rgb_value.green = NFmiColorTools::GetGreen(transcolor);
         trans_rgb_value.blue = NFmiColorTools::GetBlue(transcolor);
-        png_set_tRNS(png_ptr, info_ptr, 0, 0, &trans_rgb_value);
+        png_set_tRNS(png_ptr, info_ptr, nullptr, 0, &trans_rgb_value);
       }
 
       // Handle sRGB or GAMMA

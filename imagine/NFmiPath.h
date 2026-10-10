@@ -72,7 +72,7 @@ class NFmiPath
 #endif
 {
  public:
-  virtual ~NFmiPath() {}
+  ~NFmiPath() override {}
   NFmiPath() : itsInsideOut(false), itsElements() {}
   NFmiPath(const NFmiPathData &thePathData, bool theInsideOut = false)
       : itsInsideOut(theInsideOut), itsElements(thePathData)
@@ -221,7 +221,7 @@ class NFmiPath
   // Add the path to a fill map
 
 #ifndef IMAGINE_WITH_CAIRO
-  void Add(NFmiFillMap &theMap) const;
+  void Add(NFmiFillMap& theMap) const override;
 #endif
   // Add a string representation of a path to the path
 
@@ -273,9 +273,9 @@ class NFmiPath
     Stroke(img, CAIRO_NORMAL_LINE_WIDTH, theColor, theRule);
   }
 #else
-  void Stroke(NFmiImage &img,
+  void Stroke(NFmiImage& img,
               NFmiColorTools::Color theColor,
-              NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const;
+              NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const override;
 #endif
   // Return the bounding box
 

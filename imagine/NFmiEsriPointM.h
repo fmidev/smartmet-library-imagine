@@ -24,7 +24,7 @@ class NFmiEsriPointM : public NFmiEsriPoint
  public:
   // Constructors, destructors
 
-  ~NFmiEsriPointM(void) {}
+  ~NFmiEsriPointM(void) override {}
   NFmiEsriPointM(const NFmiEsriPointM& thePoint);
 
   NFmiEsriPointM(double theX,
@@ -42,19 +42,19 @@ class NFmiEsriPointM : public NFmiEsriPoint
 
   NFmiEsriPointM& operator=(const NFmiEsriPointM& thePoint);
 
-  virtual NFmiEsriElement* Clone() const;
+  NFmiEsriElement* Clone() const override;
 
   // Data access
 
-  double M(void) const { return itsM; }
+  double M(void) const override { return itsM; }
   void M(double theM) { itsM = theM; }
   // Updating bounding boxes
 
-  void Update(NFmiEsriBox& theBox) const { theBox.Update(X(), Y(), M()); }
+  void Update(NFmiEsriBox& theBox) const override { theBox.Update(X(), Y(), M()); }
   // String buffer size, write and string
 
-  int StringSize(void) const;
-  std::ostream& Write(std::ostream& os) const;
+  int StringSize(void) const override;
+  std::ostream& Write(std::ostream& os) const override;
 
  private:
   NFmiEsriPointM(void);

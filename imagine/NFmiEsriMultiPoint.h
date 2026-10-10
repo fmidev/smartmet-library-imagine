@@ -26,7 +26,7 @@ class NFmiEsriMultiPoint : public NFmiEsriElement
  public:
   // Constructors, destructors
 
-  ~NFmiEsriMultiPoint(void) {}
+  ~NFmiEsriMultiPoint(void) override {}
   NFmiEsriMultiPoint(const NFmiEsriMultiPoint& thePoints);
 
   NFmiEsriMultiPoint(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriMultiPoint)
@@ -40,12 +40,12 @@ class NFmiEsriMultiPoint : public NFmiEsriElement
 
   NFmiEsriMultiPoint& operator=(const NFmiEsriMultiPoint& thePoints);
 
-  virtual NFmiEsriElement* Clone() const;
+  NFmiEsriElement* Clone() const override;
 
   // Data access
 
   const NFmiEsriBox& Box(void) const { return itsBox; }
-  int NumPoints(void) const { return itsPoints.size(); }
+  int NumPoints(void) const override { return itsPoints.size(); }
   const std::vector<NFmiEsriPoint>& Points(void) const { return itsPoints; }
   // This is intended to be used by projection etc methods
 
@@ -60,15 +60,15 @@ class NFmiEsriMultiPoint : public NFmiEsriElement
 
   // Updating bounding boxes
 
-  void Update(NFmiEsriBox& theBox) const { theBox.Update(itsBox); }
+  void Update(NFmiEsriBox& theBox) const override { theBox.Update(itsBox); }
   // String buffer size, write and string
 
-  int StringSize(void) const;
-  std::ostream& Write(std::ostream& os) const;
+  int StringSize(void) const override;
+  std::ostream& Write(std::ostream& os) const override;
 
   // Projection
 
-  void Project(const NFmiEsriProjector& theProjector);
+  void Project(const NFmiEsriProjector& theProjector) override;
 
  private:
   NFmiEsriBox itsBox;  // Bounding box

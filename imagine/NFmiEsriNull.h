@@ -24,7 +24,7 @@ class NFmiEsriNull : public NFmiEsriElement
  public:
   // Constructors, destructors
 
-  ~NFmiEsriNull(void) {}
+  ~NFmiEsriNull(void) override {}
   NFmiEsriNull(const NFmiEsriNull& theNull) : NFmiEsriElement(theNull) {}
   NFmiEsriNull(int theNumber = 0) : NFmiEsriElement(kFmiEsriNull, theNumber) {}
   // Copying
@@ -36,14 +36,14 @@ class NFmiEsriNull : public NFmiEsriElement
     return *this;
   }
 
-  virtual NFmiEsriElement* Clone() const { return new NFmiEsriNull(*this); }
+  NFmiEsriElement* Clone() const override { return new NFmiEsriNull(*this); }
   // Updating bounding boxes
 
-  void Update(NFmiEsriBox& theBox) const {}
-  void Project(const NFmiEsriProjector& theProjector) {}
+  void Update(NFmiEsriBox& theBox) const override {}
+  void Project(const NFmiEsriProjector& theProjector) override {}
   // Writing string buffer
 
-  std::ostream& Write(std::ostream& os) const
+  std::ostream& Write(std::ostream& os) const override
   {
     os << LittleEndianInt(kFmiEsriNull);
     return os;
@@ -54,7 +54,7 @@ class NFmiEsriNull : public NFmiEsriElement
   const std::string ToString(void) const { return LittleEndianInt(kFmiEsriNull); }
   // Calculating string buffer size
 
-  int StringSize(void) const { return 4; }  // the type takes 4
+  int StringSize(void) const override { return 4; }  // the type takes 4
 };
 
 }  // namespace Imagine

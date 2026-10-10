@@ -30,7 +30,7 @@ class NFmiEsriMultiPointM : public NFmiEsriMultiPoint
  public:
   // Constructors, destructors
 
-  ~NFmiEsriMultiPointM(void) {}
+  ~NFmiEsriMultiPointM(void) override {}
   NFmiEsriMultiPointM(const NFmiEsriMultiPointM& thePoints);
 
   NFmiEsriMultiPointM(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriMultiPointM)
@@ -44,12 +44,12 @@ class NFmiEsriMultiPointM : public NFmiEsriMultiPoint
 
   NFmiEsriMultiPointM& operator=(const NFmiEsriMultiPointM& thePoints);
 
-  virtual NFmiEsriElement* Clone() const;
+  NFmiEsriElement* Clone() const override;
 
   // Data access
 
   const NFmiEsriBox& Box(void) const { return itsBox; }
-  int NumPoints(void) const { return itsPoints.size(); }
+  int NumPoints(void) const override { return itsPoints.size(); }
   const std::vector<NFmiEsriPointM>& Points(void) const { return itsPoints; }
   // This is intended to be used by projection etc methods
 
@@ -64,11 +64,11 @@ class NFmiEsriMultiPointM : public NFmiEsriMultiPoint
 
   // Updating bounding boxes
 
-  void Update(NFmiEsriBox& theBox) const { theBox.Update(itsBox); }
+  void Update(NFmiEsriBox& theBox) const override { theBox.Update(itsBox); }
   // String buffer size, write and string
 
-  int StringSize(void) const;
-  std::ostream& Write(std::ostream& os) const;
+  int StringSize(void) const override;
+  std::ostream& Write(std::ostream& os) const override;
 
  private:
   NFmiEsriBox itsBox;  // Bounding box

@@ -69,7 +69,7 @@ class NFmiFillMap : public NFmiDrawable
   {
   }
 
-  virtual ~NFmiFillMap(void){};
+  ~NFmiFillMap(void) override {};
 
   // Data access
 

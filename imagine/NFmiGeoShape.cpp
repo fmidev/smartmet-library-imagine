@@ -41,7 +41,7 @@ class ProjectXYEsriPoint : public NFmiEsriProjector
   {
   }
 
-  NFmiEsriPoint operator()(const NFmiEsriPoint &thePoint) const
+  NFmiEsriPoint operator()(const NFmiEsriPoint& thePoint) const override
   {
     try
     {
@@ -60,7 +60,7 @@ class ProjectXYEsriPoint : public NFmiEsriProjector
     }
   }
 
-  void SetBox(const NFmiEsriBox &theBox) const
+  void SetBox(const NFmiEsriBox& theBox) const override
   {
     try
     {
