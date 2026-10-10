@@ -8,6 +8,8 @@
 #include <macgyver/Exception.h>
 #include <newbase/NFmiGlobals.h>
 
+#include <memory>
+
 using namespace std;
 
 namespace Imagine
@@ -139,8 +141,8 @@ void NFmiDataHints::Pimple::recurse(node_type& theNode,
     }
     else
     {
-      theNode->itsLeft.reset(new RecursiveInfo());
-      theNode->itsRight.reset(new RecursiveInfo());
+      theNode->itsLeft = std::make_shared<RecursiveInfo>();
+      theNode->itsRight = std::make_shared<RecursiveInfo>();
 
       // Recurse the longer edge first
       if (width > height)

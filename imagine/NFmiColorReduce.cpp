@@ -298,8 +298,8 @@ void ColorTree::clear()
 {
   try
   {
-    itsRightBranch.reset(new ColorTree);
-    itsLeftBranch.reset(new ColorTree);
+    itsRightBranch = std::make_shared<ColorTree>();
+    itsLeftBranch = std::make_shared<ColorTree>();
     itsCount = 0;
   }
   catch (...)
@@ -325,10 +325,10 @@ void ColorTree::insert(ColorTree::value_type theColor)
   try
   {
     if (itsLeftObject.get() == nullptr)
-      itsLeftObject.reset(new value_type(theColor));
+      itsLeftObject = std::make_shared<value_type>(theColor);
 
     else if (itsRightObject.get() == nullptr)
-      itsRightObject.reset(new value_type(theColor));
+      itsRightObject = std::make_shared<value_type>(theColor);
 
     else
     {
@@ -338,7 +338,7 @@ void ColorTree::insert(ColorTree::value_type theColor)
       if (dist_left > dist_right)
       {
         if (itsRightBranch.get() == nullptr)
-          itsRightBranch.reset(new ColorTree);
+          itsRightBranch = std::make_shared<ColorTree>();
 
         // note that constructor sets itsMaxRight to be negative
 
@@ -350,7 +350,7 @@ void ColorTree::insert(ColorTree::value_type theColor)
       else
       {
         if (itsLeftBranch.get() == nullptr)
-          itsLeftBranch.reset(new ColorTree);
+          itsLeftBranch = std::make_shared<ColorTree>();
 
         // note that constructor sets itsMaxLeft to be negative
 
