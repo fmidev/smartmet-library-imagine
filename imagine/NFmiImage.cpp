@@ -600,7 +600,7 @@ void NFmiImage::Read(const string &theFileName)
       throw Fmi::Exception(BCP, std::string("Failed to read image ") + theFileName);
 
     // Close the input file
-    fclose(in);
+    (void)fclose(in);
   }
   catch (...)
   {
@@ -663,7 +663,8 @@ void NFmiImage::WriteJpeg(const string &theFileName) const
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a JPEG");
 
     WriteJPEG(out);
-    fclose(out);
+    if (fclose(out) != 0)
+      throw Fmi::Exception(BCP, "Failed to close the output file");
 
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
@@ -695,7 +696,8 @@ void NFmiImage::WritePng(const string &theFileName) const
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a PNG");
 
     WritePNG(out);
-    fclose(out);
+    if (fclose(out) != 0)
+      throw Fmi::Exception(BCP, "Failed to close the output file");
 
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
@@ -727,7 +729,8 @@ void NFmiImage::WriteWbmp(const string &theFileName) const
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a WBMP");
 
     WriteWBMP(out);
-    fclose(out);
+    if (fclose(out) != 0)
+      throw Fmi::Exception(BCP, "Failed to close the output file");
 
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
@@ -757,7 +760,8 @@ void NFmiImage::WriteGif(const string &theFileName) const
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a GIF");
 
     WriteGIF(out);
-    fclose(out);
+    if (fclose(out) != 0)
+      throw Fmi::Exception(BCP, "Failed to close the output file");
 
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
@@ -787,7 +791,8 @@ void NFmiImage::WritePnm(const string &theFileName) const
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a PNM");
 
     WritePNM(out);
-    fclose(out);
+    if (fclose(out) != 0)
+      throw Fmi::Exception(BCP, "Failed to close the output file");
 
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 
@@ -817,7 +822,8 @@ void NFmiImage::WritePgm(const string &theFileName) const
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a PGM");
 
     WritePGM(out);
-    fclose(out);
+    if (fclose(out) != 0)
+      throw Fmi::Exception(BCP, "Failed to close the output file");
 
     bool status = NFmiFileSystem::RenameFile(tmp, theFileName);
 

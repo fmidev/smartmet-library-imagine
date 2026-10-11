@@ -129,7 +129,7 @@ std::string MimeType(const string& theFileName)
 
     unsigned char strmagic[4];
     size_t num = fread(strmagic, 1, 4, in);
-    fclose(in);
+    (void)fclose(in);
 
     if (num != 4)
       throw Fmi::Exception(BCP, "Failed to read image magic number from '" + theFileName + "'");

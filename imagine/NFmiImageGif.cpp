@@ -647,7 +647,7 @@ void NFmiImage::ReadGIF(FILE *in)
       if (byte_count >= 254)                         \
       {                                              \
         fputc(byte_count, out);                      \
-        fwrite(packet.c_str(), 1, byte_count, out);  \
+        (void)fwrite(packet.c_str(), 1, byte_count, out); \
         byte_count = 0;                              \
       }                                              \
       datum >>= 8;                                   \
@@ -811,7 +811,7 @@ void NFmiImage::WriteGIF(FILE *out) const
     header += '\x00';
     header += initcodesize;  // initial code size
 
-    fwrite(header.c_str(), 1, header.size(), out);
+    (void)fwrite(header.c_str(), 1, header.size(), out);  // errors checked at the end
 
     // Write the raster itself
 
@@ -921,7 +921,7 @@ void NFmiImage::WriteGIF(FILE *out) const
     if (byte_count > 0)
     {
       fputc(byte_count, out);
-      fwrite(packet.c_str(), 1, byte_count, out);
+      (void)fwrite(packet.c_str(), 1, byte_count, out);
       byte_count = 0;
     }
 
@@ -929,6 +929,10 @@ void NFmiImage::WriteGIF(FILE *out) const
 
     fputc(0, out);    // zero-length packet to end data
     fputc(';', out);  // GIF terminator
+
+    // The individual writes are not checked, the stream error flag is
+    if (ferror(out))
+      throw Fmi::Exception(BCP, "Failed to write the GIF image");
   }
   catch (...)
   {

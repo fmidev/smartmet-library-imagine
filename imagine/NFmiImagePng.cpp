@@ -42,7 +42,8 @@ void NFmiImage::ReadPNG(FILE *in)
 
     unsigned char sig[8];
 
-    fread(sig, 1, 8, in);
+    if (fread(sig, 1, 8, in) != 8)
+      throw Fmi::Exception(BCP, "Failed to read the PNG signature");
     if (!(png_check_sig(sig, 8)))
       throw Fmi::Exception(BCP, "Incorrect signature in PNG image");
 

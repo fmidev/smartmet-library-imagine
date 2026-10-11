@@ -192,7 +192,8 @@ const NFmiPath ReadPath(const std::string &theFilename,
       if (outside || (area < theMinArea && theMinArea >= 0))
       {
         const size_t skipsize = header.n * sizeof(struct POINT);
-        fseek(fp, skipsize, SEEK_CUR);
+        if (fseek(fp, skipsize, SEEK_CUR) != 0)
+          throw Fmi::Exception(BCP, "Failed to seek in the GSHHS file");
       }
       else
       {
@@ -222,7 +223,7 @@ const NFmiPath ReadPath(const std::string &theFilename,
       n_read = fread(static_cast<void *>(&header), size_t(sizeof(struct GSHHS)), size_t(1), fp);
     }
 
-    fclose(fp);
+    (void)fclose(fp);
 
     ret.Clip(theMinLongitude, theMinLatitude, theMaxLongitude, theMaxLatitude);
     return ret;

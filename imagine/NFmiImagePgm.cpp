@@ -30,14 +30,17 @@ void NFmiImage::ReadPGM(FILE *in)
 
     // The first line contains the P5 header
 
-    fseek(in, 3, SEEK_CUR);
+    if (fseek(in, 3, SEEK_CUR) != 0)
+      throw Fmi::Exception(BCP, "Invalid PGM image data");
 
     // Then there may be multiple comment lines or empty lines
 
-    fgets(buffer, maxbufsize, in);
+    if (fgets(buffer, maxbufsize, in) != buffer)
+      throw Fmi::Exception(BCP, "Invalid PGM image data");
     while (buffer[0] == '#' || buffer[0] == '\n')
     {
-      fgets(buffer, maxbufsize, in);
+      if (fgets(buffer, maxbufsize, in) != buffer)
+        throw Fmi::Exception(BCP, "Invalid PGM image data");
       if (strlen(buffer) == 0)
         throw Fmi::Exception(BCP, "Invalid PGM image data");
     }
@@ -59,7 +62,8 @@ void NFmiImage::ReadPGM(FILE *in)
 
     int colorsize;
     {
-      fgets(buffer, maxbufsize, in);
+      if (fgets(buffer, maxbufsize, in) != buffer)
+        throw Fmi::Exception(BCP, "Invalid PGM image data");
       istringstream input(buffer);
       input >> colorsize;
       if (input.bad())

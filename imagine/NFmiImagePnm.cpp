@@ -30,14 +30,17 @@ void NFmiImage::ReadPNM(FILE *in)
 
     // The first line contains the P6 header
 
-    fseek(in, 3, SEEK_CUR);
+    if (fseek(in, 3, SEEK_CUR) != 0)
+      throw Fmi::Exception(BCP, "Invalid PNM image data");
 
     // Then there may be multiple comment lines
 
-    fgets(buffer, maxbufsize, in);
+    if (fgets(buffer, maxbufsize, in) != buffer)
+      throw Fmi::Exception(BCP, "Invalid PNM image data");
     while (buffer[0] == '#' || buffer[0] == '\n')
     {
-      fgets(buffer, maxbufsize, in);
+      if (fgets(buffer, maxbufsize, in) != buffer)
+        throw Fmi::Exception(BCP, "Invalid PNM image data");
       if (strlen(buffer) == 0)
         throw Fmi::Exception(BCP, "Invalid PNM image data");
     }
@@ -59,7 +62,8 @@ void NFmiImage::ReadPNM(FILE *in)
 
     int colorsize;
     {
-      fgets(buffer, maxbufsize, in);
+      if (fgets(buffer, maxbufsize, in) != buffer)
+        throw Fmi::Exception(BCP, "Invalid PNM image data");
       istringstream input(buffer);
       input >> colorsize;
       if (input.bad())
