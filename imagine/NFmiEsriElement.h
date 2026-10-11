@@ -40,7 +40,7 @@ class NFmiEsriBox;
 class NFmiEsriElement
 {
  public:
-  virtual ~NFmiEsriElement() {}
+  virtual ~NFmiEsriElement() = default;
   NFmiEsriElement(NFmiEsriElementType theType, int theNumber = 0)
       : itsType(theType), itsNumber(theNumber), itsAttributes()
   {
@@ -88,11 +88,8 @@ class NFmiEsriElement
  protected:
   NFmiEsriElement();
   NFmiEsriElement(const NFmiEsriElement& theElement)
-      : itsType(theElement.itsType),
-        itsNumber(theElement.itsNumber),
-        itsAttributes(theElement.itsAttributes)
-  {
-  }
+
+      = default;
 
   NFmiEsriElement& operator=(const NFmiEsriElement& theElement);
 

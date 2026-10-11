@@ -30,7 +30,7 @@ class NFmiEsriPolygonM : public NFmiEsriPolygon
  public:
   // Constructors, destructors
 
-  ~NFmiEsriPolygonM() override {}
+  ~NFmiEsriPolygonM() override = default;
   NFmiEsriPolygonM(const NFmiEsriPolygonM& thePolygon);
 
   NFmiEsriPolygonM(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriPolygonM)

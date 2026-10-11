@@ -30,7 +30,7 @@ class NFmiEsriMultiPointM : public NFmiEsriMultiPoint
  public:
   // Constructors, destructors
 
-  ~NFmiEsriMultiPointM() override {}
+  ~NFmiEsriMultiPointM() override = default;
   NFmiEsriMultiPointM(const NFmiEsriMultiPointM& thePoints);
 
   NFmiEsriMultiPointM(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriMultiPointM)

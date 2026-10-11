@@ -23,7 +23,7 @@ class NFmiEsriPoint : public NFmiEsriElement
  public:
   // Constructors, destructors
 
-  ~NFmiEsriPoint() override {}
+  ~NFmiEsriPoint() override = default;
   NFmiEsriPoint(const NFmiEsriPoint& thePoint);
 
   NFmiEsriPoint(double theX,

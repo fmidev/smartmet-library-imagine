@@ -34,7 +34,7 @@ class NFmiEsriMultiPointZ : public NFmiEsriMultiPointM
  public:
   // Constructors, destructors
 
-  ~NFmiEsriMultiPointZ() override {}
+  ~NFmiEsriMultiPointZ() override = default;
   NFmiEsriMultiPointZ(const NFmiEsriMultiPointZ& thePoints);
 
   NFmiEsriMultiPointZ(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriMultiPointZ)

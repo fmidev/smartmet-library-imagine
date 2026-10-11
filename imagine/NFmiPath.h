@@ -72,7 +72,7 @@ class NFmiPath
 #endif
 {
  public:
-  ~NFmiPath() override {}
+  ~NFmiPath() override = default;
   NFmiPath() : itsInsideOut(false), itsElements() {}
   NFmiPath(const NFmiPathData &thePathData, bool theInsideOut = false)
       : itsInsideOut(theInsideOut), itsElements(thePathData)

@@ -169,7 +169,7 @@ class NFmiContourTree : public NFmiEdgeTree
 
   /// Destructor
 
-  ~NFmiContourTree() override {}
+  ~NFmiContourTree() override = default;
   /// Constructor.
 
   /*!

@@ -69,7 +69,7 @@ class NFmiFillMap : public NFmiDrawable
   {
   }
 
-  ~NFmiFillMap() override {};
+  ~NFmiFillMap() override = default;
 
   // Data access
 

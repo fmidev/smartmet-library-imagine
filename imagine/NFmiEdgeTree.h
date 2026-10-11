@@ -41,7 +41,7 @@ class NFmiEdgeTree
   NFmiEdgeTree() : itsLinesOnly(false), itsConvertGhostLines(false), itsEdges() {}
   // Destructors
 
-  ~NFmiEdgeTree() override {}
+  ~NFmiEdgeTree() override = default;
   // Adding a single edge
 
   void Add(const NFmiEdge& theEdge);

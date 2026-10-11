@@ -43,7 +43,7 @@ class NFmiFillMap;  // Derived class, ...
 class NFmiDrawable
 {
  public:
-  virtual ~NFmiDrawable() {}
+  virtual ~NFmiDrawable() = default;
   //! Constructor
   /*!
    * In the future this might take as input a CSS style sheet,

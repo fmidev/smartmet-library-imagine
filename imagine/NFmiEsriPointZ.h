@@ -25,7 +25,7 @@ class NFmiEsriPointZ : public NFmiEsriPointM
  public:
   // Constructors, destructors
 
-  ~NFmiEsriPointZ() override {}
+  ~NFmiEsriPointZ() override = default;
   NFmiEsriPointZ(const NFmiEsriPointZ& thePoint);
 
   NFmiEsriPointZ(double theX,

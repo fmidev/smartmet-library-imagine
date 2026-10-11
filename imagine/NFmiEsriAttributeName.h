@@ -33,7 +33,7 @@ class NFmiEsriAttributeName
  public:
   // Constructor, destructor
 
-  ~NFmiEsriAttributeName() {}
+  ~NFmiEsriAttributeName() = default;
   NFmiEsriAttributeName(const std::string& theName,
                         NFmiEsriAttributeType theType,
                         int theFieldLength = -1,

@@ -37,7 +37,7 @@ class NFmiEsriPolyLineZ : public NFmiEsriPolyLineM
  public:
   // Constructors, destructors
 
-  ~NFmiEsriPolyLineZ() override {}
+  ~NFmiEsriPolyLineZ() override = default;
   NFmiEsriPolyLineZ(const NFmiEsriPolyLineZ& theLine);
 
   NFmiEsriPolyLineZ(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriPolyLineZ)
