@@ -9,6 +9,7 @@
 #include "NFmiEsriBox.h"
 
 #include <macgyver/Exception.h>
+#include <macgyver/StringConversion.h>
 #include <newbase/NFmiGrid.h>
 #include <newbase/NFmiValueString.h>
 
@@ -337,7 +338,7 @@ void NFmiPath::Add(const string &theString)
         if (theString[pos] == ',')
           pos++;
 
-        double number = atof(asciinumber.c_str());
+        double number = Fmi::stod(asciinumber);
 
         if (phase == 1)
           x = number;

@@ -4,6 +4,7 @@
  * Replacement for 'Imagine' library, using Cairo drawing
  */
 #include "imagine-config.h"
+#include <macgyver/StringConversion.h>
 #include <macgyver/Exception.h>
 
 #ifdef IMAGINE_WITH_CAIRO
@@ -767,7 +768,7 @@ void ImagineXr::MakeFace(const string &fontspec,
     else
     {
       font_name = to_vec[0];
-      font_size = atoi(to_vec[1].c_str());  // hehe, C++ sure (gimme regexps)
+      font_size = Fmi::stoi(to_vec[1]);
     }
 
     cr->select_font_face(font_name, FONT_SLANT_NORMAL, FONT_WEIGHT_NORMAL);

@@ -137,7 +137,7 @@
 #endif
 
 #include "NFmiEsriShape.h"
-
+#include <macgyver/StringConversion.h>
 #include "NFmiEsriMultiPatch.h"
 #include "NFmiEsriMultiPointZ.h"
 #include "NFmiEsriNull.h"
@@ -156,6 +156,21 @@
 
 using namespace Imagine::NFmiEsriBuffer;  // Conversion tools
 using namespace std;
+
+namespace
+{
+// Parses a fixed width, space padded DBF number field. A blank field is a
+// null value and gives 0 as before; anything else must be a valid number.
+template <typename Parser>
+auto dbf_number(std::string field, Parser parse) -> decltype(parse(field))
+{
+  NFmiStringTools::TrimL(field);
+  NFmiStringTools::TrimR(field);
+  if (field.empty())
+    return 0;
+  return parse(field);
+}
+}  // namespace
 
 namespace Imagine
 {
@@ -544,19 +559,19 @@ bool NFmiEsriShape::Read(const string &theFilename, bool fDBF)
           }
           case kFmiEsriInteger:
           {
-            int value = atoi(dbfrecord.substr(offset, size).c_str());
+            int value = dbf_number(dbfrecord.substr(offset, size), Fmi::stoi);
             (*elementiter)->Add(NFmiEsriAttribute(value, *nameiter));
             break;
           }
           case kFmiEsriDouble:
           {
-            double value = atof(dbfrecord.substr(offset, size).c_str());
+            double value = dbf_number(dbfrecord.substr(offset, size), Fmi::stod);
             (*elementiter)->Add(NFmiEsriAttribute(value, *nameiter));
             break;
           }
           case kFmiEsriDate:
           {
-            long value = atol(dbfrecord.substr(offset, size).c_str());
+            long value = dbf_number(dbfrecord.substr(offset, size), Fmi::stol);
             int yyyy = value / 10000;
             int mm = (value / 100) % 100;
             int dd = value % 100;
