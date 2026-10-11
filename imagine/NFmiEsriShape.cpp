@@ -960,11 +960,11 @@ bool NFmiEsriShape::WriteDBF(const string &theFilename) const
       }
       dbffile << '\x0d';  // header record terminator
 
-      for (auto element : itsElements)
+      for (auto* element : itsElements)
       {
         dbffile << ' ';  // not deleted, "*" would indicate deleted
 
-        for (auto itsAttributeName : itsAttributeNames)
+        for (auto* itsAttributeName : itsAttributeNames)
         {
           const string name = itsAttributeName->Name();
           switch (itsAttributeName->Type())

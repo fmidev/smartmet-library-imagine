@@ -151,10 +151,10 @@ class NFmiGeoShape
             NFmiColorTools::NFmiBlendRule rule)
 #else
   using NFmiDrawable::Fill;
-  void Fill(Imagine::NFmiImage &image,
+  void Fill(Imagine::NFmiImage& image,
             Imagine::NFmiColorTools::Color col,
-            NFmiColorTools::NFmiBlendRule rule) const
-#endif override
+            NFmiColorTools::NFmiBlendRule rule) const override
+#endif
   {
     PathEsri().Fill(image, col, rule);
   }

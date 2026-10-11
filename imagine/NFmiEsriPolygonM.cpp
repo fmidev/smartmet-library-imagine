@@ -30,9 +30,7 @@ namespace Imagine
 // Copy constructor
 // ----------------------------------------------------------------------
 
-NFmiEsriPolygonM::NFmiEsriPolygonM(const NFmiEsriPolygonM& thePolygon)
-
-    = default;
+NFmiEsriPolygonM::NFmiEsriPolygonM(const NFmiEsriPolygonM& thePolygon) = default;
 
 // ----------------------------------------------------------------------
 // Assignment operator

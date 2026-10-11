@@ -24,9 +24,7 @@ namespace Imagine
 // Copy constructor
 // ----------------------------------------------------------------------
 
-NFmiEsriPoint::NFmiEsriPoint(const NFmiEsriPoint& thePoint)
-
-    = default;
+NFmiEsriPoint::NFmiEsriPoint(const NFmiEsriPoint& thePoint) = default;
 
 // ----------------------------------------------------------------------
 // Copying

@@ -37,9 +37,7 @@ namespace Imagine
 // Copy constructor
 // ----------------------------------------------------------------------
 
-NFmiEsriPolyLineZ::NFmiEsriPolyLineZ(const NFmiEsriPolyLineZ& theLine)
-
-    = default;
+NFmiEsriPolyLineZ::NFmiEsriPolyLineZ(const NFmiEsriPolyLineZ& theLine) = default;
 
 // ----------------------------------------------------------------------
 // Assignment operator

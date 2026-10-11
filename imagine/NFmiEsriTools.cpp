@@ -81,12 +81,12 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
 
     auto* shape = new NFmiEsriShape(theShape.Type());
 
-    for (auto ait : theShape.Attributes())
+    for (auto* ait : theShape.Attributes())
     {
       shape->Add(new NFmiEsriAttributeName(*ait));
     }
 
-    for (auto it : theShape.Elements())
+    for (auto* it : theShape.Elements())
     {
       // Skip empty elements
       if (it == nullptr)

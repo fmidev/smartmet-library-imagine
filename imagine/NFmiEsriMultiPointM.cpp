@@ -29,9 +29,7 @@ namespace Imagine
 // Copy constructor
 // ----------------------------------------------------------------------
 
-NFmiEsriMultiPointM::NFmiEsriMultiPointM(const NFmiEsriMultiPointM& thePoints)
-
-    = default;
+NFmiEsriMultiPointM::NFmiEsriMultiPointM(const NFmiEsriMultiPointM& thePoints) = default;
 
 // ----------------------------------------------------------------------
 // Assignment operator

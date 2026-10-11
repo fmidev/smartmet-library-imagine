@@ -395,7 +395,7 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
       error = FT_Glyph_To_Bitmap(&image, FT_RENDER_MODE_NORMAL, &pen, 0);
       if (!error)
       {
-        auto bit = reinterpret_cast<FT_BitmapGlyph>(image);
+        auto* bit = reinterpret_cast<FT_BitmapGlyph>(image);
         pos[glyphpos].x += bit->left;
         pos[glyphpos].y -= bit->top;
       }
@@ -458,7 +458,7 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
 
       if (!error)
       {
-        auto bit = reinterpret_cast<FT_BitmapGlyph>(image);
+        auto* bit = reinterpret_cast<FT_BitmapGlyph>(image);
 
 #if 0
 			this->Draw(theBlender, theImage, theColor,

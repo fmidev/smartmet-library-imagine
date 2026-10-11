@@ -87,9 +87,7 @@ class NFmiEsriElement
 
  protected:
   NFmiEsriElement();
-  NFmiEsriElement(const NFmiEsriElement& theElement)
-
-      = default;
+  NFmiEsriElement(const NFmiEsriElement& theElement) = default;
 
   NFmiEsriElement& operator=(const NFmiEsriElement& theElement);
 
