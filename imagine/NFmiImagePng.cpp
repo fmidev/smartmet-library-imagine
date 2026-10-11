@@ -66,6 +66,7 @@ void NFmiImage::ReadPNG(FILE *in)
 
     // Jumper
 
+    // NOLINTNEXTLINE(cert-err52-cpp): libpng/libjpeg report errors with longjmp
     if (setjmp(png_jmpbuf(png_ptr)))
     {
       png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);

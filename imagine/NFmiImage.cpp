@@ -969,8 +969,11 @@ NFmiColorTools::Color NFmiImage::UnusedColor() const
     {
       // A new color
 
+      // NOLINTNEXTLINE(cert-msc50-cpp): rand() is not used for security here
       int r = rand() * NFmiColorTools::MaxRGB / RAND_MAX;
+      // NOLINTNEXTLINE(cert-msc50-cpp): rand() is not used for security here
       int g = rand() * NFmiColorTools::MaxRGB / RAND_MAX;
+      // NOLINTNEXTLINE(cert-msc50-cpp): rand() is not used for security here
       int b = rand() * NFmiColorTools::MaxRGB / RAND_MAX;
 
       NFmiColorTools::Color rgb = NFmiColorTools::MakeColor(r, g, b);
