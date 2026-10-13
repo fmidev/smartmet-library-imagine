@@ -227,7 +227,7 @@ void NFmiAffine::Multiply(const NFmiAffine& theAffine)
  */
 // ----------------------------------------------------------------------
 
-double NFmiAffine::X(double x, double y)
+double NFmiAffine::X(double x, double y) const
 {
   try
   {
@@ -245,7 +245,7 @@ double NFmiAffine::X(double x, double y)
  */
 // ----------------------------------------------------------------------
 
-double NFmiAffine::Y(double x, double y)
+double NFmiAffine::Y(double x, double y) const
 {
   try
   {

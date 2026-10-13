@@ -32,8 +32,8 @@ class NFmiAffine
   void Scale(double sx, double sy);
   void Rotate(double a);
   void Multiply(const NFmiAffine& theAffine);
-  double X(double x, double y);
-  double Y(double x, double y);
+  double X(double x, double y) const;
+  double Y(double x, double y) const;
 
  private:
   double itsA;

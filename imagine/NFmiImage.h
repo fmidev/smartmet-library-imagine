@@ -172,7 +172,8 @@ class NFmiImage
 
   // This makes  A(i,j) = B(x,y) work
   //
-  NFmiColorTools::Color &operator()(int i, int j) const { return itsPixels[j * itsWidth + i]; }
+  NFmiColorTools::Color &operator()(int i, int j) { return itsPixels[j * itsWidth + i]; }
+  NFmiColorTools::Color operator()(int i, int j) const { return itsPixels[j * itsWidth + i]; }
   // Assignment operator
 
   NFmiImage &operator=(const NFmiImage &theImage);

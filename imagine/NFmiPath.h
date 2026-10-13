@@ -185,7 +185,7 @@ class NFmiPath
   // Simplify using Douglas-Peucker algorithm. The input is the
   // maximum allowed error for any line segment.
 
-  void Simplify(double epsilon = 0.0);
+  void Simplify(double epsilon = 0.0) const;
 
   // Simplify long straight line segments
 

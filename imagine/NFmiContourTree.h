@@ -267,7 +267,7 @@ class NFmiContourTree : public NFmiEdgeTree
    * Otherwise the value is considered valid for contouring.
    */
 
-  bool IsValid(float value)
+  bool IsValid(float value) const
   {
     if (itHasMissingValue && value == itsMissingValue)
       return false;

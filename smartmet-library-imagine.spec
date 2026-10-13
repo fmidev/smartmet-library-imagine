@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 26.10.11
+Version: 26.10.13
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -31,14 +31,14 @@ BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
 BuildRequires: smartmet-library-macgyver-devel >= 26.10.11
-BuildRequires: smartmet-library-newbase-devel >= 26.10.11
+BuildRequires: smartmet-library-newbase-devel >= 26.10.13
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal312-devel
 BuildRequires: smartmet-library-gis-devel >= 26.10.11
 BuildRequires: %{smartmet_fmt_devel}
 Requires: smartmet-library-macgyver >= 26.10.11
-Requires: smartmet-library-newbase >= 26.10.11
+Requires: smartmet-library-newbase >= 26.10.13
 Requires: %{smartmet_boost}-filesystem
 Requires: %{smartmet_boost}-regex
 Requires: %{smartmet_boost}-thread
@@ -53,7 +53,7 @@ Requires: zlib
 #TestRequires: smartmet-library-regression
 #TestRequires: smartmet-library-macgyver-devel >= 26.10.11
 #TestRequires: smartmet-library-macgyver
-#TestRequires: smartmet-library-newbase-devel >= 26.10.11
+#TestRequires: smartmet-library-newbase-devel >= 26.10.13
 #TestRequires: %{smartmet_boost}-devel
 #TestRequires: freetype-devel
 #TestRequires: libjpeg
@@ -104,6 +104,11 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Tue Oct 13 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.13-1.fmi
+- Declare member functions and parameters const where nothing is modified (const correctness), no functional changes
+- NFmiImage::operator() const returns the color by value, modifying pixels requires a non-const image
+- Requires 26.10.13 versions of newbase due to their ABI changes
+
 * Sun Oct 11 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.11-1.fmi
 - Invalid numbers are now detected instead of silently becoming 0 or a numeric prefix
 - Failed file writes, closes and seeks are now reported instead of being ignored
