@@ -329,7 +329,6 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
 // Add the contour tree to a fill map
 // ----------------------------------------------------------------------
 
-#ifndef IMAGINE_WITH_CAIRO
 void NFmiEdgeTree::Add(NFmiFillMap& theMap) const
 {
   try
@@ -346,7 +345,6 @@ void NFmiEdgeTree::Add(NFmiFillMap& theMap) const
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-#endif
 
 }  // namespace Imagine
 

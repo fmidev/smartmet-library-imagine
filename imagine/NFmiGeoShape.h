@@ -17,14 +17,10 @@
 #include "NFmiEsriTools.h"
 #include "NFmiPath.h"
 
-#ifdef IMAGINE_WITH_CAIRO
-#include "ImagineXr.h"
-#else
 #include "NFmiColorTools.h"
 #include "NFmiDrawable.h"
 #include "NFmiFillMap.h"
 #include "NFmiImage.h"
-#endif
 
 #include <newbase/NFmiArea.h>
 
@@ -52,9 +48,7 @@ struct NFmiGeoShapeError : public std::runtime_error
 #endif
 
 class NFmiGeoShape
-#ifndef IMAGINE_WITH_CAIRO
     : public NFmiDrawable
-#endif
 {
  public:
   // Constructor
@@ -82,37 +76,21 @@ class NFmiGeoShape
   const NFmiPath Path() const;
 
 // Add the data to a fill map
-#ifndef IMAGINE_WITH_CAIRO
   void Add(NFmiFillMap& theMap) const override;
-#endif
 
   // Stroke onto given image using various Porter-Duff rules
 
-#ifdef IMAGINE_WITH_CAIRO
-  void Stroke(ImagineXr &drawing,
-              NFmiColorTools::Color theColor,
-              NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const;
-#else
   void Stroke(NFmiImage& theImage,
               NFmiColorTools::Color theColor,
               NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const override;
-#endif
 
   // Mark the coordinates
 
-#ifdef IMAGINE_WITH_CAIRO
-  void Mark(ImagineXr &drawing,
-            const ImagineXr &marker,
-            NFmiColorTools::NFmiBlendRule theRule,
-            NFmiAlignment theAlignment = kFmiAlignCenter,
-            float theAlpha = 1.0) const;
-#else
   void Mark(NFmiImage &theImage,
             const NFmiImage &theMarker,
             NFmiColorTools::NFmiBlendRule theRule,
             NFmiAlignment theAlignment = kFmiAlignCenter,
             float theAlpha = 1.0) const;
-#endif
 
   // Write imagemap data to a file
 
@@ -145,16 +123,10 @@ class NFmiGeoShape
     }
   }
 
-#ifdef IMAGINE_WITH_CAIRO
-  void Fill(ImagineXr &image,
-            Imagine::NFmiColorTools::Color col,
-            NFmiColorTools::NFmiBlendRule rule)
-#else
   using NFmiDrawable::Fill;
   void Fill(Imagine::NFmiImage& image,
             Imagine::NFmiColorTools::Color col,
             NFmiColorTools::NFmiBlendRule rule) const override
-#endif
   {
     PathEsri().Fill(image, col, rule);
   }
@@ -166,36 +138,20 @@ class NFmiGeoShape
 
   // Stroking
 
-#ifdef IMAGINE_WITH_CAIRO
-  void StrokeEsri(ImagineXr &drawing,
-                  NFmiColorTools::Color theColor,
-                  NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const;
-#else
   void StrokeEsri(Imagine::NFmiImage &theImage,
                   NFmiColorTools::Color theColor,
                   NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const;
-#endif
 
 // Adding to a fillmap
-#ifndef IMAGINE_WITH_CAIRO
   void AddEsri(NFmiFillMap &theMap) const;
-#endif
 
   // Mark the coordinates
 
-#ifdef IMAGINE_WITH_CAIRO
-  void MarkEsri(ImagineXr &drawing,
-                const ImagineXr &marker,
-                NFmiColorTools::NFmiBlendRule theRule,
-                NFmiAlignment theAlignment = kFmiAlignCenter,
-                float theAlpha = 1.0) const;
-#else
   void MarkEsri(Imagine::NFmiImage &theImage,
                 const Imagine::NFmiImage &marker,
                 NFmiColorTools::NFmiBlendRule theRule,
                 NFmiAlignment theAlignment = kFmiAlignCenter,
                 float theAlpha = 1.0) const;
-#endif
 
   // Write imagemap data to a file
 

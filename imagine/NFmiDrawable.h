@@ -23,9 +23,6 @@
 
 #include "imagine-config.h"
 
-#ifdef IMAGINE_WITH_CAIRO
-#error "Either Cairo or this"
-#endif
 
 // Note: Any drawable must invariably know how to handle colour,
 //       hence this include is here instead of derived classes.

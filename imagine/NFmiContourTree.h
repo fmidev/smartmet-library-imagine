@@ -130,9 +130,7 @@
 
 #include "NFmiEdgeTree.h"  // Input edges
 
-#ifndef IMAGINE_WITH_CAIRO
 #include "NFmiFillMap.h"  // Fill map generation and rendering
-#endif
 
 #include "NFmiDataHints.h"
 

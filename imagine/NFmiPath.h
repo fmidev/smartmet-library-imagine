@@ -40,13 +40,8 @@
 #include "NFmiColorTools.h"
 #include "NFmiImage.h"
 
-#ifdef IMAGINE_WITH_CAIRO
-#include "ImagineXr.h"
-#define CAIRO_NORMAL_LINE_WIDTH (0.4)  // 2.0 is normal Cairo default
-#else
 #include "NFmiAffine.h"
 #include "NFmiDrawable.h"
-#endif
 
 #include <newbase/NFmiArea.h>
 
@@ -67,9 +62,7 @@ using NFmiPathData = std::deque<NFmiPathElement>;
 // ----------------------------------------------------------------------
 
 class NFmiPath
-#ifndef IMAGINE_WITH_CAIRO
     : public NFmiDrawable
-#endif
 {
  public:
   ~NFmiPath() override = default;
@@ -208,9 +201,7 @@ class NFmiPath
 
   // Add the path to a fill map
 
-#ifndef IMAGINE_WITH_CAIRO
   void Add(NFmiFillMap& theMap) const override;
-#endif
   // Add a string representation of a path to the path
 
   void Add(const std::string &theString);
@@ -232,9 +223,7 @@ class NFmiPath
   void Scale(double theXScale, double theYScale);
 
 // Apply a general affine transformation
-#ifndef IMAGINE_WITH_CAIRO
   void Transform(NFmiAffine &theAffine);
-#endif
   // Align path to desired corner
 
   void Align(NFmiAlignment theAlignment, double theX = 0.0, double theY = 0.0);
@@ -248,23 +237,14 @@ class NFmiPath
 
   // Stroke onto given image using various Porter-Duff rules
 
-  void Stroke(ImagineXr_or_NFmiImage &img,
+  void Stroke(NFmiImage &img,
               double theWidth,
               NFmiColorTools::Color theColor,
               NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const;
 
-#ifdef IMAGINE_WITH_CAIRO
-  void Stroke(ImagineXr &img,
-              NFmiColorTools::Color theColor,
-              NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const
-  {
-    Stroke(img, CAIRO_NORMAL_LINE_WIDTH, theColor, theRule);
-  }
-#else
   void Stroke(NFmiImage& img,
               NFmiColorTools::Color theColor,
               NFmiColorTools::NFmiBlendRule theRule = NFmiColorTools::kFmiColorCopy) const override;
-#endif
   // Return the bounding box
 
   NFmiEsriBox BoundingBox() const;
@@ -275,20 +255,6 @@ class NFmiPath
 
   void InsideOut() { itsInsideOut = !itsInsideOut; }
   bool IsInsideOut() const { return itsInsideOut; }
-#ifdef IMAGINE_WITH_CAIRO
-  void Fill(ImagineXr &img, NFmiColorTools::Color col, NFmiColorTools::NFmiBlendRule rule) const
-  {
-    img.Fill(itsElements, col, rule);
-  }
-
-  void Fill(ImagineXr &img,
-            const ImagineXr &pattern,
-            NFmiColorTools::NFmiBlendRule rule,
-            double factor) const
-  {
-    img.Fill(itsElements, pattern, rule, factor);
-  }
-#endif
 
   /***
    */

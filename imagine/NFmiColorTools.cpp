@@ -934,11 +934,6 @@ void NFmiColorTools::BlendNamesInit()
 
     BLENDINSERT("Plus", kFmiColorPlus);
 
-#ifdef IMAGINE_WITH_CAIRO
-    // Take "OnOpaque" as "Copy" for Cairo; used in selftests
-    //
-    BLENDINSERT("OnOpaque", kFmiColorCopy);
-#else
     BLENDINSERT("Minus", kFmiColorMinus);
     BLENDINSERT("Add", kFmiColorAdd);
     BLENDINSERT("Substract", kFmiColorSubstract);
@@ -962,7 +957,6 @@ void NFmiColorTools::BlendNamesInit()
 
     BLENDINSERT("OnOpaque", kFmiColorOnOpaque);
     BLENDINSERT("OnTransparent", kFmiColorOnTransparent);
-#endif
   }
   catch (...)
   {

@@ -150,7 +150,6 @@ enum NFmiBlendRule
   kFmiColorXor,
 
   kFmiColorPlus,
-#ifndef IMAGINE_WITH_CAIRO
   kFmiColorMinus,
   kFmiColorAdd,
   kFmiColorSubstract,
@@ -173,7 +172,6 @@ enum NFmiBlendRule
   kFmiColorReduceContrast,
   kFmiColorOnOpaque,
   kFmiColorOnTransparent
-#endif
 };
 
 // -------------------- colour name conversion --------------------

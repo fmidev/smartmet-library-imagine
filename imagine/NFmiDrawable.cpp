@@ -1,6 +1,5 @@
 #include "imagine-config.h"
 
-#ifndef IMAGINE_WITH_CAIRO
 // ======================================================================
 /*!
  * \file NFmiDrawable.cpp
@@ -113,5 +112,3 @@ void NFmiDrawable::Stroke(NFmiImage& theImage,
 
 // ======================================================================
 
-#endif
-// not IMAGINE_WITH_CAIRO

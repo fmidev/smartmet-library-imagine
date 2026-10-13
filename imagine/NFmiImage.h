@@ -19,9 +19,7 @@
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"
 
-#ifndef IMAGINE_WITH_CAIRO
 #include "NFmiDrawable.h"
-#endif
 
 #include <cstdio>
 #include <set>  // for sets
@@ -88,9 +86,7 @@ struct NFmiImageCorruptError : public NFmiImageError
 #endif
 
 class NFmiImage
-#ifndef IMAGINE_WITH_CAIRO
     : public NFmiDrawable
-#endif
 {
  private:
   // Data elements
@@ -127,9 +123,7 @@ class NFmiImage
   NFmiImage(int theWidth = 0, int theHeight = 0, NFmiColorTools::Color theColor = 0);
   NFmiImage(const NFmiImage &theImg);
 
-#ifndef IMAGINE_WITH_CAIRO
   NFmiImage(const std::string &theFileName);
-#endif
 
   // AKa 4-Aug-2008: Constructor based on raw data from Cairo ImageSurface
   //
@@ -181,9 +175,7 @@ class NFmiImage
 
 // Reading an image
 //
-#ifndef IMAGINE_WITH_CAIRO
   void Read(const std::string &fn);
-#endif
 
   // Writing the image
   //

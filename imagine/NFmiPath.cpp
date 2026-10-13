@@ -13,10 +13,6 @@
 #include <newbase/NFmiGrid.h>
 #include <newbase/NFmiValueString.h>
 
-#ifdef IMAGINE_WITH_CAIRO
-#include "ImagineXr.h"
-#define CAIRO_LINE_WIDTH (1.0)
-#endif
 
 #include <algorithm>
 #include <set>
@@ -1065,7 +1061,6 @@ string NFmiPath::ftoa(double theValue) const
 // Add the path to a fill map
 // ----------------------------------------------------------------------
 
-#ifndef IMAGINE_WITH_CAIRO
 void NFmiPath::Add(NFmiFillMap &theMap) const
 {
   try
@@ -1149,14 +1144,12 @@ void NFmiPath::Add(NFmiFillMap &theMap) const
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-#endif
 
 // ----------------------------------------------------------------------
 // Stroke onto given image using various Porter-Duff rules
 // ----------------------------------------------------------------------
 
-#ifndef IMAGINE_WITH_CAIRO
-void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
+void NFmiPath::Stroke(NFmiImage &img,
                       NFmiColorTools::Color theColor,
                       NFmiColorTools::NFmiBlendRule theRule) const
 {
@@ -1205,13 +1198,12 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-#endif
 
 // ----------------------------------------------------------------------
 // Stroke onto given image using various Porter-Duff rules
 // ----------------------------------------------------------------------
 
-void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
+void NFmiPath::Stroke(NFmiImage &img,
                       double theWidth,
                       NFmiColorTools::Color theColor,
                       NFmiColorTools::NFmiBlendRule theRule) const
@@ -1231,9 +1223,6 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
        * cutting to thousands of moveto/lineto segments kills performance,
        * especially when creating PDF output (Cairo 1.6.4).
        */
-#ifdef IMAGINE_WITH_CAIRO
-    img.Stroke(itsElements, theWidth, theColor, theRule);
-#else
     // Current point is not defined yet
 
     double lastX = kFloatMissing;
@@ -1282,7 +1271,6 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
       lastX = nextX;
       lastY = nextY;
     }
-#endif
   }
   catch (...)
   {
@@ -1290,7 +1278,6 @@ void NFmiPath::Stroke(ImagineXr_or_NFmiImage &img,
   }
 }
 
-#ifndef IMAGINE_WITH_CAIRO
 NFmiPath NFmiPath::Clip(
     double theX1, double theY1, double theX2, double theY2, double theMargin) const
 {
@@ -1474,7 +1461,6 @@ NFmiPath NFmiPath::Clip(
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-#endif
 
 static bool IsInside(const NFmiArea *const theArea, const NFmiPathElement &theElement)
 {

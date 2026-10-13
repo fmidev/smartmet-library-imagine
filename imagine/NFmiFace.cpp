@@ -1,6 +1,5 @@
 #include "imagine-config.h"
 
-#ifndef IMAGINE_WITH_CAIRO
 
 // ======================================================================
 /*!
@@ -236,5 +235,3 @@ void NFmiFace::Draw(NFmiImage& theImage,
 
 // ======================================================================
 
-#endif
-// IMAGINE_WITH_CAIRO

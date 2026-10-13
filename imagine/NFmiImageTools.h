@@ -9,9 +9,6 @@
 
 #include "imagine-config.h"
 
-#ifdef IMAGINE_WITH_CAIRO
-#error "Either Cairo or this"
-#endif
 
 #include <string>
 

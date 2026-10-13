@@ -149,7 +149,6 @@ const NFmiPath NFmiGeoShape::Path() const
 // Add map data to a NFmiFillMap
 // ----------------------------------------------------------------------
 
-#ifndef IMAGINE_WITH_CAIRO
 void NFmiGeoShape::Add(NFmiFillMap &theMap) const
 {
   try
@@ -170,13 +169,12 @@ void NFmiGeoShape::Add(NFmiFillMap &theMap) const
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-#endif
 
 // ----------------------------------------------------------------------
 // Stroke map data
 // ----------------------------------------------------------------------
 
-void NFmiGeoShape::Stroke(ImagineXr_or_NFmiImage &img,
+void NFmiGeoShape::Stroke(NFmiImage &img,
                           NFmiColorTools::Color theColor,
                           NFmiColorTools::NFmiBlendRule theRule) const
 {
@@ -208,8 +206,8 @@ void NFmiGeoShape::Stroke(ImagineXr_or_NFmiImage &img,
 // Mark map data
 // ----------------------------------------------------------------------
 
-void NFmiGeoShape::Mark(ImagineXr_or_NFmiImage &img,
-                        const ImagineXr_or_NFmiImage &marker,
+void NFmiGeoShape::Mark(NFmiImage &img,
+                        const NFmiImage &marker,
                         NFmiColorTools::NFmiBlendRule theRule,
                         NFmiAlignment theAlignment,
                         float theAlpha) const
@@ -453,7 +451,6 @@ const NFmiPath NFmiGeoShape::PathEsri() const
 //
 // ----------------------------------------------------------------------
 
-#ifndef IMAGINE_WITH_CAIRO
 void NFmiGeoShape::AddEsri(NFmiFillMap &theMap) const
 {
   try
@@ -582,7 +579,6 @@ void NFmiGeoShape::AddEsri(NFmiFillMap &theMap) const
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-#endif
 
 // ----------------------------------------------------------------------
 // Stroke ESRI shape data onto given image
@@ -596,7 +592,7 @@ void NFmiGeoShape::AddEsri(NFmiFillMap &theMap) const
 //
 // ----------------------------------------------------------------------
 
-void NFmiGeoShape::StrokeEsri(ImagineXr_or_NFmiImage &img,
+void NFmiGeoShape::StrokeEsri(NFmiImage &img,
                               NFmiColorTools::Color theColor,
                               NFmiColorTools::NFmiBlendRule theRule) const
 {
@@ -622,8 +618,8 @@ void NFmiGeoShape::StrokeEsri(ImagineXr_or_NFmiImage &img,
 // Note that we consider multipatches invalid in this context
 // ----------------------------------------------------------------------
 
-void NFmiGeoShape::MarkEsri(ImagineXr_or_NFmiImage &img,
-                            const ImagineXr_or_NFmiImage &marker,
+void NFmiGeoShape::MarkEsri(NFmiImage &img,
+                            const NFmiImage &marker,
                             NFmiColorTools::NFmiBlendRule theRule,
                             NFmiAlignment theAlignment,
                             float theAlpha) const
