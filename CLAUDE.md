@@ -36,11 +36,11 @@ Build requires: `macgyver`, `newbase` (SmartMet libraries), GDAL, fmt 12.x, Free
 
 ### Rendering backend
 
-The library has a compile-time switch (`IMAGINE_WITH_CAIRO` in `imagine-config.h`) that selects between two rendering backends. **Cairo is currently disabled** -- the non-Cairo (self-made) rendering path is active. Many classes conditionally compile different code via `#ifdef IMAGINE_WITH_CAIRO`. The `ImagineXr_or_NFmiImage` typedef resolves to `Imagine::NFmiImage` in the active configuration.
+The library has a single rendering backend: the self-made rasteriser drawing into `NFmiImage`. The never-enabled Cairo backend (`IMAGINE_WITH_CAIRO`, `ImagineXr`, `imagine-config.h`) was removed in 26.10.13; Cairo rendering is in imagine2.
 
 ### Core class hierarchy
 
-`NFmiDrawable` is the abstract base for objects that can fill/stroke onto an `NFmiImage`. It exists only in non-Cairo mode. Key inheritors:
+`NFmiDrawable` is the abstract base for objects that can fill/stroke onto an `NFmiImage`. Key inheritors:
 
 - **`NFmiImage`** -- RGBA pixel buffer with JPEG/PNG/PNM/PGM/GIF read/write, compositing, and basic line drawing. Colors are `int` (0xAARRGGBB format, alpha 0-127 where 0=opaque).
 - **`NFmiPath`** -- PostScript-style path (deque of `NFmiPathElement`). Supports moveto/lineto/ghostlineto/conicto/cubicto, affine transforms, projection, SVG output, Douglas-Peucker simplification, clipping, and Pacific/Atlantic view conversion.

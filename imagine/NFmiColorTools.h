@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "imagine-config.h"
 
 #include <newbase/NFmiDef.h>
 

@@ -8,11 +8,6 @@
 #ifdef UNIX  // En saanut viel‰ Imagine::NFmiFace-luokkaa toimimaan VC++ 2012 k‰‰nt‰j‰ss‰
 #pragma once
 
-#include "imagine-config.h"
-
-#ifdef IMAGINE_WITH_CAIRO
-#error "Either Cairo or us"
-#endif
 
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"

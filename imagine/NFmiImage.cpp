@@ -24,9 +24,7 @@
 
 #include "NFmiImage.h"
 
-#ifndef IMAGINE_WITH_CAIRO
 #include "NFmiImageTools.h"
-#endif
 
 #include <macgyver/Exception.h>
 #include <newbase/NFmiFileSystem.h>
@@ -67,7 +65,6 @@ namespace Imagine
 // Function1<MyClass1>();
 // Pit‰‰ olla mieluummin:
 // Function1(MyClass1());
-#ifndef IMAGINE_WITH_CAIRO
 template <class T>
 static void StrokeBasic2(T theBlender,
                          float theX1,
@@ -352,8 +349,6 @@ static void Composite2(T theBlender,
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-#endif
-// not IMAGINE_WITH_CAIRO
 
 // ----------------------------------------------------------------------
 // Destructor
@@ -398,9 +393,7 @@ NFmiImage::NFmiImage(int theWidth, int theHeight, NFmiColorTools::Color theColor
 // ----------------------------------------------------------------------
 
 NFmiImage::NFmiImage(const NFmiImage &theImage)
-#ifndef IMAGINE_WITH_CAIRO
     : NFmiDrawable()
-#endif
 {
   try
   {
@@ -418,7 +411,6 @@ NFmiImage::NFmiImage(const NFmiImage &theImage)
 // ----------------------------------------------------------------------
 // Constructor based on filename. The file type is autodetected.
 // ----------------------------------------------------------------------
-#ifndef IMAGINE_WITH_CAIRO
 NFmiImage::NFmiImage(const string &theFileName) : itsPixels(nullptr)
 {
   try
@@ -431,7 +423,6 @@ NFmiImage::NFmiImage(const string &theFileName) : itsPixels(nullptr)
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-#endif
 
 // ----------------------------------------------------------------------
 // Constructor from raw Cairo ARGB_32 image data, for output using NFmiImage
@@ -557,7 +548,6 @@ void NFmiImage::Reallocate(int theWidth, int theHeight)
 // ----------------------------------------------------------------------
 // Replace image with image in given file
 // ----------------------------------------------------------------------
-#ifndef IMAGINE_WITH_CAIRO
 void NFmiImage::Read(const string &theFileName)
 {
   try
@@ -607,7 +597,6 @@ void NFmiImage::Read(const string &theFileName)
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-#endif
 
 // ----------------------------------------------------------------------
 // Write image of desired type
@@ -1094,7 +1083,6 @@ bool NFmiImage::AddColors(set<NFmiColorTools::Color> &theSet,
 // various Porter-Duff rules
 // ----------------------------------------------------------------------
 
-#ifndef IMAGINE_WITH_CAIRO
 void NFmiImage::StrokeBasic(float theX1,
                             float theY1,
                             float theX2,
@@ -1325,13 +1313,11 @@ void NFmiImage::StrokeBasic(float theX1,
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-#endif
 
 // ----------------------------------------------------------------------
 // Composite image over another using given blending rule
 // ----------------------------------------------------------------------
 
-#ifndef IMAGINE_WITH_CAIRO
 void NFmiImage::Composite(const NFmiImage &thePattern,
                           NFmiColorTools::NFmiBlendRule theRule,
                           NFmiAlignment theAlignment,
@@ -1497,7 +1483,6 @@ void NFmiImage::Composite(const NFmiImage &thePattern,
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
-#endif
 
 }  // namespace Imagine
 

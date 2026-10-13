@@ -9,11 +9,6 @@
 
 #pragma once
 
-#include "imagine-config.h"
-
-#ifdef IMAGINE_WITH_CAIRO
-#error "Either Cairo or us"
-#endif
 
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"

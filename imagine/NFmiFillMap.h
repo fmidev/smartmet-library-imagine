@@ -37,11 +37,6 @@
 
 #pragma once
 
-#include "imagine-config.h"
-
-#ifdef IMAGINE_WITH_CAIRO
-#error "Either Cairo or us"
-#endif
 
 #ifndef UNIX
 #pragma warning(disable : 4786)  // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta

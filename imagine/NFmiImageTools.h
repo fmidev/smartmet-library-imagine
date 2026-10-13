@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include "imagine-config.h"
-
 
 #include <string>
 

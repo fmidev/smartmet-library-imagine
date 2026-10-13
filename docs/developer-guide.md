@@ -36,12 +36,10 @@ output images before and after a change.
 
 ## 2. Rendering backend
 
-`imagine-config.h` decides the backend, and must not be overridden from a Makefile:
-in imagine, `IMAGINE_WITH_CAIRO` is **not** defined, so drawing goes to `NFmiImage` with the library's own rasteriser (`NFmiDrawable`, `NFmiFillMap`).
-
-`ImagineXr_or_NFmiImage` is the type that drawing functions take in the active build.
-Code for the other backend stays under `#ifdef IMAGINE_WITH_CAIRO`; keep both branches
-compiling, since the Windows workstation build uses them too.
+imagine has a single backend: drawing goes to `NFmiImage` with the library's own rasteriser
+(`NFmiDrawable`, `NFmiFillMap`). The Cairo backend (`ImagineXr`, `IMAGINE_WITH_CAIRO`) was never
+enabled here and has been removed; Cairo rendering lives in imagine2. The Windows workstation
+builds its own vendored copy of imagine and is not affected.
 
 ## 3. Colours and images
 

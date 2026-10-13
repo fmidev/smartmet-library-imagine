@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include "imagine-config.h"
-
 
 // Note: Any drawable must invariably know how to handle colour,
 //       hence this include is here instead of derived classes.
