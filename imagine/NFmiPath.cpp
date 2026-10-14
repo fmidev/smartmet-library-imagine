@@ -255,8 +255,8 @@ void NFmiPath::Add(const string &theString)
 
     int phase = 0;  // 0 = op, 1 = x, 2 = y
 
-    double x = 0.0f;
-    double y = 0.0f;
+    double x = 0.0F;
+    double y = 0.0F;
     bool relative = false;
     NFmiPathOperation op = kFmiMoveTo;
 
@@ -493,7 +493,7 @@ void NFmiPath::Rotate(double theAngle)
 {
   try
   {
-    const double pi = 3.14159265358979f;
+    const double pi = 3.14159265358979F;
 
     NFmiPathData::iterator iter;
 
@@ -714,8 +714,15 @@ void NFmiPath::SimplifyLines(double theOffset)
 
     // Cached previous path element:
 
-    NFmiPathOperation oper1, oper2, oper3;
-    double x1 = NAN, y1 = NAN, x2 = NAN, y2 = NAN, x3 = NAN, y3 = NAN;
+    NFmiPathOperation oper1;
+    NFmiPathOperation oper2;
+    NFmiPathOperation oper3;
+    double x1 = NAN;
+    double y1 = NAN;
+    double x2 = NAN;
+    double y2 = NAN;
+    double x3 = NAN;
+    double y3 = NAN;
 
     oper1 = oper2 = oper3 = kFmiMoveTo;
     x1 = y1 = x2 = y2 = x3 = y3 = kFloatMissing;
@@ -867,8 +874,10 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 
     string os;
 
-    double last_x = NAN, last_y = NAN;
-    double last_out_x = NAN, last_out_y = NAN;
+    double last_x = NAN;
+    double last_y = NAN;
+    double last_out_x = NAN;
+    double last_out_y = NAN;
     NFmiPathOperation last_op = kFmiMoveTo;
 
     last_x = last_y = kFloatMissing;

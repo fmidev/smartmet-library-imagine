@@ -490,7 +490,10 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
 {
   try
   {
-    FT_Int i = 0, j = 0, p = 0, q = 0;
+    FT_Int i = 0;
+    FT_Int j = 0;
+    FT_Int p = 0;
+    FT_Int q = 0;
     FT_Int x = theX;
     FT_Int y = theY;
 

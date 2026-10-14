@@ -148,14 +148,25 @@ NFmiPath SimpleFit(const NFmiPath& thePath, double theSmoothness)
 
     const unsigned int n = path.size();
 
-    double cx1 = NAN, cy1 = NAN, cx2 = NAN, cy2 = NAN;
+    double cx1 = NAN;
+    double cy1 = NAN;
+    double cx2 = NAN;
+    double cy2 = NAN;
 
     for (unsigned int i = 0; i < n - 1; i++)
     {
-      const unsigned int p0 = (i != 0 ? i - 1 : (isclosed ? n - 2 : 0));
+      unsigned int p0 = 0;
+      if (i != 0)
+        p0 = i - 1;
+      else if (isclosed)
+        p0 = n - 2;
       const unsigned int p1 = i;
       const unsigned int p2 = i + 1;
-      const unsigned int p3 = (i + 2 < n ? i + 2 : (isclosed ? 1 : n - 1));
+      unsigned int p3 = n - 1;
+      if (i + 2 < n)
+        p3 = i + 2;
+      else if (isclosed)
+        p3 = 1;
 
       CubicControlPoints(theSmoothness,
                          path[p0].x,

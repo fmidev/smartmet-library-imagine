@@ -973,7 +973,8 @@ void NFmiContourTree::ContourLinear4(float x1,
     else
 
     {
-      vector<float> X, Y;
+      vector<float> X;
+      vector<float> Y;
       vector<VertexExactness> B;
 
       IntersectEdge(X, Y, B, x1, y1, z1, c1, x2, y2, z2, c2);
@@ -1352,7 +1353,8 @@ void NFmiContourTree::ContourLinear3(float x1,
     // may be intersected max 2 times, hence 6 is the maximum size
     // of the vectors.
 
-    vector<float> X, Y;
+    vector<float> X;
+    vector<float> Y;
     vector<VertexExactness> B;
 
     IntersectEdge(X, Y, B, x1, y1, z1, c1, x2, y2, z2, c2);
@@ -1551,8 +1553,12 @@ void NFmiContourTree::IntersectEdge(vector<float>& X,
 
     // The sorted values for intersection calculations:
 
-    float xx1 = NAN, yy1 = NAN, zz1 = NAN;
-    float xx2 = NAN, yy2 = NAN, zz2 = NAN;
+    float xx1 = NAN;
+    float yy1 = NAN;
+    float zz1 = NAN;
+    float xx2 = NAN;
+    float yy2 = NAN;
+    float zz2 = NAN;
 
     if (x1 < x2 || (x1 == x2 && y1 < y2))
     {
@@ -1575,8 +1581,12 @@ void NFmiContourTree::IntersectEdge(vector<float>& X,
 
     // The intersection coordinates
 
-    float slo = NAN, shi = NAN;
-    float xlo = NAN, ylo = NAN, xhi = NAN, yhi = NAN;
+    float slo = NAN;
+    float shi = NAN;
+    float xlo = NAN;
+    float ylo = NAN;
+    float xhi = NAN;
+    float yhi = NAN;
     float dz = zz2 - zz1;
 
     if (c1 == kBelow || c2 == kBelow)

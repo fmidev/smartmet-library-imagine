@@ -47,7 +47,8 @@ void NFmiImage::ReadPGM(FILE *in)
 
     // Then there are the dimensions X Y
 
-    int width = 0, height = 0;
+    int width = 0;
+    int height = 0;
     {
       istringstream input(buffer);
       input >> width >> height;

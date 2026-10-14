@@ -606,7 +606,8 @@ vector<double> Reparameterize(const NFmiPathData& thePath,
     {
       if (out[i] < 0 || out[i] > 1 || out[i] < out[i - 1] || out[i] > out[i + 1])
       {
-        unsigned int j = 0, k = 0;
+        unsigned int j = 0;
+        unsigned int k = 0;
         for (j = i - 1; j > 0; j--)
           if (out[j] >= 0 && out[j] <= 1)
             break;
@@ -793,7 +794,8 @@ NFmiPath GenerateBezier(const NFmiPathData& thePath,
     const double alpha_l = det_X_C1 / det_C0_C1;
     const double alpha_r = det_C0_X / det_C0_C1;
 
-    NFmiPoint tan1, tan2;
+    NFmiPoint tan1;
+    NFmiPoint tan2;
 
     //  If alpha negative, use the Wu/Barsky heuristic (see text)
     // (if alpha is 0, you get coincident control points that lead to
@@ -994,7 +996,8 @@ NFmiPath SimpleFit(const NFmiPath& thePath, double theMaxError)
 
     const double squared_max_error = theMaxError * theMaxError;
 
-    NFmiPoint tangent1, tangent2;
+    NFmiPoint tangent1;
+    NFmiPoint tangent2;
 
     if (!isclosed)
     {

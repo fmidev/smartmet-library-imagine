@@ -30,8 +30,7 @@ float myround(float theValue)
 {
   if (abs(theValue - round(theValue)) < 0.001)  // 0.001 pixels is meaningless
     return round(theValue);
-  else
-    return theValue;
+  return theValue;
 }
 }  // namespace
 
@@ -335,7 +334,8 @@ void Fill2(T theBlender,
 
     int patw = thePattern.Width();
     int path = thePattern.Height();
-    int patj = 0, pati = 0;
+    int patj = 0;
+    int pati = 0;
     NFmiColorTools::Color patc = 0;
 
     // Iterate over all y-coordinates in the map
@@ -637,7 +637,7 @@ void NFmiFillMap::Or(const NFmiFillMap &theMap)
         sort(xvec2.begin(), xvec2.end());
         unsigned int pos1 = 0;
         unsigned int pos2 = 0;
-        float tail = 0.0f;
+        float tail = 0.0F;
 
         while (pos1 <= xvec1.size() - 2 || pos2 <= xvec2.size() - 2)
         {

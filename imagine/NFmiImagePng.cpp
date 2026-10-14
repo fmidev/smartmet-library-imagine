@@ -79,8 +79,10 @@ void NFmiImage::ReadPNG(FILE *in)
     png_set_sig_bytes(png_ptr, 8);
     png_read_info(png_ptr, info_ptr);  // read info up to image data
 
-    png_uint_32 width = 0, height = 0;
-    int bit_depth = 0, color_type = 0;
+    png_uint_32 width = 0;
+    png_uint_32 height = 0;
+    int bit_depth = 0;
+    int color_type = 0;
 
     png_get_IHDR(
         png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, nullptr, nullptr, nullptr);
@@ -127,7 +129,9 @@ void NFmiImage::ReadPNG(FILE *in)
     // Read in the data one row at a time
 
     png_bytep row_pointer = row_data;
-    png_byte r = 0, g = 0, b = 0;
+    png_byte r = 0;
+    png_byte g = 0;
+    png_byte b = 0;
     png_byte a = NFmiColorTools::Opaque;  // Correct value for RGB
 
     for (unsigned j = 0; j < height; j++)
@@ -176,7 +180,8 @@ void NFmiImage::WritePNG(FILE *out) const
 {
   try
   {
-    int i = 0, j = 0;
+    int i = 0;
+    int j = 0;
 
     // Allocate png info variables
 

@@ -327,7 +327,8 @@ void Composite2(T theBlender,
     {
       NFmiColorTools::Color c = 0;
       const float beta = (1.0 - theAlpha) * NFmiColorTools::MaxAlpha;
-      int a = 0, aa = 0;
+      int a = 0;
+      int aa = 0;
 
       for (int j = j1; j <= j2; j++)
       {
@@ -1125,7 +1126,7 @@ void NFmiImage::StrokeBasic(float theX1,
     // partially included in the image, and tiny half-pixel errors
     // may appear when comparing images drawn with different methods.
 
-    const float offset = 0.49f;  // pixel offset 0.5 minus some small epsilon
+    const float offset = 0.49F;  // pixel offset 0.5 minus some small epsilon
 
     const float xmargin = Width() - 1 + offset;
     const float ymargin = Height() - 1 + offset;

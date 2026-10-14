@@ -637,17 +637,23 @@ struct NFmiColorBlendCopyHue
   static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int /*srca*/, NFmiColorTools::Color dst)
   {
-    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
+    double hsrc = NAN;
+    double lsrc = NAN;
+    double ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst = NAN, ldst = NAN, sdst = NAN;
+    double hdst = NAN;
+    double ldst = NAN;
+    double sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
                              &hdst,
                              &ldst,
                              &sdst);
-    int r = 0, g = 0, b = 0;
+    int r = 0;
+    int g = 0;
+    int b = 0;
     NFmiColorTools::HLStoRGB(hsrc, ldst, sdst, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, NFmiColorTools::GetAlpha(dst));
@@ -672,17 +678,23 @@ struct NFmiColorBlendCopyLightness
   static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int /*srca*/, NFmiColorTools::Color dst)
   {
-    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
+    double hsrc = NAN;
+    double lsrc = NAN;
+    double ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst = NAN, ldst = NAN, sdst = NAN;
+    double hdst = NAN;
+    double ldst = NAN;
+    double sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
                              &hdst,
                              &ldst,
                              &sdst);
-    int r = 0, g = 0, b = 0;
+    int r = 0;
+    int g = 0;
+    int b = 0;
     NFmiColorTools::HLStoRGB(hdst, lsrc, sdst, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, NFmiColorTools::GetAlpha(dst));
@@ -707,10 +719,14 @@ struct NFmiColorBlendCopySaturation
   static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int /*srca*/, NFmiColorTools::Color dst)
   {
-    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
+    double hsrc = NAN;
+    double lsrc = NAN;
+    double ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst = NAN, ldst = NAN, sdst = NAN;
+    double hdst = NAN;
+    double ldst = NAN;
+    double sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
@@ -718,7 +734,9 @@ struct NFmiColorBlendCopySaturation
                              &ldst,
                              &sdst);
 
-    int r = 0, g = 0, b = 0;
+    int r = 0;
+    int g = 0;
+    int b = 0;
     NFmiColorTools::HLStoRGB(hdst, ldst, ssrc, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, NFmiColorTools::GetAlpha(dst));
@@ -765,17 +783,23 @@ struct NFmiColorBlendKeepHue
   static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
+    double hsrc = NAN;
+    double lsrc = NAN;
+    double ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst = NAN, ldst = NAN, sdst = NAN;
+    double hdst = NAN;
+    double ldst = NAN;
+    double sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
                              &hdst,
                              &ldst,
                              &sdst);
-    int r = 0, g = 0, b = 0;
+    int r = 0;
+    int g = 0;
+    int b = 0;
     NFmiColorTools::HLStoRGB(hdst, lsrc, ssrc, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, srca);
@@ -800,17 +824,23 @@ struct NFmiColorBlendKeepLightness
   static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
+    double hsrc = NAN;
+    double lsrc = NAN;
+    double ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst = NAN, ldst = NAN, sdst = NAN;
+    double hdst = NAN;
+    double ldst = NAN;
+    double sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
                              &hdst,
                              &ldst,
                              &sdst);
-    int r = 0, g = 0, b = 0;
+    int r = 0;
+    int g = 0;
+    int b = 0;
     NFmiColorTools::HLStoRGB(hsrc, ldst, ssrc, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, srca);
@@ -835,17 +865,23 @@ struct NFmiColorBlendKeepSaturation
   static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
+    double hsrc = NAN;
+    double lsrc = NAN;
+    double ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst = NAN, ldst = NAN, sdst = NAN;
+    double hdst = NAN;
+    double ldst = NAN;
+    double sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
                              &hdst,
                              &ldst,
                              &sdst);
-    int r = 0, g = 0, b = 0;
+    int r = 0;
+    int g = 0;
+    int b = 0;
     NFmiColorTools::HLStoRGB(hsrc, lsrc, sdst, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, srca);

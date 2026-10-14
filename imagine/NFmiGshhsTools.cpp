@@ -22,6 +22,21 @@ namespace
 {
 // ----------------------------------------------------------------------
 /*!
+ * \brief Move a longitude given in the range -540...540 into -180...180
+ */
+// ----------------------------------------------------------------------
+
+double wrap_longitude(double theLongitude)
+{
+  if (theLongitude < -180)
+    return theLongitude + 360;
+  if (theLongitude > 180)
+    return theLongitude - 360;
+  return theLongitude;
+}
+
+// ----------------------------------------------------------------------
+/*!
  * \brief Byteswapping subroutine
  *
  * \param The number to byteswap
@@ -173,8 +188,8 @@ const NFmiPath ReadPath(const std::string &theFilename,
 
       const double area = 0.1 * header.area;  // now in km^2
 
-      const double ww = (w < -180 ? w + 360 : w > 180 ? w - 360 : w);
-      const double ee = (e < -180 ? e + 360 : e > 180 ? e - 360 : e);
+      const double ww = wrap_longitude(w);
+      const double ee = wrap_longitude(e);
 
       bool outside = (ww > theMaxLongitude || ee < theMinLongitude || s > theMaxLatitude ||
                       n < theMinLatitude);

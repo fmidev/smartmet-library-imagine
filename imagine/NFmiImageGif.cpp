@@ -279,7 +279,8 @@ int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
     static int oldcode = 0;
     static bool fresh = false;
     static int table[2][1 << MaxLzwBits];
-    static int stack[(1 << (MaxLzwBits)) * 2], *sp;
+    static int stack[(1 << (MaxLzwBits)) * 2];
+    static int* sp;
 
     int i = 0;
 
@@ -308,12 +309,12 @@ int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
       return 0;
     }
 
-    else if (fresh)
+    if (fresh)
     {
       fresh = false;
-      do
+      firstcode = oldcode = getcode(theInput, code_size, false);
+      while (firstcode == clear_code)
         firstcode = oldcode = getcode(theInput, code_size, false);
-      while (firstcode == clear_code);
       return firstcode;
     }
 
@@ -339,7 +340,7 @@ int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
         firstcode = oldcode = getcode(theInput, code_size, false);
         return firstcode;
       }
-      else if (code == end_code)
+      if (code == end_code)
       {
         if (zeroblock)
           return -2;
@@ -431,7 +432,9 @@ void read_image(FILE *theInput,
       return;
     }
 
-    unsigned int xpos = 0, ypos = 0, pass = 0;
+    unsigned int xpos = 0;
+    unsigned int ypos = 0;
+    unsigned int pass = 0;
     int v = 0;
     while ((v = lzwreadbyte(theInput, false, c)) >= 0)
     {
@@ -661,7 +664,8 @@ void NFmiImage::WriteGIF(FILE *out) const
 {
   try
   {
-    int i = 0, j = 0;
+    int i = 0;
+    int j = 0;
 
     // Establish whether a palette version can be made
 
@@ -756,7 +760,9 @@ void NFmiImage::WriteGIF(FILE *out) const
 
     // The global color map
 
-    unsigned char r = 0, g = 0, b = 0;
+    unsigned char r = 0;
+    unsigned char g = 0;
+    unsigned char b = 0;
 
     for (i = 0; i < num_colors; i++)
     {

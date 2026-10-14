@@ -24,6 +24,7 @@
 
 #include <newbase/NFmiDef.h>
 
+#include <algorithm>
 #include <string>  // for color name definitions
 
 namespace Imagine
@@ -383,21 +384,9 @@ inline NFmiColorTools::Color NFmiColorTools::SafeColor(int r, int g, int b, int 
 
 inline NFmiColorTools::Color NFmiColorTools::SafestColor(int r, int g, int b, int a)
 {
-  return ((((a < 0)                          ? 0
-            : (a > NFmiColorTools::MaxAlpha) ? NFmiColorTools::MaxAlpha
-                                             : a)
-           << 24) +
-          (((r < 0)                        ? 0
-            : (r > NFmiColorTools::MaxRGB) ? NFmiColorTools::MaxRGB
-                                           : r)
-           << 16) +
-          (((g < 0)                        ? 0
-            : (g > NFmiColorTools::MaxRGB) ? NFmiColorTools::MaxRGB
-                                           : g)
-           << 8) +
-          ((b < 0)                        ? 0
-           : (b > NFmiColorTools::MaxRGB) ? NFmiColorTools::MaxRGB
-                                          : b));
+  return ((std::clamp(a, 0, NFmiColorTools::MaxAlpha) << 24) +
+          (std::clamp(r, 0, NFmiColorTools::MaxRGB) << 16) +
+          (std::clamp(g, 0, NFmiColorTools::MaxRGB) << 8) + std::clamp(b, 0, NFmiColorTools::MaxRGB));
 }
 
 // ----------------------------------------------------------------------
@@ -466,8 +455,7 @@ inline NFmiColorTools::Color NFmiColorTools::Simplify(Color c,
     return c;
   if (GetAlpha(c) < opaquethreshold)
     return ReplaceAlpha(c, 0);
-  else
-    return TransparentColor;
+  return TransparentColor;
 }
 
 }  // namespace Imagine

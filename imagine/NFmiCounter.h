@@ -88,8 +88,7 @@ class NFmiCounter
 #endif
     if (result.second)
       return 1;
-    else
-      return ++(result.first->second);
+    return ++(result.first->second);
   }
 
   //! Query the count of an object.
@@ -104,8 +103,7 @@ class NFmiCounter
     auto iter = itsData.find(theElement);
     if (iter == itsData.end())
       return 0L;
-    else
-      return iter->second;
+    return iter->second;
   }
 
   const_iterator begin() const { return itsData.begin(); }
