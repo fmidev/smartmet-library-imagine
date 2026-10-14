@@ -472,7 +472,7 @@ const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& 
       else
       {
         const unsigned long n = path.size();
-        unsigned long i;
+        unsigned long i = 0;
         for (i = 0; i < n; i++)
         {
           const size_t c0 = (i > 0 ? counts[i - 1] : counts[n - 2]);
@@ -486,7 +486,7 @@ const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& 
         {
           NFmiPath tmppath;
           std::vector<long> tmpcounts;
-          unsigned long j;
+          unsigned long j = 0;
           tmppath.MoveTo(path[i].x, path[i].y);
           tmpcounts.push_back(counts[i]);
           for (j = i + 1; j < n; j++)

@@ -146,7 +146,7 @@ const NFmiPath ReadPath(const std::string &theFilename,
 
     // Establish whether byteswapping is needed from first header
 
-    const bool flip = !(header.level > 0 && header.level < 5);
+    const bool flip = header.level <= 0 || header.level >= 5;
 
     int max = 270000000;  // initial value for polygon offsetting
 

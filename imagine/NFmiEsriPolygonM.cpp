@@ -76,7 +76,7 @@ NFmiEsriElement* NFmiEsriPolygonM::Clone() const
 // ----------------------------------------------------------------------
 
 NFmiEsriPolygonM::NFmiEsriPolygonM(const string& theBuffer, int thePos, int theNumber)
-    : NFmiEsriPolygon(theNumber, kFmiEsriPolygonM), itsBox(), itsParts(), itsPoints()
+    : NFmiEsriPolygon(theNumber, kFmiEsriPolygonM)
 {
   try
   {

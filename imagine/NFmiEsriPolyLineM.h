@@ -34,7 +34,7 @@ class NFmiEsriPolyLineM : public NFmiEsriPolyLine
   NFmiEsriPolyLineM(const NFmiEsriPolyLineM& theLine);
 
   NFmiEsriPolyLineM(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriPolyLineM)
-      : NFmiEsriPolyLine(theNumber, theType), itsBox(), itsParts(), itsPoints()
+      : NFmiEsriPolyLine(theNumber, theType)
   {
   }
 

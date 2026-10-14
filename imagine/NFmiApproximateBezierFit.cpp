@@ -23,6 +23,7 @@
 
 #include <newbase/NFmiGeoTools.h>
 #include <newbase/NFmiPoint.h>
+#include <cmath>
 
 #include <list>
 #include <utility>
@@ -446,7 +447,7 @@ vector<double> ChordLengthParameterize(const NFmiPathData& thePath,
     vector<double> out(theLast - theFirst + 1, 0);
 
     out[0] = 0;
-    unsigned int i;
+    unsigned int i = 0;
     for (i = theFirst + 1; i <= theLast; i++)
     {
       const double dist =
@@ -519,7 +520,7 @@ double NewtonRaphsonRootFind(const NFmiPathData& thePath,
 {
   try
   {
-    unsigned int i;
+    unsigned int i = 0;
 
     // Compute Q(u)
     NFmiPoint Q_u = Bezier(thePath, theU);
@@ -552,7 +553,7 @@ double NewtonRaphsonRootFind(const NFmiPathData& thePath,
     // The original value is a good return value in such
     // cases.
 
-    double uprime;
+    double uprime = NAN;
     if (denominator == 0)
       uprime = theU;
     else
@@ -605,7 +606,7 @@ vector<double> Reparameterize(const NFmiPathData& thePath,
     {
       if (out[i] < 0 || out[i] > 1 || out[i] < out[i - 1] || out[i] > out[i + 1])
       {
-        unsigned int j, k;
+        unsigned int j = 0, k = 0;
         for (j = i - 1; j > 0; j--)
           if (out[j] >= 0 && out[j] <= 1)
             break;
@@ -742,7 +743,7 @@ NFmiPath GenerateBezier(const NFmiPathData& thePath,
 
     // Compute the A's
 
-    unsigned int i;
+    unsigned int i = 0;
 
     vector<pair<NFmiPoint, NFmiPoint> > A;
     A.reserve(thePath.size());
@@ -885,7 +886,7 @@ NFmiPath RecursiveFit(const NFmiPathData& thePath,
     outpath = GenerateBezier(thePath, theFirst, theLast, u, theTangent1, theTangent2);
 
     // find max deviation of points to fitted curve
-    unsigned int splitpoint;
+    unsigned int splitpoint = 0;
     double maxerror =
         ComputeMaxError(thePath, theFirst, theLast, outpath.Elements(), u, splitpoint);
 

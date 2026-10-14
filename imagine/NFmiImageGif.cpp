@@ -32,7 +32,9 @@ const unsigned char LocalColorMap = 0x80;
 //! Maximum number of LZW code bits
 const int MaxLzwBits = 12;
 
-static bool zeroblock = false;
+namespace
+{
+bool zeroblock = false;
 
 // ----------------------------------------------------------------------
 /*!
@@ -66,6 +68,7 @@ inline bool readok(FILE *theInput, unsigned char *theBuffer, int theLength)
 {
   return (fread(theBuffer, theLength, 1, theInput) != 0);
 }
+}  // namespace
 
 // ----------------------------------------------------------------------
 /*!
@@ -75,34 +78,22 @@ inline bool readok(FILE *theInput, unsigned char *theBuffer, int theLength)
 
 struct GifScreen
 {
-  unsigned int width;
-  unsigned int height;
+  unsigned int width = 0;
+  unsigned int height = 0;
   unsigned char colormap[3][MaxColors];
-  unsigned int bitpixel;
-  unsigned int colorresolution;
-  unsigned int background;
-  unsigned int aspectratio;
+  unsigned int bitpixel = 0;
+  unsigned int colorresolution = 0;
+  unsigned int background = 0;
+  unsigned int aspectratio = 0;
 
   // Gif89
 
-  int transparent;
-  int delaytime;
-  int inputflag;
-  int disposal;
+  int transparent = -1;
+  int delaytime = -1;
+  int inputflag = -1;
+  int disposal = 0;
 
-  GifScreen()
-      : width(0),
-        height(0),
-        bitpixel(0),
-        colorresolution(0),
-        background(0),
-        aspectratio(0),
-        transparent(-1),
-        delaytime(-1),
-        inputflag(-1),
-        disposal(0)
-  {
-  }
+  GifScreen() {}
 };
 
 // ----------------------------------------------------------------------
@@ -111,6 +102,8 @@ struct GifScreen
  */
 // ----------------------------------------------------------------------
 
+namespace
+{
 void read_colormap(FILE *theInput, int theBits, unsigned char theColorMap[3][MaxColors])
 {
   try
@@ -142,7 +135,7 @@ int getdatablock(FILE *theInput, unsigned char *theBuffer)
 {
   try
   {
-    int count;
+    int count = 0;
     if ((count = fgetc(theInput)) == EOF)
       throw Fmi::Exception(BCP, "Block size missing from GIF stream");
 
@@ -288,7 +281,7 @@ int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
     static int table[2][1 << MaxLzwBits];
     static int stack[(1 << (MaxLzwBits)) * 2], *sp;
 
-    int i;
+    int i = 0;
 
     if (theFlag)
     {
@@ -327,7 +320,7 @@ int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
     if (sp > stack)
       return *--sp;
 
-    int code;
+    int code = 0;
     while ((code = getcode(theInput, code_size, false)) >= 0)
     {
       if (code == clear_code)
@@ -422,7 +415,7 @@ void read_image(FILE *theInput,
   {
     // Initialize decompression
 
-    int c;
+    int c = 0;
     if ((c = fgetc(theInput)) == EOF)
       throw Fmi::Exception(BCP, "Image data missing in GIF");
 
@@ -439,7 +432,7 @@ void read_image(FILE *theInput,
     }
 
     unsigned int xpos = 0, ypos = 0, pass = 0;
-    int v;
+    int v = 0;
     while ((v = lzwreadbyte(theInput, false, c)) >= 0)
     {
       if (v == theTransparent)
@@ -506,6 +499,7 @@ void read_image(FILE *theInput,
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
+}  // namespace
 
 // ----------------------------------------------------------------------
 // Read GIF image
@@ -563,7 +557,7 @@ void NFmiImage::ReadGIF(FILE *in)
     int imagecount = 0;
     for (;;)
     {
-      int c;
+      int c = 0;
       if ((c = fgetc(in)) == EOF)
         throw Fmi::Exception(BCP, "GIF file ended abrubtly");
 
@@ -579,7 +573,7 @@ void NFmiImage::ReadGIF(FILE *in)
       // Extension block
       if (c == '!')
       {
-        int label;
+        int label = 0;
         if ((label = fgetc(in)) == EOF)
           throw Fmi::Exception(BCP, "Read error in GIF extension block");
 
@@ -667,7 +661,7 @@ void NFmiImage::WriteGIF(FILE *out) const
 {
   try
   {
-    int i, j;
+    int i = 0, j = 0;
 
     // Establish whether a palette version can be made
 
@@ -724,14 +718,14 @@ void NFmiImage::WriteGIF(FILE *out) const
     // total_colors instead of num_colors, in case there is
     // a transparent color index.
 
-    int bits;
+    int bits = 0;
     for (bits = 1; bits < 8; bits++)
       if (1 << bits >= total_colors)
         break;
 
     // Write the magic number
 
-    string header = "";
+    string header;
     header.reserve(1000);  // An overestimated header size (3*256+n)
 
     if (hastransparent)
@@ -762,7 +756,7 @@ void NFmiImage::WriteGIF(FILE *out) const
 
     // The global color map
 
-    unsigned char r, g, b;
+    unsigned char r = 0, g = 0, b = 0;
 
     for (i = 0; i < num_colors; i++)
     {

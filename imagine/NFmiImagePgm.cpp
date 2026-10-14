@@ -47,7 +47,7 @@ void NFmiImage::ReadPGM(FILE *in)
 
     // Then there are the dimensions X Y
 
-    int width, height;
+    int width = 0, height = 0;
     {
       istringstream input(buffer);
       input >> width >> height;
@@ -60,7 +60,7 @@ void NFmiImage::ReadPGM(FILE *in)
 
     // And the size of each color component (normally 255)
 
-    int colorsize;
+    int colorsize = 0;
     {
       if (fgets(buffer, maxbufsize, in) != buffer)
         throw Fmi::Exception(BCP, "Invalid PGM image data");

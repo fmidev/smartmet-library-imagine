@@ -32,7 +32,7 @@ class NFmiEsriPolygon : public NFmiEsriElement
   NFmiEsriPolygon(const NFmiEsriPolygon& thePolygon);
 
   NFmiEsriPolygon(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriPolygon)
-      : NFmiEsriElement(theType, theNumber), itsBox(), itsParts(), itsPoints()
+      : NFmiEsriElement(theType, theNumber)
   {
   }
 

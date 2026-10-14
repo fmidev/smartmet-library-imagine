@@ -24,19 +24,21 @@ using namespace std;
 
 namespace Imagine
 {
+namespace
+{
 bool overlaps(double min1, double max1, double min2, double max2)
 {
   return (max(min1, min2) < min(max1, max2));
 }
+}  // namespace
 
 // NFmiEsriPoint projector function object
 
 class ProjectXYEsriPoint : public NFmiEsriProjector
 {
  public:
-  ProjectXYEsriPoint(OGRSpatialReference *theShapeReference, NFmiArea *theArea)
+  ProjectXYEsriPoint(OGRSpatialReference* theShapeReference, NFmiArea* theArea)
       : itsArea(theArea),
-        itsXshift(0),
         itsTransformation(*theShapeReference, theArea->SpatialReference())
   {
   }
@@ -87,7 +89,7 @@ class ProjectXYEsriPoint : public NFmiEsriProjector
 
  private:
   const NFmiArea *itsArea;
-  mutable double itsXshift;
+  mutable double itsXshift = 0;
   Fmi::CoordinateTransformation itsTransformation;
 };
 
@@ -326,7 +328,7 @@ const NFmiPath NFmiGeoShape::PathEsri() const
           const auto* elem = static_cast<const NFmiEsriPolyLine*>(*iter);
           for (int part = 0; part < elem->NumParts(); part++)
           {
-            int i1, i2;
+            int i1 = 0, i2 = 0;
             i1 = elem->Parts()[part];  // start of part
             if (part + 1 == elem->NumParts())
               i2 = elem->NumPoints() - 1;  // end of part
@@ -351,7 +353,7 @@ const NFmiPath NFmiGeoShape::PathEsri() const
           const auto* elem = static_cast<const NFmiEsriPolygon*>(*iter);
           for (int part = 0; part < elem->NumParts(); part++)
           {
-            int i1, i2;
+            int i1 = 0, i2 = 0;
             i1 = elem->Parts()[part];  // start of part
             if (part + 1 == elem->NumParts())
               i2 = elem->NumPoints() - 1;  // end of part
@@ -374,7 +376,7 @@ const NFmiPath NFmiGeoShape::PathEsri() const
           const auto* elem = static_cast<const NFmiEsriMultiPatch*>(*iter);
           for (int part = 0; part < elem->NumParts(); part++)
           {
-            int i1, i2;
+            int i1 = 0, i2 = 0;
             i1 = elem->Parts()[part];  // start of part
             if (part + 1 == elem->NumParts())
               i2 = elem->NumPoints() - 1;  // end of part
@@ -492,7 +494,7 @@ void NFmiGeoShape::AddEsri(NFmiFillMap &theMap) const
           const auto* elem = static_cast<const NFmiEsriPolygon*>(*iter);
           for (int part = 0; part < elem->NumParts(); part++)
           {
-            int i1, i2;
+            int i1 = 0, i2 = 0;
             i1 = elem->Parts()[part];  // start of part
             if (part + 1 == elem->NumParts())
               i2 = elem->NumPoints() - 1;  // end of part
@@ -512,7 +514,7 @@ void NFmiGeoShape::AddEsri(NFmiFillMap &theMap) const
           const auto* elem = static_cast<const NFmiEsriMultiPatch*>(*iter);
           for (int part = 0; part < elem->NumParts(); part++)
           {
-            int i1, i2;
+            int i1 = 0, i2 = 0;
             i1 = elem->Parts()[part];  // start of part
             if (part + 1 == elem->NumParts())
               i2 = elem->NumPoints() - 1;  // end of part
@@ -795,7 +797,7 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
           {
             vector<pair<int, int> > points;
 
-            int i1, i2;
+            int i1 = 0, i2 = 0;
             i1 = elem->Parts()[part];  // start of part
             if (part + 1 == elem->NumParts())
               i2 = elem->NumPoints() - 1;  // end of part

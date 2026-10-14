@@ -33,8 +33,8 @@ class NFmiEsriPolygonM : public NFmiEsriPolygon
   ~NFmiEsriPolygonM() override = default;
   NFmiEsriPolygonM(const NFmiEsriPolygonM& thePolygon);
 
-  NFmiEsriPolygonM(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriPolygonM)
-      : NFmiEsriPolygon(theNumber, kFmiEsriPolygonM), itsBox(), itsParts(), itsPoints()
+  NFmiEsriPolygonM(int theNumber = 0, NFmiEsriElementType /*theType*/ = kFmiEsriPolygonM)
+      : NFmiEsriPolygon(theNumber, kFmiEsriPolygonM)
   {
   }
 

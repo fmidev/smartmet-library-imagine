@@ -42,6 +42,8 @@ namespace Imagine
 // is faster than having a composite Color
 // ----------------------------------------------------------------------
 
+namespace
+{
 // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
 // Muutin nimeksi Fill2
 // Laiton viel‰ blenderin parametriksi, koska min‰ olen havainnut ongelmia MSVC-k‰‰nt‰j‰n kanssa,
@@ -51,7 +53,7 @@ namespace Imagine
 // Pit‰‰ olla mieluummin:
 // Function1(MyClass1());
 template <class T>
-static void Fill2(T theBlender,
+void Fill2(T theBlender,
                   NFmiImage &theImage,
                   int red,
                   int green,
@@ -185,7 +187,7 @@ static void Fill2(T theBlender,
 // Pit‰‰ olla mieluummin:
 // Function1(MyClass1());
 template <class T>
-static void Fill2(T theBlender,
+void Fill2(T theBlender,
                   NFmiImage &theImage,
                   NFmiColorTools::Color theColor,
                   NFmiFillMapData &theData)
@@ -314,7 +316,7 @@ static void Fill2(T theBlender,
 // Pit‰‰ olla mieluummin:
 // Function1(MyClass1());
 template <class T>
-static void Fill2(T theBlender,
+void Fill2(T theBlender,
                   NFmiImage &theImage,
                   const NFmiImage &thePattern,
                   float theAlpha,
@@ -333,8 +335,8 @@ static void Fill2(T theBlender,
 
     int patw = thePattern.Width();
     int path = thePattern.Height();
-    int patj, pati;
-    NFmiColorTools::Color patc;
+    int patj = 0, pati = 0;
+    NFmiColorTools::Color patc = 0;
 
     // Iterate over all y-coordinates in the map
 
@@ -450,6 +452,7 @@ static void Fill2(T theBlender,
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
+}  // namespace
 
 // ----------------------------------------------------------------------
 // A method to add an edge into the map
@@ -640,12 +643,12 @@ void NFmiFillMap::Or(const NFmiFillMap &theMap)
         {
           if (pos1 >= xvec1.size() || xvec1[pos1] > xvec2[pos2])
             swap(xvec1, xvec2);
-          if (xvec.size() == 0 || xvec1[pos1] > tail)
+          if (xvec.empty() || xvec1[pos1] > tail)
           {
             xvec.push_back(xvec1[pos1++]);
             xvec.push_back(xvec1[pos1++]);
           }
-          else if (xvec.size() != 0)
+          else if (!xvec.empty())
           {
             xvec[xvec.size() - 1] = xvec1[pos1 + 1];
             pos1 += 2;

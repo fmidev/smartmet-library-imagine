@@ -60,7 +60,7 @@ class NFmiFillMap : public NFmiDrawable
   // Constructors, destructors:
 
   NFmiFillMap(float theLoLimit = kFloatMissing, float theHiLimit = kFloatMissing)
-      : itsData(), itsLoLimit(theLoLimit), itsHiLimit(theHiLimit)
+      : itsLoLimit(theLoLimit), itsHiLimit(theHiLimit)
   {
   }
 

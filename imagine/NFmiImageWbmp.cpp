@@ -26,6 +26,8 @@ namespace Imagine
  */
 // ----------------------------------------------------------------------
 
+namespace
+{
 void writembint(int theValue, FILE *out)
 {
   try
@@ -45,6 +47,7 @@ void writembint(int theValue, FILE *out)
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
+}  // namespace
 
 // ----------------------------------------------------------------------
 // Write WBMP image

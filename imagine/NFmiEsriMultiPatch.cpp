@@ -68,11 +68,7 @@ NFmiEsriElement* NFmiEsriMultiPatch::Clone() const
 // ----------------------------------------------------------------------
 
 NFmiEsriMultiPatch::NFmiEsriMultiPatch(const string& theBuffer, int thePos, int theNumber)
-    : NFmiEsriElement(kFmiEsriMultiPatch, theNumber),
-      itsBox(),
-      itsParts(),
-      itsPartTypes(),
-      itsPoints()
+    : NFmiEsriElement(kFmiEsriMultiPatch, theNumber)
 {
   try
   {

@@ -70,7 +70,7 @@ NFmiEsriElement* NFmiEsriMultiPoint::Clone() const
 // ----------------------------------------------------------------------
 
 NFmiEsriMultiPoint::NFmiEsriMultiPoint(const string& theBuffer, int thePos, int theNumber)
-    : NFmiEsriElement(kFmiEsriMultiPoint, theNumber), itsBox(), itsPoints()
+    : NFmiEsriElement(kFmiEsriMultiPoint, theNumber)
 {
   try
   {

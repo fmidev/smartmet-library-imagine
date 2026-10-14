@@ -17,6 +17,7 @@
 #include "NFmiCounter.h"
 #include "NFmiPath.h"
 #include <macgyver/Exception.h>
+#include <cmath>
 
 #include <list>
 
@@ -147,7 +148,7 @@ NFmiPath SimpleFit(const NFmiPath& thePath, double theSmoothness)
 
     const unsigned int n = path.size();
 
-    double cx1, cy1, cx2, cy2;
+    double cx1 = NAN, cy1 = NAN, cx2 = NAN, cy2 = NAN;
 
     for (unsigned int i = 0; i < n - 1; i++)
     {

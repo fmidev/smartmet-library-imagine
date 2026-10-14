@@ -54,12 +54,12 @@ class NFmiEsriAttribute
   // Constructors based on data types
 
   NFmiEsriAttribute(int theValue, NFmiEsriAttributeName* theName)
-      : itsAttributeName(theName), itsString(), itsInteger(theValue)
+      : itsAttributeName(theName), itsInteger(theValue)
   {
   }
 
   NFmiEsriAttribute(double theValue, NFmiEsriAttributeName* theName)
-      : itsAttributeName(theName), itsString(), itsDouble(theValue)
+      : itsAttributeName(theName), itsDouble(theValue)
   {
   }
 

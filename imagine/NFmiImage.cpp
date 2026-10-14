@@ -55,6 +55,8 @@ namespace Imagine
 // faster to use than RGBA.
 // ----------------------------------------------------------------------
 
+namespace
+{
 // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
 // Jouduin muuttamaan funktion nimen StrokeBasic2:ksi, koska muuten MSVC-k‰‰nt‰j‰ ei oikein
 // osannut valita oikeaa funktiota.
@@ -66,7 +68,7 @@ namespace Imagine
 // Pit‰‰ olla mieluummin:
 // Function1(MyClass1());
 template <class T>
-static void StrokeBasic2(T theBlender,
+void StrokeBasic2(T theBlender,
                          float theX1,
                          float theY1,
                          float theX2,
@@ -177,7 +179,7 @@ static void StrokeBasic2(T theBlender,
 // Pit‰‰ olla mieluummin:
 // Function1(MyClass1());
 template <class T>
-static void StrokeBasic2(T theBlender,
+void StrokeBasic2(T theBlender,
                          float theX1,
                          float theY1,
                          float theX2,
@@ -293,7 +295,7 @@ static void StrokeBasic2(T theBlender,
 // Pit‰‰ olla mieluummin:
 // Function1(MyClass1());
 template <class T>
-static void Composite2(T theBlender,
+void Composite2(T theBlender,
                        const NFmiImage &thePattern,
                        int theX,
                        int theY,
@@ -323,9 +325,9 @@ static void Composite2(T theBlender,
     }
     else
     {
-      NFmiColorTools::Color c;
+      NFmiColorTools::Color c = 0;
       const float beta = (1.0 - theAlpha) * NFmiColorTools::MaxAlpha;
-      int a, aa;
+      int a = 0, aa = 0;
 
       for (int j = j1; j <= j2; j++)
       {
@@ -349,6 +351,7 @@ static void Composite2(T theBlender,
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
+}  // namespace
 
 // ----------------------------------------------------------------------
 // Destructor
@@ -358,7 +361,6 @@ void NFmiImage::Destroy()
 {
   try
   {
-    if (itsPixels != nullptr)
       delete[] itsPixels;
 
     itsPixels = nullptr;
@@ -393,7 +395,7 @@ NFmiImage::NFmiImage(int theWidth, int theHeight, NFmiColorTools::Color theColor
 // ----------------------------------------------------------------------
 
 NFmiImage::NFmiImage(const NFmiImage &theImage)
-    : NFmiDrawable()
+
 {
   try
   {
@@ -560,7 +562,7 @@ void NFmiImage::Read(const string &theFileName)
 
     // Open the input file.
 
-    FILE *in;
+    FILE* in = nullptr;
     in = fopen(theFileName.c_str(), "rb");
 
     if (in == nullptr)
@@ -646,7 +648,7 @@ void NFmiImage::WriteJpeg(const string &theFileName) const
     const string dir = NFmiFileSystem::DirName(theFileName);
     const string tmp = NFmiFileSystem::TemporaryFile(dir);
 
-    FILE *out;
+    FILE* out = nullptr;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a JPEG");
@@ -679,7 +681,7 @@ void NFmiImage::WritePng(const string &theFileName) const
     const string dir = NFmiFileSystem::DirName(theFileName);
     const string tmp = NFmiFileSystem::TemporaryFile(dir);
 
-    FILE *out;
+    FILE* out = nullptr;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a PNG");
@@ -712,7 +714,7 @@ void NFmiImage::WriteWbmp(const string &theFileName) const
     const string dir = NFmiFileSystem::DirName(theFileName);
     const string tmp = NFmiFileSystem::TemporaryFile(dir);
 
-    FILE *out;
+    FILE* out = nullptr;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a WBMP");
@@ -743,7 +745,7 @@ void NFmiImage::WriteGif(const string &theFileName) const
     const string dir = NFmiFileSystem::DirName(theFileName);
     const string tmp = NFmiFileSystem::TemporaryFile(dir);
 
-    FILE *out;
+    FILE* out = nullptr;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a GIF");
@@ -774,7 +776,7 @@ void NFmiImage::WritePnm(const string &theFileName) const
     const string dir = NFmiFileSystem::DirName(theFileName);
     const string tmp = NFmiFileSystem::TemporaryFile(dir);
 
-    FILE *out;
+    FILE* out = nullptr;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a PNM");
@@ -805,7 +807,7 @@ void NFmiImage::WritePgm(const string &theFileName) const
     const string dir = NFmiFileSystem::DirName(theFileName);
     const string tmp = NFmiFileSystem::TemporaryFile(dir);
 
-    FILE *out;
+    FILE* out = nullptr;
     out = fopen(tmp.c_str(), "wb");
     if (out == nullptr)
       throw Fmi::Exception(BCP, "Failed to open '" + theFileName + "' for writing a PGM");
@@ -920,7 +922,7 @@ bool NFmiImage::IsFullyOpaqueOrTransparent(int threshold) const
     for (int i = 0; i < itsWidth * itsHeight; i++)
     {
       int alpha = NFmiColorTools::GetAlpha(itsPixels[i]);
-      if (!(alpha == NFmiColorTools::Opaque || alpha == NFmiColorTools::Transparent))
+      if (alpha != NFmiColorTools::Opaque && alpha != NFmiColorTools::Transparent)
         return false;
     }
     return true;
@@ -1028,7 +1030,7 @@ bool NFmiImage::AddColors(set<NFmiColorTools::Color> &theSet,
     NFmiColorTools::Color color3 = NFmiColorTools::NoColor;
     NFmiColorTools::Color color4 = NFmiColorTools::NoColor;
 
-    NFmiColorTools::Color color;
+    NFmiColorTools::Color color = 0;
 
     // Used when inserting a new color
 

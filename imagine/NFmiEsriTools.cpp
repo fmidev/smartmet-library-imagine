@@ -60,7 +60,7 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
 
     const NFmiEsriAttributeType atype = name->Type();
 
-    string svalue = "";
+    string svalue;
     int ivalue = 0;
     double dvalue = 0;
 

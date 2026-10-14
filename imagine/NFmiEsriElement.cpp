@@ -83,7 +83,7 @@ const std::string NFmiEsriElement::GetString(const string& theName) const
 
     // Return empty string if field not found
 
-    static const string tmp = "";
+    static const string tmp;
     return tmp;
   }
   catch (...)

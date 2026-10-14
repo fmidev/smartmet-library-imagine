@@ -17,6 +17,8 @@
 #pragma once
 
 #include "NFmiColorTools.h"
+#include <cmath>
+
 #include <cstdlib>
 
 #ifdef __BORLANDC__
@@ -44,13 +46,13 @@ namespace Imagine
 
 struct NFmiColorBlendClear
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color /*src*/, NFmiColorTools::Color /*dst*/)
   {
     return NFmiColorTools::Black;
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int /*srcr*/, int /*srcg*/, int /*srcb*/, int /*srca*/, NFmiColorTools::Color /*dst*/)
   {
     return NFmiColorTools::Black;
   }
@@ -62,13 +64,13 @@ struct NFmiColorBlendClear
 
 struct NFmiColorBlendCopy
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color /*dst*/)
   {
     return src;
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color /*dst*/)
   {
     return NFmiColorTools::MakeColor(srcr, srcg, srcb, srca);
   }
@@ -80,13 +82,13 @@ struct NFmiColorBlendCopy
 
 struct NFmiColorBlendKeep
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color /*src*/, NFmiColorTools::Color dst)
   {
     return dst;
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int /*srcr*/, int /*srcg*/, int /*srcb*/, int /*srca*/, NFmiColorTools::Color dst)
   {
     return dst;
   }
@@ -98,7 +100,7 @@ struct NFmiColorBlendKeep
 
 struct NFmiColorBlendOver
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     // This optimization is for banging partly opaque/transparent images onto an image
     int srca = NFmiColorTools::GetAlpha(src);
@@ -125,7 +127,7 @@ struct NFmiColorBlendOver
         (srcp * srca + dstp * dsta) / NFmiColorTools::MaxAlpha);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     // This is as in ImageMagick
@@ -151,7 +153,7 @@ struct NFmiColorBlendOver
 
 struct NFmiColorBlendUnder
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -160,7 +162,7 @@ struct NFmiColorBlendUnder
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int srcp = (NFmiColorTools::MaxAlpha - srca) * srca / NFmiColorTools::MaxAlpha;
@@ -181,7 +183,7 @@ struct NFmiColorBlendUnder
 
 struct NFmiColorBlendIn
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -190,7 +192,7 @@ struct NFmiColorBlendIn
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);
@@ -210,7 +212,7 @@ struct NFmiColorBlendIn
 
 struct NFmiColorBlendKeepIn
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -219,8 +221,8 @@ struct NFmiColorBlendKeepIn
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int /*srcr*/, int /*srcg*/, int /*srcb*/, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);
     int dstp = (NFmiColorTools::MaxAlpha - dsta) * (NFmiColorTools::MaxAlpha - srca) /
@@ -239,7 +241,7 @@ struct NFmiColorBlendKeepIn
 
 struct NFmiColorBlendOut
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -248,7 +250,7 @@ struct NFmiColorBlendOut
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);
@@ -267,7 +269,7 @@ struct NFmiColorBlendOut
 
 struct NFmiColorBlendKeepOut
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -276,8 +278,8 @@ struct NFmiColorBlendKeepOut
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int /*srcr*/, int /*srcg*/, int /*srcb*/, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);
     int dstp = (NFmiColorTools::MaxAlpha - dsta) * srca / NFmiColorTools::MaxAlpha;
@@ -296,7 +298,7 @@ struct NFmiColorBlendKeepOut
 
 struct NFmiColorBlendAtop
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -305,7 +307,7 @@ struct NFmiColorBlendAtop
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);
@@ -327,7 +329,7 @@ struct NFmiColorBlendAtop
 
 struct NFmiColorBlendKeepAtop
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -336,7 +338,7 @@ struct NFmiColorBlendKeepAtop
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);
@@ -358,7 +360,7 @@ struct NFmiColorBlendKeepAtop
 
 struct NFmiColorBlendXor
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -367,7 +369,7 @@ struct NFmiColorBlendXor
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);
@@ -392,7 +394,7 @@ struct NFmiColorBlendXor
 
 struct NFmiColorBlendPlus
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -401,7 +403,7 @@ struct NFmiColorBlendPlus
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);
@@ -421,7 +423,7 @@ struct NFmiColorBlendPlus
 
 struct NFmiColorBlendMinus
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -430,7 +432,7 @@ struct NFmiColorBlendMinus
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);
@@ -450,7 +452,7 @@ struct NFmiColorBlendMinus
 
 struct NFmiColorBlendAdd
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -459,7 +461,7 @@ struct NFmiColorBlendAdd
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::SafeColor(srcr + NFmiColorTools::GetRed(dst),
@@ -475,7 +477,7 @@ struct NFmiColorBlendAdd
 
 struct NFmiColorBlendSubstract
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -484,7 +486,7 @@ struct NFmiColorBlendSubstract
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::SafestColor(srcr - NFmiColorTools::GetRed(dst),
@@ -500,7 +502,7 @@ struct NFmiColorBlendSubstract
 
 struct NFmiColorBlendMultiply
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -509,7 +511,7 @@ struct NFmiColorBlendMultiply
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::SafeColor(
@@ -526,7 +528,7 @@ struct NFmiColorBlendMultiply
 
 struct NFmiColorBlendDifference
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -535,7 +537,7 @@ struct NFmiColorBlendDifference
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::SafeColor(abs(srcr - NFmiColorTools::GetRed(dst)),
@@ -551,13 +553,13 @@ struct NFmiColorBlendDifference
 
 struct NFmiColorBlendCopyRed
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::ReplaceRed(dst, NFmiColorTools::GetRed(src));
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int srcr, int /*srcg*/, int /*srcb*/, int /*srca*/, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::ReplaceRed(dst, srcr);
   }
@@ -569,13 +571,13 @@ struct NFmiColorBlendCopyRed
 
 struct NFmiColorBlendCopyGreen
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::ReplaceGreen(dst, NFmiColorTools::GetGreen(src));
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int /*srcr*/, int srcg, int /*srcb*/, int /*srca*/, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::ReplaceGreen(dst, srcg);
   }
@@ -587,13 +589,13 @@ struct NFmiColorBlendCopyGreen
 
 struct NFmiColorBlendCopyBlue
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::ReplaceBlue(dst, NFmiColorTools::GetBlue(src));
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int /*srcr*/, int /*srcg*/, int srcb, int /*srca*/, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::ReplaceBlue(dst, srcb);
   }
@@ -605,13 +607,13 @@ struct NFmiColorBlendCopyBlue
 
 struct NFmiColorBlendCopyMatte
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::ReplaceAlpha(dst, NFmiColorTools::GetAlpha(src));
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int /*srcr*/, int /*srcg*/, int /*srcb*/, int srca, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::ReplaceAlpha(dst, srca);
   }
@@ -623,7 +625,7 @@ struct NFmiColorBlendCopyMatte
 
 struct NFmiColorBlendCopyHue
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -632,20 +634,20 @@ struct NFmiColorBlendCopyHue
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int srcr, int srcg, int srcb, int /*srca*/, NFmiColorTools::Color dst)
   {
-    double hsrc, lsrc, ssrc;
+    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst, ldst, sdst;
+    double hdst = NAN, ldst = NAN, sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
                              &hdst,
                              &ldst,
                              &sdst);
-    int r, g, b;
+    int r = 0, g = 0, b = 0;
     NFmiColorTools::HLStoRGB(hsrc, ldst, sdst, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, NFmiColorTools::GetAlpha(dst));
@@ -658,7 +660,7 @@ struct NFmiColorBlendCopyHue
 
 struct NFmiColorBlendCopyLightness
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -667,20 +669,20 @@ struct NFmiColorBlendCopyLightness
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int srcr, int srcg, int srcb, int /*srca*/, NFmiColorTools::Color dst)
   {
-    double hsrc, lsrc, ssrc;
+    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst, ldst, sdst;
+    double hdst = NAN, ldst = NAN, sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
                              &hdst,
                              &ldst,
                              &sdst);
-    int r, g, b;
+    int r = 0, g = 0, b = 0;
     NFmiColorTools::HLStoRGB(hdst, lsrc, sdst, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, NFmiColorTools::GetAlpha(dst));
@@ -693,7 +695,7 @@ struct NFmiColorBlendCopyLightness
 
 struct NFmiColorBlendCopySaturation
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -702,13 +704,13 @@ struct NFmiColorBlendCopySaturation
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int srcr, int srcg, int srcb, int /*srca*/, NFmiColorTools::Color dst)
   {
-    double hsrc, lsrc, ssrc;
+    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst, ldst, sdst;
+    double hdst = NAN, ldst = NAN, sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
@@ -716,7 +718,7 @@ struct NFmiColorBlendCopySaturation
                              &ldst,
                              &sdst);
 
-    int r, g, b;
+    int r = 0, g = 0, b = 0;
     NFmiColorTools::HLStoRGB(hdst, ldst, ssrc, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, NFmiColorTools::GetAlpha(dst));
@@ -729,7 +731,7 @@ struct NFmiColorBlendCopySaturation
 
 struct NFmiColorBlendKeepMatte
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -738,8 +740,8 @@ struct NFmiColorBlendKeepMatte
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int srcr, int srcg, int srcb, int /*srca*/, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::MakeColor(srcr, srcg, srcb, NFmiColorTools::GetAlpha(dst));
   }
@@ -751,7 +753,7 @@ struct NFmiColorBlendKeepMatte
 
 struct NFmiColorBlendKeepHue
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -760,20 +762,20 @@ struct NFmiColorBlendKeepHue
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-    double hsrc, lsrc, ssrc;
+    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst, ldst, sdst;
+    double hdst = NAN, ldst = NAN, sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
                              &hdst,
                              &ldst,
                              &sdst);
-    int r, g, b;
+    int r = 0, g = 0, b = 0;
     NFmiColorTools::HLStoRGB(hdst, lsrc, ssrc, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, srca);
@@ -786,7 +788,7 @@ struct NFmiColorBlendKeepHue
 
 struct NFmiColorBlendKeepLightness
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -795,20 +797,20 @@ struct NFmiColorBlendKeepLightness
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-    double hsrc, lsrc, ssrc;
+    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst, ldst, sdst;
+    double hdst = NAN, ldst = NAN, sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
                              &hdst,
                              &ldst,
                              &sdst);
-    int r, g, b;
+    int r = 0, g = 0, b = 0;
     NFmiColorTools::HLStoRGB(hsrc, ldst, ssrc, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, srca);
@@ -821,7 +823,7 @@ struct NFmiColorBlendKeepLightness
 
 struct NFmiColorBlendKeepSaturation
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -830,20 +832,20 @@ struct NFmiColorBlendKeepSaturation
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
-    double hsrc, lsrc, ssrc;
+    double hsrc = NAN, lsrc = NAN, ssrc = NAN;
     NFmiColorTools::RGBtoHLS(srcr, srcg, srcb, &hsrc, &lsrc, &ssrc);
 
-    double hdst, ldst, sdst;
+    double hdst = NAN, ldst = NAN, sdst = NAN;
     NFmiColorTools::RGBtoHLS(NFmiColorTools::GetRed(dst),
                              NFmiColorTools::GetGreen(dst),
                              NFmiColorTools::GetBlue(dst),
                              &hdst,
                              &ldst,
                              &sdst);
-    int r, g, b;
+    int r = 0, g = 0, b = 0;
     NFmiColorTools::HLStoRGB(hsrc, lsrc, sdst, &r, &g, &b);
 
     return NFmiColorTools::MakeColor(r, g, b, srca);
@@ -856,7 +858,7 @@ struct NFmiColorBlendKeepSaturation
 
 struct NFmiColorBlendBumpmap
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -865,8 +867,8 @@ struct NFmiColorBlendBumpmap
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int srcr, int srcg, int srcb, int /*srca*/, NFmiColorTools::Color dst)
   {
     int intensity = NFmiColorTools::Intensity(srcr, srcg, srcb);
     return NFmiColorTools::SafeColor(
@@ -883,7 +885,7 @@ struct NFmiColorBlendBumpmap
 
 struct NFmiColorBlendDentmap
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -892,7 +894,7 @@ struct NFmiColorBlendDentmap
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int intensity = NFmiColorTools::Intensity(dst);
@@ -909,13 +911,13 @@ struct NFmiColorBlendDentmap
 
 struct NFmiColorBlendAddContrast
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color /*src*/, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::AddContrast(dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int /*srcr*/, int /*srcg*/, int /*srcb*/, int /*srca*/, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::AddContrast(dst);
   }
@@ -927,13 +929,13 @@ struct NFmiColorBlendAddContrast
 
 struct NFmiColorBlendReduceConstrast
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color /*src*/, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::ReduceContrast(dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
-      int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(
+      int /*srcr*/, int /*srcg*/, int /*srcb*/, int /*srca*/, NFmiColorTools::Color dst)
   {
     return NFmiColorTools::ReduceContrast(dst);
   }
@@ -945,7 +947,7 @@ struct NFmiColorBlendReduceConstrast
 
 struct NFmiColorBlendOnOpaque
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -954,7 +956,7 @@ struct NFmiColorBlendOnOpaque
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);
@@ -976,7 +978,7 @@ struct NFmiColorBlendOnOpaque
 
 struct NFmiColorBlendOnTransparent
 {
-  static inline NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
+  static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
     return Blend(NFmiColorTools::GetRed(src),
                  NFmiColorTools::GetGreen(src),
@@ -985,7 +987,7 @@ struct NFmiColorBlendOnTransparent
                  dst);
   }
 
-  static inline NFmiColorTools::Color Blend(
+  static NFmiColorTools::Color Blend(
       int srcr, int srcg, int srcb, int srca, NFmiColorTools::Color dst)
   {
     int dsta = NFmiColorTools::GetAlpha(dst);

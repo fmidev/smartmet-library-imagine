@@ -51,15 +51,15 @@ class NFmiEsriBox
   void Update(const NFmiEsriBox& theBox);
 
  private:
-  bool itsValidity;
-  double itsXmin;
-  double itsXmax;
-  double itsYmin;
-  double itsYmax;
-  double itsMmin;
-  double itsMmax;
-  double itsZmin;
-  double itsZmax;
+  bool itsValidity = false;
+  double itsXmin = 0.0;
+  double itsXmax = 0.0;
+  double itsYmin = 0.0;
+  double itsYmax = 0.0;
+  double itsMmin = 0.0;
+  double itsMmax = 0.0;
+  double itsZmin = 0.0;
+  double itsZmax = 0.0;
 };
 
 }  // namespace Imagine

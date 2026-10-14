@@ -121,7 +121,7 @@ std::string MimeType(const string& theFileName)
 {
   try
   {
-    FILE* in;
+    FILE* in = nullptr;
     in = fopen(theFileName.c_str(), "rb");
     if (in == nullptr)
       throw Fmi::Exception(BCP, "Unable to determine image type of '" + theFileName + "'");

@@ -33,7 +33,6 @@ class NFmiDataHints
     bool hasmissing;
   };
 
- public:
   using return_type = std::list<Rectangle>;
 
   ~NFmiDataHints();

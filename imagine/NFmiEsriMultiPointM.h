@@ -34,7 +34,7 @@ class NFmiEsriMultiPointM : public NFmiEsriMultiPoint
   NFmiEsriMultiPointM(const NFmiEsriMultiPointM& thePoints);
 
   NFmiEsriMultiPointM(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriMultiPointM)
-      : NFmiEsriMultiPoint(theNumber, theType), itsBox(), itsPoints()
+      : NFmiEsriMultiPoint(theNumber, theType)
   {
   }
 

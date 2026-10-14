@@ -79,8 +79,8 @@ void NFmiImage::ReadPNG(FILE *in)
     png_set_sig_bytes(png_ptr, 8);
     png_read_info(png_ptr, info_ptr);  // read info up to image data
 
-    png_uint_32 width, height;
-    int bit_depth, color_type;
+    png_uint_32 width = 0, height = 0;
+    int bit_depth = 0, color_type = 0;
 
     png_get_IHDR(
         png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, nullptr, nullptr, nullptr);
@@ -127,7 +127,7 @@ void NFmiImage::ReadPNG(FILE *in)
     // Read in the data one row at a time
 
     png_bytep row_pointer = row_data;
-    png_byte r, g, b;
+    png_byte r = 0, g = 0, b = 0;
     png_byte a = NFmiColorTools::Opaque;  // Correct value for RGB
 
     for (unsigned j = 0; j < height; j++)
@@ -176,7 +176,7 @@ void NFmiImage::WritePNG(FILE *out) const
 {
   try
   {
-    int i, j;
+    int i = 0, j = 0;
 
     // Allocate png info variables
 
@@ -316,7 +316,7 @@ void NFmiImage::WritePNG(FILE *out) const
 
       png_bytep row_pointer = row_data;
 
-      png_byte a;
+      png_byte a = 0;
       for (j = 0; j < itsHeight; j++)
       {
         int boxoffset = 0;
@@ -366,7 +366,7 @@ void NFmiImage::WritePNG(FILE *out) const
         for (iter = theColors.begin(); iter != theColors.end(); iter++)
         {
           int a = NFmiColorTools::GetAlpha(*iter);
-          bool addnow;
+          bool addnow = false;
           if (pass == 1)
           {
             if (a == 0)
@@ -392,7 +392,7 @@ void NFmiImage::WritePNG(FILE *out) const
 
       // Determine bit-depth from num_colors
 
-      int bit_depth;
+      int bit_depth = 0;
       if (num_colors <= 2)
         bit_depth = 1;
       else if (num_colors <= 4)

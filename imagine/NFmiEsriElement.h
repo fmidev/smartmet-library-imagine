@@ -42,7 +42,7 @@ class NFmiEsriElement
  public:
   virtual ~NFmiEsriElement() = default;
   NFmiEsriElement(NFmiEsriElementType theType, int theNumber = 0)
-      : itsType(theType), itsNumber(theNumber), itsAttributes()
+      : itsType(theType), itsNumber(theNumber)
   {
   }
 

@@ -15,18 +15,7 @@ namespace Imagine
  */
 // ----------------------------------------------------------------------
 
-NFmiEsriBox::NFmiEsriBox()
-    : itsValidity(false),
-      itsXmin(0.0),
-      itsXmax(0.0),
-      itsYmin(0.0),
-      itsYmax(0.0),
-      itsMmin(0.0),
-      itsMmax(0.0),
-      itsZmin(0.0),
-      itsZmax(0.0)
-{
-}
+NFmiEsriBox::NFmiEsriBox() {}
 
 // ----------------------------------------------------------------------
 /*!

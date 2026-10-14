@@ -877,7 +877,7 @@ bool NFmiEsriShape::WriteDBF(const string &theFilename) const
 
     if (itsAttributeNames.empty())
     {
-      int i;
+      int i = 0;
       const int field_length = 7;
       dbffile << LittleEndianShort(header_size + 1 * field_size + 1)
               << LittleEndianShort(field_length);
@@ -921,7 +921,7 @@ bool NFmiEsriShape::WriteDBF(const string &theFilename) const
         }
       }
 
-      int i;
+      int i = 0;
       dbffile << LittleEndianShort(header_size + field_count * field_size + 1)
               << LittleEndianShort(field_length);
       for (i = 0; i < header_zeros; i++)

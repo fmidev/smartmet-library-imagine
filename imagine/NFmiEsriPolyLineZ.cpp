@@ -83,7 +83,7 @@ NFmiEsriElement* NFmiEsriPolyLineZ::Clone() const
 // ----------------------------------------------------------------------
 
 NFmiEsriPolyLineZ::NFmiEsriPolyLineZ(const string& theBuffer, int thePos, int theNumber)
-    : NFmiEsriPolyLineM(theNumber, kFmiEsriPolyLineZ), itsBox(), itsParts(), itsPoints()
+    : NFmiEsriPolyLineM(theNumber, kFmiEsriPolyLineZ)
 {
   try
   {

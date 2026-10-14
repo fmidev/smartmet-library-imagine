@@ -30,7 +30,7 @@ class NFmiEsriMultiPoint : public NFmiEsriElement
   NFmiEsriMultiPoint(const NFmiEsriMultiPoint& thePoints);
 
   NFmiEsriMultiPoint(int theNumber = 0, NFmiEsriElementType theType = kFmiEsriMultiPoint)
-      : NFmiEsriElement(theType, theNumber), itsBox(), itsPoints()
+      : NFmiEsriElement(theType, theNumber)
   {
   }
 

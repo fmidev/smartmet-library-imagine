@@ -223,6 +223,8 @@ NFmiDataHints::return_type NFmiDataHints::Pimple::rectangles(float theLoLimit,
  */
 // ----------------------------------------------------------------------
 
+namespace
+{
 bool rectangle_intersects(const NFmiDataHints::Rectangle& theRectangle,
                           float theLoLimit,
                           float theHiLimit)
@@ -279,6 +281,7 @@ bool rectangle_intersects(const NFmiDataHints::Rectangle& theRectangle,
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
+}  // namespace
 
 // ----------------------------------------------------------------------
 /*!

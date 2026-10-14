@@ -49,6 +49,7 @@ extern "C"
 #define FT_RENDER_MODE_NORMAL ft_render_mode_normal
 #endif
 
+#include <algorithm>
 #include <cmath>
 #include <map>
 #include <stdexcept>
@@ -87,14 +88,10 @@ FT_BBox compute_bbox(const vector<FT_Glyph>& theGlyphs, const vector<FT_Vector>&
       glyph_bbox.yMin += thePositions[i].y;
       glyph_bbox.yMax += thePositions[i].y;
 
-      if (glyph_bbox.xMin < bbox.xMin)
-        bbox.xMin = glyph_bbox.xMin;
-      if (glyph_bbox.yMin < bbox.yMin)
-        bbox.yMin = glyph_bbox.yMin;
-      if (glyph_bbox.xMax > bbox.xMax)
-        bbox.xMax = glyph_bbox.xMax;
-      if (glyph_bbox.yMax > bbox.yMax)
-        bbox.yMax = glyph_bbox.yMax;
+      bbox.xMin = std::min(glyph_bbox.xMin, bbox.xMin);
+      bbox.yMin = std::min(glyph_bbox.yMin, bbox.yMin);
+      bbox.xMax = std::max(glyph_bbox.xMax, bbox.xMax);
+      bbox.yMax = std::max(glyph_bbox.yMax, bbox.yMax);
     }
 
     // check that we really grew the string bbox
@@ -132,12 +129,11 @@ class NFmiFreeType::Pimple
  public:
   using Faces = map<string, FT_Face>;
 
-  bool itsInitialized;
-  FT_Library itsLibrary;             //!< Freetype library reference
+  bool itsInitialized = false;
+  FT_Library itsLibrary{};           //!< Freetype library reference
   Faces itsFaces;                    //!< Face name to Face ID mapping
   map<string, string> itsFontPaths;  //!< Font name to path cache
 
- public:
   ~Pimple();
   Pimple();
 
@@ -204,7 +200,7 @@ NFmiFreeType::Pimple::~Pimple()
  */
 // ----------------------------------------------------------------------
 
-NFmiFreeType::Pimple::Pimple() : itsInitialized(false), itsLibrary()
+NFmiFreeType::Pimple::Pimple()
 {
   try
   {
@@ -260,7 +256,7 @@ FT_Face NFmiFreeType::Pimple::getFont(const string& theFont)
     if (it != itsFaces.end())
       return it->second;
 
-    FT_Face face;
+    FT_Face face = nullptr;
 
     FT_Error error = FT_New_Face(itsLibrary, theFont.c_str(), 0, &face);
 
@@ -303,9 +299,9 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
 {
   try
   {
-    FT_Error error;
+    FT_Error error = 0;
     FT_GlyphSlot slot = theFace->glyph;
-    FT_UInt glyph_index;
+    FT_UInt glyph_index = 0;
     FT_Vector pen;
 
     vector<FT_Glyph> glyphs(theText.size());
@@ -494,7 +490,7 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
 {
   try
   {
-    FT_Int i, j, p, q;
+    FT_Int i = 0, j = 0, p = 0, q = 0;
     FT_Int x = theX;
     FT_Int y = theY;
 
