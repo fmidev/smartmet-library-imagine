@@ -395,21 +395,10 @@ void NFmiImage::WritePNG(FILE *out) const
           }
         }
 
-      // Determine bit-depth from num_colors
+      // Always 8 bits: deriving a smaller depth (1, 2 or 4) from num_colors
+      // was disabled as a temporary bug fix
 
-      int bit_depth = 0;
-      if (num_colors <= 2)
-        bit_depth = 1;
-      else if (num_colors <= 4)
-        bit_depth = 2;
-      else if (num_colors <= 16)
-        bit_depth = 4;
-      else
-        bit_depth = 8;
-
-      // Temporary bug fix:
-
-      bit_depth = 8;
+      const int bit_depth = 8;
 
       png_set_IHDR(png_ptr,
                    info_ptr,

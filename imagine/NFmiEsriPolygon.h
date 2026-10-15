@@ -63,6 +63,7 @@ class NFmiEsriPolygon : public NFmiEsriElement
   {
     itsPoints.push_back(thePoint);
     itsBox.Update(thePoint.X(), thePoint.Y());
+    // codechecker_intentional [optin.cplusplus.VirtualCall] intended in construction
     if (NumParts() == 0)      // user should have used AddPart,
       itsParts.push_back(0);  // this will fix things
   }

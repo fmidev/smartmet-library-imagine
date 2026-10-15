@@ -91,29 +91,29 @@ class NFmiImage
  private:
   // Data elements
   //
-  int itsWidth;
-  int itsHeight;
+  int itsWidth = 0;
+  int itsHeight = 0;
   std::string itsType;  // when read from a file
 
-  NFmiColorTools::Color *itsPixels;
+  NFmiColorTools::Color *itsPixels = nullptr;
 
 // Various options
 //
 #ifdef IMAGINE_FORMAT_JPEG
-  int itsJpegQuality;  // JPEG compression quality, 0-100
+  int itsJpegQuality = 0;  // JPEG compression quality, 0-100
 #endif
 #ifdef IMAGINE_FORMAT_PNG
-  int itsPngQuality;  // PNG compression level, 0-9
-  int itsPngFilter;   // PNG filter
+  int itsPngQuality = 0;  // PNG compression level, 0-9
+  int itsPngFilter = 0;   // PNG filter
 #endif
 #if (defined IMAGINE_FORMAT_JPEG) || (defined IMAGINE_FORMAT_PNG)
-  int itsAlphaLimit;      // alpha<=limit is considered opaque
-  float itsGamma;         // Gamma, 1-3 is reasonable
+  int itsAlphaLimit = 0;      // alpha<=limit is considered opaque
+  float itsGamma = 0.0F;         // Gamma, 1-3 is reasonable
   std::string itsIntent;  // Rendering intent (PNG)
 
-  bool itsSaveAlphaFlag;     // true if alpha is to be saved
-  bool itsWantPaletteFlag;   // true if palette is desired when possible
-  bool itsForcePaletteFlag;  // true if palette is to be forced
+  bool itsSaveAlphaFlag = false;     // true if alpha is to be saved
+  bool itsWantPaletteFlag = false;   // true if palette is desired when possible
+  bool itsForcePaletteFlag = false;  // true if palette is to be forced
 #endif
 
   /********************/

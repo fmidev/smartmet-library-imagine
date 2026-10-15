@@ -724,8 +724,8 @@ void NFmiPath::SimplifyLines(double theOffset)
     double x3 = NAN;
     double y3 = NAN;
 
-    oper1 = oper2 = oper3 = kFmiMoveTo;
-    x1 = y1 = x2 = y2 = x3 = y3 = kFloatMissing;
+    oper2 = oper3 = kFmiMoveTo;
+    x2 = y2 = x3 = y3 = kFloatMissing;
 
     int cachesize = 0;
 

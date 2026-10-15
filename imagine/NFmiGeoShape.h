@@ -64,6 +64,8 @@ class NFmiGeoShape
   // Destructor
 
   ~NFmiGeoShape() override { delete itsEsriShape; }
+  NFmiGeoShape(const NFmiGeoShape&) = delete;
+  NFmiGeoShape& operator=(const NFmiGeoShape&) = delete;
   // Data-access
 
   NFmiGeoShapeType Type() const { return itsType; }

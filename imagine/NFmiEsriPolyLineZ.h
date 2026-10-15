@@ -70,6 +70,7 @@ class NFmiEsriPolyLineZ : public NFmiEsriPolyLineM
   {
     itsPoints.push_back(thePoint);
     itsBox.Update(thePoint.X(), thePoint.Y(), thePoint.Z(), thePoint.M());
+    // codechecker_intentional [optin.cplusplus.VirtualCall] intended in construction
     if (NumParts() == 0)      // user should have used AddPart,
       itsParts.push_back(0);  // this will fix things
   }

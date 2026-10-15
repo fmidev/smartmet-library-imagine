@@ -111,6 +111,7 @@ FMI %{DIRNAME} development files
 - Removed the disabled Cairo backend: the IMAGINE_WITH_CAIRO branches, ImagineXr and imagine-config.h (use NFmiImage instead of ImagineXr_or_NFmiImage)
 - Fixed mechanical clang-tidy findings (internal linkage, unused parameters, initialization, redundant code), no functional changes
 - Fixed clang-tidy style findings (loops, nested conditionals, dead code)
+- Fixed clang-tidy correctness findings (member initialization, rule of five, printf formats, dead stores)
 
 * Sun Oct 11 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.11-1.fmi
 - Invalid numbers are now detected instead of silently becoming 0 or a numeric prefix

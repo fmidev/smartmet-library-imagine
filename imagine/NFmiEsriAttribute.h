@@ -76,6 +76,8 @@ class NFmiEsriAttribute
   // Destructor is automatic
 
   ~NFmiEsriAttribute() {}
+  NFmiEsriAttribute(const NFmiEsriAttribute&) = default;
+  NFmiEsriAttribute& operator=(const NFmiEsriAttribute&) = default;
   // Getting values - it is assumed that type has been checked
 
   int GetInteger() const { return itsInteger; }
@@ -97,20 +99,13 @@ class NFmiEsriAttribute
 
   NFmiEsriAttribute();
 
-  // The data elements
-  //
-  // The idea is to save space while we can - but unfortunately
-  // strings (classes with constructors etc) cannot be included
-  // in unions
+  // The data elements: the one matching the attribute type is used
 
   NFmiEsriAttributeName* itsAttributeName;
   std::string itsString;
   NFmiMetTime itsDate;
-  union
-  {
-    int itsInteger;
-    double itsDouble;
-  };
+  int itsInteger = 0;
+  double itsDouble = 0.0;
 };
 
 }  // namespace Imagine

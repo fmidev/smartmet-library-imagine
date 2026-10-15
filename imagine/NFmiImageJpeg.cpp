@@ -37,13 +37,13 @@ void NFmiImage::ReadJPEG(FILE *in)
     // This struct contains the JPEG decompression parameters and pointers to
     // working space (which is allocated as needed by the JPEG library).
 
-    struct jpeg_decompress_struct cinfo;
+    struct jpeg_decompress_struct cinfo{};
 
     // Step 1: allocate and initialize JPEG decompression object
 
     // We set up the normal JPEG error routines
 
-    struct jpeg_error_mgr jerr;
+    struct jpeg_error_mgr jerr{};
     memset(&jerr, 0, sizeof(jerr));
     cinfo.err = jpeg_std_error(&jerr);
 
@@ -161,7 +161,7 @@ void NFmiImage::WriteJPEG(FILE *out) const
     // compression/decompression processes, in existence at once.  We refer
     // to any one struct (and its associated working data) as a "JPEG object".
 
-    struct jpeg_compress_struct cinfo;
+    struct jpeg_compress_struct cinfo{};
 
     // This struct represents a JPEG error handler.  It is declared separately
     // because applications often want to supply a specialized error handler
@@ -171,7 +171,7 @@ void NFmiImage::WriteJPEG(FILE *out) const
     // Note that this struct must live as long as the main JPEG parameter
     // struct, to avoid dangling-pointer problems.
 
-    struct jpeg_error_mgr jerr;
+    struct jpeg_error_mgr jerr{};
 
     // Step 1: allocate and initialize JPEG compression object
 

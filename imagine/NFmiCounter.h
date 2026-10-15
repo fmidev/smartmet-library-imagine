@@ -67,6 +67,8 @@ class NFmiCounter
   NFmiCounter() = default;
   //! Destructor
   ~NFmiCounter() {}
+  NFmiCounter(const NFmiCounter&) = default;
+  NFmiCounter& operator=(const NFmiCounter&) = default;
   //! Reset the counter to contain no data
   void Clear() { itsData.clear(); }
   //! Add a new object to the counter.

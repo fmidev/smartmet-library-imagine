@@ -80,7 +80,7 @@ struct GifScreen
 {
   unsigned int width = 0;
   unsigned int height = 0;
-  unsigned char colormap[3][MaxColors];
+  unsigned char colormap[3][MaxColors]{};
   unsigned int bitpixel = 0;
   unsigned int colorresolution = 0;
   unsigned int background = 0;
@@ -464,6 +464,8 @@ void read_image(FILE *theInput,
               break;
             case 3:
               ypos += 2;
+              break;
+            default:
               break;
           }
           if (ypos >= theHeight)
@@ -922,7 +924,6 @@ void NFmiImage::WriteGIF(FILE *out) const
     {
       fputc(byte_count, out);
       (void)fwrite(packet.c_str(), 1, byte_count, out);
-      byte_count = 0;
     }
 
     // End GIF writing

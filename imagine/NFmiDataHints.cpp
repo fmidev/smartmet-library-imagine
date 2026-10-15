@@ -22,7 +22,7 @@ namespace Imagine
 
 struct RecursiveInfo
 {
-  NFmiDataHints::Rectangle itsRectangle;
+  NFmiDataHints::Rectangle itsRectangle{};
   std::shared_ptr<RecursiveInfo> itsLeft;
   std::shared_ptr<RecursiveInfo> itsRight;
 };
@@ -37,6 +37,7 @@ class NFmiDataHints::Pimple
 {
  public:
   Pimple(const NFmiDataMatrix<float>& theData, int theMaxSize);
+  ~Pimple() = default;
   return_type rectangles(float theLoLimit, float theHiLimit) const;
 
  private:

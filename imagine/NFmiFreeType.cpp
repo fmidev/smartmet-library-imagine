@@ -136,6 +136,8 @@ class NFmiFreeType::Pimple
 
   ~Pimple();
   Pimple();
+  Pimple(const Pimple&) = delete;
+  Pimple& operator=(const Pimple&) = delete;
 
   const string& findFont(const string& theName);
 
