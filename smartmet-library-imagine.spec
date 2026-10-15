@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 26.10.13
+Version: 26.10.15
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -30,15 +30,15 @@ BuildRequires: %{smartmet_boost}-devel
 BuildRequires: freetype-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
-BuildRequires: smartmet-library-macgyver-devel >= 26.10.11
-BuildRequires: smartmet-library-newbase-devel >= 26.10.13
+BuildRequires: smartmet-library-macgyver-devel >= 26.10.15
+BuildRequires: smartmet-library-newbase-devel >= 26.10.15
 BuildRequires: zlib-devel
 BuildRequires: cairomm-devel
 BuildRequires: gdal312-devel
-BuildRequires: smartmet-library-gis-devel >= 26.10.11
+BuildRequires: smartmet-library-gis-devel >= 26.10.15
 BuildRequires: %{smartmet_fmt_devel}
-Requires: smartmet-library-macgyver >= 26.10.11
-Requires: smartmet-library-newbase >= 26.10.13
+Requires: smartmet-library-macgyver >= 26.10.15
+Requires: smartmet-library-newbase >= 26.10.15
 Requires: %{smartmet_boost}-filesystem
 Requires: %{smartmet_boost}-regex
 Requires: %{smartmet_boost}-thread
@@ -51,16 +51,16 @@ Requires: zlib
 #TestRequires: make
 #TestRequires: gcc-c++
 #TestRequires: smartmet-library-regression
-#TestRequires: smartmet-library-macgyver-devel >= 26.10.11
+#TestRequires: smartmet-library-macgyver-devel >= 26.10.15
 #TestRequires: smartmet-library-macgyver
-#TestRequires: smartmet-library-newbase-devel >= 26.10.13
+#TestRequires: smartmet-library-newbase-devel >= 26.10.15
 #TestRequires: %{smartmet_boost}-devel
 #TestRequires: freetype-devel
 #TestRequires: libjpeg
 #TestRequires: libpng
 #TestRequires: zlib
 #TestRequires: bzip2-libs
-#TestRequires: smartmet-library-gis-devel >= 26.10.11
+#TestRequires: smartmet-library-gis-devel >= 26.10.15
 Provides: %{LIBNAME}
 Obsoletes: libsmartmet-imagine < 17.1.4
 Obsoletes: libsmartmet-imagine-debuginfo < 17.1.4
@@ -104,10 +104,10 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
-* Tue Oct 13 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.13-1.fmi
+* Thu Oct 15 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.15-1.fmi
 - Declare member functions and parameters const where nothing is modified (const correctness), no functional changes
 - NFmiImage::operator() const returns the color by value, modifying pixels requires a non-const image
-- Requires 26.10.13 versions of newbase due to their ABI changes
+- Requires 26.10.15 versions of newbase due to their ABI changes
 - Removed the disabled Cairo backend: the IMAGINE_WITH_CAIRO branches, ImagineXr and imagine-config.h (use NFmiImage instead of ImagineXr_or_NFmiImage)
 - Fixed mechanical clang-tidy findings (internal linkage, unused parameters, initialization, redundant code), no functional changes
 - Fixed clang-tidy style findings (loops, nested conditionals, dead code)
