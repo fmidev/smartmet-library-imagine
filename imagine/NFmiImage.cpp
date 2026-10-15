@@ -1339,28 +1339,28 @@ void NFmiImage::Composite(const NFmiImage &thePattern,
     {
       case kFmiAlignCenter:
         y -= thePattern.Height() / 2;
-        // fall through
+        [[fallthrough]];
       case kFmiAlignNorth:
         x -= thePattern.Width() / 2;
         break;
 
       case kFmiAlignEast:
         x -= thePattern.Width();
-        // fall through
+        [[fallthrough]];
       case kFmiAlignWest:
         y -= thePattern.Height() / 2;
         break;
 
       case kFmiAlignSouthEast:
         y -= thePattern.Height();
-        // fall through
+        [[fallthrough]];
       case kFmiAlignNorthEast:
         x -= thePattern.Width();
         break;
 
       case kFmiAlignSouth:
         x -= thePattern.Width() / 2;
-        // fall through
+        [[fallthrough]];
       case kFmiAlignSouthWest:
         y -= thePattern.Height();
         break;

@@ -97,6 +97,7 @@ void NFmiContourTree::Contour(const Fmi::CoordinateMatrix& thePts,
         break;
       case kFmiContourDiscrete:
         NFmiContourTree::ContourDiscrete(thePts, theValues);
+        break;
       default:
         break;
     }

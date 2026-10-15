@@ -1121,6 +1121,7 @@ void NFmiPath::Add(NFmiFillMap &theMap) const
               break;
           }
         }
+        break;
 
         case kFmiConicTo:
           break;
@@ -2014,6 +2015,7 @@ bool NFmiPath::IsPacificView() const
             break;
           }
         }
+        break;
         default:
           break;
       }
