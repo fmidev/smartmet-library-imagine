@@ -162,7 +162,7 @@ class NFmiContourTree : public NFmiEdgeTree
 
   /// Convert interpolation method enum to a name
 
-  static const std::string ContourInterpolationName(NFmiContourInterpolation theInterpolation);
+  static std::string ContourInterpolationName(NFmiContourInterpolation theInterpolation);
 
   /// Destructor
 

@@ -170,7 +170,7 @@ double NFmiEsriBuffer::LittleEndianDouble(const std::string &theBuffer, int theP
 // Return a big endian integer buffer
 // ----------------------------------------------------------------------
 
-const string NFmiEsriBuffer::BigEndianInt(int theValue)
+string NFmiEsriBuffer::BigEndianInt(int theValue)
 {
   try
   {
@@ -203,7 +203,7 @@ const string NFmiEsriBuffer::BigEndianInt(int theValue)
 // Return a little endian integer buffer
 // ----------------------------------------------------------------------
 
-const string NFmiEsriBuffer::LittleEndianInt(int theValue)
+string NFmiEsriBuffer::LittleEndianInt(int theValue)
 {
   try
   {
@@ -236,7 +236,7 @@ const string NFmiEsriBuffer::LittleEndianInt(int theValue)
 // Return a little endian unsigned short buffer
 // ----------------------------------------------------------------------
 
-const string NFmiEsriBuffer::LittleEndianShort(int theValue)
+string NFmiEsriBuffer::LittleEndianShort(int theValue)
 {
   try
   {
@@ -255,7 +255,7 @@ const string NFmiEsriBuffer::LittleEndianShort(int theValue)
 // Return a little endian double buffer
 // ----------------------------------------------------------------------
 
-const string NFmiEsriBuffer::LittleEndianDouble(double theValue)
+string NFmiEsriBuffer::LittleEndianDouble(double theValue)
 {
   try
   {

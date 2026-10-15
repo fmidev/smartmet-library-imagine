@@ -228,11 +228,11 @@ class NFmiPath
   void Align(NFmiAlignment theAlignment, double theX = 0.0, double theY = 0.0);
 
   // Project
-  void Project(const NFmiArea *const theArea);
+  void Project(const NFmiArea* theArea);
 
-  void InvProject(const NFmiArea *const theArea);
+  void InvProject(const NFmiArea* theArea);
 
-  void InvGrid(const NFmiGrid *const theGrid);
+  void InvGrid(const NFmiGrid* theGrid);
 
   // Stroke onto given image using various Porter-Duff rules
 
@@ -250,7 +250,7 @@ class NFmiPath
 
   NFmiPath Clip(double theX1, double theY1, double theX2, double theY2, double theMargin = 0) const;
   NFmiPath Clip(
-      const NFmiArea *const theArea) const;  // HUOM! toimii vain rajaviivoille oikein, ei alueille
+      const NFmiArea* theArea) const;  // HUOM! toimii vain rajaviivoille oikein, ei alueille
 
   void InsideOut() { itsInsideOut = !itsInsideOut; }
   bool IsInsideOut() const { return itsInsideOut; }

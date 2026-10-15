@@ -184,7 +184,7 @@ Color ColorValue(const std::string &theName);
 
 //! Convert colour to colour name.
 
-const std::string ColorName(const Color &theColor);
+std::string ColorName(const Color& theColor);
 
 //! Initialize colour name table.
 
@@ -206,7 +206,7 @@ NFmiBlendRule BlendValue(const std::string &theName);
 
 //! Convert blending rule to string name.
 
-const std::string BlendName(const NFmiBlendRule &theRule);
+std::string BlendName(const NFmiBlendRule& theRule);
 
 //! Initialize blending rule name table .
 

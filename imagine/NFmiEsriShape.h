@@ -144,7 +144,7 @@ class NFmiEsriShape
 
  private:
   NFmiEsriShape(const NFmiEsriShape &theShape);
-  NFmiEsriShape &operator=(const NFmiEsriShape);
+  NFmiEsriShape& operator=(NFmiEsriShape);
 
   // This one initializes by destroying possible old contents
 

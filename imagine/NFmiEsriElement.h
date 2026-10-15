@@ -55,7 +55,7 @@ class NFmiEsriElement
   void Add(const NFmiEsriAttribute& theAttribute) { itsAttributes.push_back(theAttribute); }
   // Returning an attribute value
 
-  const std::string GetString(const std::string& theName) const;
+  std::string GetString(const std::string& theName) const;
   int GetInteger(const std::string& theName) const;
   double GetDouble(const std::string& theName) const;
   const NFmiMetTime& GetDate(const std::string& theName) const;

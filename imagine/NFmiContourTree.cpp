@@ -1727,7 +1727,7 @@ NFmiContourTree::NFmiContourInterpolation NFmiContourTree::ContourInterpolationV
  */
 // ----------------------------------------------------------------------
 
-const string NFmiContourTree::ContourInterpolationName(
+string NFmiContourTree::ContourInterpolationName(
     NFmiContourTree::NFmiContourInterpolation theInterpolation)
 {
   try

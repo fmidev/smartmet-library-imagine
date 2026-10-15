@@ -75,9 +75,9 @@ class NFmiGeoShape
 
   // Create a path from the map data
 
-  const NFmiPath Path() const;
+  NFmiPath Path() const;
 
-// Add the data to a fill map
+  // Add the data to a fill map
   void Add(NFmiFillMap& theMap) const override;
 
   // Stroke onto given image using various Porter-Duff rules
@@ -136,7 +136,7 @@ class NFmiGeoShape
  private:
   // Path creation
 
-  const NFmiPath PathEsri() const;
+  NFmiPath PathEsri() const;
 
   // Stroking
 

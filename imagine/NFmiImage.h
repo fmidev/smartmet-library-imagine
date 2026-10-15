@@ -155,7 +155,7 @@ class NFmiImage
   bool WantPalette() const { return itsWantPaletteFlag; }
   bool ForcePalette() const { return itsForcePaletteFlag; }
   float Gamma() const { return itsGamma; }
-  const std::string Intent() const { return itsIntent; }
+  std::string Intent() const { return itsIntent; }
   void AlphaLimit(int limit) { itsAlphaLimit = limit; }
   void SaveAlpha(bool flag) { itsSaveAlphaFlag = flag; }
   void WantPalette(bool flag) { itsWantPaletteFlag = flag; }
@@ -171,10 +171,10 @@ class NFmiImage
   // Assignment operator
 
   NFmiImage &operator=(const NFmiImage &theImage);
-  NFmiImage &operator=(const NFmiColorTools::Color theColor);
+  NFmiImage& operator=(NFmiColorTools::Color theColor);
 
-// Reading an image
-//
+  // Reading an image
+  //
   void Read(const std::string &fn);
 
   // Writing the image

@@ -15,10 +15,10 @@ class NFmiPath;
 
 namespace NFmiApproximateBezierFit
 {
-const NFmiPath Fit(const NFmiPath& thePath, double theMaxError);
+NFmiPath Fit(const NFmiPath& thePath, double theMaxError);
 
 using NFmiPaths = NFmiBezierTools::NFmiPaths;
-const NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError);
+NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError);
 
 }  // namespace NFmiApproximateBezierFit
 }  // namespace Imagine

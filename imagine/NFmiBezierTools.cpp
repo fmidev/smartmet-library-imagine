@@ -252,7 +252,7 @@ bool IsClosed(const NFmiPath& thePath)
  */
 // ----------------------------------------------------------------------
 
-const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths& thePaths)
+NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths& thePaths)
 {
   try
   {
@@ -311,7 +311,7 @@ const NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths& thePaths)
  */
 // ----------------------------------------------------------------------
 
-const Segments SplitSegments(const NFmiPath& thePath)
+Segments SplitSegments(const NFmiPath& thePath)
 {
   try
   {
@@ -385,7 +385,7 @@ const Segments SplitSegments(const NFmiPath& thePath)
  */
 // ----------------------------------------------------------------------
 
-const PathList SplitPath(const NFmiPath& thePath)
+PathList SplitPath(const NFmiPath& thePath)
 {
   try
   {
@@ -433,7 +433,7 @@ const PathList SplitPath(const NFmiPath& thePath)
  */
 // ----------------------------------------------------------------------
 
-const PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& theCounts)
+PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& theCounts)
 {
   try
   {

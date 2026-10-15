@@ -143,7 +143,7 @@ namespace NFmiTightBezierFit
  */
 // ----------------------------------------------------------------------
 
-const NFmiPath Fit(const NFmiPath& thePath, double theMaxError)
+NFmiPath Fit(const NFmiPath& thePath, double theMaxError)
 {
   try
   {
@@ -185,7 +185,7 @@ const NFmiPath Fit(const NFmiPath& thePath, double theMaxError)
  */
 // ----------------------------------------------------------------------
 
-const NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError)
+NFmiPaths Fit(const NFmiPaths& thePaths, double theMaxError)
 {
   try
   {

@@ -123,7 +123,7 @@ namespace NFmiGshhsTools
  */
 // ----------------------------------------------------------------------
 
-const NFmiPath ReadPath(const std::string &theFilename,
+NFmiPath ReadPath(const std::string &theFilename,
                         double theMinLongitude,
                         double theMinLatitude,
                         double theMaxLongitude,

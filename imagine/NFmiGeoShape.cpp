@@ -124,7 +124,7 @@ void NFmiGeoShape::ProjectXY(NFmiArea &theArea)
 // an empty path is returned.
 // ----------------------------------------------------------------------
 
-const NFmiPath NFmiGeoShape::Path() const
+NFmiPath NFmiGeoShape::Path() const
 {
   try
   {
@@ -274,7 +274,7 @@ void NFmiGeoShape::WriteImageMap(std::ostream &os, const string &theFieldName) c
 //
 // ----------------------------------------------------------------------
 
-const NFmiPath NFmiGeoShape::PathEsri() const
+NFmiPath NFmiGeoShape::PathEsri() const
 {
   try
   {

@@ -51,7 +51,7 @@ class NFmiEsriNull : public NFmiEsriElement
 
   // Conversion to string buffer
 
-  const std::string ToString() const { return LittleEndianInt(kFmiEsriNull); }
+  std::string ToString() const { return LittleEndianInt(kFmiEsriNull); }
   // Calculating string buffer size
 
   int StringSize() const override { return 4; }  // the type takes 4

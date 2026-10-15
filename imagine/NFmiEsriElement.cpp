@@ -66,7 +66,7 @@ NFmiEsriAttributeType NFmiEsriElement::GetType(const string& theName) const
 // Return string value of attribute
 // ----------------------------------------------------------------------
 
-const std::string NFmiEsriElement::GetString(const string& theName) const
+std::string NFmiEsriElement::GetString(const string& theName) const
 {
   try
   {

@@ -56,7 +56,7 @@ NFmiAlignment AlignmentValue(const string& theName)
  * Returns a "Unknown" if the name is unknown.
  */
 
-const string AlignmentName(const NFmiAlignment theAlignment)
+string AlignmentName(const NFmiAlignment theAlignment)
 {
   try
   {

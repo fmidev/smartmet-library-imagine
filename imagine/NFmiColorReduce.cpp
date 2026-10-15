@@ -268,7 +268,7 @@ bool ColorTree::empty() const
 {
   try
   {
-    return (itsLeftObject.get() == nullptr);
+    return (itsLeftObject == nullptr);
   }
   catch (...)
   {
@@ -316,10 +316,10 @@ void ColorTree::insert(ColorTree::value_type theColor)
 {
   try
   {
-    if (itsLeftObject.get() == nullptr)
+    if (itsLeftObject == nullptr)
       itsLeftObject = std::make_shared<value_type>(theColor);
 
-    else if (itsRightObject.get() == nullptr)
+    else if (itsRightObject == nullptr)
       itsRightObject = std::make_shared<value_type>(theColor);
 
     else
@@ -329,7 +329,7 @@ void ColorTree::insert(ColorTree::value_type theColor)
 
       if (dist_left > dist_right)
       {
-        if (itsRightBranch.get() == nullptr)
+        if (itsRightBranch == nullptr)
           itsRightBranch = std::make_shared<ColorTree>();
 
         // note that constructor sets itsMaxRight to be negative
@@ -341,7 +341,7 @@ void ColorTree::insert(ColorTree::value_type theColor)
       }
       else
       {
-        if (itsLeftBranch.get() == nullptr)
+        if (itsLeftBranch == nullptr)
           itsLeftBranch = std::make_shared<ColorTree>();
 
         // note that constructor sets itsMaxLeft to be negative
@@ -406,7 +406,7 @@ bool ColorTree::nearest(ColorTree::value_type theColor,
     // first test each of the left and right positions to see if
     // one holds a color nearer than the nearest so far discovered
 
-    if (itsLeftObject.get() != nullptr)
+    if (itsLeftObject != nullptr)
     {
       left_dist = distance(theColor, *itsLeftObject);
       if (theRadius < 0 || left_dist <= theRadius)
@@ -417,7 +417,7 @@ bool ColorTree::nearest(ColorTree::value_type theColor,
       }
     }
 
-    if (itsRightObject.get() != nullptr)
+    if (itsRightObject != nullptr)
     {
       right_dist = distance(theColor, *itsRightObject);
       if (theRadius < 0 || right_dist <= theRadius)
@@ -445,15 +445,13 @@ bool ColorTree::nearest(ColorTree::value_type theColor,
 
     const bool left_closer = (left_dist < right_dist);
 
-    if (!left_closer && (itsRightBranch.get() != nullptr) &&
-        ((theRadius + itsMaxRight) >= right_dist))
+    if (!left_closer && (itsRightBranch != nullptr) && ((theRadius + itsMaxRight) >= right_dist))
       found |= itsRightBranch->nearest(theColor, theNearest, theRadius);
 
-    if ((itsLeftBranch.get() != nullptr) && ((theRadius + itsMaxLeft) >= left_dist))
+    if ((itsLeftBranch != nullptr) && ((theRadius + itsMaxLeft) >= left_dist))
       found |= itsLeftBranch->nearest(theColor, theNearest, theRadius);
 
-    if (left_closer && (itsRightBranch.get() != nullptr) &&
-        ((theRadius + itsMaxRight) >= right_dist))
+    if (left_closer && (itsRightBranch != nullptr) && ((theRadius + itsMaxRight) >= right_dist))
       found |= itsRightBranch->nearest(theColor, theNearest, theRadius);
 
     return found;
@@ -650,7 +648,7 @@ bool colorcmp(const ColorInfo& c1, const ColorInfo& c2)
  */
 // ----------------------------------------------------------------------
 
-const ColorHistogram CalcColorHistogram(const NFmiImage& theImage)
+ColorHistogram CalcColorHistogram(const NFmiImage& theImage)
 {
   try
   {
@@ -690,7 +688,7 @@ namespace NFmiColorReduce
  */
 // ----------------------------------------------------------------------
 
-const Histogram CalcHistogram(const NFmiImage& theImage)
+Histogram CalcHistogram(const NFmiImage& theImage)
 {
   try
   {

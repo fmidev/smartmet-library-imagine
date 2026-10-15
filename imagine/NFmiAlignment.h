@@ -44,7 +44,7 @@ enum NFmiAlignment
 NFmiAlignment AlignmentValue(const std::string& theName);
 
 //! Convert enumerated value to string
-const std::string AlignmentName(const NFmiAlignment theAlignment);
+std::string AlignmentName(NFmiAlignment theAlignment);
 
 //! The linear interpolation coefficient for X-direction in range 0-1.
 double XAlignmentFactor(NFmiAlignment theAlignment);
