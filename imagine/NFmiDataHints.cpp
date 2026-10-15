@@ -58,9 +58,9 @@ class NFmiDataHints::Pimple
 
   node_type itsRoot;
 
-  Pimple();
-  Pimple(const Pimple& thePimple);
-  Pimple& operator=(const Pimple& thePimple);
+  Pimple() = delete;
+  Pimple(const Pimple& thePimple) = delete;
+  Pimple& operator=(const Pimple& thePimple) = delete;
 };
 
 // ----------------------------------------------------------------------

@@ -414,7 +414,7 @@ NFmiImage::NFmiImage(const NFmiImage &theImage)
 // ----------------------------------------------------------------------
 // Constructor based on filename. The file type is autodetected.
 // ----------------------------------------------------------------------
-NFmiImage::NFmiImage(const string &theFileName) : itsPixels(nullptr)
+NFmiImage::NFmiImage(const string &theFileName)  
 {
   try
   {

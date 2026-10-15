@@ -63,7 +63,7 @@ class NFmiEdgeTree
   // Access to edge-data for iterating through the data, not for
   // modifying it.
 
-  const EdgeTreeType& Edges() const { return itsEdges; };
+  const EdgeTreeType& Edges() const { return itsEdges; }
   bool itsLinesOnly = false;
   bool itsConvertGhostLines = false;
   EdgeTreeType itsEdges;

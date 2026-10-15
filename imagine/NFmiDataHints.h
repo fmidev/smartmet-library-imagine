@@ -46,9 +46,9 @@ class NFmiDataHints
   class Pimple;
   std::shared_ptr<Pimple> itsPimple;
 
-  NFmiDataHints();
-  NFmiDataHints& operator=(const NFmiDataHints& theMatrix);
-  NFmiDataHints(const NFmiDataHints& theMatrix);
+  NFmiDataHints() = delete;
+  NFmiDataHints& operator=(const NFmiDataHints& theMatrix) = delete;
+  NFmiDataHints(const NFmiDataHints& theMatrix) = delete;
 };
 
 }  // namespace Imagine

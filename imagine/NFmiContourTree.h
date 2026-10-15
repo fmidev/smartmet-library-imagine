@@ -342,7 +342,7 @@ class NFmiContourTree : public NFmiEdgeTree
       return kBelow;
     if (z > itsHiLimit && itsHiLimit != kFloatMissing)
       return kAbove;
-    else if (z == itsLoLimit && itsLoLimit != kFloatMissing)
+    if (z == itsLoLimit && itsLoLimit != kFloatMissing)
       return (itsLoLimitExact ? kInside : kBelow);
     else if (z == itsHiLimit && itsHiLimit != kFloatMissing)
       return (itsHiLimitExact ? kInside : kAbove);
@@ -364,8 +364,7 @@ class NFmiContourTree : public NFmiEdgeTree
       return kLoLimit;
     if (itsHiLimit != kFloatMissing && z == itsHiLimit && itsHiLimitExact)
       return kHiLimit;
-    else
-      return kNeither;
+    return kNeither;
   }
 
   //! Test whether we're contouring missing values

@@ -97,7 +97,7 @@ class NFmiEsriAttribute
  private:
   // Must not have a null-attribute - hide the constructor
 
-  NFmiEsriAttribute();
+  NFmiEsriAttribute() = delete;
 
   // The data elements: the one matching the attribute type is used
 

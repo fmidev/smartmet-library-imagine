@@ -143,8 +143,8 @@ class NFmiEsriShape
   const OGRSpatialReference *SpatialReference() const { return &itsSpatialReference; }
 
  private:
-  NFmiEsriShape(const NFmiEsriShape &theShape);
-  NFmiEsriShape& operator=(NFmiEsriShape);
+  NFmiEsriShape(const NFmiEsriShape& theShape) = delete;
+  NFmiEsriShape& operator=(NFmiEsriShape) = delete;
 
   // This one initializes by destroying possible old contents
 

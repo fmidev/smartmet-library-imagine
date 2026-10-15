@@ -59,7 +59,7 @@ class NFmiEsriPointZ : public NFmiEsriPointM
   std::ostream& Write(std::ostream& os) const override;
 
  private:
-  NFmiEsriPointZ();
+  NFmiEsriPointZ() = delete;
 
   double itsZ;  // Z-coordinate
 };

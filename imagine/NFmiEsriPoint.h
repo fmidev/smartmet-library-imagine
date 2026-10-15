@@ -61,7 +61,7 @@ class NFmiEsriPoint : public NFmiEsriElement
   void Project(const NFmiEsriProjector& theProjector) override;
 
  private:
-  NFmiEsriPoint();
+  NFmiEsriPoint() = delete;
 
   double itsX;  // X coordinate
   double itsY;  // Y coordinate

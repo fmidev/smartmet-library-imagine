@@ -201,8 +201,8 @@ class ColorTree
   static float distance(value_type theColor1, value_type theColor2);
 
  private:
-  ColorTree(const ColorTree& theTree);
-  ColorTree& operator=(const ColorTree& theTree);
+  ColorTree(const ColorTree& theTree) = delete;
+  ColorTree& operator=(const ColorTree& theTree) = delete;
 
   bool nearest(value_type theColor, value_type& theNearest, float& theRadius) const;
 

@@ -94,7 +94,7 @@ class NFmiEsriAttributeName
   short Length() const { return static_cast<short>(itsLength); }
 
  private:
-  NFmiEsriAttributeName();
+  NFmiEsriAttributeName() = delete;
 
   std::string itsName;
   NFmiEsriAttributeType itsType;

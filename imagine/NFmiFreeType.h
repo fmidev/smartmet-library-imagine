@@ -52,8 +52,8 @@ class NFmiFreeType
 
   // Disabled intentionally:
 
-  NFmiFreeType(const NFmiFreeType& theOb);
-  NFmiFreeType& operator=(const NFmiFreeType& theOb);
+  NFmiFreeType(const NFmiFreeType& theOb) = delete;
+  NFmiFreeType& operator=(const NFmiFreeType& theOb) = delete;
 
 };  // class NFmiFreeType
 }  // namespace Imagine
