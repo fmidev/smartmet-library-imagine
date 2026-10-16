@@ -30,6 +30,232 @@ bool overlaps(double min1, double max1, double min2, double max2)
 {
   return (max(min1, min2) < min(max1, max2));
 }
+
+// The first and last point indices of a part of an element
+template <typename T>
+void part_range(const T &elem, int part, int &i1, int &i2)
+{
+  i1 = elem.Parts()[part];  // start of part
+  if (part + 1 == elem.NumParts())
+    i2 = elem.NumPoints() - 1;  // end of part
+  else
+    i2 = elem.Parts()[part + 1] - 1;  // end of part
+}
+
+// Add the parts of a polyline or a polygon to the path
+template <typename T>
+void add_parts(NFmiPath &outpath, const T &elem)
+{
+  for (int part = 0; part < elem.NumParts(); part++)
+  {
+    int i1 = 0;
+    int i2 = 0;
+    part_range(elem, part, i1, i2);
+
+    if (i2 >= i1)
+    {
+      outpath.MoveTo(elem.Points()[i1].X(), elem.Points()[i1].Y());
+      for (int i = i1 + 1; i <= i2; i++)
+      {
+        outpath.LineTo(elem.Points()[i].X(), elem.Points()[i].Y());
+      }
+    }
+  }
+}
+
+// Add a part of a multipatch to the path
+void add_patch_part(NFmiPath &outpath, const NFmiEsriMultiPatch &elem, int part, int i1, int i2)
+{
+  switch (elem.PartTypes()[part])
+  {
+    case kFmiEsriTriangleStrip:
+    {
+      for (int i = i1 + 2; i <= i2; i += 3)
+      {
+        outpath.MoveTo(elem.Points()[i - 2].X(), elem.Points()[i - 2].Y());
+        outpath.LineTo(elem.Points()[i - 1].X(), elem.Points()[i - 1].Y());
+        outpath.LineTo(elem.Points()[i - 0].X(), elem.Points()[i - 0].Y());
+        outpath.LineTo(elem.Points()[i - 2].X(), elem.Points()[i - 2].Y());
+      }
+      break;
+    }
+    case kFmiEsriTriangleFan:
+    {
+      float x0 = elem.Points()[i1].X();
+      float y0 = elem.Points()[i1].Y();
+      for (int i = i1 + 2; i <= i2; i += 2)
+      {
+        outpath.MoveTo(x0, y0);
+        outpath.LineTo(elem.Points()[i - 1].X(), elem.Points()[i - 1].Y());
+        outpath.LineTo(elem.Points()[i - 0].X(), elem.Points()[i - 0].Y());
+        outpath.LineTo(x0, y0);
+      }
+      break;
+    }
+    case kFmiEsriOuterRing:
+    case kFmiEsriInnerRing:
+    case kFmiEsriFirstRing:
+    case kFmiEsriRing:
+    {
+      float x0 = elem.Points()[i1].X();
+      float y0 = elem.Points()[i1].Y();
+      outpath.MoveTo(x0, y0);
+      for (int i = i1 + 1; i <= i2; i++)
+        outpath.LineTo(elem.Points()[i].X(), elem.Points()[i].Y());
+      break;
+    }
+  }
+}
+
+// Add the parts of a multipatch to the path
+void add_multipatch(NFmiPath &outpath, const NFmiEsriMultiPatch &elem)
+{
+  for (int part = 0; part < elem.NumParts(); part++)
+  {
+    int i1 = 0;
+    int i2 = 0;
+    part_range(elem, part, i1, i2);
+
+    if (i2 >= i1)
+      add_patch_part(outpath, elem, part, i1, i2);
+  }
+}
+
+// Add the edges of the parts of a polygon to the fill map
+void add_fill_parts(NFmiFillMap &theMap, const NFmiEsriPolygon &elem)
+{
+  for (int part = 0; part < elem.NumParts(); part++)
+  {
+    int i1 = 0;
+    int i2 = 0;
+    part_range(elem, part, i1, i2);
+
+    for (int i = i1 + 1; i <= i2; i++)
+      theMap.Add(elem.Points()[i - 1].X(),
+                 elem.Points()[i - 1].Y(),
+                 elem.Points()[i].X(),
+                 elem.Points()[i].Y());
+  }
+}
+
+// Add the edges of a part of a multipatch to the fill map
+void add_fill_patch_part(
+    NFmiFillMap &theMap, const NFmiEsriMultiPatch &elem, int part, int i1, int i2)
+{
+  switch (elem.PartTypes()[part])
+  {
+    case kFmiEsriTriangleStrip:
+    {
+      for (int i = i1 + 2; i <= i2; i += 3)
+      {
+        theMap.Add(elem.Points()[i - 2].X(),
+                   elem.Points()[i - 2].Y(),
+                   elem.Points()[i - 1].X(),
+                   elem.Points()[i - 1].Y());
+        theMap.Add(elem.Points()[i - 1].X(),
+                   elem.Points()[i - 1].Y(),
+                   elem.Points()[i - 0].X(),
+                   elem.Points()[i - 0].Y());
+        theMap.Add(elem.Points()[i - 2].X(),
+                   elem.Points()[i - 2].Y(),
+                   elem.Points()[i - 0].X(),
+                   elem.Points()[i - 0].Y());
+      }
+      break;
+    }
+    case kFmiEsriTriangleFan:
+    {
+      float x0 = elem.Points()[i1].X();
+      float y0 = elem.Points()[i1].Y();
+      for (int i = i1 + 2; i <= i2; i += 2)
+      {
+        theMap.Add(x0, y0, elem.Points()[i - 1].X(), elem.Points()[i - 1].Y());
+        theMap.Add(x0, y0, elem.Points()[i].X(), elem.Points()[i].Y());
+        theMap.Add(elem.Points()[i - 1].X(),
+                   elem.Points()[i - 1].Y(),
+                   elem.Points()[i].X(),
+                   elem.Points()[i].Y());
+      }
+      break;
+    }
+    case kFmiEsriOuterRing:
+    case kFmiEsriInnerRing:
+    case kFmiEsriFirstRing:
+    case kFmiEsriRing:
+    {
+      for (int i = i1 + 1; i <= i2; i++)
+        theMap.Add(elem.Points()[i - 1].X(),
+                   elem.Points()[i - 1].Y(),
+                   elem.Points()[i].X(),
+                   elem.Points()[i].Y());
+      break;
+    }
+  }
+}
+
+// Add the edges of the parts of a multipatch to the fill map
+void add_fill_multipatch(NFmiFillMap &theMap, const NFmiEsriMultiPatch &elem)
+{
+  for (int part = 0; part < elem.NumParts(); part++)
+  {
+    int i1 = 0;
+    int i2 = 0;
+    part_range(elem, part, i1, i2);
+    add_fill_patch_part(theMap, elem, part, i1, i2);
+  }
+}
+
+// The distinct pixel coordinates of the points of a polygon part
+vector<pair<int, int> > pixel_points(const NFmiEsriPolygon &elem, int i1, int i2)
+{
+  vector<pair<int, int> > points;
+
+  if (i2 >= i1)
+  {
+    int lastx = 0;
+    int lasty = 0;
+
+    for (int i = i1; i <= i2; i++)
+    {
+      int x = static_cast<int>(elem.Points()[i].X());
+      int y = static_cast<int>(elem.Points()[i].Y());
+
+      // Do not output point if no move in pixel resolution
+
+      if (i != i1 && x == lastx && y == lasty)
+        continue;
+      lastx = x;
+      lasty = y;
+      points.emplace_back(x, y);
+    }
+  }
+  return points;
+}
+
+// Write the image map entries of the parts of a polygon
+void write_polygon_imagemap(std::ostream &os, const string &fieldvalue, const NFmiEsriPolygon &elem)
+{
+  for (int part = 0; part < elem.NumParts(); part++)
+  {
+    int i1 = 0;
+    int i2 = 0;
+    part_range(elem, part, i1, i2);
+
+    vector<pair<int, int> > points = pixel_points(elem, i1, i2);
+
+    if (points.size() > 3)
+    {
+      os << '"' << fieldvalue << '"' << " => " << '"';
+      for (auto it = points.begin(); it != points.end(); ++it)
+      {
+        if (it != points.begin())
+          os << ' ';
+        os << it->first << "," << it->second;
+      }
+      os << '"' << '\n';
+    }
+  }
+}
 }  // namespace
 
 // NFmiEsriPoint projector function object
@@ -325,110 +551,19 @@ NFmiPath NFmiGeoShape::PathEsri() const
         case kFmiEsriPolyLineM:
         case kFmiEsriPolyLineZ:
         {
-          const auto* elem = static_cast<const NFmiEsriPolyLine*>(*iter);
-          for (int part = 0; part < elem->NumParts(); part++)
-          {
-            int i1 = 0;
-            int i2 = 0;
-            i1 = elem->Parts()[part];  // start of part
-            if (part + 1 == elem->NumParts())
-              i2 = elem->NumPoints() - 1;  // end of part
-            else
-              i2 = elem->Parts()[part + 1] - 1;  // end of part
-
-            if (i2 >= i1)
-            {
-              outpath.MoveTo(elem->Points()[i1].X(), elem->Points()[i1].Y());
-              for (int i = i1 + 1; i <= i2; i++)
-              {
-                outpath.LineTo(elem->Points()[i].X(), elem->Points()[i].Y());
-              }
-            }
-          }
+          add_parts(outpath, *static_cast<const NFmiEsriPolyLine *>(*iter));
           break;
         }
         case kFmiEsriPolygon:
         case kFmiEsriPolygonM:
         case kFmiEsriPolygonZ:
         {
-          const auto* elem = static_cast<const NFmiEsriPolygon*>(*iter);
-          for (int part = 0; part < elem->NumParts(); part++)
-          {
-            int i1 = 0;
-            int i2 = 0;
-            i1 = elem->Parts()[part];  // start of part
-            if (part + 1 == elem->NumParts())
-              i2 = elem->NumPoints() - 1;  // end of part
-            else
-              i2 = elem->Parts()[part + 1] - 1;  // end of part
-
-            if (i2 >= i1)
-            {
-              outpath.MoveTo(elem->Points()[i1].X(), elem->Points()[i1].Y());
-              for (int i = i1 + 1; i <= i2; i++)
-              {
-                outpath.LineTo(elem->Points()[i].X(), elem->Points()[i].Y());
-              }
-            }
-          }
+          add_parts(outpath, *static_cast<const NFmiEsriPolygon *>(*iter));
           break;
         }
         case kFmiEsriMultiPatch:
         {
-          const auto* elem = static_cast<const NFmiEsriMultiPatch*>(*iter);
-          for (int part = 0; part < elem->NumParts(); part++)
-          {
-            int i1 = 0;
-            int i2 = 0;
-            i1 = elem->Parts()[part];  // start of part
-            if (part + 1 == elem->NumParts())
-              i2 = elem->NumPoints() - 1;  // end of part
-            else
-              i2 = elem->Parts()[part + 1] - 1;  // end of part
-
-            if (i2 >= i1)
-            {
-              switch (elem->PartTypes()[part])
-              {
-                case kFmiEsriTriangleStrip:
-                {
-                  for (int i = i1 + 2; i <= i2; i += 3)
-                  {
-                    outpath.MoveTo(elem->Points()[i - 2].X(), elem->Points()[i - 2].Y());
-                    outpath.LineTo(elem->Points()[i - 1].X(), elem->Points()[i - 1].Y());
-                    outpath.LineTo(elem->Points()[i - 0].X(), elem->Points()[i - 0].Y());
-                    outpath.LineTo(elem->Points()[i - 2].X(), elem->Points()[i - 2].Y());
-                  }
-                  break;
-                }
-                case kFmiEsriTriangleFan:
-                {
-                  float x0 = elem->Points()[i1].X();
-                  float y0 = elem->Points()[i1].Y();
-                  for (int i = i1 + 2; i <= i2; i += 2)
-                  {
-                    outpath.MoveTo(x0, y0);
-                    outpath.LineTo(elem->Points()[i - 1].X(), elem->Points()[i - 1].Y());
-                    outpath.LineTo(elem->Points()[i - 0].X(), elem->Points()[i - 0].Y());
-                    outpath.LineTo(x0, y0);
-                  }
-                  break;
-                }
-                case kFmiEsriOuterRing:
-                case kFmiEsriInnerRing:
-                case kFmiEsriFirstRing:
-                case kFmiEsriRing:
-                {
-                  float x0 = elem->Points()[i1].X();
-                  float y0 = elem->Points()[i1].Y();
-                  outpath.MoveTo(x0, y0);
-                  for (int i = i1 + 1; i <= i2; i++)
-                    outpath.LineTo(elem->Points()[i].X(), elem->Points()[i].Y());
-                  break;
-                }
-              }
-            }
-          }
+          add_multipatch(outpath, *static_cast<const NFmiEsriMultiPatch *>(*iter));
           break;
         }
       }
@@ -494,88 +629,12 @@ void NFmiGeoShape::AddEsri(NFmiFillMap &theMap) const
         case kFmiEsriPolygonM:
         case kFmiEsriPolygonZ:
         {
-          const auto* elem = static_cast<const NFmiEsriPolygon*>(*iter);
-          for (int part = 0; part < elem->NumParts(); part++)
-          {
-            int i1 = 0;
-            int i2 = 0;
-            i1 = elem->Parts()[part];  // start of part
-            if (part + 1 == elem->NumParts())
-              i2 = elem->NumPoints() - 1;  // end of part
-            else
-              i2 = elem->Parts()[part + 1] - 1;  // end of part
-
-            for (int i = i1 + 1; i <= i2; i++)
-              theMap.Add(elem->Points()[i - 1].X(),
-                         elem->Points()[i - 1].Y(),
-                         elem->Points()[i].X(),
-                         elem->Points()[i].Y());
-          }
+          add_fill_parts(theMap, *static_cast<const NFmiEsriPolygon *>(*iter));
           break;
         }
         case kFmiEsriMultiPatch:
         {
-          const auto* elem = static_cast<const NFmiEsriMultiPatch*>(*iter);
-          for (int part = 0; part < elem->NumParts(); part++)
-          {
-            int i1 = 0;
-            int i2 = 0;
-            i1 = elem->Parts()[part];  // start of part
-            if (part + 1 == elem->NumParts())
-              i2 = elem->NumPoints() - 1;  // end of part
-            else
-              i2 = elem->Parts()[part + 1] - 1;  // end of part
-
-            switch (elem->PartTypes()[part])
-            {
-              case kFmiEsriTriangleStrip:
-              {
-                for (int i = i1 + 2; i <= i2; i += 3)
-                {
-                  theMap.Add(elem->Points()[i - 2].X(),
-                             elem->Points()[i - 2].Y(),
-                             elem->Points()[i - 1].X(),
-                             elem->Points()[i - 1].Y());
-                  theMap.Add(elem->Points()[i - 1].X(),
-                             elem->Points()[i - 1].Y(),
-                             elem->Points()[i - 0].X(),
-                             elem->Points()[i - 0].Y());
-                  theMap.Add(elem->Points()[i - 2].X(),
-                             elem->Points()[i - 2].Y(),
-                             elem->Points()[i - 0].X(),
-                             elem->Points()[i - 0].Y());
-                }
-                break;
-              }
-              case kFmiEsriTriangleFan:
-              {
-                float x0 = elem->Points()[i1].X();
-                float y0 = elem->Points()[i1].Y();
-                for (int i = i1 + 2; i <= i2; i += 2)
-                {
-                  theMap.Add(x0, y0, elem->Points()[i - 1].X(), elem->Points()[i - 1].Y());
-                  theMap.Add(x0, y0, elem->Points()[i].X(), elem->Points()[i].Y());
-                  theMap.Add(elem->Points()[i - 1].X(),
-                             elem->Points()[i - 1].Y(),
-                             elem->Points()[i].X(),
-                             elem->Points()[i].Y());
-                }
-                break;
-              }
-              case kFmiEsriOuterRing:
-              case kFmiEsriInnerRing:
-              case kFmiEsriFirstRing:
-              case kFmiEsriRing:
-              {
-                for (int i = i1 + 1; i <= i2; i++)
-                  theMap.Add(elem->Points()[i - 1].X(),
-                             elem->Points()[i - 1].Y(),
-                             elem->Points()[i].X(),
-                             elem->Points()[i].Y());
-                break;
-              }
-            }
-          }
+          add_fill_multipatch(theMap, *static_cast<const NFmiEsriMultiPatch *>(*iter));
           break;
         }
       }
@@ -797,51 +856,7 @@ void NFmiGeoShape::WriteImageMapEsri(std::ostream &os, const string &theFieldNam
         case kFmiEsriPolygonM:
         case kFmiEsriPolygonZ:
         {
-          const auto* elem = static_cast<const NFmiEsriPolygon*>(*iter);
-          for (int part = 0; part < elem->NumParts(); part++)
-          {
-            vector<pair<int, int> > points;
-
-            int i1 = 0;
-            int i2 = 0;
-            i1 = elem->Parts()[part];  // start of part
-            if (part + 1 == elem->NumParts())
-              i2 = elem->NumPoints() - 1;  // end of part
-            else
-              i2 = elem->Parts()[part + 1] - 1;  // end of part
-
-            if (i2 >= i1)
-            {
-              int lastx = 0;
-              int lasty = 0;
-
-              for (int i = i1; i <= i2; i++)
-              {
-                int x = static_cast<int>(elem->Points()[i].X());
-                int y = static_cast<int>(elem->Points()[i].Y());
-
-                // Do not output point if no move in pixel resolution
-
-                if (i != i1 && x == lastx && y == lasty)
-                  continue;
-                lastx = x;
-                lasty = y;
-                points.emplace_back(x, y);
-              }
-            }
-
-            if (points.size() > 3)
-            {
-              os << '"' << fieldvalue << '"' << " => " << '"';
-              for (auto it = points.begin(); it != points.end(); ++it)
-              {
-                if (it != points.begin())
-                  os << ' ';
-                os << it->first << "," << it->second;
-              }
-              os << '"' << '\n';
-            }
-          }
+          write_polygon_imagemap(os, fieldvalue, *static_cast<const NFmiEsriPolygon *>(*iter));
           break;
         }
       }
