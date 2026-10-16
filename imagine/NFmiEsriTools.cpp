@@ -11,6 +11,44 @@ namespace Imagine
 {
 namespace NFmiEsriTools
 {
+namespace
+{
+// Compare two values with the given comparison operator
+template <typename T>
+bool compare_values(const T& value, const string& comparison, const T& limit)
+{
+  if (comparison == "==" || comparison == "=")
+    return value == limit;
+  if (comparison == "<>")
+    return value != limit;
+  if (comparison == "<")
+    return value < limit;
+  if (comparison == ">")
+    return value > limit;
+  if (comparison == "<=")
+    return value <= limit;
+  if (comparison == ">=")
+    return value >= limit;
+  return false;
+}
+
+// Test whether the field value of the element satisfies the condition
+bool element_matches(const NFmiEsriElement& element,
+                     const string& fieldname,
+                     NFmiEsriAttributeType atype,
+                     const string& fieldcomparison,
+                     const string& svalue,
+                     int ivalue,
+                     double dvalue)
+{
+  if (atype == kFmiEsriString)
+    return compare_values(element.GetString(fieldname), fieldcomparison, svalue);
+  if (atype == kFmiEsriInteger)
+    return compare_values(element.GetInteger(fieldname), fieldcomparison, ivalue);
+  return compare_values(element.GetDouble(fieldname), fieldcomparison, dvalue);
+}
+}  // namespace
+
 // ----------------------------------------------------------------------
 /*!
  * \brief Filter a shape based on a condition of form NAME<op>VALUE
@@ -96,61 +134,7 @@ NFmiEsriShape* filter(const NFmiEsriShape& theShape, const std::string& theCondi
 
       // Check if the value is correct
 
-      bool ok = false;
-      if (fieldcomparison == "==" || fieldcomparison == "=")
-      {
-        if (atype == kFmiEsriString)
-          ok = (it->GetString(fieldname) == svalue);
-        else if (atype == kFmiEsriInteger)
-          ok = (it->GetInteger(fieldname) == ivalue);
-        else
-          ok = (it->GetDouble(fieldname) == dvalue);
-      }
-      else if (fieldcomparison == "<>")
-      {
-        if (atype == kFmiEsriString)
-          ok = (it->GetString(fieldname) != svalue);
-        else if (atype == kFmiEsriInteger)
-          ok = (it->GetInteger(fieldname) != ivalue);
-        else
-          ok = (it->GetDouble(fieldname) != dvalue);
-      }
-      else if (fieldcomparison == "<")
-      {
-        if (atype == kFmiEsriString)
-          ok = (it->GetString(fieldname) < svalue);
-        else if (atype == kFmiEsriInteger)
-          ok = (it->GetInteger(fieldname) < ivalue);
-        else
-          ok = (it->GetDouble(fieldname) < dvalue);
-      }
-      else if (fieldcomparison == ">")
-      {
-        if (atype == kFmiEsriString)
-          ok = (it->GetString(fieldname) > svalue);
-        else if (atype == kFmiEsriInteger)
-          ok = (it->GetInteger(fieldname) > ivalue);
-        else
-          ok = (it->GetDouble(fieldname) > dvalue);
-      }
-      else if (fieldcomparison == "<=")
-      {
-        if (atype == kFmiEsriString)
-          ok = (it->GetString(fieldname) <= svalue);
-        else if (atype == kFmiEsriInteger)
-          ok = (it->GetInteger(fieldname) <= ivalue);
-        else
-          ok = (it->GetDouble(fieldname) <= dvalue);
-      }
-      else if (fieldcomparison == ">=")
-      {
-        if (atype == kFmiEsriString)
-          ok = (it->GetString(fieldname) >= svalue);
-        else if (atype == kFmiEsriInteger)
-          ok = (it->GetInteger(fieldname) >= ivalue);
-        else
-          ok = (it->GetDouble(fieldname) >= dvalue);
-      }
+      bool ok = element_matches(*it, fieldname, atype, fieldcomparison, svalue, ivalue, dvalue);
 
       if (!ok)
         continue;
