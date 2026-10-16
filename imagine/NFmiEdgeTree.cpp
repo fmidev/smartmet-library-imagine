@@ -101,6 +101,198 @@ NFmiPath NFmiEdgeTree::Path() const
   }
 }
 
+namespace
+{
+// The open paths matching the end points of an edge
+struct PathMatch
+{
+  bool fMatchedFirst = false;  // No matches for either endpoint yet
+  bool fMatchedLast = false;
+
+  bool fMatchedFirstToFirst = false;  // Matched beginning or end?
+  bool fMatchedLastToFirst = false;
+
+  list<NFmiPath>::iterator bestFirstIter;  // Best matching iterators
+  list<NFmiPath>::iterator bestLastIter;
+};
+
+// Search the open path endpoints matching exactly either end point
+// of the edge being added. We must match both end point to
+// both end points of all open paths, that is N*4 cases
+// where N is the (smallish) number of open paths.
+PathMatch match_edge(list<NFmiPath>& paths, const NFmiEdge& edge)
+{
+  PathMatch m;
+  for (auto pathiter = paths.begin(); pathiter != paths.end(); ++pathiter)
+  {
+    float firstx = pathiter->Elements().front().x;
+    float firsty = pathiter->Elements().front().y;
+    float lastx = pathiter->Elements().back().x;
+    float lasty = pathiter->Elements().back().y;
+
+    if (firstx == edge.GetX1() && firsty == edge.GetY1())
+    {
+      m.fMatchedFirst = true;
+      m.fMatchedFirstToFirst = true;
+      m.bestFirstIter = pathiter;
+    }
+    if (lastx == edge.GetX1() && lasty == edge.GetY1())
+    {
+      m.fMatchedFirst = true;
+      m.fMatchedFirstToFirst = false;
+      m.bestFirstIter = pathiter;
+    }
+    if (firstx == edge.GetX2() && firsty == edge.GetY2())
+    {
+      m.fMatchedLast = true;
+      m.fMatchedLastToFirst = true;
+      m.bestLastIter = pathiter;
+    }
+    if (lastx == edge.GetX2() && lasty == edge.GetY2())
+    {
+      m.fMatchedLast = true;
+      m.fMatchedLastToFirst = false;
+      m.bestLastIter = pathiter;
+    }
+  }
+  return m;
+}
+
+// Append a line or a ghostline to the end of a path
+void append_line(NFmiPath& path, float x, float y, bool exact)
+{
+  if (exact)
+    path.LineTo(x, y);
+  else
+    path.GhostLineTo(x, y);
+}
+
+// Insert a line or a ghostline to the beginning of a path
+void insert_line(NFmiPath& path, float x, float y, bool exact)
+{
+  if (exact)
+    path.InsertLineTo(x, y);
+  else
+    path.InsertGhostLineTo(x, y);
+}
+
+// Connect an edge matching an open path at both ends
+void connect_edge(list<NFmiPath>& paths, NFmiPath& outpath, const PathMatch& m, bool exact)
+{
+  // Close a path with the edge, add it to the final output path
+
+  if (m.bestFirstIter == m.bestLastIter)
+  {
+    if (exact)
+      m.bestFirstIter->CloseLineTo();
+    else
+      m.bestFirstIter->CloseGhostLineTo();
+    outpath.Add(*m.bestFirstIter);
+    paths.erase(m.bestFirstIter);
+  }
+
+  // Combine into one by appending firstpoint match
+  // to lastpoint match
+
+  else if (m.fMatchedFirstToFirst)
+  {
+    m.bestLastIter->Add(*m.bestFirstIter, exact);
+    paths.erase(m.bestFirstIter);
+  }
+  else
+  {
+    m.bestFirstIter->Add(*m.bestLastIter, exact);
+    paths.erase(m.bestLastIter);
+  }
+}
+
+// Add an edge to the open paths, moving closed paths to the output path
+void add_edge(
+    list<NFmiPath>& paths, NFmiPath& outpath, const NFmiEdge& edge, const PathMatch& m, bool exact)
+{
+  // We handle the cases separately:
+  //
+  // 1. Only first point matches
+  // 2. Only second point matches
+  // 3. Both points match
+  // 4. No points match
+  //
+  // A help macro to handle the possible cases.
+  // Note that the default values of the last two
+  // variables is false, and cannot be anything but
+  // false unless the respective variables a,b are true.
+
+#define PathCase(a, b, c, d) ((((a) * 2 + (b)) * 2 + (c)) * 2 + (d))
+
+  switch (PathCase(m.fMatchedFirst, m.fMatchedLast, m.fMatchedFirstToFirst, m.fMatchedLastToFirst))
+  {
+      // No match - we begin a new path
+
+    case (PathCase(false, false, false, false)):
+    {
+      // Block required for tmp cleanup!
+      NFmiPath tmp;
+      paths.push_back(tmp);
+      paths.back().MoveTo(edge.GetX1(), edge.GetY1());
+      append_line(paths.back(), edge.GetX2(), edge.GetY2(), exact);
+      break;
+    }
+
+      // Only first point matches, and it matches last point of path
+
+    case (PathCase(true, false, false, false)):
+      append_line(*m.bestFirstIter, edge.GetX2(), edge.GetY2(), exact);
+      break;
+
+      // Only first point matches, and it matches first point of path
+
+    case (PathCase(true, false, true, false)):
+      insert_line(*m.bestFirstIter, edge.GetX2(), edge.GetY2(), exact);
+      break;
+
+      // Only second point matches, and it matches last point of path
+
+    case (PathCase(false, true, false, false)):
+      append_line(*m.bestLastIter, edge.GetX1(), edge.GetY1(), exact);
+      break;
+
+      // Only second point matches, and it matches first point of path
+
+    case (PathCase(false, true, false, true)):
+      insert_line(*m.bestLastIter, edge.GetX1(), edge.GetY1(), exact);
+      break;
+
+      // Both points match, both match the endpoints or startpoints
+
+    case (PathCase(true, true, false, false)):
+
+      m.bestFirstIter->AddReverse(*m.bestLastIter, exact);
+      paths.erase(m.bestLastIter);
+      break;
+
+    case (PathCase(true, true, true, true)):
+
+      m.bestFirstIter->Insert(*m.bestLastIter, exact);
+      paths.erase(m.bestLastIter);
+      break;
+
+      // Both points match, first endpoint, last firstpoint
+      // In this case it is possible that the edge connects
+      // the endpoints of some path. It is not possible
+      // in the above cases, since in them the edge matches
+      // either first points or last points.
+
+    case (PathCase(true, true, false, true)):
+    case (PathCase(true, true, true, false)):
+      connect_edge(paths, outpath, m, exact);
+      break;
+
+    default:
+      throw Fmi::Exception(BCP, "Internal error in NFmiContourTree::Path()");
+  }
+}
+}  // namespace
+
 NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
 {
   try
@@ -129,9 +321,6 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
 
     list<NFmiPath>::iterator pathiter;
 
-    list<NFmiPath>::iterator bestFirstIter;  // Best matching iterators
-    list<NFmiPath>::iterator bestLastIter;
-
     // Iterate through the edges in the tree
 
     EdgeTreeType::const_iterator iter;
@@ -146,170 +335,9 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
       // Find out which still open paths have points closests
       // to either one of the end points of the edge.
 
-      bool fMatchedFirst = false;  // No matches for either endpoint yet
-      bool fMatchedLast = false;
+      PathMatch match = match_edge(paths, edge);
 
-      bool fMatchedFirstToFirst = false;  // Matched beginning or end?
-      bool fMatchedLastToFirst = false;
-
-      // Search the open path endpoints matching exactly either end point
-      // of the edge being added. We must match both end point to
-      // both end points of all open paths, that is N*4 cases
-      // where N is the (smallish) number of open paths.
-
-      for (pathiter = paths.begin(); pathiter != paths.end(); ++pathiter)
-      {
-        float firstx = pathiter->Elements().front().x;
-        float firsty = pathiter->Elements().front().y;
-        float lastx = pathiter->Elements().back().x;
-        float lasty = pathiter->Elements().back().y;
-
-        if (firstx == edge.GetX1() && firsty == edge.GetY1())
-        {
-          fMatchedFirst = true;
-          fMatchedFirstToFirst = true;
-          bestFirstIter = pathiter;
-        }
-        if (lastx == edge.GetX1() && lasty == edge.GetY1())
-        {
-          fMatchedFirst = true;
-          fMatchedFirstToFirst = false;
-          bestFirstIter = pathiter;
-        }
-        if (firstx == edge.GetX2() && firsty == edge.GetY2())
-        {
-          fMatchedLast = true;
-          fMatchedLastToFirst = true;
-          bestLastIter = pathiter;
-        }
-        if (lastx == edge.GetX2() && lasty == edge.GetY2())
-        {
-          fMatchedLast = true;
-          fMatchedLastToFirst = false;
-          bestLastIter = pathiter;
-        }
-      }
-
-      // We handle the cases separately:
-      //
-      // 1. Only first point matches
-      // 2. Only second point matches
-      // 3. Both points match
-      // 4. No points match
-      //
-      // A help macro to handle the possible cases.
-      // Note that the default values of the last two
-      // variables is false, and cannot be anything but
-      // false unless the respective variables a,b are true.
-
-#define PathCase(a, b, c, d) ((((a) * 2 + (b)) * 2 + (c)) * 2 + (d))
-
-      switch (PathCase(fMatchedFirst, fMatchedLast, fMatchedFirstToFirst, fMatchedLastToFirst))
-      {
-          // No match - we begin a new path
-
-        case (PathCase(false, false, false, false)):
-        {
-          // Block required for tmp cleanup!
-          NFmiPath tmp;
-          paths.push_back(tmp);
-          paths.back().MoveTo(edge.GetX1(), edge.GetY1());
-          if (edge.Exact() || itsConvertGhostLines)
-            paths.back().LineTo(edge.GetX2(), edge.GetY2());
-          else
-            paths.back().GhostLineTo(edge.GetX2(), edge.GetY2());
-          break;
-        }
-
-          // Only first point matches, and it matches last point of path
-
-        case (PathCase(true, false, false, false)):
-          if (edge.Exact() || itsConvertGhostLines)
-            bestFirstIter->LineTo(edge.GetX2(), edge.GetY2());
-          else
-            bestFirstIter->GhostLineTo(edge.GetX2(), edge.GetY2());
-          break;
-
-          // Only first point matches, and it matches first point of path
-
-        case (PathCase(true, false, true, false)):
-          if (edge.Exact() || itsConvertGhostLines)
-            bestFirstIter->InsertLineTo(edge.GetX2(), edge.GetY2());
-          else
-            bestFirstIter->InsertGhostLineTo(edge.GetX2(), edge.GetY2());
-          break;
-
-          // Only second point matches, and it matches last point of path
-
-        case (PathCase(false, true, false, false)):
-          if (edge.Exact() || itsConvertGhostLines)
-            bestLastIter->LineTo(edge.GetX1(), edge.GetY1());
-          else
-            bestLastIter->GhostLineTo(edge.GetX1(), edge.GetY1());
-          break;
-
-          // Only second point matches, and it matches first point of path
-
-        case (PathCase(false, true, false, true)):
-          if (edge.Exact() || itsConvertGhostLines)
-            bestLastIter->InsertLineTo(edge.GetX1(), edge.GetY1());
-          else
-            bestLastIter->InsertGhostLineTo(edge.GetX1(), edge.GetY1());
-          break;
-
-          // Both points match, both match the endpoints or startpoints
-
-        case (PathCase(true, true, false, false)):
-
-          bestFirstIter->AddReverse(*bestLastIter, edge.Exact() || itsConvertGhostLines);
-          paths.erase(bestLastIter);
-          break;
-
-        case (PathCase(true, true, true, true)):
-
-          bestFirstIter->Insert(*bestLastIter, edge.Exact() || itsConvertGhostLines);
-          paths.erase(bestLastIter);
-          break;
-
-          // Both points match, first endpoint, last firstpoint
-          // In this case it is possible that the edge connects
-          // the endpoints of some path. It is not possible
-          // in the above cases, since in them the edge matches
-          // either first points or last points.
-
-        case (PathCase(true, true, false, true)):
-        case (PathCase(true, true, true, false)):
-
-          // Close a path with the edge, add it to the final output path
-
-          if (bestFirstIter == bestLastIter)
-          {
-            if (edge.Exact() || itsConvertGhostLines)
-              bestFirstIter->CloseLineTo();
-            else
-              bestFirstIter->CloseGhostLineTo();
-            outpath.Add(*bestFirstIter);
-            paths.erase(bestFirstIter);
-          }
-
-          // Combine into one by appending firstpoint match
-          // to lastpoint match
-
-          else if (fMatchedFirstToFirst)
-          {
-            bestLastIter->Add(*bestFirstIter, edge.Exact() || itsConvertGhostLines);
-            paths.erase(bestFirstIter);
-          }
-          else
-          {
-            bestFirstIter->Add(*bestLastIter, edge.Exact() || itsConvertGhostLines);
-            paths.erase(bestLastIter);
-          }
-          break;
-
-        default:
-          throw Fmi::Exception(BCP, "Internal error in NFmiContourTree::Path()");
-      }
+      add_edge(paths, outpath, edge, match, edge.Exact() || itsConvertGhostLines);
     }
 
     // Append the non-closed segments
