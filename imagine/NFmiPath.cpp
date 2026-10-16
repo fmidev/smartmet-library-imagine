@@ -1605,6 +1605,61 @@ void add_cuts(NFmiContourTree &theTree, std::set<double> &theCuts, double theLon
 
 // ----------------------------------------------------------------------
 /*!
+ * \brief Add a line in Pacific coordinates, splitting it at the 0 meridian
+ */
+// ----------------------------------------------------------------------
+
+void add_pacific_line(NFmiContourTree& theTree,
+                      std::set<double>& theCuts,
+                      double lastX,
+                      double lastY,
+                      double X,
+                      double Y,
+                      NFmiPathOperation op)
+{
+  // Omit vertical lines at the dateline boundary
+
+  if ((lastX == -180 || lastX == 180) && (X == -180 || X == 180) &&
+      (lastY > -80 && lastY < 75 && Y > -80 &&
+       Y < 75))  // works for the Antarctic and Chukotski Peninsula
+    return;
+
+  bool exact = (op == kFmiLineTo);
+
+  if (lastX < 0 && X < 0)
+  {
+    theTree.Add(NFmiEdge(lastX + 360, lastY, X + 360, Y, exact, true));
+  }
+  else if (lastX > 0 && X > 0)
+  {
+    theTree.Add(NFmiEdge(lastX, lastY, X, Y, exact, true));
+  }
+  else if (lastX == X)
+  {
+    theTree.Add(NFmiEdge(lastX, lastY, X, Y, exact, true));
+  }
+  else if (lastX < X)
+  {
+    // now lastX < 0 and X >= 0
+    double s = (0 - lastX) / (X - lastX);
+    double ymid = lastY + s * (Y - lastY);
+    theTree.Add(NFmiEdge(lastX + 360, lastY, 360, ymid, exact, true));
+    theTree.Add(NFmiEdge(0, ymid, X, Y, exact, true));
+    theCuts.insert(ymid);
+  }
+  else
+  {
+    // now lastX >= 0 and X < 0
+    double s = (0 - X) / (lastX - X);
+    double ymid = Y + s * (lastY - Y);
+    theTree.Add(NFmiEdge(lastX, lastY, 0, ymid, exact, true));
+    theTree.Add(NFmiEdge(360, ymid, X + 360, Y, exact, true));
+    theCuts.insert(ymid);
+  }
+}
+
+// ----------------------------------------------------------------------
+/*!
  * \brief Utility subroutine for PacificView
  */
 // ----------------------------------------------------------------------
@@ -1660,45 +1715,7 @@ void make_pacific(const NFmiPath &thePath,
         case kFmiLineTo:
         case kFmiGhostLineTo:
         {
-          // Omit vertical lines at the dateline boundary
-
-          if ((lastX == -180 || lastX == 180) && (X == -180 || X == 180) &&
-              (lastY > -80 && lastY < 75 && Y > -80 &&
-               Y < 75))  // works for the Antarctic and Chukotski Peninsula
-            break;
-
-          bool exact = (op == kFmiLineTo);
-
-          if (lastX < 0 && X < 0)
-          {
-            theTree.Add(NFmiEdge(lastX + 360, lastY, X + 360, Y, exact, true));
-          }
-          else if (lastX > 0 && X > 0)
-          {
-            theTree.Add(NFmiEdge(lastX, lastY, X, Y, exact, true));
-          }
-          else if (lastX == X)
-          {
-            theTree.Add(NFmiEdge(lastX, lastY, X, Y, exact, true));
-          }
-          else if (lastX < X)
-          {
-            // now lastX < 0 and X >= 0
-            double s = (0 - lastX) / (X - lastX);
-            double ymid = lastY + s * (Y - lastY);
-            theTree.Add(NFmiEdge(lastX + 360, lastY, 360, ymid, exact, true));
-            theTree.Add(NFmiEdge(0, ymid, X, Y, exact, true));
-            theCuts.insert(ymid);
-          }
-          else
-          {
-            // now lastX >= 0 and X < 0
-            double s = (0 - X) / (lastX - X);
-            double ymid = Y + s * (lastY - Y);
-            theTree.Add(NFmiEdge(lastX, lastY, 0, ymid, exact, true));
-            theTree.Add(NFmiEdge(360, ymid, X + 360, Y, exact, true));
-            theCuts.insert(ymid);
-          }
+          add_pacific_line(theTree, theCuts, lastX, lastY, X, Y, op);
           break;
         }
         default:;
@@ -1711,6 +1728,83 @@ void make_pacific(const NFmiPath &thePath,
   catch (...)
   {
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
+}
+
+// ----------------------------------------------------------------------
+/*!
+ * \brief Add a line in Atlantic coordinates, splitting it at the 180 meridian
+ */
+// ----------------------------------------------------------------------
+
+void add_atlantic_line(NFmiContourTree &theTree,
+                       std::set<double> &theCuts,
+                       double lastX,
+                       double lastY,
+                       double X,
+                       double Y,
+                       NFmiPathOperation op)
+{
+  // Omit vertical lines at the dateline boundary
+
+  if ((lastX == 0 || lastX == 360) && (X == 0 || X == 360) &&
+      (lastY > -80 && lastY < 75 && Y > -80 &&
+       Y < 75))  // works for the Antarctic and Chukotski Peninsula
+    return;
+
+  bool exact = (op == kFmiLineTo);
+
+  if (lastX > 180 && X > 180)
+  {
+    theTree.Add(NFmiEdge(lastX - 360, lastY, X - 360, Y, exact, true));
+  }
+  else if (lastX >= 0 && lastX < 180 && X >= 0 && X < 180)
+  {
+    theTree.Add(NFmiEdge(lastX, lastY, X, Y, exact, true));
+  }
+  else if (lastX >= -180 && lastX <= 0 && X >= -180 && X <= 0)
+  {
+    theTree.Add(NFmiEdge(lastX, lastY, X, Y, exact, true));
+  }
+  else if (lastX == X)
+  {
+    theTree.Add(NFmiEdge(lastX, lastY, X, Y, exact, true));
+  }
+  else if (lastX < -90 && X > 90)
+  {
+    double x = lastX + 360;
+    double s = (180 - x) / (X - x);
+    double ymid = lastY + s * (Y - lastY);
+    theTree.Add(NFmiEdge(lastX, lastY, -180, ymid, exact, true));
+    theTree.Add(NFmiEdge(180, ymid, X, Y, exact, true));
+    theCuts.insert(ymid);
+  }
+  else if (lastX > 90 && X < -90)
+  {
+    double x = X + 360;
+    double s = (180 - lastX) / (x - lastX);
+    double ymid = lastY + s * (Y - lastY);
+    theTree.Add(NFmiEdge(lastX, lastY, 180, ymid, exact, true));
+    theTree.Add(NFmiEdge(-180, ymid, X, Y, exact, true));
+    theCuts.insert(ymid);
+  }
+  else if (lastX < X)
+  {
+    // now lastX < 180 and X >= 180
+    double s = (180 - lastX) / (X - lastX);
+    double ymid = lastY + s * (Y - lastY);
+    theTree.Add(NFmiEdge(lastX, lastY, 180, ymid, exact, true));
+    theTree.Add(NFmiEdge(-180, ymid, X - 360, Y, exact, true));
+    theCuts.insert(ymid);
+  }
+  else
+  {
+    // now lastX >= 180 and X < 180
+    double s = (180 - X) / (lastX - X);
+    double ymid = Y + s * (lastY - Y);
+    theTree.Add(NFmiEdge(lastX - 360, lastY, -180, ymid, exact, true));
+    theTree.Add(NFmiEdge(180, ymid, X, Y, exact, true));
+    theCuts.insert(ymid);
   }
 }
 
@@ -1773,67 +1867,7 @@ void make_atlantic(const NFmiPath &thePath,
         case kFmiLineTo:
         case kFmiGhostLineTo:
         {
-          // Omit vertical lines at the dateline boundary
-
-          if ((lastX == 0 || lastX == 360) && (X == 0 || X == 360) &&
-              (lastY > -80 && lastY < 75 && Y > -80 &&
-               Y < 75))  // works for the Antarctic and Chukotski Peninsula
-            break;
-
-          bool exact = (op == kFmiLineTo);
-
-          if (lastX > 180 && X > 180)
-          {
-            theTree.Add(NFmiEdge(lastX - 360, lastY, X - 360, Y, exact, true));
-          }
-          else if (lastX >= 0 && lastX < 180 && X >= 0 && X < 180)
-          {
-            theTree.Add(NFmiEdge(lastX, lastY, X, Y, exact, true));
-          }
-          else if (lastX >= -180 && lastX <= 0 && X >= -180 && X <= 0)
-          {
-            theTree.Add(NFmiEdge(lastX, lastY, X, Y, exact, true));
-          }
-          else if (lastX == X)
-          {
-            theTree.Add(NFmiEdge(lastX, lastY, X, Y, exact, true));
-          }
-          else if (lastX < -90 && X > 90)
-          {
-            double x = lastX + 360;
-            double s = (180 - x) / (X - x);
-            double ymid = lastY + s * (Y - lastY);
-            theTree.Add(NFmiEdge(lastX, lastY, -180, ymid, exact, true));
-            theTree.Add(NFmiEdge(180, ymid, X, Y, exact, true));
-            theCuts.insert(ymid);
-          }
-          else if (lastX > 90 && X < -90)
-          {
-            double x = X + 360;
-            double s = (180 - lastX) / (x - lastX);
-            double ymid = lastY + s * (Y - lastY);
-            theTree.Add(NFmiEdge(lastX, lastY, 180, ymid, exact, true));
-            theTree.Add(NFmiEdge(-180, ymid, X, Y, exact, true));
-            theCuts.insert(ymid);
-          }
-          else if (lastX < X)
-          {
-            // now lastX < 180 and X >= 180
-            double s = (180 - lastX) / (X - lastX);
-            double ymid = lastY + s * (Y - lastY);
-            theTree.Add(NFmiEdge(lastX, lastY, 180, ymid, exact, true));
-            theTree.Add(NFmiEdge(-180, ymid, X - 360, Y, exact, true));
-            theCuts.insert(ymid);
-          }
-          else
-          {
-            // now lastX >= 180 and X < 180
-            double s = (180 - X) / (lastX - X);
-            double ymid = Y + s * (lastY - Y);
-            theTree.Add(NFmiEdge(lastX - 360, lastY, -180, ymid, exact, true));
-            theTree.Add(NFmiEdge(180, ymid, X, Y, exact, true));
-            theCuts.insert(ymid);
-          }
+          add_atlantic_line(theTree, theCuts, lastX, lastY, X, Y, op);
           break;
         }
         default:;
