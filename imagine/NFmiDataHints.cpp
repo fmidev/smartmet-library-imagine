@@ -27,6 +27,41 @@ struct RecursiveInfo
   std::shared_ptr<RecursiveInfo> itsRight;
 };
 
+namespace
+{
+// Find the extrema of the data inside the rectangle and whether there are missing values
+void find_extrema(NFmiDataHints::Rectangle& theRectangle, const NFmiDataMatrix<float>& theData)
+{
+  float minimum = kFloatMissing;
+  float maximum = kFloatMissing;
+
+  theRectangle.hasmissing = false;
+  for (int j = theRectangle.y1; j <= theRectangle.y2; j++)
+    for (int i = theRectangle.x1; i <= theRectangle.x2; i++)
+    {
+      float value = theData[i][j];
+      if (value == kFloatMissing)
+        theRectangle.hasmissing = true;
+      else
+      {
+        if (minimum == kFloatMissing)
+        {
+          minimum = value;
+          maximum = value;
+        }
+        else
+        {
+          minimum = min(value, minimum);
+          maximum = max(value, maximum);
+        }
+      }
+    }
+
+  theRectangle.minimum = minimum;
+  theRectangle.maximum = maximum;
+}
+}  // namespace
+
 // ----------------------------------------------------------------------
 /*!
  * \brief Pimple
@@ -112,33 +147,7 @@ void NFmiDataHints::Pimple::recurse(const node_type& theNode,
     if ((width <= theMaxSize && height <= theMaxSize) || (width <= 1 || height <= 1))
     {
       // The rectangle is small enough now, find the extrema from it
-      float minimum = kFloatMissing;
-      float maximum = kFloatMissing;
-
-      theNode->itsRectangle.hasmissing = false;
-      for (int j = y1; j <= y2; j++)
-        for (int i = x1; i <= x2; i++)
-        {
-          float value = theData[i][j];
-          if (value == kFloatMissing)
-            theNode->itsRectangle.hasmissing = true;
-          else
-          {
-            if (minimum == kFloatMissing)
-            {
-              minimum = value;
-              maximum = value;
-            }
-            else
-            {
-              minimum = min(value, minimum);
-              maximum = max(value, maximum);
-            }
-          }
-        }
-
-      theNode->itsRectangle.minimum = minimum;
-      theNode->itsRectangle.maximum = maximum;
+      find_extrema(theNode->itsRectangle, theData);
     }
     else
     {
