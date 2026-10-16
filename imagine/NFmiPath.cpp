@@ -242,6 +242,222 @@ void NFmiPath::DoCloseLineTo(NFmiPathOperation theOper)
 
 using namespace std;
 
+namespace
+{
+// Parse a path operator, false if the character is not an operator
+bool parse_path_operator(char ch, NFmiPathOperation& op, bool& relative)
+{
+  switch (toupper(ch))
+  {
+    case 'L':
+      op = kFmiLineTo;
+      break;
+    case 'G':
+      op = kFmiGhostLineTo;
+      break;
+    case 'M':
+      op = kFmiMoveTo;
+      break;
+    case 'Q':
+      op = kFmiConicTo;
+      break;
+    case 'C':
+      op = kFmiCubicTo;
+      break;
+    default:
+      return false;
+  }
+  relative = (ch != toupper(ch));
+  return true;
+}
+
+// Parse a coordinate and skip the comma following it
+double parse_path_number(const string& theString, unsigned int& pos)
+{
+  string asciinumber;
+  while (pos < theString.size() && !isspace(theString[pos]) && theString[pos] != ',')
+    asciinumber += theString[pos++];
+
+  // Skip the possible comma we may have found
+
+  if (theString[pos] == ',')
+    pos++;
+
+  return Fmi::stod(asciinumber);
+}
+
+// Append SVG coordinates
+void append_coordinates(string& os, double x, double y)
+{
+  os += numstring(x, 3) + string(",");
+  os += numstring(y, 3);
+}
+
+// Append the moveto needed when removed ghostlines end
+void append_ghost_end_moveto(string& os,
+                             bool relative_moves,
+                             double last_x,
+                             double last_y,
+                             double last_out_x,
+                             double last_out_y)
+{
+  if (relative_moves)
+  {
+    if (last_out_x == kFloatMissing && last_out_y == kFloatMissing)
+    {
+      os += 'm';
+      append_coordinates(os, last_x, last_y);
+    }
+    else
+    {
+      os += " m";
+      append_coordinates(os, last_x - last_out_x, last_y - last_out_y);
+    }
+  }
+  else
+  {
+    os += " M";
+    append_coordinates(os, last_x, last_y);
+  }
+}
+
+// True if the operation is a line or a ghostline
+bool is_line(NFmiPathOperation op)
+{
+  return (op == kFmiLineTo || op == kFmiGhostLineTo);
+}
+
+// The SVG operator for a relative move, sets out_ok false for incomplete curves
+const char* relative_op_prefix(NFmiPathOperation op,
+                               NFmiPathOperation last_op,
+                               bool removeghostlines,
+                               int count_conic,
+                               bool& out_ok)
+{
+  switch (op)
+  {
+    case kFmiMoveTo:
+      return (last_op == kFmiMoveTo ? " " : " m");
+    case kFmiLineTo:
+      return (is_line(last_op) ? " " : " l");
+    case kFmiGhostLineTo:
+      if (!removeghostlines)
+        return (is_line(last_op) ? " " : " l");
+      return " ";
+    case kFmiConicTo:
+      out_ok = (count_conic > 1);
+      return (last_op == kFmiConicTo ? " " : " q");
+    case kFmiCubicTo:
+      out_ok = (count_conic > 2);
+      return (last_op == kFmiCubicTo ? " " : " c");
+  }
+  return "";
+}
+
+// The SVG operator for an absolute move
+const char* absolute_op_prefix(NFmiPathOperation op,
+                               NFmiPathOperation last_op,
+                               bool removeghostlines)
+{
+  switch (op)
+  {
+    case kFmiMoveTo:
+      return (last_op == kFmiMoveTo ? " " : " M");
+    case kFmiLineTo:
+      return (is_line(last_op) ? " " : " L");
+    case kFmiGhostLineTo:
+      if (!removeghostlines)
+        return (is_line(last_op) ? " " : " L");
+      return " ";
+    case kFmiConicTo:
+      return (last_op == kFmiConicTo ? " " : " Q");
+    case kFmiCubicTo:
+      return (last_op == kFmiCubicTo ? " " : " C");
+  }
+  return "";
+}
+
+// Append a path operation, false if the point is an incomplete curve point
+bool append_operation(string& os,
+                      bool first,
+                      bool relative_moves,
+                      bool removeghostlines,
+                      NFmiPathOperation op,
+                      NFmiPathOperation last_op,
+                      int count_conic,
+                      double x,
+                      double y,
+                      double last_out_x,
+                      double last_out_y)
+{
+  bool out_ok = true;
+  if (first)
+  {
+    os += (relative_moves ? "m" : "M");
+    append_coordinates(os, x, y);
+  }
+
+  // Relative moves are "m dx dy" and "l dx dy" etc
+  else if (relative_moves)
+  {
+    os += relative_op_prefix(op, last_op, removeghostlines, count_conic, out_ok);
+    append_coordinates(os, x - last_out_x, y - last_out_y);
+  }
+
+  // Absolute moves are "M x y" and "L x y" etc
+  else
+  {
+    os += absolute_op_prefix(op, last_op, removeghostlines);
+    append_coordinates(os, x, y);
+  }
+  return out_ok;
+}
+
+// True if a line from x1 to x2 indicates a Pacific view
+bool is_pacific_line(double x1, double x2, double eps)
+{
+  // if line is all together over 180 + eps, its pacific
+  if (x1 > 180 + eps && x2 > 180 + eps)
+    return true;
+
+  if (x1 < 180 && x2 > 180 + eps)
+    return true;
+  if (x1 > 180 + eps && x2 < 180)
+    return true;
+  // Or looks like it should be made into a Pacific view
+  // when there are lines longer than half the world
+  if (x1 < -90 && x2 > 90)
+    return true;
+  return (x1 > 90 && x2 < -90);
+}
+
+// True if B is on the line connecting A and C
+bool is_straight(double x1, double y1, double x2, double y2, double x3, double y3)
+{
+  // The line cannot be straight unless it is monotonous
+
+  if (x1 < x2 && x2 > x3)
+    return false;
+  if (x1 > x2 && x2 < x3)
+    return false;
+  if (y1 < y2 && y2 > y3)
+    return false;
+  if (y1 > y2 && y2 < y3)
+    return false;
+
+  // Vertical and horizontal lines are easily tested
+  // General case lines are compared based on their
+  // angles: dy/dx must be equal so that
+  //       (y2-y1)/(x2-x1) == (y3-y2)/(x3-x2)
+  // <==>  (y2-y1)(x3-x2) == (y3-y2)(x2-x1)
+  // We do not allow for rounding errors in the test,
+  // it's probably not worth the trouble.
+
+  return ((x1 == x2 && x2 == x3) || (y1 == y2 && y2 == y3) ||
+          ((x3 - x1) * (y2 - y1) - (y3 - y1) * (x2 - x1) == 0.0));
+}
+}  // namespace
+
 void NFmiPath::Add(const string &theString)
 {
   try
@@ -290,33 +506,9 @@ void NFmiPath::Add(const string &theString)
 
         // Assume there is an operator to be found
 
-        char ch = theString[pos++];
-
-        switch (toupper(ch))
-        {
-          case 'L':
-            op = kFmiLineTo;
-            relative = (ch != toupper(ch));
-            break;
-          case 'G':
-            op = kFmiGhostLineTo;
-            relative = (ch != toupper(ch));
-            break;
-          case 'M':
-            op = kFmiMoveTo;
-            relative = (ch != toupper(ch));
-            break;
-          case 'Q':
-            op = kFmiConicTo;
-            relative = (ch != toupper(ch));
-            break;
-          case 'C':
-            op = kFmiCubicTo;
-            relative = (ch != toupper(ch));
-            break;
-          default:
-            pos--;  // correct backwards - there was no operator
-        }
+        if (parse_path_operator(theString[pos], op, relative))
+          pos++;
+        // else there was no operator
       }
 
       // Parse coordinates
@@ -325,16 +517,7 @@ void NFmiPath::Add(const string &theString)
       {
         // Expecting some float, either x or y
 
-        string asciinumber;
-        while (pos < theString.size() && !isspace(theString[pos]) && theString[pos] != ',')
-          asciinumber += theString[pos++];
-
-        // Skip the possible comma we may have found
-
-        if (theString[pos] == ',')
-          pos++;
-
-        double number = Fmi::stod(asciinumber);
+        double number = parse_path_number(theString, pos);
 
         if (phase == 1)
           x = number;
@@ -766,40 +949,18 @@ void NFmiPath::SimplifyLines(double theOffset)
       // A--B--C becomes A---C if B is somewhere on the
       // line connecting A and C.
 
-      if (oper2 == oper3 && (oper2 == kFmiLineTo || oper2 == kFmiGhostLineTo))
+      if (oper2 == oper3 && (oper2 == kFmiLineTo || oper2 == kFmiGhostLineTo) &&
+          is_straight(x1, y1, x2, y2, x3, y3))
       {
-        // The line cannot be straight unless it is monotonous
+        NFmiPathElement last = newelements.back();
+        newelements.pop_back();
+        newelements.pop_back();
+        newelements.push_back(last);
+        cachesize--;
 
-        if (x1 < x2 && x2 > x3)
-          continue;
-        if (x1 > x2 && x2 < x3)
-          continue;
-        if (y1 < y2 && y2 > y3)
-          continue;
-        if (y1 > y2 && y2 < y3)
-          continue;
-
-        // Vertical and horizontal lines are easily tested
-        // General case lines are compared based on their
-        // angles: dy/dx must be equal so that
-        //       (y2-y1)/(x2-x1) == (y3-y2)/(x3-x2)
-        // <==>  (y2-y1)(x3-x2) == (y3-y2)(x2-x1)
-        // We do not allow for rounding errors in the test,
-        // it's probably not worth the trouble.
-
-        if ((x1 == x2 && x2 == x3) || (y1 == y2 && y2 == y3) ||
-            ((x3 - x1) * (y2 - y1) - (y3 - y1) * (x2 - x1) == 0.0))
-        {
-          NFmiPathElement last = newelements.back();
-          newelements.pop_back();
-          newelements.pop_back();
-          newelements.push_back(last);
-          cachesize--;
-
-          oper2 = oper1;
-          x2 = x1;
-          y2 = y1;
-        }
+        oper2 = oper1;
+        x2 = x1;
+        y2 = y1;
       }
     }
 
@@ -897,17 +1058,10 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
       const double y = iter->y;
       const NFmiPathOperation op = iter->op;
 
-      switch (op)
-      {
-        case kFmiConicTo:
-          count_conic++;
-          break;
-        case kFmiCubicTo:
-          count_conic = 0;
-          break;
-        default:
-          count_conic = 0;
-      }
+      if (op == kFmiConicTo)
+        count_conic++;
+      else
+        count_conic = 0;
 
       // Special code for first move
 
@@ -923,98 +1077,23 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
         if (removeghostlines && (last_op == kFmiGhostLineTo) &&
             (op != kFmiGhostLineTo && op != kFmiMoveTo))
         {
-          if (relative_moves)
-          {
-            if (last_out_x == kFloatMissing && last_out_y == kFloatMissing)
-            {
-              os += 'm';
-              os += numstring(last_x, 3) + string(",");
-              os += numstring(last_y, 3);
-            }
-            else
-            {
-              os += " m";
-              os += numstring(last_x - last_out_x, 3) + string(",");
-              os += numstring(last_y - last_out_y, 3);
-            }
-          }
-          else
-          {
-            os += " M";
-            os += numstring(last_x, 3) + string(",");
-            os += numstring(last_y, 3);
-          }
+          append_ghost_end_moveto(os, relative_moves, last_x, last_y, last_out_x, last_out_y);
           last_op = kFmiMoveTo;
           last_out_x = last_x;
           last_out_y = last_y;
         }
 
-        if (iter == Elements().begin())
-        {
-          os += (relative_moves ? "m" : "M");
-          os += numstring(x, 3) + string(",");
-          os += numstring(y, 3);
-        }
-
-        // Relative moves are "m dx dy" and "l dx dy" etc
-        else if (relative_moves)
-        {
-          switch (op)
-          {
-            case kFmiMoveTo:
-              os += (last_op == kFmiMoveTo ? " " : " m");
-              break;
-            case kFmiLineTo:
-              os += ((last_op == kFmiLineTo || last_op == kFmiGhostLineTo) ? " " : " l");
-              break;
-            case kFmiGhostLineTo:
-              if (!removeghostlines)
-                os += ((last_op == kFmiLineTo || last_op == kFmiGhostLineTo) ? " " : " l");
-              else
-                os += ' ';
-              break;
-            case kFmiConicTo:
-              os += (last_op == kFmiConicTo ? " " : " q");
-              out_ok = (count_conic > 1);
-              break;
-            case kFmiCubicTo:
-              os += (last_op == kFmiCubicTo ? " " : " c");
-              out_ok = (count_conic > 2);
-              break;
-          }
-
-          os += numstring(x - last_out_x, 3) + string(",");
-          os += numstring(y - last_out_y, 3);
-        }
-
-        // Absolute moves are "M x y" and "L x y" etc
-        else
-        {
-          switch (op)
-          {
-            case kFmiMoveTo:
-              os += (last_op == kFmiMoveTo ? " " : " M");
-              break;
-            case kFmiLineTo:
-              os += ((last_op == kFmiLineTo || last_op == kFmiGhostLineTo) ? " " : " L");
-              break;
-            case kFmiGhostLineTo:
-              if (!removeghostlines)
-                os += ((last_op == kFmiLineTo || last_op == kFmiGhostLineTo) ? " " : " L");
-              else
-                os += ' ';
-              break;
-            case kFmiConicTo:
-              os += (last_op == kFmiConicTo ? " " : " Q");
-              break;
-            case kFmiCubicTo:
-              os += (last_op == kFmiCubicTo ? " " : " C");
-              break;
-          }
-
-          os += numstring(x, 3) + string(",");
-          os += numstring(y, 3);
-        }
+        out_ok = append_operation(os,
+                                  iter == Elements().begin(),
+                                  relative_moves,
+                                  removeghostlines,
+                                  op,
+                                  last_op,
+                                  count_conic,
+                                  x,
+                                  y,
+                                  last_out_x,
+                                  last_out_y);
       }
 
       last_op = op;
@@ -1205,6 +1284,61 @@ void NFmiPath::Stroke(NFmiImage &img,
   }
 }
 
+namespace
+{
+// Bounding box of a path
+struct PathBox
+{
+  double minx = 0;
+  double miny = 0;
+  double maxx = 0;
+  double maxy = 0;
+
+  void Reset(double x, double y)
+  {
+    minx = maxx = x;
+    miny = maxy = y;
+  }
+
+  void Extend(double x, double y)
+  {
+    minx = min(minx, x);
+    miny = min(miny, y);
+    maxx = max(maxx, x);
+    maxy = max(maxy, y);
+  }
+
+  // True if the box intersects the given rectangle expanded by the margin
+  bool Intersects(double x1, double y1, double x2, double y2, double margin) const
+  {
+    return intersects(
+        minx, miny, maxx, maxy, x1 - margin, y1 - margin, x2 + margin, y2 + margin);
+  }
+};
+
+// Add the path to the output if its bounding box intersects the clipping rectangle
+void add_if_visible(NFmiPath &outPath,
+                    const NFmiPath &tmpPath,
+                    const PathBox &box,
+                    double x1,
+                    double y1,
+                    double x2,
+                    double y2,
+                    double margin)
+{
+  if (tmpPath.Size() > 0 && box.Intersects(x1, y1, x2, y2, margin))
+    outPath.Add(tmpPath);
+}
+
+// Add the previously ignored point back to the path
+void add_ignored(
+    NFmiPath &tmpPath, bool last_ignored, NFmiPathOperation lastOp, double lastX, double lastY)
+{
+  if (last_ignored)
+    tmpPath.Add(lastOp, lastX, lastY);
+}
+}  // namespace
+
 // ----------------------------------------------------------------------
 // Stroke onto given image using various Porter-Duff rules
 // ----------------------------------------------------------------------
@@ -1301,10 +1435,7 @@ NFmiPath NFmiPath::Clip(
     int this_quadrant = 0;
 
     // Initialize the new bounding box
-    double minx = 0;
-    double miny = 0;
-    double maxx = 0;
-    double maxy = 0;
+    PathBox box;
 
     double lastX = 0;
     double lastY = 0;
@@ -1325,21 +1456,10 @@ NFmiPath NFmiPath::Clip(
       {
         case kFmiMoveTo:
         {
-          if (tmpPath.Size() > 0 && intersects(minx,
-                                               miny,
-                                               maxx,
-                                               maxy,
-                                               theX1 - theMargin,
-                                               theY1 - theMargin,
-                                               theX2 + theMargin,
-                                               theY2 + theMargin))
-          {
-            outPath.Add(tmpPath);
-          }
+          add_if_visible(outPath, tmpPath, box, theX1, theY1, theX2, theY2, theMargin);
           tmpPath.Clear();
           tmpPath.Add(op, X, Y);
-          minx = maxx = X;
-          miny = maxy = Y;
+          box.Reset(X, Y);
           lastOp = op;
           lastX = X;
           lastY = Y;
@@ -1352,18 +1472,14 @@ NFmiPath NFmiPath::Clip(
         {
           if (this_quadrant == central_quadrant || this_quadrant != last_quadrant)
           {
-            if (last_ignored)
-              tmpPath.Add(lastOp, lastX, lastY);
+            add_ignored(tmpPath, last_ignored, lastOp, lastX, lastY);
             tmpPath.Add(op, X, Y);
             last_ignored = false;
           }
           else
             last_ignored = true;
 
-          minx = min(minx, X);
-          miny = min(miny, Y);
-          maxx = max(maxx, X);
-          maxy = max(maxy, Y);
+          box.Extend(X, Y);
           lastOp = op;
           lastX = X;
           lastY = Y;
@@ -1380,8 +1496,7 @@ NFmiPath NFmiPath::Clip(
           if (end_quadrant == central_quadrant || end_quadrant != this_quadrant ||
               end_quadrant != last_quadrant)
           {
-            if (last_ignored)
-              tmpPath.Add(lastOp, lastX, lastY);
+            add_ignored(tmpPath, last_ignored, lastOp, lastX, lastY);
             tmpPath.Add(op, X, Y);
             tmpPath.Add(op, X2, Y2);
             last_ignored = false;
@@ -1392,14 +1507,8 @@ NFmiPath NFmiPath::Clip(
           lastX = X2;
           lastY = Y2;
           last_quadrant = end_quadrant;
-          minx = min(minx, X);
-          minx = min(minx, X2);
-          miny = min(miny, Y);
-          miny = min(miny, Y2);
-          maxx = max(maxx, X);
-          maxx = max(maxx, X2);
-          maxy = max(maxy, Y);
-          maxy = max(maxy, Y2);
+          box.Extend(X, Y);
+          box.Extend(X2, Y2);
 
           break;
         }
@@ -1418,8 +1527,7 @@ NFmiPath NFmiPath::Clip(
           if (end_quadrant == central_quadrant || end_quadrant != this_quadrant ||
               end_quadrant != middle_quadrant || end_quadrant != last_quadrant)
           {
-            if (last_ignored)
-              tmpPath.Add(lastOp, lastX, lastY);
+            add_ignored(tmpPath, last_ignored, lastOp, lastX, lastY);
             tmpPath.Add(op, X, Y);
             tmpPath.Add(op, X2, Y2);
             tmpPath.Add(op, X3, Y3);
@@ -1431,34 +1539,15 @@ NFmiPath NFmiPath::Clip(
           lastX = X3;
           lastY = Y3;
           last_quadrant = end_quadrant;
-          minx = min(minx, X);
-          minx = min(minx, X2);
-          minx = min(minx, X3);
-          miny = min(miny, Y);
-          miny = min(miny, Y2);
-          miny = min(miny, Y3);
-          maxx = max(maxx, X);
-          maxx = max(maxx, X2);
-          maxx = max(maxx, X3);
-          maxy = max(maxy, Y);
-          maxy = max(maxy, Y2);
-          maxy = max(maxy, Y3);
+          box.Extend(X, Y);
+          box.Extend(X2, Y2);
+          box.Extend(X3, Y3);
           break;
         }
       }
     }
 
-    if (tmpPath.Size() > 0 && intersects(minx,
-                                         miny,
-                                         maxx,
-                                         maxy,
-                                         theX1 - theMargin,
-                                         theY1 - theMargin,
-                                         theX2 + theMargin,
-                                         theY2 + theMargin))
-    {
-      outPath.Add(tmpPath);
-    }
+    add_if_visible(outPath, tmpPath, box, theX1, theY1, theX2, theY2, theMargin);
 
     return outPath;
   }
@@ -2020,35 +2109,10 @@ bool NFmiPath::IsPacificView() const
 
     for (iter = itsElements.begin(); iter != itsElements.end(); ++iter)
     {
-      switch (iter->op)
-      {
-        case kFmiLineTo:
-        case kFmiGhostLineTo:
-        {
-          // Ignore long lines at the poles
-          if (iter->y != -90 && iter->y != 90)
-          {
-            // if line is all together over 180 + eps, its pacific
-            if (lastX > 180 + eps && iter->x > 180 + eps)
-              return true;
-            if (lastX < 180 && iter->x > 180 + eps)
-              return true;
-            if (lastX > 180 + eps && iter->x < 180)
-              return true;
-            // Or looks like it should be made into a Pacific view
-            // when there are lines longer than half the world
-            if (lastX < -90 && iter->x > 90)
-              return true;
-            if (lastX > 90 && iter->x < -90)
-              return true;
-
-            break;
-          }
-        }
-        break;
-        default:
-          break;
-      }
+      // Ignore long lines at the poles
+      if ((iter->op == kFmiLineTo || iter->op == kFmiGhostLineTo) && iter->y != -90 &&
+          iter->y != 90 && is_pacific_line(lastX, iter->x, eps))
+        return true;
       lastX = iter->x;
     }
 
