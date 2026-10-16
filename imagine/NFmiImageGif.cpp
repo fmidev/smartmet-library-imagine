@@ -504,6 +504,98 @@ void read_image(FILE *theInput,
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
 }
+
+// ----------------------------------------------------------------------
+// Read and verify the GIF signature and read the screen descriptor
+// ----------------------------------------------------------------------
+
+void read_gif_screen(FILE *theInput, GifScreen &screen)
+{
+  try
+  {
+    // General purpose read buffer
+    unsigned char buf[16];
+
+    // Read and verify the signature
+    if (!readok(theInput, buf, 6))
+      throw Fmi::Exception(BCP, "Failed to read GIF magic number");
+
+    if (buf[0] != 'G' || buf[1] != 'I' || buf[2] != 'F' || buf[3] != '8' ||
+        (buf[4] != '7' && buf[4] != '9') || buf[5] != 'a')
+    {
+      throw Fmi::Exception(BCP, "GIF file being read does not have GIF87a or GIF89a signature");
+    }
+
+    // Read the screen descriptor
+    if (!readok(theInput, buf, 7))
+      throw Fmi::Exception(BCP, "Failed to read GIF screen descriptor");
+
+    // Establish the screen info
+
+    screen.width = LM_to_uint(buf[0], buf[1]);
+    screen.height = LM_to_uint(buf[2], buf[3]);
+    screen.bitpixel = 2 << (buf[4] & 0x07);
+    screen.colorresolution = (((buf[4] & 0x70) >> 3) + 1);
+    screen.background = buf[5];
+    screen.aspectratio = buf[6];
+
+    // Read global color map if there is one
+
+    if (bitset(buf[4], LocalColorMap))
+    {
+      read_colormap(theInput, screen.bitpixel, screen.colormap);
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
+}
+
+// ----------------------------------------------------------------------
+// Read one GIF image frame, storing it into the image unless ignored
+// ----------------------------------------------------------------------
+
+void read_gif_frame(FILE *theInput, NFmiImage &theImage, const GifScreen &screen, bool ignore)
+{
+  try
+  {
+    unsigned char buf[16];
+
+    if (!readok(theInput, buf, 9))
+      throw Fmi::Exception(BCP, "Failed to read GIF frame size");
+
+    const bool use_global_colormap = !bitset(buf[8], LocalColorMap);
+    const int bitpixel = 1 << ((buf[8] & 0x07) + 1);
+
+    const int width = LM_to_uint(buf[4], buf[5]);
+    const int height = LM_to_uint(buf[6], buf[7]);
+    const bool interlace = bitset(buf[8], Interlace);
+
+    if (use_global_colormap)
+    {
+      read_image(theInput,
+                 theImage,
+                 width,
+                 height,
+                 screen.transparent,
+                 screen.colormap,
+                 interlace,
+                 ignore);
+    }
+    else
+    {
+      unsigned char colormap[3][MaxColors];
+      read_colormap(theInput, bitpixel, colormap);
+      read_image(
+          theInput, theImage, width, height, screen.transparent, colormap, interlace, ignore);
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception::Trace(BCP, "Operation failed!");
+  }
+}
 }  // namespace
 
 // ----------------------------------------------------------------------
@@ -517,39 +609,9 @@ void NFmiImage::ReadGIF(FILE *in)
     // read the first image, if the GIF is an animation
     const int imagenumber = 1;
 
-    // General purpose read buffer
-    unsigned char buf[16];
-
-    // Read and verify the signature
-    if (!readok(in, buf, 6))
-      throw Fmi::Exception(BCP, "Failed to read GIF magic number");
-
-    if (buf[0] != 'G' || buf[1] != 'I' || buf[2] != 'F' || buf[3] != '8' ||
-        (buf[4] != '7' && buf[4] != '9') || buf[5] != 'a')
-    {
-      throw Fmi::Exception(BCP, "GIF file being read does not have GIF87a or GIF89a signature");
-    }
-
-    // Read the screen descriptor
-    if (!readok(in, buf, 7))
-      throw Fmi::Exception(BCP, "Failed to read GIF screen descriptor");
-
-    // Establish the screen info
-
+    // Read the GIF header and the screen descriptor
     GifScreen screen;
-    screen.width = LM_to_uint(buf[0], buf[1]);
-    screen.height = LM_to_uint(buf[2], buf[3]);
-    screen.bitpixel = 2 << (buf[4] & 0x07);
-    screen.colorresolution = (((buf[4] & 0x70) >> 3) + 1);
-    screen.background = buf[5];
-    screen.aspectratio = buf[6];
-
-    // Read global color map if there is one
-
-    if (bitset(buf[4], LocalColorMap))
-    {
-      read_colormap(in, screen.bitpixel, screen.colormap);
-    }
+    read_gif_screen(in, screen);
 
     // We ignore the aspect ratio settings, do not even warn about it
     // See giftoppm code for more details
@@ -593,28 +655,8 @@ void NFmiImage::ReadGIF(FILE *in)
       // Now we have an image to read
       ++imagecount;
 
-      if (!readok(in, buf, 9))
-        throw Fmi::Exception(BCP, "Failed to read GIF frame size");
-
-      const bool use_global_colormap = !bitset(buf[8], LocalColorMap);
-      const int bitpixel = 1 << ((buf[8] & 0x07) + 1);
-
-      const int width = LM_to_uint(buf[4], buf[5]);
-      const int height = LM_to_uint(buf[6], buf[7]);
-      const bool interlace = bitset(buf[8], Interlace);
       const bool ignore = (imagecount != imagenumber);
-
-      if (use_global_colormap)
-      {
-        read_image(
-            in, *this, width, height, screen.transparent, screen.colormap, interlace, ignore);
-      }
-      else
-      {
-        unsigned char colormap[3][MaxColors];
-        read_colormap(in, bitpixel, colormap);
-        read_image(in, *this, width, height, screen.transparent, colormap, interlace, ignore);
-      }
+      read_gif_frame(in, *this, screen, ignore);
     }
   }
   catch (...)
