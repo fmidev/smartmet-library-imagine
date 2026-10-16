@@ -156,6 +156,22 @@ class NFmiEsriShape
 
   int CountRecords(const std::string &theBuffer) const;
 
+  // Reading utilities
+
+  bool ReadSHP(const std::string &shpfilename);
+  bool ReadDBF(const std::string &dbffilename);
+  void ReadDBFFields(const std::string &dbffields,
+                     int numfields,
+                     std::vector<int> &fieldoffsets,
+                     std::vector<int> &fieldsizes,
+                     std::vector<NFmiEsriAttributeType> &fieldtypes);
+  void ReadDBFRecords(const std::string &dbfrecord,
+                      int numrecords,
+                      int recordlength,
+                      const std::vector<int> &fieldoffsets,
+                      const std::vector<int> &fieldsizes,
+                      const std::vector<NFmiEsriAttributeType> &fieldtypes);
+
   // Header writing utility
 
   void WriteHeader(std::ostream &os, int theFileLength) const;
