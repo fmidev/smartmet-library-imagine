@@ -114,7 +114,53 @@ FT_BBox compute_bbox(const vector<FT_Glyph>& theGlyphs, const vector<FT_Vector>&
   }
 }
 
+// Decode the next UTF-8 character and advance the position past it
+unsigned short next_utf8_char(const string& theText, string::size_type& i)
+{
+  unsigned short ch = static_cast<unsigned char>(theText[i]);
+
+  if (ch < 0xc0)
+  {
+    ++i;
+  }
+  else if (ch < 0xe0)
+  {
+    if (i + 1 < theText.size() && static_cast<unsigned char>(theText[i + 1] & 0xc0) == 0x80)
+    {
+      ch = ((theText[i] & 0x1f) << 6 | (theText[i + 1] & 0x3f));
+      i += 2;
+    }
+    else
+      ++i;
+  }
+  else if (ch < 0xf0)
+  {
+    if (i + 2 < theText.size() && static_cast<unsigned char>(theText[i + 1] & 0xc0) == 0x80 &&
+        static_cast<unsigned char>(theText[i + 2] & 0xc0) == 0x80)
+    {
+      ch = ((theText[i] & 0xf) << 12 | (theText[i + 1] & 0x3f) << 6 | (theText[i + 2] & 0x3f));
+      i += 3;
+    }
+    else
+      ++i;
+  }
+  else
+  {
+    if (i + 3 < theText.size() && static_cast<unsigned char>(theText[i + 1] & 0xc0) == 0x80 &&
+        static_cast<unsigned char>(theText[i + 2] & 0xc0) == 0x80 &&
+        static_cast<unsigned char>(theText[i + 3] & 0xc0) == 0x80)
+    {
+      ch = ((theText[i] & 0xf) << 18 | (theText[i + 1] & 0x3f) << 12 |
+            (theText[i + 2] & 0x3f << 6) | (theText[i + 3] & 0x3f));
+      i += 4;
+    }
+    else
+      ++i;
+  }
+  return ch;
+}
 }  // namespace
+
 
 namespace Imagine
 {
@@ -320,46 +366,7 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
     string::size_type i = 0;
     while (i < theText.size())
     {
-      unsigned short ch = static_cast<unsigned char>(theText[i]);
-
-      if (ch < 0xc0)
-      {
-        ++i;
-      }
-      else if (ch < 0xe0)
-      {
-        if (i + 1 < theText.size() && static_cast<unsigned char>(theText[i + 1] & 0xc0) == 0x80)
-        {
-          ch = ((theText[i] & 0x1f) << 6 | (theText[i + 1] & 0x3f));
-          i += 2;
-        }
-        else
-          ++i;
-      }
-      else if (ch < 0xf0)
-      {
-        if (i + 2 < theText.size() && static_cast<unsigned char>(theText[i + 1] & 0xc0) == 0x80 &&
-            static_cast<unsigned char>(theText[i + 2] & 0xc0) == 0x80)
-        {
-          ch = ((theText[i] & 0xf) << 12 | (theText[i + 1] & 0x3f) << 6 | (theText[i + 2] & 0x3f));
-          i += 3;
-        }
-        else
-          ++i;
-      }
-      else
-      {
-        if (i + 3 < theText.size() && static_cast<unsigned char>(theText[i + 1] & 0xc0) == 0x80 &&
-            static_cast<unsigned char>(theText[i + 2] & 0xc0) == 0x80 &&
-            static_cast<unsigned char>(theText[i + 3] & 0xc0) == 0x80)
-        {
-          ch = ((theText[i] & 0xf) << 18 | (theText[i + 1] & 0x3f) << 12 |
-                (theText[i + 2] & 0x3f << 6) | (theText[i + 3] & 0x3f));
-          i += 4;
-        }
-        else
-          ++i;
-      }
+      unsigned short ch = next_utf8_char(theText, i);
 
       glyph_index = FT_Get_Char_Index(theFace, ch);
 
