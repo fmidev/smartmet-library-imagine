@@ -725,6 +725,131 @@ void NFmiContourTree::ContourLinear(const NFmiDataMatrix<float>& theValues,
 
 // ----------------------------------------------------------------------
 /*!
+ * \brief Contour the triangle formed by the three valid corners of a rectangle
+ */
+// ----------------------------------------------------------------------
+
+void NFmiContourTree::ContourLinearValid3(float x1,
+                                          float y1,
+                                          float z1,
+                                          float x2,
+                                          float y2,
+                                          float z2,
+                                          float x3,
+                                          float y3,
+                                          float z3,
+                                          float x4,
+                                          float y4,
+                                          float z4)
+{
+  if (IsValid(z1) && IsValid(z2) && IsValid(z3))
+    ContourLinear3(x1, y1, z1, x2, y2, z2, x3, y3, z3);
+  else if (IsValid(z1) && IsValid(z2) && IsValid(z4))
+    ContourLinear3(x1, y1, z1, x2, y2, z2, x4, y4, z4);
+  else if (IsValid(z1) && IsValid(z3) && IsValid(z4))
+    ContourLinear3(x1, y1, z1, x3, y3, z3, x4, y4, z4);
+  else if (IsValid(z2) && IsValid(z3) && IsValid(z4))
+    ContourLinear3(x2, y2, z2, x3, y3, z3, x4, y4, z4);
+}
+
+// ----------------------------------------------------------------------
+/*!
+ * \brief Contour a rectangle with a saddle point using triangles
+ *
+ * The triangles get the path correct, then the small line segments
+ * are collapsed back into straight lines.
+ */
+// ----------------------------------------------------------------------
+
+void NFmiContourTree::ContourSaddlePoint4(float x1,
+                                          float y1,
+                                          float z1,
+                                          VertexInsidedness c1,
+                                          float x2,
+                                          float y2,
+                                          float z2,
+                                          VertexInsidedness c2,
+                                          float x3,
+                                          float y3,
+                                          float z3,
+                                          VertexInsidedness c3,
+                                          float x4,
+                                          float y4,
+                                          float z4,
+                                          VertexInsidedness c4)
+{
+  // Make new subcontourer
+  NFmiContourTree subpath(itsLoLimit,
+                          itsHiLimit,
+                          itsLoLimitExact,
+                          itsHiLimitExact,
+                          itHasMissingValue,
+                          itsMissingValue);
+  subpath.itHasDataLoLimit = itHasDataLoLimit;
+  subpath.itHasDataHiLimit = itHasDataHiLimit;
+  subpath.itsDataLoLimit = itsDataLoLimit;
+  subpath.itsDataHiLimit = itsDataHiLimit;
+  subpath.itsSubTrianglesOn = true;
+
+  float x0 = (x1 + x2 + x3 + x4) / 4;
+  float y0 = (y1 + y2 + y3 + y4) / 4;
+  float z0 = (z1 + z2 + z3 + z4) / 4;
+  VertexInsidedness c0 = Insidedness(z0);
+  subpath.ContourLinear3(x1, y1, z1, c1, x2, y2, z2, c2, x0, y0, z0, c0);
+  subpath.ContourLinear3(x2, y2, z2, c2, x3, y3, z3, c3, x0, y0, z0, c0);
+  subpath.ContourLinear3(x3, y3, z3, c3, x4, y4, z4, c4, x0, y0, z0, c0);
+  subpath.ContourLinear3(x4, y4, z4, c4, x1, y1, z1, c1, x0, y0, z0, c0);
+
+  // all ghostlines can be added as is
+  {
+    for (auto it = subpath.itsEdges.begin(); it != subpath.itsEdges.end();)
+    {
+      if (it->Exact())
+        ++it;
+      else
+      {
+        Add(*it);
+        subpath.itsEdges.erase(it);
+        it = subpath.itsEdges.begin();
+      }
+    }
+  }
+
+  // next we must collapse all polylines into single lines
+
+  NFmiPath path = subpath.Path();
+  const NFmiPathData& elements = path.Elements();
+  float firstx = 0;
+  float firsty = 0;
+  float lastx = 0;
+  float lasty = 0;
+  for (auto it = elements.begin(); it != elements.end(); ++it)
+  {
+    switch (it->op)
+    {
+      case kFmiMoveTo:
+        if (it != elements.begin())
+          Add(NFmiEdge(firstx, firsty, lastx, lasty, true, false));
+        firstx = it->x;
+        firsty = it->y;
+        lastx = firstx;
+        lasty = firsty;
+        break;
+      case kFmiLineTo:
+        lastx = it->x;
+        lasty = it->y;
+        if (it == --elements.end())
+          Add(NFmiEdge(firstx, firsty, lastx, lasty, true, false));
+        break;
+      default:
+        throw Fmi::Exception(BCP, "NFmiContourTree encountered bad path element");
+    }
+  }
+  //	   cout << endl;
+}
+
+// ----------------------------------------------------------------------
+/*!
  * Contour a rectangular element. The input is the 4 coordinates defining
  * the rectangle, and the values at the rectangle vertices. The order
  * of the vertices may be clockwise or counter-clockwise, it does not
@@ -763,14 +888,7 @@ void NFmiContourTree::ContourLinear4(float x1,
 
     if (!IsValid(z1) || !IsValid(z2) || !IsValid(z3) || !IsValid(z4))
     {
-      if (IsValid(z1) && IsValid(z2) && IsValid(z3))
-        ContourLinear3(x1, y1, z1, x2, y2, z2, x3, y3, z3);
-      else if (IsValid(z1) && IsValid(z2) && IsValid(z4))
-        ContourLinear3(x1, y1, z1, x2, y2, z2, x4, y4, z4);
-      else if (IsValid(z1) && IsValid(z3) && IsValid(z4))
-        ContourLinear3(x1, y1, z1, x3, y3, z3, x4, y4, z4);
-      else if (IsValid(z2) && IsValid(z3) && IsValid(z4))
-        ContourLinear3(x2, y2, z2, x3, y3, z3, x4, y4, z4);
+      ContourLinearValid3(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4);
       return;
     }
 
@@ -885,76 +1003,7 @@ void NFmiContourTree::ContourLinear4(float x1,
     bool saddlepoint = ((c1 == c3 || c2 == c4) && (c1 != c2 && c3 != c4));
 
     if (saddlepoint)
-    {
-      // Make new subcontourer
-      NFmiContourTree subpath(itsLoLimit,
-                              itsHiLimit,
-                              itsLoLimitExact,
-                              itsHiLimitExact,
-                              itHasMissingValue,
-                              itsMissingValue);
-      subpath.itHasDataLoLimit = itHasDataLoLimit;
-      subpath.itHasDataHiLimit = itHasDataHiLimit;
-      subpath.itsDataLoLimit = itsDataLoLimit;
-      subpath.itsDataHiLimit = itsDataHiLimit;
-      subpath.itsSubTrianglesOn = true;
-
-      float x0 = (x1 + x2 + x3 + x4) / 4;
-      float y0 = (y1 + y2 + y3 + y4) / 4;
-      float z0 = (z1 + z2 + z3 + z4) / 4;
-      VertexInsidedness c0 = Insidedness(z0);
-      subpath.ContourLinear3(x1, y1, z1, c1, x2, y2, z2, c2, x0, y0, z0, c0);
-      subpath.ContourLinear3(x2, y2, z2, c2, x3, y3, z3, c3, x0, y0, z0, c0);
-      subpath.ContourLinear3(x3, y3, z3, c3, x4, y4, z4, c4, x0, y0, z0, c0);
-      subpath.ContourLinear3(x4, y4, z4, c4, x1, y1, z1, c1, x0, y0, z0, c0);
-
-      // all ghostlines can be added as is
-      {
-        for (auto it = subpath.itsEdges.begin(); it != subpath.itsEdges.end();)
-        {
-          if (it->Exact())
-            ++it;
-          else
-          {
-            Add(*it);
-            subpath.itsEdges.erase(it);
-            it = subpath.itsEdges.begin();
-          }
-        }
-      }
-
-      // next we must collapse all polylines into single lines
-
-      NFmiPath path = subpath.Path();
-      const NFmiPathData& elements = path.Elements();
-      float firstx = 0;
-      float firsty = 0;
-      float lastx = 0;
-      float lasty = 0;
-      for (auto it = elements.begin(); it != elements.end(); ++it)
-      {
-        switch (it->op)
-        {
-          case kFmiMoveTo:
-            if (it != elements.begin())
-              Add(NFmiEdge(firstx, firsty, lastx, lasty, true, false));
-            firstx = it->x;
-            firsty = it->y;
-            lastx = firstx;
-            lasty = firsty;
-            break;
-          case kFmiLineTo:
-            lastx = it->x;
-            lasty = it->y;
-            if (it == --elements.end())
-              Add(NFmiEdge(firstx, firsty, lastx, lasty, true, false));
-            break;
-          default:
-            throw Fmi::Exception(BCP, "NFmiContourTree encountered bad path element");
-        }
-      }
-      //	   cout << endl;
-    }
+      ContourSaddlePoint4(x1, y1, z1, c1, x2, y2, z2, c2, x3, y3, z3, c3, x4, y4, z4, c4);
 
     // Here we know for certain that there are no ambiguous areas when
     // deciding what areas to 'fill'. Due to the nature of the algorithm
