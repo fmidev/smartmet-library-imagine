@@ -413,6 +413,47 @@ PathList SplitPath(const NFmiPath& thePath)
   }
 }
 
+namespace
+{
+// Append the splits of a closed path, rotated to start at the first split point if there is one
+void AppendClosedSplits(PathList& out, const NFmiPath& thePath, const std::vector<long>& counts)
+{
+  const NFmiPathData& path = thePath.Elements();
+  const unsigned long n = path.size();
+  unsigned long i = 0;
+  for (i = 0; i < n; i++)
+  {
+    const size_t c0 = (i > 0 ? counts[i - 1] : counts[n - 2]);
+    const size_t c1 = counts[i];
+    const size_t c2 = (i + 1 < n ? counts[i + 1] : counts[1]);
+    if (c0 < c1 || c2 < c1)
+      break;
+  }
+  // Now if 0<i<n we found a split point to rotate to
+  if (i > 0 && i < n)
+  {
+    NFmiPath tmppath;
+    std::vector<long> tmpcounts;
+    unsigned long j = 0;
+    tmppath.MoveTo(path[i].x, path[i].y);
+    tmpcounts.push_back(counts[i]);
+    for (j = i + 1; j < n; j++)
+    {
+      tmppath.Add(path[j]);
+      tmpcounts.push_back(counts[j]);
+    }
+    for (j = 1; j <= i; j++)
+    {
+      tmppath.Add(path[j]);
+      tmpcounts.push_back(counts[j]);
+    }
+    AppendSplits(out, tmppath, tmpcounts);
+  }
+  else
+    AppendSplits(out, thePath, counts);
+}
+}  // namespace
+
 // ----------------------------------------------------------------------
 /*!
  * \brief Split the given regular path into unique use segments
@@ -470,40 +511,7 @@ PathList SplitPath(const NFmiPath& thePath, const NFmiCounter<NFmiPoint>& theCou
       if (!isclosed)
         AppendSplits(out, it, counts);
       else
-      {
-        const unsigned long n = path.size();
-        unsigned long i = 0;
-        for (i = 0; i < n; i++)
-        {
-          const size_t c0 = (i > 0 ? counts[i - 1] : counts[n - 2]);
-          const size_t c1 = counts[i];
-          const size_t c2 = (i + 1 < n ? counts[i + 1] : counts[1]);
-          if (c0 < c1 || c2 < c1)
-            break;
-        }
-        // Now if 0<i<n we found a split point to rotate to
-        if (i > 0 && i < n)
-        {
-          NFmiPath tmppath;
-          std::vector<long> tmpcounts;
-          unsigned long j = 0;
-          tmppath.MoveTo(path[i].x, path[i].y);
-          tmpcounts.push_back(counts[i]);
-          for (j = i + 1; j < n; j++)
-          {
-            tmppath.Add(path[j]);
-            tmpcounts.push_back(counts[j]);
-          }
-          for (j = 1; j <= i; j++)
-          {
-            tmppath.Add(path[j]);
-            tmpcounts.push_back(counts[j]);
-          }
-          AppendSplits(out, tmppath, tmpcounts);
-        }
-        else
-          AppendSplits(out, it, counts);
-      }
+        AppendClosedSplits(out, it, counts);
     }
 
     return out;

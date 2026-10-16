@@ -527,6 +527,53 @@ NFmiColorTools::NFmiBlendRule NFmiColorTools::Simplify(NFmiColorTools::NFmiBlend
   }
 }
 
+namespace
+{
+// Accumulate a decimal digit into a value which is negative until the first digit
+void add_digit(int &value, char digit)
+{
+  if (value < 0)
+    value = digit - '0';
+  else
+    value = value * 10 + digit - '0';
+}
+
+// Parse the decimal alpha value starting at the given position, -1 if there is none
+int parse_alpha(const string &theColor, size_t start)
+{
+  int value = -1;
+  for (size_t i = start; i < theColor.length(); i++)
+  {
+    if (theColor[i] >= '0' && theColor[i] <= '9')
+      add_digit(value, theColor[i]);
+    else
+      return -1;
+  }
+  return value;
+}
+
+// Parse comma separated decimal values, false if there are other characters
+bool parse_decimal_list(const string &theColor, vector<int> &values)
+{
+  int value = -1;
+  for (unsigned int i = 0; i < theColor.length(); i++)
+  {
+    if (theColor[i] >= '0' && theColor[i] <= '9')
+      add_digit(value, theColor[i]);
+    else if (theColor[i] == ',')
+    {
+      values.push_back(value);
+      value = -1;
+    }
+    else
+      return false;
+  }
+  if (value >= 0)
+    values.push_back(value);
+  return true;
+}
+}  // namespace
+
 // ----------------------------------------------------------------------
 // General purpose string to color conversion
 //
@@ -556,19 +603,7 @@ NFmiColorTools::Color NFmiColorTools::ToColor(const string &theColor)
       if (pos == string::npos)
         return ColorValue(theColor);
 
-      int value = -1;
-      for (size_t i = pos + 1; i < theColor.length(); i++)
-      {
-        if (theColor[i] >= '0' && theColor[i] <= '9')
-        {
-          if (value < 0)
-            value = theColor[i] - '0';
-          else
-            value = value * 10 + theColor[i] - '0';
-        }
-        else
-          return MissingColor;
-      }
+      int value = parse_alpha(theColor, pos + 1);
       if (value < 0)
         return MissingColor;
 
@@ -579,27 +614,8 @@ NFmiColorTools::Color NFmiColorTools::ToColor(const string &theColor)
     // Handle decimal format
 
     vector<int> tmp;
-    int value = -1;
-    for (unsigned int i = 0; i < theColor.length(); i++)
-    {
-      if (theColor[i] >= '0' && theColor[i] <= '9')
-      {
-        if (value < 0)
-          value = theColor[i] - '0';
-        else
-          value = value * 10 + theColor[i] - '0';
-      }
-      else if (theColor[i] == ',')
-      {
-        tmp.push_back(value);
-        value = -1;
-      }
-      else
-        return MissingColor;
-    }
-
-    if (value >= 0)
-      tmp.push_back(value);
+    if (!parse_decimal_list(theColor, tmp))
+      return MissingColor;
 
     if (tmp.size() == 3)
       return MakeColor(tmp[0], tmp[1], tmp[2], 0);
