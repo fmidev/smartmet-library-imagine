@@ -265,50 +265,105 @@ int getcode(FILE *theInput, int theCodeSize, bool theFlushFlag)
  */
 // ----------------------------------------------------------------------
 
-int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
+// LZW decompression state
+struct LzwDecoder
 {
-  try
+  int set_code_size = 0;
+  int code_size = 0;
+  int clear_code = 0;
+  int end_code = 0;
+  int max_code_size = 0;
+  int max_code = 0;
+  int firstcode = 0;
+  int oldcode = 0;
+  bool fresh = false;
+  int table[2][1 << MaxLzwBits];
+  int stack[(1 << (MaxLzwBits)) * 2];
+  int *sp = nullptr;
+
+  // Reset the code table
+  void reset_table()
   {
-    static int set_code_size = 0;
-    static int code_size = 0;
-    static int clear_code = 0;
-    static int end_code = 0;
-    static int max_code_size = 0;
-    static int max_code = 0;
-    static int firstcode = 0;
-    static int oldcode = 0;
-    static bool fresh = false;
-    static int table[2][1 << MaxLzwBits];
-    static int stack[(1 << (MaxLzwBits)) * 2];
-    static int* sp;
-
     int i = 0;
-
-    if (theFlag)
+    for (i = 0; i < clear_code; ++i)
     {
-      set_code_size = theInputCodeSize;
-      code_size = set_code_size + 1;
-      clear_code = 1 << set_code_size;
-      end_code = clear_code + 1;
-      max_code_size = 2 * clear_code;
-      max_code = clear_code + 2;
+      table[0][i] = 0;
+      table[1][i] = i;
+    }
+    for (; i < (1 << MaxLzwBits); ++i)
+      table[0][i] = table[1][i] = 0;
+  }
 
-      getcode(theInput, 0, true);
+  // Start decompressing with the given initial code size
+  void init(FILE *theInput, int theInputCodeSize)
+  {
+    set_code_size = theInputCodeSize;
+    code_size = set_code_size + 1;
+    clear_code = 1 << set_code_size;
+    end_code = clear_code + 1;
+    max_code_size = 2 * clear_code;
+    max_code = clear_code + 2;
 
-      fresh = true;
+    getcode(theInput, 0, true);
 
-      for (i = 0; i < clear_code; ++i)
-      {
-        table[0][i] = 0;
-        table[1][i] = i;
-      }
-      for (; i < (1 << MaxLzwBits); ++i)
-        table[0][i] = table[1][0] = 0;  // BUG???
+    fresh = true;
 
-      sp = stack;
-      return 0;
+    reset_table();
+
+    sp = stack;
+  }
+
+  // Handle a clear code, returns the first code after it
+  int clear(FILE *theInput)
+  {
+    reset_table();
+    code_size = set_code_size + 1;
+    max_code_size = 2 * clear_code;
+    max_code = clear_code + 2;
+    sp = stack;
+    firstcode = oldcode = getcode(theInput, code_size, false);
+    return firstcode;
+  }
+
+  // Push the bytes of a code onto the stack and add a new table entry
+  void decode(int code)
+  {
+    int incode = code;
+
+    if (code >= max_code)
+    {
+      *sp++ = firstcode;
+      code = oldcode;
+    }
+    while (code >= clear_code)
+    {
+      *sp++ = table[1][code];
+      if (code == table[0][code])
+        throw Fmi::Exception(BCP, "Circular table entry in GIF");
+      code = table[0][code];
     }
 
+    *sp++ = firstcode = table[1][code];
+
+    code = max_code;
+    if (code < (1 << MaxLzwBits))
+    {
+      table[0][code] = oldcode;
+      table[1][code] = firstcode;
+      ++max_code;
+      if ((max_code >= max_code_size) && (max_code_size < (1 << MaxLzwBits)))
+      {
+        max_code_size *= 2;
+        ++code_size;
+      }
+    }
+
+    oldcode = incode;
+  }
+
+  // Read the next byte
+  int next(FILE *theInput)
+  {
     if (fresh)
     {
       fresh = false;
@@ -325,65 +380,20 @@ int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
     while ((code = getcode(theInput, code_size, false)) >= 0)
     {
       if (code == clear_code)
-      {
-        for (i = 0; i < clear_code; ++i)
-        {
-          table[0][i] = 0;
-          table[1][i] = i;
-        }
-        for (; i < (1 << MaxLzwBits); ++i)
-          table[0][i] = table[1][i] = 0;
-        code_size = set_code_size + 1;
-        max_code_size = 2 * clear_code;
-        max_code = clear_code + 2;
-        sp = stack;
-        firstcode = oldcode = getcode(theInput, code_size, false);
-        return firstcode;
-      }
+        return clear(theInput);
+
       if (code == end_code)
       {
-        if (zeroblock)
-          return -2;
-
-        unsigned char buf[260];
-        while (getdatablock(theInput, buf) > 0)
-          ;
-
+        if (!zeroblock)
+        {
+          unsigned char buf[260];
+          while (getdatablock(theInput, buf) > 0)
+            ;
+        }
         return -2;
       }
 
-      int incode = code;
-
-      if (code >= max_code)
-      {
-        *sp++ = firstcode;
-        code = oldcode;
-      }
-      while (code >= clear_code)
-      {
-        *sp++ = table[1][code];
-        if (code == table[0][code])
-          throw Fmi::Exception(BCP, "Circular table entry in GIF");
-
-        code = table[0][code];
-      }
-
-      *sp++ = firstcode = table[1][code];
-
-      code = max_code;
-      if (code < (1 << MaxLzwBits))
-      {
-        table[0][code] = oldcode;
-        table[1][code] = firstcode;
-        ++max_code;
-        if ((max_code >= max_code_size) && (max_code_size < (1 << MaxLzwBits)))
-        {
-          max_code_size *= 2;
-          ++code_size;
-        }
-      }
-
-      oldcode = incode;
+      decode(code);
 
       if (sp > stack)
         return *--sp;
@@ -391,10 +401,72 @@ int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
 
     return code;
   }
+};
+
+int lzwreadbyte(FILE *theInput, bool theFlag, int theInputCodeSize)
+{
+  try
+  {
+    static LzwDecoder decoder;
+
+    if (theFlag)
+    {
+      decoder.init(theInput, theInputCodeSize);
+      return 0;
+    }
+
+    return decoder.next(theInput);
+  }
   catch (...)
   {
     throw Fmi::Exception::Trace(BCP, "Operation failed!");
   }
+}
+
+// ----------------------------------------------------------------------
+/*!
+ * \brief Advance to the next row of an interlaced image, false when done
+ */
+// ----------------------------------------------------------------------
+
+bool next_interlaced_row(unsigned int &ypos, unsigned int &pass, unsigned int theHeight)
+{
+  switch (pass)
+  {
+    case 0:
+      ypos += 8;
+      break;
+    case 1:
+      ypos += 8;
+      break;
+    case 2:
+      ypos += 4;
+      break;
+    case 3:
+      ypos += 2;
+      break;
+    default:
+      break;
+  }
+  if (ypos >= theHeight)
+  {
+    ++pass;
+    switch (pass)
+    {
+      case 1:
+        ypos = 4;
+        break;
+      case 2:
+        ypos = 2;
+        break;
+      case 3:
+        ypos = 1;
+        break;
+      default:
+        return false;
+    }
+  }
+  return true;
 }
 
 // ----------------------------------------------------------------------
@@ -449,50 +521,12 @@ void read_image(FILE *theInput,
         xpos = 0;
         if (!theInterlaceFlag)
           ++ypos;
-        else
-        {
-          switch (pass)
-          {
-            case 0:
-              ypos += 8;
-              break;
-            case 1:
-              ypos += 8;
-              break;
-            case 2:
-              ypos += 4;
-              break;
-            case 3:
-              ypos += 2;
-              break;
-            default:
-              break;
-          }
-          if (ypos >= theHeight)
-          {
-            ++pass;
-            switch (pass)
-            {
-              case 1:
-                ypos = 4;
-                break;
-              case 2:
-                ypos = 2;
-                break;
-              case 3:
-                ypos = 1;
-                break;
-              default:
-                goto fini;
-            }
-          }
-        }
+        else if (!next_interlaced_row(ypos, pass, theHeight))
+          break;
       }
       if (ypos >= theHeight)
         break;
     }
-
-  fini:
 
     // We do not throw since pbmplus merely warns about this
     if (lzwreadbyte(theInput, false, c) >= 0)
