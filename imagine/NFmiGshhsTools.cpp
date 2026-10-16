@@ -97,7 +97,82 @@ struct POINT
   int y;  //!< y-coordinate
 };
 
+// Byteswap the header
+void swap_header(GSHHS &header)
+{
+  swab4(&header.id);
+  swab4(&header.n);
+  swab4(&header.level);
+  swab4(&header.west);
+  swab4(&header.east);
+  swab4(&header.south);
+  swab4(&header.north);
+  swab4(&header.area);
+  swab2(&header.greenwich);
+  swab2(&header.source);
+}
+
+// True if the polygon is outside the bounding box
+bool is_outside(const GSHHS &header,
+                double theMinLongitude,
+                double theMinLatitude,
+                double theMaxLongitude,
+                double theMaxLatitude)
+{
+  const double w = 1.0e-6 * header.west;
+  const double e = 1.0e-6 * header.east;
+  const double s = 1.0e-6 * header.south;
+  const double n = 1.0e-6 * header.north;
+
+  const double ww = wrap_longitude(w);
+  const double ee = wrap_longitude(e);
+
+  bool outside =
+      (ww > theMaxLongitude || ee < theMinLongitude || s > theMaxLatitude || n < theMinLatitude);
+
+  // Correct test for Eurasia
+  if (ee < ww)
+  {
+    bool outside1 = (ww > theMaxLongitude || s > theMaxLatitude || n < theMinLatitude);
+
+    bool outside2 = (ee < theMinLongitude || s > theMaxLatitude || n < theMinLatitude);
+
+    outside = (outside1 && outside2);
+  }
+  return outside;
+}
+
+// Read the points of a polygon into the path
+void read_polygon(FILE *fp,
+                  const GSHHS &header,
+                  bool flip,
+                  int max,
+                  Imagine::NFmiPath &ret,
+                  const std::string &theFilename)
+{
+  POINT point{};
+  for (int k = 0; k < header.n; k++)
+  {
+    if (fread(static_cast<void *>(&point), size_t(sizeof(struct POINT)), size_t(1), fp) != 1)
+      throw Fmi::Exception(BCP, "File " + theFilename + " is corrupt");
+
+    if (flip)
+    {
+      swab4(&point.x);
+      swab4(&point.y);
+    }
+    const double lon =
+        (header.greenwich && point.x > max ? point.x * 1.0e-6 - 360 : point.x * 1.0e-6);
+    const double lat = point.y * 1.0e-6;
+
+    if (k == 0)
+      ret.MoveTo(lon, lat);
+    else
+      ret.LineTo(lon, lat);
+  }
+}
 }  // namespace
+
 
 // ======================================================================
 //				ACTUAL INTERFACE IMPLEMENTATION
@@ -156,7 +231,6 @@ NFmiPath ReadPath(const std::string &theFilename,
 
     // Read the first header
     GSHHS header{};
-    POINT point{};
     int n_read = fread(static_cast<void *>(&header), size_t(sizeof(struct GSHHS)), size_t(1), fp);
 
     // Establish whether byteswapping is needed from first header
@@ -168,41 +242,12 @@ NFmiPath ReadPath(const std::string &theFilename,
     while (n_read == 1)
     {
       if (flip)
-      {
-        swab4(&header.id);
-        swab4(&header.n);
-        swab4(&header.level);
-        swab4(&header.west);
-        swab4(&header.east);
-        swab4(&header.south);
-        swab4(&header.north);
-        swab4(&header.area);
-        swab2(&header.greenwich);
-        swab2(&header.source);
-      }
-
-      const double w = 1.0e-6 * header.west;
-      const double e = 1.0e-6 * header.east;
-      const double s = 1.0e-6 * header.south;
-      const double n = 1.0e-6 * header.north;
+        swap_header(header);
 
       const double area = 0.1 * header.area;  // now in km^2
 
-      const double ww = wrap_longitude(w);
-      const double ee = wrap_longitude(e);
-
-      bool outside = (ww > theMaxLongitude || ee < theMinLongitude || s > theMaxLatitude ||
-                      n < theMinLatitude);
-
-      // Correct test for Eurasia
-      if (ee < ww)
-      {
-        bool outside1 = (ww > theMaxLongitude || s > theMaxLatitude || n < theMinLatitude);
-
-        bool outside2 = (ee < theMinLongitude || s > theMaxLatitude || n < theMinLatitude);
-
-        outside = (outside1 && outside2);
-      }
+      bool outside = is_outside(
+          header, theMinLongitude, theMinLatitude, theMaxLongitude, theMaxLatitude);
 
       if (outside || (area < theMinArea && theMinArea >= 0))
       {
@@ -212,25 +257,7 @@ NFmiPath ReadPath(const std::string &theFilename,
       }
       else
       {
-        for (int k = 0; k < header.n; k++)
-        {
-          if (fread(static_cast<void *>(&point), size_t(sizeof(struct POINT)), size_t(1), fp) != 1)
-            throw Fmi::Exception(BCP, "File " + theFilename + " is corrupt");
-
-          if (flip)
-          {
-            swab4(&point.x);
-            swab4(&point.y);
-          }
-          const double lon =
-              (header.greenwich && point.x > max ? point.x * 1.0e-6 - 360 : point.x * 1.0e-6);
-          const double lat = point.y * 1.0e-6;
-
-          if (k == 0)
-            ret.MoveTo(lon, lat);
-          else
-            ret.LineTo(lon, lat);
-        }
+        read_polygon(fp, header, flip, max, ret, theFilename);
       }
 
       max = 180000000;  // only Eurasiafrica needs 270
