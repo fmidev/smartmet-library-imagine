@@ -115,9 +115,9 @@ FT_BBox compute_bbox(const vector<FT_Glyph>& theGlyphs, const vector<FT_Vector>&
 }
 
 // Decode the next UTF-8 character and advance the position past it
-unsigned short next_utf8_char(const string& theText, string::size_type& i)
+unsigned long next_utf8_char(const string& theText, string::size_type& i)
 {
-  unsigned short ch = static_cast<unsigned char>(theText[i]);
+  unsigned long ch = static_cast<unsigned char>(theText[i]);
 
   if (ch < 0xc0)
   {
@@ -150,8 +150,8 @@ unsigned short next_utf8_char(const string& theText, string::size_type& i)
         static_cast<unsigned char>(theText[i + 2] & 0xc0) == 0x80 &&
         static_cast<unsigned char>(theText[i + 3] & 0xc0) == 0x80)
     {
-      ch = ((theText[i] & 0xf) << 18 | (theText[i + 1] & 0x3f) << 12 |
-            (theText[i + 2] & 0x3f << 6) | (theText[i + 3] & 0x3f));
+      ch = ((theText[i] & 0x7) << 18 | (theText[i + 1] & 0x3f) << 12 |
+            (theText[i + 2] & 0x3f) << 6 | (theText[i + 3] & 0x3f));
       i += 4;
     }
     else
@@ -366,7 +366,7 @@ void NFmiFreeType::Pimple::Draw(T theBlender,
     string::size_type i = 0;
     while (i < theText.size())
     {
-      unsigned short ch = next_utf8_char(theText, i);
+      unsigned long ch = next_utf8_char(theText, i);
 
       glyph_index = FT_Get_Char_Index(theFace, ch);
 
