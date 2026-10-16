@@ -34,7 +34,7 @@ class NFmiEdgeTree
  public:
   // Constructors
 
-  NFmiEdgeTree() {}
+  NFmiEdgeTree() = default;
   // Destructors
 
   ~NFmiEdgeTree() override = default;

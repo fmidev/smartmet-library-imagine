@@ -66,7 +66,7 @@ class NFmiCounter
   //! Constructor
   NFmiCounter() = default;
   //! Destructor
-  ~NFmiCounter() {}
+  ~NFmiCounter() = default;
   NFmiCounter(const NFmiCounter&) = default;
   NFmiCounter& operator=(const NFmiCounter&) = default;
   //! Reset the counter to contain no data

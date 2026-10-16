@@ -93,7 +93,7 @@ struct GifScreen
   int inputflag = -1;
   int disposal = 0;
 
-  GifScreen() {}
+  GifScreen() = default;
 };
 
 // ----------------------------------------------------------------------
@@ -634,7 +634,7 @@ void NFmiImage::ReadGIF(FILE *in)
 #define MaxGIFBits 12
 #define MaxGIFTable (1 << MaxGIFBits)
 #define GIFOutputCode(code)                          \
-  {                                                  \
+  ([&] {                                                  \
     if (bitsnow > 0)                                 \
       datum |= (static_cast<long>(code) << bitsnow); \
     else                                             \
@@ -660,7 +660,7 @@ void NFmiImage::ReadGIF(FILE *in)
       else                                           \
         max_code = MaxCode(number_bits);             \
     }                                                \
-  }
+  }())
 
 void NFmiImage::WriteGIF(FILE *out) const
 {

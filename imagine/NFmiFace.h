@@ -24,7 +24,7 @@ class NFmiFace
  public:
   ~NFmiFace();
   NFmiFace(const std::string& theFontSpec);
-  NFmiFace(const std::string& theFile, int theWidth, int theHeight);
+  NFmiFace(std::string  theFile, int theWidth, int theHeight);
 #ifndef NO_COMPILER_GENERATED
   NFmiFace(const NFmiFace& theFace);
   NFmiFace& operator=(const NFmiFace& theFace);

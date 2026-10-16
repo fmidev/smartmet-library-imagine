@@ -47,6 +47,7 @@
 #include <deque>
 
 #include <iostream>  // << is overloaded
+#include <utility>
 
 class NFmiGrid;
 
@@ -66,8 +67,8 @@ class NFmiPath
  public:
   ~NFmiPath() override = default;
   NFmiPath() : itsInsideOut(false) {}
-  NFmiPath(const NFmiPathData &thePathData, bool theInsideOut = false)
-      : itsInsideOut(theInsideOut), itsElements(thePathData)
+  NFmiPath(NFmiPathData thePathData, bool theInsideOut = false)
+      : itsInsideOut(theInsideOut), itsElements(std::move(thePathData))
   {
   }
 

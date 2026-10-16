@@ -37,6 +37,7 @@
 #include <newbase/NFmiStringTools.h>
 
 #include <stdexcept>
+#include <utility>
 #include <vector>
 
 using namespace std;
@@ -96,8 +97,8 @@ NFmiFace::NFmiFace(const std::string& theFontSpec)
  */
 // ----------------------------------------------------------------------
 
-NFmiFace::NFmiFace(const std::string& theFile, int theWidth, int theHeight)
-    : itsFile(theFile),
+NFmiFace::NFmiFace(std::string  theFile, int theWidth, int theHeight)
+    : itsFile(std::move(theFile)),
       itsWidth(theWidth),
       itsHeight(theHeight),
       itsBackgroundOn(false),

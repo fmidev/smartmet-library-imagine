@@ -42,6 +42,7 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 #include "NFmiEsriAttributeName.h"
 #include <newbase/NFmiMetTime.h>
@@ -63,8 +64,8 @@ class NFmiEsriAttribute
   {
   }
 
-  NFmiEsriAttribute(const std::string& theValue, NFmiEsriAttributeName* theName)
-      : itsAttributeName(theName), itsString(theValue)
+  NFmiEsriAttribute(std::string theValue, NFmiEsriAttributeName* theName)
+      : itsAttributeName(theName), itsString(std::move(theValue))
   {
   }
 
@@ -75,7 +76,7 @@ class NFmiEsriAttribute
 
   // Destructor is automatic
 
-  ~NFmiEsriAttribute() {}
+  ~NFmiEsriAttribute() = default;
   NFmiEsriAttribute(const NFmiEsriAttribute&) = default;
   NFmiEsriAttribute& operator=(const NFmiEsriAttribute&) = default;
   // Getting values - it is assumed that type has been checked
