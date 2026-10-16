@@ -709,42 +709,311 @@ void NFmiImage::ReadGIF(FILE *in)
 #define MaxHashTable 5003
 #define MaxGIFBits 12
 #define MaxGIFTable (1 << MaxGIFBits)
-#define GIFOutputCode(code)                          \
-  ([&] {                                                  \
-    if (bitsnow > 0)                                 \
-      datum |= (static_cast<long>(code) << bitsnow); \
-    else                                             \
-      datum = static_cast<long>(code);               \
-    bitsnow += number_bits;                          \
-    while (bitsnow >= 8)                             \
-    {                                                \
-      packet[byte_count++] = (datum & 0xff);         \
-      if (byte_count >= 254)                         \
-      {                                              \
-        fputc(byte_count, out);                      \
-        (void)fwrite(packet.c_str(), 1, byte_count, out); \
-        byte_count = 0;                              \
-      }                                              \
-      datum >>= 8;                                   \
-      bitsnow -= 8;                                  \
-    }                                                \
-    if (free_code > max_code)                        \
-    {                                                \
-      number_bits++;                                 \
-      if (number_bits == MaxGIFBits)                 \
-        max_code = MaxGIFTable;                      \
-      else                                           \
-        max_code = MaxCode(number_bits);             \
-    }                                                \
-  }())
+namespace
+{
+// Bit packing output of the GIF LZW encoder
+struct GifCodeWriter
+{
+  explicit GifCodeWriter(FILE *theOut, int theNumberBits)
+      : out(theOut), number_bits(theNumberBits), max_code(MaxCode(theNumberBits))
+  {
+  }
+
+  FILE *out;
+  string packet = string(256, '\0');
+  int byte_count = 0;
+  long datum = 0;
+  int bitsnow = 0;
+  int number_bits;
+  short max_code;
+
+  // Output a code, widening the codes if the free code no longer fits
+  void output(short code, short free_code)
+  {
+    if (bitsnow > 0)
+      datum |= (static_cast<long>(code) << bitsnow);
+    else
+      datum = static_cast<long>(code);
+    bitsnow += number_bits;
+    while (bitsnow >= 8)
+    {
+      packet[byte_count++] = (datum & 0xff);
+      if (byte_count >= 254)
+      {
+        fputc(byte_count, out);
+        (void)fwrite(packet.c_str(), 1, byte_count, out);
+        byte_count = 0;
+      }
+      datum >>= 8;
+      bitsnow -= 8;
+    }
+    if (free_code > max_code)
+    {
+      number_bits++;
+      if (number_bits == MaxGIFBits)
+        max_code = MaxGIFTable;
+      else
+        max_code = MaxCode(number_bits);
+    }
+  }
+
+  // Flush the buffered bits and the accumulated data
+  void flush()
+  {
+    if (bitsnow > 0)
+      packet[byte_count++] = (datum & 0xff);
+
+    // Flush accumulated data.
+
+    if (byte_count > 0)
+    {
+      fputc(byte_count, out);
+      (void)fwrite(packet.c_str(), 1, byte_count, out);
+    }
+  }
+};
+
+// The LZW hash table of the GIF encoder
+struct GifHashTable
+{
+  string hash_suffix = string(MaxHashTable, '\0');
+  vector<short> hash_code = vector<short>(MaxHashTable, 0);
+  vector<short> hash_prefix = vector<short>(MaxHashTable, 0);
+
+  // Find the code for the prefix and the suffix. Returns true if found, otherwise
+  // sets k to the free slot to use.
+  bool find(int &k, short waiting_code, short index, short &code) const
+  {
+    k = (static_cast<int>(index) << (MaxGIFBits - 8)) + waiting_code;
+
+    if (k >= MaxHashTable)
+      k -= MaxHashTable;
+
+    if (hash_code[k] <= 0)
+      return false;
+
+    if ((hash_prefix[k] == waiting_code) && (hash_suffix[k] == index))
+    {
+      code = hash_code[k];
+      return true;
+    }
+
+    int displacement = 1;
+    if (k != 0)
+      displacement = MaxHashTable - k;
+    for (;;)
+    {
+      k -= displacement;
+      if (k < 0)
+        k += MaxHashTable;
+      if (hash_code[k] == 0)
+        return false;
+      if ((hash_prefix[k] == waiting_code) && (hash_suffix[k] == index))
+      {
+        code = hash_code[k];
+        return true;
+      }
+    }
+  }
+
+  void clear()
+  {
+    for (int k = 0; k < MaxHashTable; k++)
+      hash_code[k] = 0;
+  }
+};
+
+// Build the palette of opaque colors, returns true if there is a transparent color
+bool build_gif_palette(const set<NFmiColorTools::Color> &theColors,
+                       vector<NFmiColorTools::Color> &colors,
+                       map<NFmiColorTools::Color, int> &colormap)
+{
+  bool hastransparent = false;
+  int num_colors = 0;
+
+  for (auto iter = theColors.begin(); iter != theColors.end(); iter++)
+  {
+    if (NFmiColorTools::GetAlpha(*iter) > 0)
+      hastransparent = true;
+    else
+    {
+      colormap.insert(make_pair(*iter, num_colors++));
+      colors.push_back(*iter);
+    }
+  }
+  return hastransparent;
+}
+
+// The GIF header, global color map, transparency extension and image descriptor
+string gif_header(int theWidth,
+                  int theHeight,
+                  const vector<NFmiColorTools::Color> &colors,
+                  bool hastransparent,
+                  int bits)
+{
+  const int num_colors = static_cast<int>(colors.size());
+
+  // Write the magic number
+
+  string header;
+  header.reserve(1000);  // An overestimated header size (3*256+n)
+
+  if (hastransparent)
+    header += "GIF89a";
+  else
+    header += "GIF87a";
+
+  // Image width and height
+
+  header += NFmiEsriBuffer::LittleEndianShort(theWidth);
+  header += NFmiEsriBuffer::LittleEndianShort(theHeight);
+
+  // Mode flags
+
+  unsigned char mode = 0x80;  // Global color map on
+  mode |= (8 - 1) << 4;       // Resolution
+  mode |= bits - 1;           // Bits per pixel
+
+  header += mode;
+
+  // Background color chosen to be color 0
+
+  header += '\0';
+
+  // Future expansion byte
+
+  header += '\0';
+
+  // The global color map
+
+  for (int i = 0; i < num_colors; i++)
+  {
+    header += static_cast<unsigned char>(NFmiColorTools::GetRed(colors[i]));
+    header += static_cast<unsigned char>(NFmiColorTools::GetGreen(colors[i]));
+    header += static_cast<unsigned char>(NFmiColorTools::GetBlue(colors[i]));
+  }
+
+  // Pad with zeros to get 2^bits colors. Note that using
+  // header += "\x00\x00\x00" would not work, since it is
+  // interpreted as a c-string and thus terminates immediately.
+  // Using string("\x00\x00\x00") would not work either.
+
+  const int mapsize = 1 << bits;
+  for (int i = num_colors; i < mapsize; i++)
+    for (int j = 0; j < 3; j++)
+      header += '\x00';  // This wouldn't work: += "\x00\x00\x00
+
+  // Write GIF89a extension if necessary
+
+  if (hastransparent)
+  {
+    header += '\x21';
+    header += '\xf9';
+    header += '\x04';
+    header += '\x01';                                  // matte flag
+    header += NFmiEsriBuffer::LittleEndianShort(0);    // delay=0
+    header += static_cast<unsigned char>(num_colors);  // trans. idx
+    header += '\x00';
+  }
+
+  // Comment block would go here - we don't output one
+
+  // Initial code size
+
+  unsigned char initcodesize = std::max(bits, 2);
+
+  header += ',';                                   // image separator
+  header += NFmiEsriBuffer::LittleEndianShort(0);  // left offset
+  header += NFmiEsriBuffer::LittleEndianShort(0);  // top offset
+  header += NFmiEsriBuffer::LittleEndianShort(theWidth);
+  header += NFmiEsriBuffer::LittleEndianShort(theHeight);
+  header += '\x00';
+  header += initcodesize;  // initial code size
+
+  return header;
+}
+
+// Encode the pixels with LZW
+void write_gif_raster(FILE *out,
+                      const NFmiColorTools::Color *thePixels,
+                      int thePixelCount,
+                      map<NFmiColorTools::Color, int> &colormap,
+                      int num_colors,
+                      int bits,
+                      int opaquethreshold,
+                      bool ignorealpha)
+{
+  // Allocate encoder tables
+
+  GifHashTable table;
+
+  // Initialize GIF encoder
+
+  const short data_size = std::max(bits, 2) + 1;
+  const short clear_code = 1 << (data_size - 1);
+  const short end_code = clear_code + 1;
+
+  GifCodeWriter writer(out, data_size);
+  short free_code = clear_code + 2;
+
+  writer.output(clear_code, free_code);
+
+  // Encode pixels
+
+  short waiting_code = 0;
+
+  for (int pixpos = 0; pixpos < thePixelCount; pixpos++)
+  {
+    // Get the color, simplify it
+
+    NFmiColorTools::Color c = thePixels[pixpos];
+    c = NFmiColorTools::Simplify(c, opaquethreshold, ignorealpha);
+
+    // Convert to colormap index
+
+    int a = NFmiColorTools::GetAlpha(c);
+    short index = (a == 0 ? colormap[c] : num_colors);
+
+    // Probe hash table
+
+    int k = 0;
+    short code = 0;
+    if (table.find(k, waiting_code, index, code))
+    {
+      waiting_code = code;
+      continue;
+    }
+
+    writer.output(waiting_code, free_code);
+    if (free_code < MaxGIFTable)
+    {
+      table.hash_code[k] = free_code++;
+      table.hash_prefix[k] = waiting_code;
+      table.hash_suffix[k] = index;
+    }
+    else
+    {
+      table.clear();
+      free_code = clear_code + 2;
+      writer.output(clear_code, free_code);
+      writer.number_bits = data_size;
+      writer.max_code = MaxCode(writer.number_bits);
+    }
+    waiting_code = index;
+  }
+
+  // Flush out the buffered code
+
+  writer.output(waiting_code, free_code);
+  writer.output(end_code, free_code);
+  writer.flush();
+}
+}  // namespace
 
 void NFmiImage::WriteGIF(FILE *out) const
 {
   try
   {
-    int i = 0;
-    int j = 0;
-
     // Establish whether a palette version can be made
 
     set<NFmiColorTools::Color> theColors;
@@ -776,21 +1045,9 @@ void NFmiImage::WriteGIF(FILE *out) const
 
     vector<NFmiColorTools::Color> colors;
     map<NFmiColorTools::Color, int> colormap;
-    set<NFmiColorTools::Color>::const_iterator iter;
 
-    bool hastransparent = false;
-    int num_colors = 0;
-
-    for (iter = theColors.begin(); iter != theColors.end(); iter++)
-    {
-      if (NFmiColorTools::GetAlpha(*iter) > 0)
-        hastransparent = true;
-      else
-      {
-        colormap.insert(make_pair(*iter, num_colors++));
-        colors.push_back(*iter);
-      }
-    }
+    bool hastransparent = build_gif_palette(theColors, colors, colormap);
+    int num_colors = static_cast<int>(colors.size());
 
     int total_colors = num_colors;
     if (hastransparent)
@@ -805,202 +1062,20 @@ void NFmiImage::WriteGIF(FILE *out) const
       if (1 << bits >= total_colors)
         break;
 
-    // Write the magic number
-
-    string header;
-    header.reserve(1000);  // An overestimated header size (3*256+n)
-
-    if (hastransparent)
-      header += "GIF89a";
-    else
-      header += "GIF87a";
-
-    // Image width and height
-
-    header += NFmiEsriBuffer::LittleEndianShort(itsWidth);
-    header += NFmiEsriBuffer::LittleEndianShort(itsHeight);
-
-    // Mode flags
-
-    unsigned char mode = 0x80;  // Global color map on
-    mode |= (8 - 1) << 4;       // Resolution
-    mode |= bits - 1;           // Bits per pixel
-
-    header += mode;
-
-    // Background color chosen to be color 0
-
-    header += '\0';
-
-    // Future expansion byte
-
-    header += '\0';
-
-    // The global color map
-
-    unsigned char r = 0;
-    unsigned char g = 0;
-    unsigned char b = 0;
-
-    for (i = 0; i < num_colors; i++)
-    {
-      r = static_cast<unsigned char>(NFmiColorTools::GetRed(colors[i]));
-      g = static_cast<unsigned char>(NFmiColorTools::GetGreen(colors[i]));
-      b = static_cast<unsigned char>(NFmiColorTools::GetBlue(colors[i]));
-      header += r;
-      header += g;
-      header += b;
-    }
-
-    // Pad with zeros to get 2^bits colors. Note that using
-    // header += "\x00\x00\x00" would not work, since it is
-    // interpreted as a c-string and thus terminates immediately.
-    // Using string("\x00\x00\x00") would not work either.
-
-    const int mapsize = 1 << bits;
-    for (i = num_colors; i < mapsize; i++)
-      for (j = 0; j < 3; j++)
-        header += '\x00';  // This wouldn't work: += "\x00\x00\x00
-
-    // Write GIF89a extension if necessary
-
-    if (hastransparent)
-    {
-      header += '\x21';
-      header += '\xf9';
-      header += '\x04';
-      header += '\x01';                                  // matte flag
-      header += NFmiEsriBuffer::LittleEndianShort(0);    // delay=0
-      header += static_cast<unsigned char>(num_colors);  // trans. idx
-      header += '\x00';
-    }
-
-    // Comment block would go here - we don't output one
-
-    // Initial code size
-
-    unsigned char initcodesize = std::max(bits, 2);
-
-    header += ',';                                   // image separator
-    header += NFmiEsriBuffer::LittleEndianShort(0);  // left offset
-    header += NFmiEsriBuffer::LittleEndianShort(0);  // top offset
-    header += NFmiEsriBuffer::LittleEndianShort(itsWidth);
-    header += NFmiEsriBuffer::LittleEndianShort(itsHeight);
-    header += '\x00';
-    header += initcodesize;  // initial code size
+    string header = gif_header(itsWidth, itsHeight, colors, hastransparent, bits);
 
     (void)fwrite(header.c_str(), 1, header.size(), out);  // errors checked at the end
 
     // Write the raster itself
 
-    // Allocate encoder tables
-
-    string packet(256, '\0');
-    string hash_suffix(MaxHashTable, '\0');
-
-    vector<short> hash_code(MaxHashTable, 0);
-    vector<short> hash_prefix(MaxHashTable, 0);
-
-    // Initialize GIF encoder
-
-    const short data_size = std::max(bits, 2) + 1;
-    const short clear_code = 1 << (data_size - 1);
-    const short end_code = clear_code + 1;
-
-    int number_bits = data_size;
-    short max_code = MaxCode(number_bits);
-    short free_code = clear_code + 2;
-    int byte_count = 0;
-    long datum = 0;
-    int bitsnow = 0;
-
-    GIFOutputCode(clear_code);
-
-    // Encode pixels
-
-    short waiting_code = 0;
-
-    for (int pixpos = 0; pixpos < itsWidth * itsHeight; pixpos++)
-    {
-      // Get the color, simplify it
-
-      NFmiColorTools::Color c = itsPixels[pixpos];
-      c = NFmiColorTools::Simplify(c, opaquethreshold, ignorealpha);
-
-      // Convert to colormap index
-
-      int a = NFmiColorTools::GetAlpha(c);
-      short index = (a == 0 ? colormap[c] : num_colors);
-
-      // Probe hash table
-
-      int k = (static_cast<int>(index) << (MaxGIFBits - 8)) + waiting_code;
-
-      if (k >= MaxHashTable)
-        k -= MaxHashTable;
-
-      bool next_pixel = false;
-      int displacement = 1;
-
-      if (hash_code[k] > 0)
-      {
-        if ((hash_prefix[k] == waiting_code) && (hash_suffix[k] == index))
-        {
-          waiting_code = hash_code[k];
-          continue;
-        }
-        if (k != 0)
-          displacement = MaxHashTable - k;
-        for (;;)
-        {
-          k -= displacement;
-          if (k < 0)
-            k += MaxHashTable;
-          if (hash_code[k] == 0)
-            break;
-          if ((hash_prefix[k] == waiting_code) && (hash_suffix[k] == index))
-          {
-            waiting_code = hash_code[k];
-            next_pixel = true;
-            break;
-          }
-        }
-        if (next_pixel)
-          continue;
-      }
-      GIFOutputCode(waiting_code);
-      if (free_code < MaxGIFTable)
-      {
-        hash_code[k] = free_code++;
-        hash_prefix[k] = waiting_code;
-        hash_suffix[k] = index;
-      }
-      else
-      {
-        for (k = 0; k < MaxHashTable; k++)
-          hash_code[k] = 0;
-        free_code = clear_code + 2;
-        GIFOutputCode(clear_code);
-        number_bits = data_size;
-        max_code = MaxCode(number_bits);
-      }
-      waiting_code = index;
-    }
-
-    // Flush out the buffered code
-
-    GIFOutputCode(waiting_code);
-    GIFOutputCode(end_code);
-    if (bitsnow > 0)
-      packet[byte_count++] = (datum & 0xff);
-
-    // Flush accumulated data.
-
-    if (byte_count > 0)
-    {
-      fputc(byte_count, out);
-      (void)fwrite(packet.c_str(), 1, byte_count, out);
-    }
+    write_gif_raster(out,
+                     itsPixels,
+                     itsWidth * itsHeight,
+                     colormap,
+                     num_colors,
+                     bits,
+                     opaquethreshold,
+                     ignorealpha);
 
     // End GIF writing
 
