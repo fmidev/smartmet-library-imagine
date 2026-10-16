@@ -36,13 +36,131 @@ float myround(float theValue)
 
 namespace Imagine
 {
+namespace
+{
+// ----------------------------------------------------------------------
+// Pixel range to fill between two sorted x-coordinates, false if the range
+// is outside the image.
+//
+// Note that due to the rounding method, we may end up with i1>i2 below.
+// This could result in gaps when rendering very thin figures. To avoid
+// this we must modify either i1 or i2 so that a single pixel is rendered.
+// We modify the one further away from the center of the fill area.
+// ----------------------------------------------------------------------
+
+bool pixel_span(float x1, float x2, int width, int &i1, int &i2)
+{
+  i1 = static_cast<int>(ceil(x1));
+  i2 = static_cast<int>(floor(x2));
+
+  // If intersection has integer X coordinate, x1 would be
+  // interior, x2 exterior
+
+  if (x2 == i2)
+    i2--;
+
+  // Check the line is atleast partially inside
+
+  if (i1 >= width || i2 < 0)
+    return false;
+
+  // Check we fill atleast one pixel
+
+  if (i1 > i2)
+  {
+    float xmid = (x1 + x2) / 2;
+    if (abs(i1 - xmid) < abs(i2 - xmid))
+      i2 = i1;
+    else
+      i1 = i2;
+  }
+
+  // Draw only the area inside the image
+
+  i1 = std::max(i1, 0);
+  i2 = std::min(i2, width - 1);
+  return true;
+}
+
+// ----------------------------------------------------------------------
+// Sort the x-coordinates of a row. I'm not sure how optimized sort() is
+// for vectors, so I'll handle the special case of 2 elements separately
+// ----------------------------------------------------------------------
+
+void sort_row(std::vector<float> &theRow)
+{
+  if (theRow.size() == 2)
+  {
+    if (theRow[0] > theRow[1])
+      swap(theRow[0], theRow[1]);
+  }
+  else
+    sort(theRow.begin(), theRow.end());
+}
+
+// ----------------------------------------------------------------------
+// Fill the map with the even-odd rule, calling fill_span(i1,i2,j) for
+// each horizontal pixel span inside the image
+// ----------------------------------------------------------------------
+
+template <typename SpanFunc>
+void fill_even_odd(int width, int height, NFmiFillMapData &theData, SpanFunc fill_span)
+{
+  // The iterator for traversing the data is not const, because we
+  // sort the x-coordinates
+
+  auto iter = theData.begin();
+
+  // Iterate over all y-coordinates in the map
+
+  for (; iter != theData.end(); ++iter)
+  {
+    // Skip the y-coordinate if it is outside the image dimensions
+
+    float y = iter->first;
+
+    if (y < 0 || y >= height)
+      continue;
+
+    int j = static_cast<int>(y);
+
+    // Otherwise iterate over all the x-coordinates, and fill
+    // with the even-odd rule. First we must sort the data.
+
+    sort_row(iter->second);
+
+    // We have no active x-coordinate yet
+
+    float x1 = kFloatMissing;
+
+    for (float x2 : iter->second)
+    {
+      // If last x was invalid, set new beginning of line
+
+      if (x1 == kFloatMissing)
+      {
+        x1 = x2;
+        continue;
+      }
+
+      // Otherwise we have a line to fill, from x1 to x2
+
+      int i1 = 0;
+      int i2 = 0;
+      if (pixel_span(x1, x2, width, i1, i2))
+        fill_span(i1, i2, j);
+
+      // And invalidate x1
+      x1 = kFloatMissing;
+    }
+  }
+}
+
 // ----------------------------------------------------------------------
 // Low level driver for filling when having source RGBA separated
 // is faster than having a composite Color
 // ----------------------------------------------------------------------
 
-namespace
-{
 // 2.1.2002/Marko Muutin static-funktioksi cpp-tiedostoon MSVC-k‰‰nt‰j‰n virheen takia.
 // Muutin nimeksi Fill2
 // Laiton viel‰ blenderin parametriksi, koska min‰ olen havainnut ongelmia MSVC-k‰‰nt‰j‰n kanssa,
@@ -62,106 +180,18 @@ void Fill2(T theBlender,
 {
   try
   {
-    // The iterator for traversing the data is not const, because we
-    // sort the x-coordinates
-
-    auto iter = theData.begin();
-
-    // Iterate over all y-coordinates in the map
-
-    for (; iter != theData.end(); ++iter)
-    {
-      // Skip the y-coordinate if it is outside the image dimensions
-
-      float y = iter->first;
-
-      if (y < 0 || y >= theImage.Height())
-        continue;
-
-      int j = static_cast<int>(y);
-
-      // Otherwise iterate over all the x-coordinates, and fill
-      // with the even-odd rule. First we must sort the data.
-      // I'm not sure how optimized sort() is for vectors, so
-      // I'll handle the special case of 2 elements separately
-
-      if (iter->second.size() == 2)
-      {
-        if (iter->second[0] > iter->second[1])
-          swap(iter->second[0], iter->second[1]);
-      }
-      else
-        sort(iter->second.begin(), iter->second.end());
-
-      // We have no active x-coordinate yet
-
-      float x1 = kFloatMissing;
-
-      auto dataiter = iter->second.begin();
-
-      for (; dataiter != iter->second.end(); ++dataiter)
-      {
-        float x2 = *dataiter;
-
-        // If last x was invalid, set new beginning of line
-
-        if (x1 == kFloatMissing)
-          x1 = x2;
-
-        // Otherwise we have a line to fill, from x1 to x2
-        // Note that due to the rounding method, we may
-        // end up with i1>i2 below. This could result in
-        // gaps when rendering very thin figures. To avoid
-        // this we must modify either i1 or i2 so that
-        // a single pixel is rendered. We modify the one
-        // further away from the center of the fill area
-
-        else
-        {
-          int i1 = static_cast<int>(ceil(x1));
-          int i2 = static_cast<int>(floor(x2));
-
-          // If intersection has integer X coordinate, x1 would be
-          // interior, x2 exterior
-
-          if (x2 == i2)
-            i2--;
-
-          // Check the line is atleast partially inside
-
-          if (i1 >= theImage.Width() || i2 < 0)
-            ;  // x1 is invalidated later
-          else
-          {
-            // Check we fill atleast one pixel
-
-            if (i1 > i2)
-            {
-              float xmid = (x1 + x2) / 2;
-              if (abs(i1 - xmid) < abs(i2 - xmid))
-                i2 = i1;
-              else
-                i1 = i2;
-            }
-
-            // Draw only the area inside the image
-
-            i1 = std::max(i1, 0);
-            i2 = std::min(i2, theImage.Width() - 1);
-
-            for (int i = i1; i <= i2; ++i)
-              //		    theImage(i,j) = T::Blend(red,green,blue,alpha,theImage(i,j));
-              theImage(i, j) = theBlender.Blend(
-                  red, green, blue, alpha, theImage(i, j));  // joudun k‰ytt‰m‰‰n .operaattoria ::
-                                                             // osoituksen sijaan MSVC vaatii
-                                                             // jostain syyst‰.
-          }
-
-          // And invalidate x1
-          x1 = kFloatMissing;
-        }
-      }
-    }
+    fill_even_odd(theImage.Width(),
+                  theImage.Height(),
+                  theData,
+                  [&](int i1, int i2, int j)
+                  {
+                    for (int i = i1; i <= i2; ++i)
+                      //		    theImage(i,j) = T::Blend(red,green,blue,alpha,theImage(i,j));
+                      theImage(i, j) = theBlender.Blend(
+                          red, green, blue, alpha, theImage(i, j));  // joudun k‰ytt‰m‰‰n .operaattoria ::
+                                                                     // osoituksen sijaan MSVC vaatii
+                                                                     // jostain syyst‰.
+                  });
   }
   catch (...)
   {
@@ -193,108 +223,19 @@ void Fill2(T theBlender,
 {
   try
   {
-    // The iterator for traversing the data is not const, because we
-    // sort the x-coordinates
-
-    auto iter = theData.begin();
-
-    // Iterate over all y-coordinates in the map
-
-    for (; iter != theData.end(); ++iter)
-    {
-      // Skip the y-coordinate if it is outside the image dimensions
-
-      float y = iter->first;
-
-      if (y < 0 || y >= theImage.Height())
-        continue;
-
-      int j = static_cast<int>(y);
-
-      // Otherwise iterate over all the x-coordinates, and fill
-      // with the even-odd rule. First we must sort the data.
-      // I'm not sure how optimized sort() is for vectors, so
-      // I'll handle the special case of 2 elements separately
-
-      if (iter->second.size() == 2)
-      {
-        if (iter->second[0] > iter->second[1])
-          swap(iter->second[0], iter->second[1]);
-      }
-      else
-        sort(iter->second.begin(), iter->second.end());
-
-      // We have no active x-coordinate yet
-
-      float x1 = kFloatMissing;
-
-      auto dataiter = iter->second.begin();
-
-      for (; dataiter != iter->second.end(); ++dataiter)
-      {
-        float x2 = *dataiter;
-
-        // If last x was invalid, set new beginning of line
-
-        if (x1 == kFloatMissing)
-          x1 = x2;
-
-        // Otherwise we have a line to fill, from x1 to x2
-        // Note that due to the rounding method, we may
-        // end up with i1>i2 below. This could result in
-        // gaps when rendering very thin figures. To avoid
-        // this we must modify either i1 or i2 so that
-        // a single pixel is rendered. We modify the one
-        // further away from the center of the fill area
-
-        else
-        {
-          int i1 = static_cast<int>(ceil(x1));
-          int i2 = static_cast<int>(floor(x2));
-
-          // If intersection has integer X coordinate, x1 would be
-          // interior, x2 exterior
-
-          if (x2 == i2)
-            i2--;
-
-          // Check the line is atleast partially inside
-
-          if (i1 >= theImage.Width() || i2 < 0)
-            ;  // x1 is invalidated later
-          else
-          {
-            // Check we fill atleast one pixel
-
-            if (i1 > i2)
-            {
-              float xmid = (x1 + x2) / 2;
-              if (abs(i1 - xmid) < abs(i2 - xmid))
-                i2 = i1;
-              else
-                i1 = i2;
-            }
-
-            // Draw only the area inside the image
-
-            i1 = std::max(i1, 0);
-            i2 = std::min(i2, theImage.Width() - 1);
-
-            for (int i = i1; i <= i2; ++i)
-              //		    theImage(i,j) = T::Blend(theColor,theImage(i,j));
-              theImage(i, j) =
-                  theBlender.Blend(theColor, theImage(i, j));  // joudun k‰ytt‰m‰‰n
-                                                               // .operaattoria ::
-                                                               // osoituksen sijaan MSVC
-                                                               // vaatii jostain syyst‰.
-          }
-
-          // And invalidate x1
-
-          x1 = kFloatMissing;
-        }
-      }
-    }
+    fill_even_odd(theImage.Width(),
+                  theImage.Height(),
+                  theData,
+                  [&](int i1, int i2, int j)
+                  {
+                    for (int i = i1; i <= i2; ++i)
+                      //		    theImage(i,j) = T::Blend(theColor,theImage(i,j));
+                      theImage(i, j) =
+                          theBlender.Blend(theColor, theImage(i, j));  // joudun k‰ytt‰m‰‰n
+                                                                       // .operaattoria ::
+                                                                       // osoituksen sijaan MSVC
+                                                                       // vaatii jostain syyst‰.
+                  });
   }
   catch (...)
   {
@@ -325,127 +266,35 @@ void Fill2(T theBlender,
 {
   try
   {
-    // The iterator for traversing the data is not const, because we
-    // sort the x-coordinates
-
-    auto iter = theData.begin();
-
     // Pattern related variables
 
     int patw = thePattern.Width();
     int path = thePattern.Height();
-    int patj = 0;
-    int pati = 0;
-    NFmiColorTools::Color patc = 0;
 
-    // Iterate over all y-coordinates in the map
-
-    for (; iter != theData.end(); ++iter)
-    {
-      // Skip the y-coordinate if it is outside the image dimensions
-
-      float y = iter->first;
-
-      if (y < 0 || y >= theImage.Height())
-        continue;
-
-      int j = static_cast<int>(y);
-
-      patj = (j + theY) % path;
-
-      // Otherwise iterate over all the x-coordinates, and fill
-      // with the even-odd rule. First we must sort the data.
-      // I'm not sure how optimized sort() is for vectors, so
-      // I'll handle the special case of 2 elements separately
-
-      if (iter->second.size() == 2)
-      {
-        if (iter->second[0] > iter->second[1])
-          swap(iter->second[0], iter->second[1]);
-      }
-      else
-        sort(iter->second.begin(), iter->second.end());
-
-      // We have no active x-coordinate yet
-
-      float x1 = kFloatMissing;
-
-      auto dataiter = iter->second.begin();
-
-      for (; dataiter != iter->second.end(); ++dataiter)
-      {
-        float x2 = *dataiter;
-
-        // If last x was invalid, set new beginning of line
-
-        if (x1 == kFloatMissing)
-          x1 = x2;
-
-        // Otherwise we have a line to fill, from x1 to x2
-        // Note that due to the rounding method, we may
-        // end up with i1>i2 below. This could result in
-        // gaps when rendering very thin figures. To avoid
-        // this we must modify either i1 or i2 so that
-        // a single pixel is rendered. We modify the one
-        // further away from the center of the fill area
-
-        else
+    fill_even_odd(
+        theImage.Width(),
+        theImage.Height(),
+        theData,
+        [&](int i1, int i2, int j)
         {
-          int i1 = static_cast<int>(ceil(x1));
-          int i2 = static_cast<int>(floor(x2));
-
-          // If intersection has integer X coordinate, x1 would be
-          // interior, x2 exterior
-
-          if (x2 == i2)
-            i2--;
-
-          // Check the line is atleast partially inside
-
-          if (i1 >= theImage.Width() || i2 < 0)
-            ;  // x1 is invalidated later
-          else
+          int patj = (j + theY) % path;
+          for (int i = i1; i <= i2; ++i)
           {
-            // Check we fill atleast one pixel
-
-            if (i1 > i2)
+            int pati = (i + theX) % patw;
+            NFmiColorTools::Color patc = thePattern(pati, patj);
+            if (theAlpha != 1.0)
             {
-              float xmid = (x1 + x2) / 2;
-              if (abs(i1 - xmid) < abs(i2 - xmid))
-                i2 = i1;
-              else
-                i1 = i2;
+              int a = NFmiColorTools::GetAlpha(patc);
+              int aa = static_cast<int>(a + (1.0 - theAlpha) * (NFmiColorTools::MaxAlpha - a));
+              patc = NFmiColorTools::ReplaceAlpha(patc, aa);
             }
-
-            // Draw only the area inside the image
-
-            i1 = std::max(i1, 0);
-            i2 = std::min(i2, theImage.Width() - 1);
-
-            for (int i = i1; i <= i2; ++i)
-            {
-              pati = (i + theX) % patw;
-              patc = thePattern(pati, patj);
-              if (theAlpha != 1.0)
-              {
-                int a = NFmiColorTools::GetAlpha(patc);
-                int aa = static_cast<int>(a + (1.0 - theAlpha) * (NFmiColorTools::MaxAlpha - a));
-                patc = NFmiColorTools::ReplaceAlpha(patc, aa);
-              }
-              //		      theImage(i,j) = T::Blend(patc,theImage(i,j));
-              theImage(i, j) = theBlender.Blend(patc, theImage(i, j));  // joudun k‰ytt‰m‰‰n
-                                                                        // .operaattoria ::
-                                                                        // osoituksen sijaan MSVC
-                                                                        // vaatii jostain syyst‰.
-            }
+            //		      theImage(i,j) = T::Blend(patc,theImage(i,j));
+            theImage(i, j) = theBlender.Blend(patc, theImage(i, j));  // joudun k‰ytt‰m‰‰n
+                                                                      // .operaattoria ::
+                                                                      // osoituksen sijaan MSVC
+                                                                      // vaatii jostain syyst‰.
           }
-
-          // And invalidate x1
-
-          x1 = kFloatMissing;
-        }
-      }
-    }
+        });
   }
   catch (...)
   {
