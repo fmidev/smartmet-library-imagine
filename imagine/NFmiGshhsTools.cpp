@@ -10,6 +10,7 @@
 #include <macgyver/Exception.h>
 #include <newbase/NFmiFileSystem.h>
 #include <newbase/NFmiSettings.h>
+#include <memory>
 #include <stdexcept>
 
 using namespace std;
@@ -229,6 +230,9 @@ NFmiPath ReadPath(const std::string &theFilename,
     if (fp == nullptr)
       throw Fmi::Exception(BCP, "Failed to open " + theFilename + " for reading");
 
+    // Close the file also if reading fails
+    std::unique_ptr<FILE, int (*)(FILE *)> file(fp, fclose);
+
     // Read the first header
     GSHHS header{};
     int n_read = fread(static_cast<void *>(&header), size_t(sizeof(struct GSHHS)), size_t(1), fp);
@@ -265,7 +269,7 @@ NFmiPath ReadPath(const std::string &theFilename,
       n_read = fread(static_cast<void *>(&header), size_t(sizeof(struct GSHHS)), size_t(1), fp);
     }
 
-    (void)fclose(fp);
+    file.reset();
 
     ret.Clip(theMinLongitude, theMinLatitude, theMaxLongitude, theMaxLatitude);
     return ret;
