@@ -22,6 +22,8 @@ extern "C"
 #include <jpeglib.h>
 }
 
+#include <vector>
+
 using namespace std;
 
 namespace Imagine
@@ -92,12 +94,10 @@ void NFmiImage::ReadJPEG(FILE *in)
 
     // Make a one-row-high sample array that will go away when done with image
 
-    auto* row = static_cast<JSAMPROW>(calloc(cinfo.output_width * 3, sizeof(JSAMPLE)));
-    if (row == nullptr)
-      throw Fmi::Exception(BCP, "Failed to allocate memory for a JPEG data row");
+    std::vector<JSAMPLE> row(cinfo.output_width * 3);
 
     JSAMPROW rowptr[1];
-    rowptr[0] = row;
+    rowptr[0] = row.data();
 
     // Step 6: while (scan lines remain to be read)
     //           jpeg_read_scanlines(...);
@@ -224,18 +224,9 @@ void NFmiImage::WriteJPEG(FILE *out) const
     // To keep things simple, we pass one scanline per call; you can pass
     // more if you wish, though.
 
-    JSAMPROW row = nullptr;
+    std::vector<JSAMPLE> row(static_cast<std::size_t>(cinfo.image_width) * cinfo.input_components);
     JSAMPROW rowptr[1];
-
-    row = static_cast<JSAMPROW>(
-        calloc(1, cinfo.image_width * cinfo.input_components * sizeof(JSAMPLE)));
-
-    if (row == nullptr)
-    {
-      jpeg_destroy_compress(&cinfo);
-      throw Fmi::Exception(BCP, "Insufficient memory to allocate JPEG image");
-    }
-    rowptr[0] = row;
+    rowptr[0] = row.data();
 
     for (j = 0; j < itsHeight; j++)
     {
