@@ -178,7 +178,7 @@ class NFmiEsriShape
 
   // Data members
 
-  NFmiEsriElementType itsShapeType;  // The shape type
+  NFmiEsriElementType itsShapeType = kFmiEsriNull;  // The shape type
   NFmiEsriBox itsBox;                // The bounding box
 
   elements_type itsElements;  // the actual data

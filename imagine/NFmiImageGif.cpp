@@ -277,8 +277,8 @@ struct LzwDecoder
   int firstcode = 0;
   int oldcode = 0;
   bool fresh = false;
-  int table[2][1 << MaxLzwBits];
-  int stack[(1 << (MaxLzwBits)) * 2];
+  int table[2][1 << MaxLzwBits]{};
+  int stack[(1 << (MaxLzwBits)) * 2]{};
   int *sp = nullptr;
 
   // Reset the code table
