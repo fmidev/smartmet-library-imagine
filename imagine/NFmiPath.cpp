@@ -935,7 +935,7 @@ void NFmiPath::SimplifyLines(double theOffset)
 
       ++iter;
 
-      // Get atleast 3 points before doing anything
+      // Get at least 3 points before doing anything
 
       //      cachesize = min(3,cachesize+1);
       cachesize = FmiMin(3, cachesize + 1);
@@ -1027,7 +1027,7 @@ string NFmiPath::SVG(bool relative_moves, bool removeghostlines) const
 {
   try
   {
-    // Note: Do NOT use output string streams, atleast not with
+    // Note: Do NOT use output string streams, at least not with
     //       g++ v2.92. The implementation is broken, and will
     //       mess up the output string. Instead we reserve a reasonable
     //       amount of space for the string from the beginning in the

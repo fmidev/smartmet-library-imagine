@@ -332,7 +332,7 @@ NFmiPath NFmiEdgeTree::Path(list<NFmiPath>& paths) const
 
       const NFmiEdge& edge = *iter;
 
-      // Find out which still open paths have points closests
+      // Find out which still open paths have points closest
       // to either one of the end points of the edge.
 
       PathMatch match = match_edge(paths, edge);

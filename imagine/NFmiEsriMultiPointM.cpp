@@ -1,6 +1,6 @@
 // ======================================================================
 //
-// Esri Shapefile Techinical Description, page 11
+// Esri Shapefile Technical Description, page 11
 //
 //
 // Position	Field	Value	Type	Number	Endian
@@ -147,7 +147,7 @@ std::ostream& NFmiEsriMultiPointM::Write(ostream& os) const
 
     os << LittleEndianDouble(Box().Mmin()) << LittleEndianDouble(Box().Mmax());
 
-    for (i = 0; i < NumPoints(); i++)  // 18.12.2001/Marko Redifinition of i removed.
+    for (i = 0; i < NumPoints(); i++)  // 18.12.2001/Marko Redefinition of i removed.
       os << LittleEndianDouble(Points()[i].M());
 
     return os;

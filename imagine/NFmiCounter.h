@@ -15,7 +15,7 @@
  *
  * A counter is used to count the number of times each unique object
  * occurs. It can be used for example to identify all unique NFmiPoints,
- * and to get their occurrance counts. This can in turn be used for example
+ * and to get their occurrence counts. This can in turn be used for example
  * when simplifying geographic polygons, such as national borders, where
  * identifying important points (polygon intersections) is important.
  *
@@ -76,7 +76,7 @@ class NFmiCounter
    * This adds the object to a map with the object as a key.
    * If the object already exists in the map, its counter is increased.
    * The count of the object after insertion is returned, hence it
-   * is always atleast one.
+   * is always at least one.
    */
 
   long Add(T theElement)

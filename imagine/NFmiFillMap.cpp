@@ -59,12 +59,12 @@ bool pixel_span(float x1, float x2, int width, int &i1, int &i2)
   if (x2 == i2)
     i2--;
 
-  // Check the line is atleast partially inside
+  // Check the line is at least partially inside
 
   if (i1 >= width || i2 < 0)
     return false;
 
-  // Check we fill atleast one pixel
+  // Check we fill at least one pixel
 
   if (i1 > i2)
   {

@@ -1032,7 +1032,7 @@ namespace NFmiApproximateBezierFit
  * control points in the path).
  *
  * \param thePath The path to approximate
- * \param theMaxError The maximum Euclidian distance error
+ * \param theMaxError The maximum Euclidean distance error
  * \return The converted path
  */
 // ----------------------------------------------------------------------

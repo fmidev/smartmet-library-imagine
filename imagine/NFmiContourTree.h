@@ -310,7 +310,7 @@ class NFmiContourTree : public NFmiEdgeTree
   /// Disabled default constructor.
 
   /*!
-   * We always require atleast a contour interval in the constructor.
+   * We always require at least a contour interval in the constructor.
    */
 
   NFmiContourTree();

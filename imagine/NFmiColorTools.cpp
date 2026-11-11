@@ -39,7 +39,7 @@
  * defined by each compositing rule.
  *
  * Note that here having alpha value 1 implies an opaque colour and
- * zero a transparent colour, while in code we actuall prefer to use 0 for
+ * zero a transparent colour, while in code we actually prefer to use 0 for
  * opaque and 127 for transparent.
  *
  * Hence in all formulas we must substitute
@@ -110,13 +110,13 @@
  * Add RGBA values using Porter-Duff type rules.
  *
  * \li \b Minus\par
- * Substract RGBA values using Porter-Duff type rules.
+ * Subtract RGBA values using Porter-Duff type rules.
  *
  * \li \b Add\par
  * Add RGBA values.
  *
- * \li \b Substract\par
- * Substract RGBA values.
+ * \li \b Subtract\par
+ * Subtract RGBA values.
  *
  * \li \b Multiply\par
  * Multiply RGBA values

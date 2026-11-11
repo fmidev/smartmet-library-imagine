@@ -91,7 +91,7 @@ class NFmiFillMap : public NFmiDrawable
   void Or(const NFmiFillMap& theMap);   // union
   void And(const NFmiFillMap& theMap);  // intersection
   // void Xor(const NFmiFillMap & theMap);		// exclusive or
-  // void Substract(const NFmiFillMap & theMap);	// difference
+  // void Subtract(const NFmiFillMap & theMap);	// difference
 
   // Filling
 

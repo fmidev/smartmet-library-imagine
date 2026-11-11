@@ -1,6 +1,6 @@
 // ======================================================================
 //
-// Esri Shapefile Techinical Description, page 5
+// Esri Shapefile Technical Description, page 5
 //
 //
 // Position	Field	Value	Type	Number	Endian

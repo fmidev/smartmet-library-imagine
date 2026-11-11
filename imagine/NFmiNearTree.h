@@ -182,7 +182,7 @@ class NFmiNearTree
   //     Neartree
   //
   //  Three possibilities exist: put the datum into the left
-  //  postion (first test),into the right position, or else
+  //  position (first test),into the right position, or else
   //  into a node descending from the nearer of those positions
   //  when they are both already used.
   //

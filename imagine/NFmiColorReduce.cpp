@@ -95,10 +95,10 @@ void init_gamma_table(vector<float>& theTable, bool& theFlag)
 
 // ----------------------------------------------------------------------
 /*!
- * \brief Calculate the occurrance count of each color in the given image
+ * \brief Calculate the occurrence count of each color in the given image
  *
  * \param theImage The image
- * \return The colormap with occurrance counts
+ * \return The colormap with occurrence counts
  */
 // ----------------------------------------------------------------------
 
@@ -177,7 +177,7 @@ Counter calc_counts(const NFmiImage& theImage)
 
 // ----------------------------------------------------------------------
 /*!
- * \brief A near-tree of colors and their occurrance counts
+ * \brief A near-tree of colors and their occurrence counts
  *
  * The idea is to feed in colors in the order of their popularity
  * and then use the near-tree maximum distance information
@@ -225,7 +225,7 @@ ColorTree::ColorTree() = default;
 
 // ----------------------------------------------------------------------
 /*!
- * \brief Euclidian distance between two colors
+ * \brief Euclidean distance between two colors
  *
  * See http://www.compuphase.com/cmetric.htm
  */
@@ -681,7 +681,7 @@ namespace NFmiColorReduce
 {
 // ----------------------------------------------------------------------
 /*!
- * \brief Calculate the occurrance count of each color in the given image
+ * \brief Calculate the occurrence count of each color in the given image
  *
  * \param theImage The image
  * \return The histogram object

@@ -83,7 +83,7 @@ void AppendSplits(PathList& theList, const NFmiPath& thePath, const std::vector<
  * All other sizes are error conditions
  *
  * \param thePath The path to split
- * \return Pair of splitted paths
+ * \return Pair of split paths
  */
 // ----------------------------------------------------------------------
 
@@ -243,7 +243,7 @@ bool IsClosed(const NFmiPath& thePath)
 
 // ----------------------------------------------------------------------
 /*!
- * \brief Count the occurrances of each point in paths
+ * \brief Count the occurrences of each point in paths
  *
  * Throws if any path contains conic or cubic elements.
  *
@@ -302,11 +302,11 @@ NFmiCounter<NFmiPoint> VertexCounts(const NFmiPaths& thePaths)
  *
  * A regular line segment is considered to be one with
  * a leading moveto command followed by a number of lineto
- * commands, atleast two of them. Zero length lineto commands
+ * commands, at least two of them. Zero length lineto commands
  * will be automatically removed to avoid problems during
  * Bezier fitting.
  *
- * \param thePath The path to be splitted
+ * \param thePath The path to be split
  * \return List of subpaths
  */
 // ----------------------------------------------------------------------
@@ -380,7 +380,7 @@ Segments SplitSegments(const NFmiPath& thePath)
  * The basic idea is that once this split has been done, it is
  * easier to process closed subsegments.
  *
- * \param thePath The path to be splitted
+ * \param thePath The path to be split
  * \return List of subpaths
  */
 // ----------------------------------------------------------------------
@@ -460,7 +460,7 @@ void AppendClosedSplits(PathList& out, const NFmiPath& thePath, const std::vecto
  *
  * A regular line segment is considered to be one with
  * a leading moveto command followed by a number of lineto
- * commands, atleast two of them.
+ * commands, at least two of them.
  *
  * The vertex counts indicate how many times a given point
  * is used in some collection of paths. This information
@@ -468,7 +468,7 @@ void AppendClosedSplits(PathList& out, const NFmiPath& thePath, const std::vecto
  * which are common to at most two paths at a time.
  *
  *
- * \param thePath The path to be splitted
+ * \param thePath The path to be split
  * \param theCounts The counts
  * \return List of subpaths
  */

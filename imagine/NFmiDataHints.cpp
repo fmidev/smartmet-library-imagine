@@ -373,7 +373,7 @@ NFmiDataHints::return_type NFmiDataHints::rectangles(float theLoLimit, float the
 {
   try
   {
-    // Call the actual implemenetation
+    // Call the actual implementation
     return itsPimple->rectangles(theLoLimit, theHiLimit);
   }
   catch (...)

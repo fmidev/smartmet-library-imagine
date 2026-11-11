@@ -472,7 +472,7 @@ struct NFmiColorBlendAdd
 };
 
 // ----------------------------------------------------------------------
-// Color Substract - substract components directly
+// Color Subtract - subtract components directly
 // ----------------------------------------------------------------------
 
 struct NFmiColorBlendSubstract

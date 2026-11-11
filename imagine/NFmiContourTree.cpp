@@ -906,7 +906,7 @@ void NFmiContourTree::ContourLinear4(float x1,
     }
 
     // Establish where the edges reside with respect to the desired range
-    // -1 implies below, 0 inside, 1 above. Also note that in the errorneous
+    // -1 implies below, 0 inside, 1 above. Also note that in the erroneous
     // case of having both limits missing, which should by definition
     // mean range (-infinity,infinity), the default insidedness value is
     // correct.
@@ -978,7 +978,7 @@ void NFmiContourTree::ContourLinear4(float x1,
     // will result in pixel-size gaps between the contours, since
     // the solution from the triangles will contain additional points.
     // The simple fix is to always triangulate all rectangles, which
-    // are only partially covered (and hence contain atleast two
+    // are only partially covered (and hence contain at least two
     // different contour ranges)
 
     if (itsSubTrianglesOn)
@@ -1106,7 +1106,7 @@ void NFmiContourTree::ContourNearest4(float x1,
     }
 
     // Establish where the edges reside with respect to the desired range
-    // -1 implies below, 0 inside, 1 above. Also note that in the errorneous
+    // -1 implies below, 0 inside, 1 above. Also note that in the erroneous
     // case of having both limits missing, which should by definition
     // mean range (-infinity,infinity), the default insidedness value is
     // correct.
@@ -1317,7 +1317,7 @@ void NFmiContourTree::ContourTwoValued4(float x1,
  * Contour a triangular element. The input is the 3 coordinates defining
  * the triangle, and the values at the triangle vertices. The order
  * of the vertices does not matter, the resulting triangle is always
- * uniquely definined by the vertex coordinates.
+ * uniquely defined by the vertex coordinates.
  * (This is not the case for a polygon with more vertices)
  *
  * Any of the input values may be missing, which implies the polygon
@@ -1358,7 +1358,7 @@ void NFmiContourTree::ContourLinear3(
     }
 
     // Establish where the edges reside with respect to the desired range
-    // -1 implies below, 0 inside, 1 above. Also note that in the errorneous
+    // -1 implies below, 0 inside, 1 above. Also note that in the erroneous
     // case of having both limits missing, which should by definition
     // mean range (-infinity,infinity), the default insidedness value is
     // correct.
@@ -1456,7 +1456,7 @@ void NFmiContourTree::ContourLinear3(float x1,
  * The input is the 3 coordinates defining
  * the triangle, and the values at the triangle vertices. The order
  * of the vertices does not matter, the resulting triangle is always
- * uniquely definined by the vertex coordinates.
+ * uniquely defined by the vertex coordinates.
  * (This is not the case for a polygon with more vertices)
  *
  * Any of the input values may be missing, which implies the polygon
@@ -1490,7 +1490,7 @@ void NFmiContourTree::ContourNearest3(
     }
 
     // Establish where the edges reside with respect to the desired range
-    // -1 implies below, 0 inside, 1 above. Also note that in the errorneous
+    // -1 implies below, 0 inside, 1 above. Also note that in the erroneous
     // case of having both limits missing, which should by definition
     // mean range (-infinity,infinity), the default insidedness value is
     // correct.
@@ -1550,7 +1550,7 @@ void NFmiContourTree::ContourNearest3(
  * The input is the 3 coordinates defining
  * the triangle, and the values at the triangle vertices. The order
  * of the vertices does not matter, the resulting triangle is always
- * uniquely definined by the vertex coordinates.
+ * uniquely defined by the vertex coordinates.
  * (This is not the case for a polygon with more vertices)
  *
  * Any of the input values may be missing, which implies the polygon

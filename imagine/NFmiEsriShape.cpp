@@ -282,7 +282,7 @@ void SetSpatialReference(OGRSpatialReference &theSpatialReference,
 
 // ----------------------------------------------------------------------
 // Reading a shapefile and a database file. Returns TRUE if reading
-// was succesful, false otherwise. Note that we read the entire
+// was successful, false otherwise. Note that we read the entire
 // shape file, hence we do not need the shx file, which is required
 // only for speeding up random access queries.
 // ----------------------------------------------------------------------
