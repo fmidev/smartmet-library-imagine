@@ -152,7 +152,7 @@ enum NFmiBlendRule
   kFmiColorPlus,
   kFmiColorMinus,
   kFmiColorAdd,
-  kFmiColorSubstract,
+  kFmiColorSubtract,
   kFmiColorMultiply,
   kFmiColorDifference,
   kFmiColorCopyRed,

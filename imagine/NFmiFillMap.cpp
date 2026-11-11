@@ -643,7 +643,7 @@ void NFmiFillMap::Fill(NFmiImage &theImage,
         Fill2(NFmiColorBlendAddContrast(), theImage, theColor, itsData);
         break;
       case NFmiColorTools::kFmiColorReduceContrast:
-        Fill2(NFmiColorBlendReduceConstrast(), theImage, theColor, itsData);
+        Fill2(NFmiColorBlendReduceContrast(), theImage, theColor, itsData);
         break;
 
       // CasesNFmiColorTools:: for which RGBA fill is faster:
@@ -683,8 +683,8 @@ void NFmiFillMap::Fill(NFmiImage &theImage,
       case NFmiColorTools::kFmiColorAdd:
         Fill2(NFmiColorBlendAdd(), theImage, r, g, b, a, itsData);
         break;
-      case NFmiColorTools::kFmiColorSubstract:
-        Fill2(NFmiColorBlendSubstract(), theImage, r, g, b, a, itsData);
+      case NFmiColorTools::kFmiColorSubtract:
+        Fill2(NFmiColorBlendSubtract(), theImage, r, g, b, a, itsData);
         break;
       case NFmiColorTools::kFmiColorMultiply:
         Fill2(NFmiColorBlendMultiply(), theImage, r, g, b, a, itsData);
@@ -778,7 +778,7 @@ void NFmiFillMap::Fill(NFmiImage &theImage,
         Fill2(NFmiColorBlendAddContrast(), theImage, thePattern, theAlpha, theX, theY, itsData);
         break;
       case NFmiColorTools::kFmiColorReduceContrast:
-        Fill2(NFmiColorBlendReduceConstrast(), theImage, thePattern, theAlpha, theX, theY, itsData);
+        Fill2(NFmiColorBlendReduceContrast(), theImage, thePattern, theAlpha, theX, theY, itsData);
         break;
       case NFmiColorTools::kFmiColorOver:
         Fill2(NFmiColorBlendOver(), theImage, thePattern, theAlpha, theX, theY, itsData);
@@ -816,8 +816,8 @@ void NFmiFillMap::Fill(NFmiImage &theImage,
       case NFmiColorTools::kFmiColorAdd:
         Fill2(NFmiColorBlendAdd(), theImage, thePattern, theAlpha, theX, theY, itsData);
         break;
-      case NFmiColorTools::kFmiColorSubstract:
-        Fill2(NFmiColorBlendSubstract(), theImage, thePattern, theAlpha, theX, theY, itsData);
+      case NFmiColorTools::kFmiColorSubtract:
+        Fill2(NFmiColorBlendSubtract(), theImage, thePattern, theAlpha, theX, theY, itsData);
         break;
       case NFmiColorTools::kFmiColorMultiply:
         Fill2(NFmiColorBlendMultiply(), theImage, thePattern, theAlpha, theX, theY, itsData);

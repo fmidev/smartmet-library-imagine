@@ -694,7 +694,7 @@ void NFmiFreeType::Draw(NFmiImage& theImage,
                         theBackgroundRule);
         break;
       case NFmiColorTools::kFmiColorReduceContrast:
-        itsPimple->Draw(NFmiColorBlendReduceConstrast(),
+        itsPimple->Draw(NFmiColorBlendReduceContrast(),
                         face,
                         theImage,
                         theX,
@@ -888,8 +888,8 @@ void NFmiFreeType::Draw(NFmiImage& theImage,
                         theBackgroundColor,
                         theBackgroundRule);
         break;
-      case NFmiColorTools::kFmiColorSubstract:
-        itsPimple->Draw(NFmiColorBlendSubstract(),
+      case NFmiColorTools::kFmiColorSubtract:
+        itsPimple->Draw(NFmiColorBlendSubtract(),
                         face,
                         theImage,
                         theX,

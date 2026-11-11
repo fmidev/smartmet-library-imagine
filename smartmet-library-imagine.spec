@@ -4,7 +4,7 @@
 %define DEVELNAME %{SPECNAME}-devel
 Summary: imagine library
 Name: %{SPECNAME}
-Version: 26.11.7
+Version: 26.11.11
 Release: 1%{?dist}.fmi
 License: MIT
 Group: Development/Libraries
@@ -104,6 +104,9 @@ FMI %{DIRNAME} development files
 %{_includedir}/smartmet/%{DIRNAME}/*.h
 
 %changelog
+* Wed Nov 11 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.11.11-1.fmi
+- Fixed typos in identifiers: NFmiColorBlendSubtract, NFmiColorBlendReduceContrast and kFmiColorSubtract (ABI change)
+
 * Sat Nov 7 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.11.7-1.fmi
 - Initialize member variables that some constructors left uninitialized
 - Fixed a memory leak in JPEG reading and writing

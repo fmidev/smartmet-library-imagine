@@ -475,7 +475,7 @@ struct NFmiColorBlendAdd
 // Color Subtract - subtract components directly
 // ----------------------------------------------------------------------
 
-struct NFmiColorBlendSubstract
+struct NFmiColorBlendSubtract
 {
   static NFmiColorTools::Color Blend(NFmiColorTools::Color src, NFmiColorTools::Color dst)
   {
@@ -963,7 +963,7 @@ struct NFmiColorBlendAddContrast
 // Color ReduceContrast - Reduce contrast of target pixel
 // ----------------------------------------------------------------------
 
-struct NFmiColorBlendReduceConstrast
+struct NFmiColorBlendReduceContrast
 {
   static NFmiColorTools::Color Blend(NFmiColorTools::Color /*src*/, NFmiColorTools::Color dst)
   {
