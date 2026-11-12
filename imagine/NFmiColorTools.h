@@ -21,9 +21,6 @@
 
 #pragma once
 
-
-#include <newbase/NFmiDef.h>
-
 #include <algorithm>
 #include <string>  // for color name definitions
 

@@ -14,11 +14,9 @@
 
 // Essential includes:
 
+#include "NFmiDrawable.h"
 #include "NFmiEdge.h"  // Input edges
 #include "NFmiPath.h"  // Path generation
-
-#include "NFmiFillMap.h"  // Fill map generation and rendering
-
 #include <list>
 #include <set>
 

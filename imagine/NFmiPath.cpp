@@ -6,18 +6,24 @@
 #include "NFmiPath.h"
 #include "NFmiContourTree.h"
 #include "NFmiCounter.h"
+#include "NFmiEdge.h"
 #include "NFmiEsriBox.h"
-
+#include "NFmiFillMap.h"
+#include "NFmiImage.h"
 #include <macgyver/Exception.h>
 #include <macgyver/StringConversion.h>
+#include <newbase/NFmiArea.h>
+#include <newbase/NFmiGlobals.h>
 #include <newbase/NFmiGrid.h>
+#include <newbase/NFmiPoint.h>
+#include <newbase/NFmiString.h>
 #include <newbase/NFmiValueString.h>
-#include <cmath>
-
 #include <algorithm>
+#include <cctype>
+#include <cmath>
+#include <iterator>
 #include <set>
 #include <sstream>
-#include <stdexcept>
 
 // ======================================================================
 //				HIDDEN INTERNAL FUNCTIONS

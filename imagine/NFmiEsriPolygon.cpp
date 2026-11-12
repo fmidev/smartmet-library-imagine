@@ -16,6 +16,7 @@
 
 #include "NFmiEsriPolygon.h"
 #include "NFmiEsriBuffer.h"
+#include "NFmiEsriProjector.h"
 #include <macgyver/Exception.h>
 #include <iostream>
 

@@ -20,8 +20,12 @@
 #pragma once
 
 #include "NFmiEsriBox.h"
+#include "NFmiEsriElement.h"
 #include "NFmiEsriPointM.h"
 #include "NFmiEsriPolygon.h"
+#include <iosfwd>
+#include <string>
+#include <vector>
 
 namespace Imagine
 {

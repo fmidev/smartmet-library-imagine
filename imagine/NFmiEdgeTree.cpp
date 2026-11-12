@@ -11,9 +11,12 @@
 // ======================================================================
 
 #include "NFmiEdgeTree.h"
+#include "NFmiFillMap.h"
+#include "NFmiPathElement.h"
 #include <macgyver/Exception.h>
 #include <list>
-#include <stdexcept>
+#include <string>
+#include <utility>
 
 using namespace std;
 

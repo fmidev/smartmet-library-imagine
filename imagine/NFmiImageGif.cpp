@@ -6,14 +6,17 @@
 
 // ======================================================================
 
+#include "NFmiColorTools.h"
 #include "NFmiEsriBuffer.h"
 #include "NFmiImage.h"
 #include <macgyver/Exception.h>
-
 #include <algorithm>
+#include <cstdio>
 #include <iostream>
 #include <map>
 #include <set>
+#include <string>
+#include <utility>
 #include <vector>
 
 using namespace std;

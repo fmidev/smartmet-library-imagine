@@ -13,7 +13,9 @@
 
 #include "NFmiEsriPoint.h"
 #include "NFmiEsriBuffer.h"
+#include "NFmiEsriProjector.h"
 #include <macgyver/Exception.h>
+#include <ostream>
 
 using namespace Imagine::NFmiEsriBuffer;  // Conversion tools
 using namespace std;

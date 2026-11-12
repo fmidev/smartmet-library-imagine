@@ -12,8 +12,6 @@
 
 #pragma once
 
-#include <newbase/NFmiGlobals.h>
-
 namespace Imagine
 {
 //! A class to perform affine transformations

@@ -6,9 +6,12 @@
 
 #include "NFmiDataHints.h"
 #include <macgyver/Exception.h>
+#include <newbase/NFmiDataMatrix.h>
 #include <newbase/NFmiGlobals.h>
-
+#include <algorithm>
 #include <memory>
+#include <string>
+#include <vector>
 
 using namespace std;
 

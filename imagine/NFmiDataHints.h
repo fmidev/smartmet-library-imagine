@@ -6,10 +6,11 @@
 
 #pragma once
 
-#include <newbase/NFmiDataMatrix.h>
-
-#include <memory>
 #include <list>
+#include <memory>
+
+template <class T>
+class NFmiDataMatrix;
 
 namespace Imagine
 {
@@ -44,6 +45,7 @@ class NFmiDataHints
 
  private:
   class Pimple;
+
   std::shared_ptr<Pimple> itsPimple;
 
   NFmiDataHints() = delete;

@@ -28,15 +28,10 @@
 
 #ifdef UNIX
 
-#include "NFmiColorBlend.h"
 #include "NFmiFace.h"
 #include "NFmiFreeType.h"
-#include "NFmiImage.h"
-
 #include <macgyver/Exception.h>
 #include <newbase/NFmiStringTools.h>
-
-#include <stdexcept>
 #include <utility>
 #include <vector>
 

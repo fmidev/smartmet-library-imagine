@@ -25,6 +25,7 @@
 #include "NFmiAffine.h"
 #include <macgyver/Exception.h>
 #include <cmath>
+#include <string>
 #ifdef __BORLANDC__
 using std::cos;
 using std::sin;

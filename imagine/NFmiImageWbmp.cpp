@@ -11,10 +11,11 @@
 //
 // ======================================================================
 
+#include "NFmiColorTools.h"
 #include "NFmiImage.h"
 #include <macgyver/Exception.h>
-
-#include <iostream>
+#include <cstdio>
+#include <string>
 
 using namespace std;
 

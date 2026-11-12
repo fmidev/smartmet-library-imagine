@@ -6,8 +6,9 @@
 // ======================================================================
 
 #include "NFmiDataHints.h"
-#include "NFmiGlobals.h"
 #include "tframe.h"
+#include <newbase/NFmiDataMatrix.h>
+#include <newbase/NFmiGlobals.h>
 #include <cmath>
 #include <iostream>
 

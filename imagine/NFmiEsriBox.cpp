@@ -4,8 +4,8 @@
 
 #include "NFmiEsriBox.h"
 #include <macgyver/Exception.h>
-
 #include <algorithm>
+#include <string>
 
 namespace Imagine
 {

@@ -10,8 +10,9 @@
 #include <macgyver/Exception.h>
 #include <newbase/NFmiFileSystem.h>
 #include <newbase/NFmiSettings.h>
+#include <cstdio>
 #include <memory>
-#include <stdexcept>
+#include <utility>
 
 using namespace std;
 

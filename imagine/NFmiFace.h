@@ -8,15 +8,12 @@
 #ifdef UNIX  // En saanut viel‰ Imagine::NFmiFace-luokkaa toimimaan VC++ 2012 k‰‰nt‰j‰ss‰
 #pragma once
 
-
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"
-
 #include <string>
 
 namespace Imagine
 {
-class NFmiFreeType;
 class NFmiImage;
 
 class NFmiFace

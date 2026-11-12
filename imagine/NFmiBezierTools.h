@@ -10,16 +10,17 @@
 
 #pragma once
 
+#include <newbase/NFmiPoint.h>
+#include <iterator>
 #include <list>
+#include <utility>
 #include <vector>
-
-class NFmiPoint;
 
 namespace Imagine
 {
+class NFmiPath;
 template <class T>
 class NFmiCounter;
-class NFmiPath;
 
 namespace NFmiBezierTools
 {

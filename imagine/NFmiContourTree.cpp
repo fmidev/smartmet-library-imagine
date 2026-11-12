@@ -27,10 +27,16 @@
 // ======================================================================
 
 #include "NFmiContourTree.h"
+#include "NFmiDataHints.h"
+#include "NFmiEdge.h"
+#include "NFmiPathElement.h"
 #include <gis/CoordinateMatrix.h>
 #include <macgyver/Exception.h>
+#include <newbase/NFmiDataMatrix.h>
 #include <cmath>
-#include <stdexcept>
+#include <deque>
+#include <list>
+#include <set>
 
 #ifndef square
 /// Utility macro to calculate number squared.

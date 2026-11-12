@@ -10,13 +10,18 @@
 //
 // ======================================================================
 
+#include "NFmiColorTools.h"
 #include "NFmiImage.h"
 #include <macgyver/Exception.h>
+#include <csetjmp>
+#include <cstdio>
+#include <set>
+#include <string>
+#include <utility>
 
 #ifdef IMAGINE_FORMAT_PNG
 
 #include <cstdlib>
-#include <iostream>
 #include <map>
 #include <png.h>
 

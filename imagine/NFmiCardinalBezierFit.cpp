@@ -16,10 +16,14 @@
 #include "NFmiBezierTools.h"
 #include "NFmiCounter.h"
 #include "NFmiPath.h"
+#include "NFmiPathElement.h"
 #include <macgyver/Exception.h>
+#include <newbase/NFmiPoint.h>
 #include <cmath>
-
 #include <list>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace std;
 

@@ -7,10 +7,11 @@
 // ======================================================================
 
 #include "NFmiImageTools.h"
+#include "NFmiColorTools.h"
 #include "NFmiImage.h"
 #include <macgyver/Exception.h>
-
-#include <stdexcept>
+#include <algorithm>
+#include <cstdio>
 
 using namespace std;
 

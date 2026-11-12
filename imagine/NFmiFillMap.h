@@ -42,10 +42,12 @@
 #pragma warning(disable : 4786)  // poistaa n kpl VC++ k‰‰nt‰j‰n varoitusta
 #endif
 
+#include "NFmiColorTools.h"
+#include "NFmiDrawable.h"
+#include "NFmiImage.h"
+#include <newbase/NFmiGlobals.h>
 #include <map>     // maps
 #include <vector>  // vectors
-
-#include "NFmiImage.h"
 
 namespace Imagine
 {

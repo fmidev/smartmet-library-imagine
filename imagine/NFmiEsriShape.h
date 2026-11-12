@@ -31,13 +31,14 @@
 #include "NFmiEsriAttributeName.h"
 #include "NFmiEsriBox.h"
 #include "NFmiEsriElement.h"
-
+#include <iosfwd>
 #include <ogr_spatialref.h>
-
+#include <string>
 #include <vector>
 
 namespace Imagine
 {
+class NFmiEsriProjector;
 // ESRI Shapefile Technical Description, page 2
 // Any number smaller than this limit is considered "no-data"
 

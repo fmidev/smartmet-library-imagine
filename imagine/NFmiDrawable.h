@@ -26,12 +26,11 @@
 //       hence this include is here instead of derived classes.
 
 #include "NFmiColorTools.h"
-#include <newbase/NFmiGlobals.h>
 
 namespace Imagine
 {
-class NFmiImage;    // Derived class, hence cannot simply include header
 class NFmiFillMap;  // Derived class, ...
+class NFmiImage;    // Derived class, hence cannot simply include header
 
 //! Abstract base class for objects that can render themselves.
 

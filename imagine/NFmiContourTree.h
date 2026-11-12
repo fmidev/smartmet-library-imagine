@@ -124,23 +124,24 @@
 
 #pragma once
 
-
 // Essential includes:
 
 #include "NFmiEdgeTree.h"  // Input edges
-
-#include "NFmiFillMap.h"  // Fill map generation and rendering
-
-#include "NFmiDataHints.h"
-
-#include <newbase/NFmiFastQueryInfo.h>  // for querydata
-#include <newbase/NFmiGlobals.h>        // for kFloatMissing
-#include <newbase/NFmiGrid.h>           // for grids
-
+#include "NFmiPath.h"
+#include <newbase/NFmiGlobals.h>  // for kFloatMissing
+#include <string>
 #include <vector>  // vectors
+
+namespace Fmi
+{
+class CoordinateMatrix;
+}  // namespace Fmi
+template <class T>
+class NFmiDataMatrix;
 
 namespace Imagine
 {
+class NFmiDataHints;
 /// Class to calculating 2D contour polygons given a data interval.
 
 class NFmiContourTree : public NFmiEdgeTree

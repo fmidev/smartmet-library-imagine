@@ -8,6 +8,8 @@
 #include "NFmiEsriElement.h"
 #include <macgyver/Exception.h>
 
+class NFmiMetTime;
+
 using namespace std;
 
 namespace Imagine

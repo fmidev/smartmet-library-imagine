@@ -30,30 +30,25 @@
 
 #pragma once
 
-
 // Essential includes
-
-#include "NFmiPathElement.h"
 
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"
-#include "NFmiImage.h"
-
-#include "NFmiAffine.h"
 #include "NFmiDrawable.h"
-
-#include <newbase/NFmiArea.h>
-
+#include "NFmiPathElement.h"
 #include <deque>
-
 #include <iostream>  // << is overloaded
+#include <string>
 #include <utility>
 
+class NFmiArea;
 class NFmiGrid;
 
 namespace Imagine
 {
+class NFmiAffine;
 class NFmiEsriBox;
+class NFmiImage;
 
 using NFmiPathData = std::deque<NFmiPathElement>;
 

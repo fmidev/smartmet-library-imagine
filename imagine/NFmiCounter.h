@@ -44,8 +44,8 @@
 
 #pragma once
 
-#include <newbase/NFmiDef.h>
 #include <map>
+#include <utility>
 
 namespace Imagine
 {

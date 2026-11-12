@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NFmiEsriShape.h"
+#include <string>
 
 namespace Imagine
 {

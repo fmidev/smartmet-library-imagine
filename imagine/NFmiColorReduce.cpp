@@ -22,16 +22,18 @@
 #include "NFmiColorTools.h"
 #include "NFmiImage.h"
 #include <macgyver/Exception.h>
-
-#include <memory>
-
-#include <iomanip>
+#include <algorithm>
+#include <cmath>
 #include <map>
+#include <memory>
+#include <string>
+#include <utility>
 #include <vector>
 
 // std version not available in RHEL5, must use boost instead
 
 #include <boost/unordered_map.hpp>
+
 using namespace std;
 
 // The actual public interfaces

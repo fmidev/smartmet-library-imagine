@@ -6,8 +6,8 @@
 // ======================================================================
 
 #include "NFmiCounter.h"
-#include "NFmiGlobals.h"
 #include "tframe.h"
+#include <newbase/NFmiGlobals.h>
 #include <cmath>
 
 //! Protection against conflicts with global functions

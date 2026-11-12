@@ -18,12 +18,10 @@
 
 #include "NFmiAlignment.h"
 #include "NFmiColorTools.h"
-
 #include "NFmiDrawable.h"
-
 #include <cstdio>
 #include <set>  // for sets
-#include <stdexcept>
+#include <string>
 
 #ifdef __BORLANDC__
 using std::FILE;

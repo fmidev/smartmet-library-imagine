@@ -13,21 +13,22 @@
 
 #pragma once
 
-#include "NFmiEsriShape.h"
-#include "NFmiEsriTools.h"
-#include "NFmiPath.h"
-
+#include "NFmiAlignment.h"
 #include "NFmiColorTools.h"
 #include "NFmiDrawable.h"
-#include "NFmiFillMap.h"
+#include "NFmiEsriShape.h"
+#include "NFmiEsriTools.h"
 #include "NFmiImage.h"
+#include "NFmiPath.h"
+#include <macgyver/Exception.h>
+#include <iosfwd>
+#include <string>
 
-#include <newbase/NFmiArea.h>
-
-#include <stdexcept>
+class NFmiArea;
 
 namespace Imagine
 {
+class NFmiFillMap;
 // Implemented shape types
 
 enum NFmiGeoShapeType

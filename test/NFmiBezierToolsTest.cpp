@@ -8,8 +8,8 @@
 #include "NFmiBezierTools.h"
 #include "NFmiCounter.h"
 #include "NFmiPath.h"
-#include "NFmiStringTools.h"
 #include "tframe.h"
+#include <newbase/NFmiStringTools.h>
 #include <cmath>
 
 using namespace std;

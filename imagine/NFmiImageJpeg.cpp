@@ -10,8 +10,13 @@
 //
 // ======================================================================
 
+#include "NFmiColorTools.h"
 #include "NFmiImage.h"
 #include <macgyver/Exception.h>
+#include <cstdio>
+#include <cstring>
+#include <jmorecfg.h>
+#include <string>
 
 #ifdef IMAGINE_FORMAT_JPEG
 

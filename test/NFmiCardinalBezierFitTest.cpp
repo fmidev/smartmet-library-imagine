@@ -8,7 +8,8 @@
 #include "NFmiCardinalBezierFit.h"
 #include "NFmiPath.h"
 #include "tframe.h"
-#include <cmath>
+#include <iostream>
+#include <string>
 
 using namespace std;
 

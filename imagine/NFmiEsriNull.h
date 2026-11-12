@@ -11,9 +11,10 @@
 
 #pragma once
 
-#include "NFmiEsriBox.h"
 #include "NFmiEsriBuffer.h"
 #include "NFmiEsriElement.h"
+#include <ostream>
+#include <string>
 
 namespace Imagine
 {

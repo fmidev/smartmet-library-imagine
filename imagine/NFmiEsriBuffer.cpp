@@ -6,9 +6,10 @@
 
 #include "NFmiEsriBuffer.h"
 #include <macgyver/Exception.h>
-#include <algorithm>  // swap()
+#include <cstdint>
 #include <cstring>
 #include <iostream>
+#include <utility>
 
 #ifdef UNIX
 extern "C"

@@ -21,12 +21,14 @@
 #include "NFmiBezierTools.h"
 #include "NFmiCounter.h"
 #include "NFmiPath.h"
-
+#include "NFmiPathElement.h"
 #include <macgyver/Exception.h>
+#include <newbase/NFmiPoint.h>
 #include <newbase/NFmiGeoTools.h>
-
 #include <list>
+#include <string>
 #include <vector>
+
 
 using namespace std;
 

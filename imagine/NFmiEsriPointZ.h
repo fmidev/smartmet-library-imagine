@@ -16,7 +16,10 @@
 #pragma once
 
 #include "NFmiEsriBox.h"
+#include "NFmiEsriElement.h"
 #include "NFmiEsriPointM.h"
+#include <iosfwd>
+#include <string>
 
 namespace Imagine
 {

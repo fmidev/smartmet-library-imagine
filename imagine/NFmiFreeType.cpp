@@ -27,11 +27,12 @@
 
 #include "NFmiFreeType.h"
 #include "NFmiColorBlend.h"
-#include "NFmiFace.h"
+#include "NFmiImage.h"
 #include "NFmiPath.h"
 #include <macgyver/Exception.h>
 #include <newbase/NFmiFileSystem.h>
 #include <newbase/NFmiSettings.h>
+#include <newbase/NFmiStringTools.h>
 
 extern "C"
 {
@@ -52,7 +53,7 @@ extern "C"
 #include <algorithm>
 #include <cmath>
 #include <map>
-#include <stdexcept>
+#include <utility>
 #include <vector>
 
 using namespace std;
